@@ -10,7 +10,7 @@ pub struct ClassicLevel {
     pub width: i16,
     pub height: i16,
     pub depth: i16,
-    pub blocks: Vec<u8>,
+    pub blocks: Vec<u8>, // TODO: think about restricting access to the block array and instead provide helpers to access and manipulate it.
 }
 
 #[wasm_bindgen]
@@ -31,8 +31,8 @@ impl ClassicLevel {
         for x in 0..x0.min(x1) {
             for z in 0..z0.min(z1) {
                 for y in 0..y0.min(y1) {
-                    let p0 = (y * z0 + z) * x0 + x;
-                    let p1 = (y * z1 + z) * x1 + x;
+                    let p0 = x + x0 * (z + y * z0);
+                    let p1 = x + x1 * (z + y * z1);
                     blocks[p1] = self.blocks[p0];
                 }
             }
@@ -42,5 +42,30 @@ impl ClassicLevel {
         self.width = x1 as i16;
         self.depth = z1 as i16;
         self.height = y1 as i16;
+    }
+
+    #[wasm_bindgen]
+    pub fn set_block(&mut self, x: i16, y: i16, z: i16, block: u8) {
+        if block > 31 || block < 0  {
+            return;
+        }
+
+        let x0 = x as usize;
+        let y0 = y as usize;
+        let z0 = z as usize;
+
+        let x1 = self.width as usize;
+        let y1 = self.height as usize;
+        let z1 = self.depth as usize;
+
+        // if we're out of bounds we don't give a shit
+        if x0 >= x1 || y0 >= y1 || z0 >= z1 {
+            return;
+        }
+
+        // should we use x0 + x1 * (z0 + y0 * z1)?
+        // I'm so lost lol
+        let p = x0 * x1 * y1 + z0 * y1 + y0;
+        self.blocks[p] = block;
     }
 }

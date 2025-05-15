@@ -37,7 +37,7 @@ impl MCGLevel {
                 width,
                 height,
                 depth,
-                blocks: vec![0; ((width) * (height) * (depth)) as usize],
+                blocks: vec![0u8; (width as usize) * (height as usize) * (depth as usize)],
             },
             spawn_x,
             spawn_y,
