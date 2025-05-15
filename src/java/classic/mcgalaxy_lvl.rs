@@ -217,9 +217,21 @@ impl MCGLevel {
         *section[(y & 15) << 8 | (z & 15) << 4 | (x & 15)] = block & 0xFF;
     }
 
+    fn calc_section_length(&self) -> usize {
+        let mut len = self.custom_block_sections.len();
+
+        for s in self.custom_block_sections.iter() {
+            if !s.is_null() {
+                len += *s.len();
+            }
+        }
+
+        len
+    }
+
     #[wasm_bindgen]
     pub fn write(&self, out: &mut [u8]) {
-        if (out.len() < 2 + 2 + 2 + 2 + 2 + 2 + 2 + 1 + 1 + 1 + 1 + self.classic_level.blocks.len()) {
+        if (out.len() < 2 + 2 + 2 + 2 + 2 + 2 + 2 + 1 + 1 + 1 + 1 + self.classic_level.blocks.len() + self.calc_section_length()) {
             panic!("Output buffer is too small");
         }
 
@@ -238,5 +250,15 @@ impl MCGLevel {
         c.write_u8(self.min_build_perm).expect("Min Build Perm write");
 
         c.write_all(&self.classic_level.blocks).expect("Blocks write");
+
+        c.write_u8(0xBD).expect("Custom block section start");
+        for s in self.custom_block_sections.iter() {
+            if s.is_null() {
+                c.write_u8(0).unwrap();
+            } else {
+                c.write_u8(1).unwrap();
+                c.write_all(s).expect("Custom block section");
+            }
+        }
     }
 }
