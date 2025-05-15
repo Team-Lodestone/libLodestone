@@ -1,1 +1,1 @@
-pub mod classic_level;
+pub mod classic;

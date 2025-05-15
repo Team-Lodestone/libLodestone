@@ -1,8 +1,6 @@
 mod utils;
 pub mod java;
 
-use wasm_bindgen::prelude::*;
-
 // ==== GOALS ====
 // libLodestone will handle all conversion, plus Bedrock/PE and Java Edition reading/writing.
 // LCE will be handled by libLCE, which will need bindings made for it, I believe.
