@@ -2,10 +2,13 @@ use std::fs::File;
 use std::io::{Cursor, Read, self, Write};
 use std::thread::spawn;
 use byteorder::{LittleEndian, ReadBytesExt};
+use wasm_bindgen::prelude::*;
+
 
 // TODO: central Level class that we can inherit
 // well actually idk if this will happen, still trying to figure that out...
 #[derive(Debug)]
+#[wasm_bindgen]
 pub struct ClassicLevel {
     width: i16,
     height: i16,
@@ -13,6 +16,7 @@ pub struct ClassicLevel {
 }
 
 #[derive(Debug)]
+#[wasm_bindgen]
 pub struct MCGLevel {
     classic_level: ClassicLevel,
     spawn_x: i16,
@@ -25,7 +29,9 @@ pub struct MCGLevel {
     blocks: Vec<u8>
 }
 
+#[wasm_bindgen]
 impl MCGLevel {
+    #[wasm_bindgen]
     pub fn new(
         width: i16,
         height: i16,
@@ -55,7 +61,8 @@ impl MCGLevel {
         }
     }
 
-    pub fn new_from_data(data: Vec<u8>) -> Result<MCGLevel, &'static str> {
+    #[wasm_bindgen]
+    pub fn new_from_data(data: Vec<u8>) -> Result<MCGLevel, String> {
         let mut c = Cursor::new(data); // literally just array with position ig
         let signature = c.read_u16::<LittleEndian>().unwrap();
         let w = c.read_i16::<LittleEndian>().unwrap();
@@ -71,7 +78,7 @@ impl MCGLevel {
         // note: not required to be 1874 apparently.
         // although why wouldn't it be?
         if (signature != 1874) {
-            return Err("Signature does not match required '1874'");
+            return Err("Signature does not match required '1874'".to_string());
         }
 
         let min_access_perm = c.read_u8().unwrap();
