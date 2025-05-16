@@ -18,7 +18,7 @@ pub struct MCGLevel {
 
     section_width: i16,
     section_depth: i16,
-    pub custom_block_sections: Vec<Vec<u8>>,
+    custom_block_sections: Vec<Vec<u8>>,
 }
 
 //HACK: HORRIBLE!!!
@@ -60,7 +60,7 @@ impl MCGLevel {
 
             section_width,
             section_depth,
-            custom_block_sections: vec![vec![0; 0]; (section_width * section_height * section_depth) as usize],
+            custom_block_sections: vec![vec![0u8; 0]; (section_width * section_height * section_depth) as usize],
         }
     }
 
@@ -99,7 +99,7 @@ impl MCGLevel {
         let section_height = (h as f32 / 16.0).ceil() as i16;
         let section_depth = (d as f32 / 16.0).ceil() as i16;
 
-        let mut custom_block_sections: Vec<Vec<u8>> = vec![vec![0; 0]; (section_width * section_height * section_depth) as usize];
+        let mut custom_block_sections: Vec<Vec<u8>> = vec![vec![0u8; 0]; (section_width * section_height * section_depth) as usize];
 
         if c.read_u8().unwrap() == 0xBD {
             for y in 0..section_height {
@@ -109,7 +109,7 @@ impl MCGLevel {
 
                         if b == 1 {
                             let section_index = ((y * section_depth + z) * section_width + x) as usize;
-                            let mut section: Vec<u8> = vec![0; 4096];
+                            let mut section: Vec<u8> = vec![0u8; 4096];
 
                             c.read_exact(&mut section).expect(format!("Failed to read section {x} {y} {z}").as_str());
                             custom_block_sections[section_index] = section;
@@ -154,10 +154,10 @@ impl MCGLevel {
         self.spawn_yaw = yaw;
         self.spawn_pitch = pitch;
     }
-    
+
+    #[wasm_bindgen]
     pub fn get_block(&mut self, x: i16, y: i16, z: i16) -> u16 {
-        let index = (y * self.classic_level.depth + z) * self.classic_level.width + x;
-        let block = self.classic_level.blocks[index as usize];
+        let block = self.classic_level.get_block(x, y, z);
 
         if READ_BLOCK_MAPPINGS[block as usize] != 0 {
             return READ_BLOCK_MAPPINGS[block as usize] | self.get_ext_block(x, y, z) as u16;
@@ -179,19 +179,19 @@ impl MCGLevel {
 
         0
     }
-    
+
+    #[wasm_bindgen]
     pub fn set_block(&mut self, x: i16, y: i16, z: i16, block: i16) {
-        let index = (y * self.classic_level.depth + z) * self.classic_level.width + x;
+        let mut set = block as u8;
 
         if block >= 256 {
-            self.classic_level.blocks[index as usize] = WRITE_BLOCK_MAPPINGS[(block >> 8) as usize];
-            self.set_ext_block(x, y, z, block);
-        } else {
-            self.classic_level.blocks[index as usize] = block as u8;
+            set = WRITE_BLOCK_MAPPINGS[(block >> 8) as usize];
+            self.set_ext_block(x, y, z, (block & 0xFF) as u8);
         }
+        self.classic_level.set_block(x, y, z, set);
     }
 
-    fn set_ext_block(&mut self, x: i16, y: i16, z: i16, block: i16) {
+    fn set_ext_block(&mut self, x: i16, y: i16, z: i16, block: u8) {
         let section_x = x >> 4;
         let section_y = y >> 4;
         let section_z = z >> 4;
@@ -200,13 +200,13 @@ impl MCGLevel {
         let mut section = &mut self.custom_block_sections[index];
 
         if !section.is_empty() {
-            let new_section = vec![0; 4096];
+            let new_section = vec![0u8; 4096];
             self.custom_block_sections[index] = new_section;
 
             section = &mut self.custom_block_sections[index];
         }
 
-        section[((y & 15) << 8 | (z & 15) << 4 | (x & 15)) as usize] = (block & 0xFF) as u8;
+        section[((y & 15) << 8 | (z & 15) << 4 | (x & 15)) as usize] = block;
     }
 
     fn calc_section_length(&self) -> usize {
