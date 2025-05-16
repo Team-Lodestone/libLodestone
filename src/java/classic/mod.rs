@@ -45,27 +45,31 @@ impl ClassicLevel {
     }
 
     #[wasm_bindgen]
+    pub fn get_block(&self, x: i16, y: i16, z: i16) -> u8 {
+        let index = self.get_index(x, y, z);
+        if index == !0 {
+            return 0;
+        }
+
+        self.blocks[index]
+    }
+
+    #[wasm_bindgen]
     pub fn set_block(&mut self, x: i16, y: i16, z: i16, block: u8) {
-        if block > 31 || block < 0  {
+        let index = self.get_index(x, y, z);
+        if index == !0 {
             return;
         }
 
-        let x0 = x as usize;
-        let y0 = y as usize;
-        let z0 = z as usize;
+        self.blocks[index] = block;
+    }
 
-        let x1 = self.width as usize;
-        let y1 = self.height as usize;
-        let z1 = self.depth as usize;
-
-        // if we're out of bounds we don't give a shit
-        if x0 >= x1 || y0 >= y1 || z0 >= z1 {
-            return;
+    pub fn get_index(&self, x: i16, y: i16, z: i16) -> usize {
+        if x < 0 || y < 0 || z < 0 ||
+            x >= self.width || y >= self.height || z >= self.depth {
+            return !0;
         }
 
-        // should we use x0 + x1 * (z0 + y0 * z1)?
-        // I'm so lost lol
-        let p = x0 * x1 * y1 + z0 * y1 + y0;
-        self.blocks[p] = block;
+        ((y * self.depth + z) * self.width + x) as usize
     }
 }
