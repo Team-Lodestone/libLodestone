@@ -1,6 +1,6 @@
 mod utils;
 pub mod java;
-
+pub mod common;
 // ==== GOALS ====
 // libLodestone will handle all conversion, plus Bedrock/PE and Java Edition reading/writing.
 // LCE will be handled by libLCE, which will need bindings made for it, I believe.

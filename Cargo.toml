@@ -1,6 +1,6 @@
 [package]
 name = "libLodestone"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Team Lodestone"]
 description = "Provides reading, writing, and format conversion for most editions and versions of Minecraft."
 edition = "2024"
@@ -34,6 +34,8 @@ flate2 = "1.1.1"
 byteorder = "1.5.0"
 simdnbt = "0.7.1"
 log = "0.4.27"
+phf = { version = "0.11.3", features = ["macros"] }
+regex = "1.11.1"
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3.50"

@@ -1,17 +1,11 @@
-use std::io::{Cursor, Read};
-use byteorder::{BigEndian, ReadBytesExt};
+use std::io::{Cursor, Read, Write};
+use byteorder::{BigEndian, LittleEndian, ReadBytesExt, WriteBytesExt};
+use crate::common::level::region::{Compression, RegionLike};
+use crate::common::level::region::Coords;
+use crate::common::level::region::ChunkLocation;
 use flate2::read::{GzDecoder, ZlibDecoder};
-use flate2::write::GzEncoder;
-use simdnbt::borrow::NbtCompoundList;
-use simdnbt::owned::{NbtCompound, NbtList};
+use simdnbt::owned::{NbtCompound, NbtList, BaseNbt, Nbt, NbtTag};
 use wasm_bindgen::prelude::wasm_bindgen;
-
-#[derive(Clone, Default)]
-#[wasm_bindgen(getter_with_clone)]
-pub struct ChunkLocation {
-    offset: u32,
-    size: u8
-}
 
 #[derive(Clone, Default)]
 #[wasm_bindgen(getter_with_clone)]
@@ -31,63 +25,20 @@ pub struct Chunk {
 
 #[wasm_bindgen(getter_with_clone)]
 pub struct Region {
-    x: i32,
-    z: i32,
+    pub region_like: RegionLike,
     chunks: Vec<Chunk>
-}
-
-#[wasm_bindgen(getter_with_clone)]
-pub enum Compression {
-    GZip = 1,
-    Zlib = 2,
-    None = 3,
-    LZ4 = 4,
-    Custom = 127 // never will properly support...
-}
-
-impl TryFrom<i8> for Compression {
-    type Error = ();
-
-    fn try_from(c: i8) -> Result<Self, Self::Error> {
-        match c {
-            r if r == Compression::GZip as i8 => Ok(Compression::GZip),
-            r if r == Compression::Zlib as i8 => Ok(Compression::Zlib),
-            r if r == Compression::None as i8 => Ok(Compression::None),
-            r if r == Compression::LZ4 as i8 => Ok(Compression::LZ4),
-            r if r == Compression::Custom as i8 => Ok(Compression::Custom),
-            _ => Err(()),
-        }
-    }
 }
 
 #[wasm_bindgen]
 impl Region {
-    #[wasm_bindgen]
-    pub fn get_min_chunk_coord_x(&self) -> i32 {
-        self.x * 32
-    }
-
-    #[wasm_bindgen]
-    pub fn get_max_chunk_coord_x(&self) -> i32 {
-        self.x * 32 + 31
-    }
-
-    #[wasm_bindgen]
-    pub fn get_min_chunk_coord_z(&self) -> i32 {
-        self.z * 32
-    }
-
-    #[wasm_bindgen]
-    pub fn get_max_chunk_coord_z(&self) -> i32 {
-        self.z * 32 + 31
-    }
 
     #[wasm_bindgen]
     pub fn new() -> Region {
         Region {
             chunks: Vec::with_capacity(1024),
-            x: 0,
-            z: 0
+            region_like: RegionLike {
+                pos: Coords::default()
+            }
         }
     }
 
@@ -152,8 +103,12 @@ impl Region {
         }
 
         Ok(Region {
-            x,
-            z,
+            region_like: RegionLike {
+                pos: Coords {
+                    x,
+                    z
+                }
+            },
             chunks
         })
     }
@@ -178,6 +133,51 @@ impl Chunk {
         }
     }
 
+    pub fn generate_heightmap(&self) -> Vec<u8> {
+        let mut heightmap: Vec<u8> = Vec::with_capacity(16*16);
+
+        for z in 0..16 {
+            for x in 0..16 {
+                for y in (0..128).rev() {
+                    let blk = self.get_block(x, y, z);
+                    if (blk != 0) {
+                        heightmap.push((y + 1).min(127) as u8);
+                        break;
+                    }
+                }
+            }
+        }
+
+        heightmap
+    }
+
+    pub fn generate_blockmap(&self) -> Vec<u8> {
+        let mut blkmap: Vec<u8> = Vec::with_capacity(16*16);
+
+        for z in 0..16 {
+            for x in 0..16 {
+                for y in (0..128).rev() {
+                    let blk = self.get_block(x, y, z);
+                    if (!crate::common::block::get_block(blk).expect("Get block for blockmap").is_translucent_map) {
+                        blkmap.push(blk);
+                        break;
+                    }
+                }
+            }
+        }
+
+        blkmap
+    }
+
+    pub fn get_block(&self, x: i16, y: i16, z: i16) -> u8 {
+        if (x > 16 || y > 128 || z > 16
+            || x < 0 || y < 0 || z < 0) {
+            return 0;
+        }
+
+        self.blocks[(y as usize) + (z as usize) * 128 + (x as usize) * 128 * 16]
+    }
+
     #[wasm_bindgen]
     pub fn new_from_data(data: Vec<u8>) -> Result<Chunk, String> {
         let nbt = simdnbt::borrow::read(&mut Cursor::new(&data)).expect("Chunk NBT data").unwrap();
@@ -195,9 +195,7 @@ impl Chunk {
         let entities = level.list("Entities").expect("Chunk entities").to_owned();
         let tile_entities = level.list("TileEntities").expect("Chunk tile entities").to_owned();
         let has_populated = level.byte("TerrainPopulated").expect("Chunk has populated");
-
-        println!("x: {}, z: {}", x, z);
-
+        
         Ok(Chunk {
             x,
             z,
@@ -211,5 +209,30 @@ impl Chunk {
             tile_entities,
             has_populated
         })
+    }
+}
+
+// TODO: can't expose to WASM with &mut Vec<u8>
+impl Chunk {
+    pub fn write(&self, out: &mut Vec<u8>) {
+        let c = Nbt::Some(BaseNbt::new(
+            "Level",
+            NbtCompound::from_values(vec![
+                ("xPos".into(), NbtTag::Int(self.x)),
+                ("zPos".into(), NbtTag::Int(self.z)),
+                ("LastUpdate".into(), NbtTag::Long(self.last_update)),
+                ("Blocks".into(), NbtTag::ByteArray(self.blocks.clone())),
+                ("Data".into(), NbtTag::ByteArray(self.block_data.clone())),
+                ("SkyLight".into(), NbtTag::ByteArray(self.sky_light.clone())),
+                ("BlockLight".into(), NbtTag::ByteArray(self.block_light.clone())),
+                ("HeightMap".into(), NbtTag::ByteArray(self.height_map.clone())),
+                ("LastUpdate".into(), NbtTag::Long(self.last_update)),
+                ("Entities".into(), NbtTag::List(self.entities.clone())),
+                ("TileEntities".into(), NbtTag::List(self.tile_entities.clone())),
+                ("TerrainPopulated".into(), NbtTag::Byte(self.has_populated)),
+            ]),
+        ));
+
+        c.write(out);
     }
 }
