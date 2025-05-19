@@ -209,7 +209,7 @@ impl MCGLevel {
         section[((y & 15) << 8 | (z & 15) << 4 | (x & 15)) as usize] = block;
     }
 
-    fn calc_section_length(&self) -> usize {
+    pub fn calc_section_length(&self) -> usize {
         let mut len = self.custom_block_sections.len();
 
         for s in self.custom_block_sections.iter() {

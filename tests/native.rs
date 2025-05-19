@@ -39,8 +39,73 @@ mod tests {
         of.flush().unwrap();
     }
 
+    // #[test]
+    fn indev_level() {
+        // ignore weird path, for testing on local machine
+        let data = match fs::read("D:\\Home\\Downloads\\Indev World Backup") {
+            Ok(d) => d,
+            Err(e) => {
+                eprintln!("uh oh {}", e);
+                return;
+            }
+        };
+        let mut indev = java::indev::IndevLevel::new_from_data(data).unwrap();
+
+        // // can't be bothered to figure out a good way to do this...
+        // // although I can already think of just putting in a `get_size` method in every Level impl.
+        // let mut out = vec![0u8; (1024 * 512 * 1024) + 2 + 2 + 2 + 2 + 2 + 2 + 2 + 1 + 1 + 1 + 1];
+        //
+        // // resize
+        // mcg.classic_level.resize(1024, 1024, 512);
+        // mcg.write(&mut out);
+        //
+        // let mut enc = GzEncoder::new(Vec::new(), Compression::default());
+        // enc.write_all(&out).unwrap();
+        // let c = enc.finish().unwrap();
+        //
+        // let mut of = File::create("mcgOut.lvl").unwrap();
+        // of.write_all(&c).unwrap();
+        // of.flush().unwrap();
+    }
 
     #[test]
+    fn in_to_mcg() {
+        // wtf is this weird match syntax
+        // also ignore weird path, for testing on local machine
+        let fname = "Indev World Backup";
+
+        let data = match fs::read(format!("D:\\Home\\Downloads\\{}", fname)) {
+            Ok(d) => d,
+            Err(e) => {
+                eprintln!("uh oh {}", e);
+                return;
+            }
+        };
+        let mut indev = java::indev::IndevLevel::new_from_data(data).unwrap();
+
+        let mut mcg = java::classic::mcgalaxy_lvl::MCGLevel::new(indev.map.width, indev.map.height, indev.map.length, indev.map.spawn.x, indev.map.spawn.y, indev.map.spawn.z, 0, 0, 0, 0);
+
+        mcg.classic_level.blocks = indev.map.blocks; // literally the same pretty much
+
+        // can't be bothered to figure out a good way to do this...
+        // although I can already think of just putting in a `get_size` method in every Level impl.
+        let mut out = vec![0u8; 2 + 2 + 2 + 2 + 2 + 2 + 2 + 1 + 1 + 1 + 1 + mcg.classic_level.blocks.len() + mcg.calc_section_length()];
+
+        mcg.write(&mut out);
+
+        // why does this part take so damn long?
+        println!("Compressing");
+        let mut enc = GzEncoder::new(Vec::with_capacity(4 * 1024 * 1024), Compression::fast());
+        enc.write_all(&out).unwrap();
+        let c = enc.finish().unwrap();
+
+        println!("Writing");
+        let mut of = File::create(format!("test/lvl/dst/{}.lvl", fname)).unwrap();
+        of.write_all(&c).unwrap();
+        of.flush().unwrap();
+    }
+
+    // #[test]
     fn mcr_to_mcg() {
         // wtf is this weird match syntax
         // also ignore weird path, for testing on local machine
@@ -99,7 +164,7 @@ mod tests {
 
         // can't be bothered to figure out a good way to do this...
         // although I can already think of just putting in a `get_size` method in every Level impl.
-        let mut out = vec![0u8; (512 * 128 * 512) + 2 + 2 + 2 + 2 + 2 + 2 + 2 + 1 + 1 + 1 + 1];
+        let mut out = vec![0u8; 2 + 2 + 2 + 2 + 2 + 2 + 2 + 1 + 1 + 1 + 1 + mcg.classic_level.blocks.len() + mcg.calc_section_length()];
 
         mcg.write(&mut out);
 
