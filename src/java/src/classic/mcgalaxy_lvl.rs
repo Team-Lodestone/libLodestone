@@ -1,4 +1,4 @@
-use crate::java::classic::ClassicLevel;
+use crate::classic::ClassicLevel;
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use std::io::{Cursor, Read, Write};
 use wasm_bindgen::prelude::*;
@@ -31,7 +31,7 @@ impl MCGLevel {
     pub fn new(
         width: i16,
         height: i16,
-        depth: i16,
+        length: i16,
         spawn_x: i16,
         spawn_y: i16,
         spawn_z: i16,
@@ -42,13 +42,13 @@ impl MCGLevel {
     ) -> MCGLevel {
         let section_width = (width as f32 / 16.0).ceil() as i16;
         let section_height = (height as f32 / 16.0).ceil() as i16;
-        let section_depth = (depth as f32 / 16.0).ceil() as i16;
+        let section_depth = (length as f32 / 16.0).ceil() as i16;
         MCGLevel {
             classic_level: ClassicLevel {
                 width,
                 height,
-                depth,
-                blocks: vec![0u8; (width as usize) * (height as usize) * (depth as usize)],
+                length,
+                blocks: vec![0u8; (width as usize) * (height as usize) * (length as usize)],
             },
             spawn_x,
             spawn_y,
@@ -62,6 +62,35 @@ impl MCGLevel {
             section_depth,
             custom_block_sections: vec![vec![0u8; 0]; (section_width * section_height * section_depth) as usize],
         }
+    }
+
+    #[wasm_bindgen]
+    pub fn resize(&mut self, width: i16, depth: i16, height: i16) {
+        let x0 = self.classic_level.width as usize;
+        let z0 = self.classic_level.length as usize;
+        let y0 = self.classic_level.height as usize;
+
+        // hate usize
+        let x1 = width as usize;
+        let z1 = depth as usize;
+        let y1 = height as usize;
+
+        let mut blocks = vec![0; x1 * z1 * y1];
+        // can't wait for the order to change between every edition of minecraft
+        for x in 0..x0.min(x1) {
+            for z in 0..z0.min(z1) {
+                for y in 0..y0.min(y1) {
+                    let p0 = x + x0 * (z + y * z0);
+                    let p1 = x + x1 * (z + y * z1);
+                    blocks[p1] = self.classic_level.blocks[p0];
+                }
+            }
+        }
+
+        self.classic_level.blocks = blocks;
+        self.classic_level.width = x1 as i16;
+        self.classic_level.length = z1 as i16;
+        self.classic_level.height = y1 as i16;
     }
 
     #[wasm_bindgen]
@@ -99,7 +128,7 @@ impl MCGLevel {
         let section_height = (h as f32 / 16.0).ceil() as i16;
         let section_depth = (d as f32 / 16.0).ceil() as i16;
 
-        let mut custom_block_sections: Vec<Vec<u8>> = vec![vec![0u8; 0]; (section_width * section_height * section_depth) as usize];
+        let mut custom_block_sections: Vec<Vec<u8>> = vec![vec![0u8; 0]; ((section_width as usize) * (section_height as usize) * (section_depth as usize))];
 
         if c.read_u8().unwrap() == 0xBD {
             for y in 0..section_height {
@@ -122,7 +151,7 @@ impl MCGLevel {
         let mcg = MCGLevel {
             classic_level: ClassicLevel {
                 width: w,
-                depth: d,
+                length: d,
                 height: h,
                 blocks,
             },
@@ -157,7 +186,12 @@ impl MCGLevel {
 
     #[wasm_bindgen]
     pub fn get_block(&mut self, x: i16, y: i16, z: i16) -> u16 {
-        let block = self.classic_level.get_block(x, y, z);
+        let index = self.get_index(x, y, z);
+        if index == !0 {
+            return 0;
+        }
+
+        let block = self.classic_level.blocks[index];
 
         if READ_BLOCK_MAPPINGS[block as usize] != 0 {
             return READ_BLOCK_MAPPINGS[block as usize] | self.get_ext_block(x, y, z) as u16;
@@ -188,7 +222,13 @@ impl MCGLevel {
             set = WRITE_BLOCK_MAPPINGS[(block >> 8) as usize];
             self.set_ext_block(x, y, z, (block & 0xFF) as u8);
         }
-        self.classic_level.set_block(x, y, z, set);
+
+        let index = self.get_index(x, y, z);
+        if index == !0 {
+            return;
+        }
+
+        self.classic_level.blocks[index] = set;
     }
 
     fn set_ext_block(&mut self, x: i16, y: i16, z: i16, block: u8) {
@@ -223,7 +263,7 @@ impl MCGLevel {
 
     #[wasm_bindgen]
     pub fn write(&self, out: &mut [u8]) {
-        if (out.len() < 2 + 2 + 2 + 2 + 2 + 2 + 2 + 1 + 1 + 1 + 1 + self.classic_level.blocks.len() + self.calc_section_length()) {
+        if (out.len() < 2 + 2 + 2 + 2 + 2 + 2 + 2 + 1 + 1 + 1 + 1 + 1 + self.classic_level.blocks.len() + self.calc_section_length()) {
             panic!("Output buffer is too small");
         }
 
@@ -231,7 +271,7 @@ impl MCGLevel {
 
         c.write_i16::<LittleEndian>(1874).expect("Signature write");
         c.write_i16::<LittleEndian>(self.classic_level.width).expect("Width write");
-        c.write_i16::<LittleEndian>(self.classic_level.depth).expect("Depth write");
+        c.write_i16::<LittleEndian>(self.classic_level.length).expect("Depth write");
         c.write_i16::<LittleEndian>(self.classic_level.height).expect("Height write");
         c.write_i16::<LittleEndian>(self.spawn_x).expect("SpawnX write");
         c.write_i16::<LittleEndian>(self.spawn_z).expect("SpawnZ write");
@@ -252,5 +292,23 @@ impl MCGLevel {
                 c.write_all(s).expect("Custom block section");
             }
         }
+    }
+
+    #[wasm_bindgen]
+    pub fn get_index(&self, x: i16, y: i16, z: i16) -> usize {
+        let x = x as usize;
+        let y = y as usize;
+        let z = z as usize;
+
+        let w = self.classic_level.width as usize;
+        let d = self.classic_level.length as usize;
+        let h = self.classic_level.height as usize;
+
+        if x < 0 || y < 0 || z < 0 ||
+            x >= w || y >= h || z >= d {
+            return !0;
+        }
+
+        x + z * w + y * w * d
     }
 }

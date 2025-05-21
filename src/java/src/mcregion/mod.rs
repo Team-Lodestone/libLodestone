@@ -1,10 +1,10 @@
-use std::io::{Cursor, Read, Write};
-use byteorder::{BigEndian, LittleEndian, ReadBytesExt, WriteBytesExt};
-use crate::common::level::region::{Compression, RegionLike};
-use crate::common::level::region::Coords;
-use crate::common::level::region::ChunkLocation;
+use byteorder::{BigEndian, ReadBytesExt};
 use flate2::read::{GzDecoder, ZlibDecoder};
-use simdnbt::owned::{NbtCompound, NbtList, BaseNbt, Nbt, NbtTag};
+use lodestone_common::level::region::ChunkLocation;
+use lodestone_common::level::region::Coords;
+use lodestone_common::level::region::{Compression, RegionLike};
+use simdnbt::owned::{BaseNbt, Nbt, NbtCompound, NbtList, NbtTag};
+use std::io::{Cursor, Read};
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[derive(Clone, Default)]
@@ -94,9 +94,19 @@ impl Region {
 
             let mut chunk_data: Vec<u8> = Vec::new();
 
-            // TODO: support the other methods
-            let mut dec = ZlibDecoder::new(Cursor::new(compressed));
-            dec.read_to_end(&mut chunk_data).expect("Decompressed chunk data");
+            // TODO: support the other 2 methods
+            let dec: Option<Box<dyn Read>> = match compression {
+                Compression::Zlib => Some(Box::new(ZlibDecoder::new(Cursor::new(compressed.clone())))), // cloning seems really janky...?
+                Compression::GZip => Some(Box::new(GzDecoder::new(Cursor::new(compressed.clone())))),
+                Compression::None => None,
+                _ => { panic!("Unsupported compression format!") } // is this a good idea? I don't know if you can "catch" a panic...
+            };
+
+            if (compression != Compression::None) {
+                dec.expect("Decompressor").read_to_end(&mut chunk_data).expect("Decompressed chunk data");
+            } else {
+                chunk_data = compressed.to_vec();
+            }
 
             let ch = Chunk::new_from_data(chunk_data).expect("Region Chunk from data");
             chunks.push(ch);
@@ -158,7 +168,7 @@ impl Chunk {
             for x in 0..16 {
                 for y in (0..128).rev() {
                     let blk = self.get_block(x, y, z);
-                    if (!crate::common::block::get_block(blk).expect("Get block for blockmap").is_translucent_map) {
+                    if (!lodestone_common::block::get_block(blk).expect("Get block for blockmap").is_translucent_map) {
                         blkmap.push(blk);
                         break;
                     }

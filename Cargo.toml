@@ -1,6 +1,6 @@
 [package]
 name = "libLodestone"
-version = "0.3.0"
+version = "0.4.0" # usually I've been incrementing minor ver everytime I add a new supported level format...
 authors = ["Team Lodestone"]
 description = "Provides reading, writing, and format conversion for most editions and versions of Minecraft."
 edition = "2024"
@@ -8,6 +8,12 @@ license = "LGPL-2.1"
 readme = "README.md"
 repository = "https://github.com/team-lodestone/libLodestone"
 homepage = "https://team-lodestone.github.io"
+
+[workspace]
+members = [
+    "src/java",
+    "src/common"
+]
 
 [lib]
 crate-type = ["cdylib", "rlib"]
@@ -17,6 +23,9 @@ default = ["console_error_panic_hook"]
 
 [dependencies]
 wasm-bindgen = "0.2.100"
+
+lodestone_common = { path = "src/common" }
+lodestone_java = { path = "src/java" }
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires
@@ -30,12 +39,8 @@ console_error_panic_hook = { version = "0.1.7", optional = true }
 #
 # Unfortunately, `wee_alloc` requires nightly Rust when targeting wasm for now.
 wee_alloc = { version = "0.4.5", optional = true }
-flate2 = "1.1.1"
-byteorder = "1.5.0"
-simdnbt = "0.7.1"
 log = "0.4.27"
-phf = { version = "0.11.3", features = ["macros"] }
-regex = "1.11.1"
+flate2 = "1.1.1"
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3.50"

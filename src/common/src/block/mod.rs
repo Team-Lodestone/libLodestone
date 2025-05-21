@@ -1,5 +1,4 @@
-use std::collections::HashMap;
-use phf::{phf_map, phf_ordered_map};
+use phf::phf_map;
 
 pub struct Block {
     pub name: &'static str,

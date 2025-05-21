@@ -10,6 +10,7 @@ pub struct Coords {
 }
 
 #[wasm_bindgen(getter_with_clone)]
+#[derive(PartialEq)]
 pub enum Compression {
     pub GZip = 1,
     pub Zlib = 2,
