@@ -78,7 +78,7 @@ impl IndevLevel {
         IndevLevel {
             environment: Environment {
                 time: 0,
-                sky_brightness: 15,
+                sky_brightness: 100,
                 cloud_height: height - 64,
                 cloud_color: 0xFFFFFF,
                 sky_color: 0x99CCFF,

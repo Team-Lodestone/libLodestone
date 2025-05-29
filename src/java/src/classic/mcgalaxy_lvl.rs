@@ -60,7 +60,7 @@ impl MCGLevel {
 
             section_width,
             section_depth,
-            custom_block_sections: vec![vec![0u8; 0]; (section_width * section_height * section_depth) as usize],
+            custom_block_sections: vec![vec![0u8; 0]; ((section_width as usize) * (section_height as usize) * (section_depth as usize)) as usize],
         }
     }
 

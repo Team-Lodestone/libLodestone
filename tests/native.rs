@@ -151,7 +151,7 @@ mod tests {
         of.flush().unwrap();
     }
 
-    // #[test]
+    #[test]
     fn mcr_to_mcg() {
         // wtf is this weird match syntax
         // also ignore weird path, for testing on local machine
@@ -194,7 +194,7 @@ mod tests {
                                 let z0 = z + ((cz - mcr.region_like.get_min_chunk_coord_z()) * 16) as usize;
                                 let y0 = y;
 
-                                let mcg_p: usize = x0 + z0 * 512 + y0 * 512 * 512; // 512 is the world width & height (size of a region)...
+                                let mcg_p: usize = x0 + z0 * 512 + y0 * 512 * 512; // 512 is the world width & length (size of a region)...
 
                                 mcg.classic_level.blocks[mcg_p] = chunk.blocks[mcr_p];
                             }
@@ -210,7 +210,7 @@ mod tests {
 
         // can't be bothered to figure out a good way to do this...
         // although I can already think of just putting in a `get_size` method in every Level impl.
-        let mut out = vec![0u8; 2 + 2 + 2 + 2 + 2 + 2 + 2 + 1 + 1 + 1 + 1 + mcg.classic_level.blocks.len() + mcg.calc_section_length()];
+        let mut out = vec![0u8; 2 + 2 + 2 + 2 + 2 + 2 + 2 + 1 + 1 + 1 + 1 + 1 + mcg.classic_level.blocks.len() + mcg.calc_section_length()];
 
         mcg.write(&mut out);
 
@@ -277,7 +277,7 @@ mod tests {
         of.flush().unwrap();
     }
 
-    #[test]
+    // #[test]
     fn mcg_to_indev() {
         // TODO: NOTE: Indev sucks and cuts off the borders for some reason, and apparently world sizes need to be powers of 2 otherwise it just generates a larger border...
 

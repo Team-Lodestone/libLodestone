@@ -2,7 +2,7 @@ use regex::Regex;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 // ffs need this bc can't do tuple with wasm toolchain
-#[derive(Clone, Default)]
+#[derive(Clone, Default, PartialEq, Eq, Hash)]
 #[wasm_bindgen(getter_with_clone)]
 pub struct Coords {
     pub x: i32,
