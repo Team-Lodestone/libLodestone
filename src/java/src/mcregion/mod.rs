@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use byteorder::{BigEndian, ReadBytesExt};
 use flate2::read::{GzDecoder, ZlibDecoder};
 use lodestone_common::level::region::ChunkLocation;
@@ -10,8 +11,7 @@ use wasm_bindgen::prelude::wasm_bindgen;
 #[derive(Clone, Default)]
 #[wasm_bindgen(getter_with_clone)]
 pub struct Chunk {
-    pub x: i32,
-    pub z: i32,
+    pub coords: Coords,
     pub last_update: i64,
     pub blocks: Vec<u8>,
     pub block_data: Vec<u8>,
@@ -26,7 +26,7 @@ pub struct Chunk {
 #[wasm_bindgen(getter_with_clone)]
 pub struct Region {
     pub region_like: RegionLike,
-    chunks: Vec<Chunk>
+    chunks: HashMap<Coords, Chunk>
 }
 
 #[wasm_bindgen]
@@ -35,7 +35,7 @@ impl Region {
     #[wasm_bindgen]
     pub fn new() -> Region {
         Region {
-            chunks: Vec::with_capacity(1024),
+            chunks: HashMap::new(),
             region_like: RegionLike {
                 pos: Coords::default()
             }
@@ -44,15 +44,9 @@ impl Region {
 
     // error: cannot return a borrowed ref with #[wasm_bindgen]
     // how can we fix this?
-    // also, we need to find a better way to get coords... this is slow.
     #[wasm_bindgen]
-    pub fn get_chunk(&self, x: i32, z: i32) -> Option<Chunk> {
-        for chunk in &self.chunks {
-            if chunk.x == x && chunk.z == z {
-                return Some(chunk.clone());
-            }
-        }
-        None
+    pub fn get_chunk(&self, coords: Coords) -> Option<Chunk> {
+        self.chunks.get(&coords).cloned()
     }
 
     #[wasm_bindgen]
@@ -60,7 +54,7 @@ impl Region {
         let mut c = Cursor::new(data);
         let mut locations = vec![ChunkLocation::default(); 1024];
         let mut timestamps = vec![0i32; 1024];
-        let mut chunks = Vec::with_capacity(1024);
+        let mut chunks = HashMap::new();
 
         for l in locations.iter_mut() {
             let offset = c.read_u24::<BigEndian>().expect("Offset in location");
@@ -78,7 +72,8 @@ impl Region {
 
         for l in locations.iter() {
             if (l.size as usize) * 4096 == 0 {
-                chunks.push(Chunk::new(-127, -127));
+                let coords: Coords = Coords { x: -127, z: -127 };
+                chunks.insert(coords.clone(), Chunk::new(coords));
                 continue;
             }
 
@@ -109,7 +104,7 @@ impl Region {
             }
 
             let ch = Chunk::new_from_data(chunk_data).expect("Region Chunk from data");
-            chunks.push(ch);
+            chunks.insert(ch.clone().coords, ch);
         }
 
         Ok(Region {
@@ -127,10 +122,9 @@ impl Region {
 #[wasm_bindgen]
 impl Chunk {
     #[wasm_bindgen]
-    pub fn new(x: i32, z: i32) -> Chunk {
+    pub fn new(coords: Coords) -> Chunk {
         Chunk {
-            x,
-            z,
+            coords,
             last_update: 0,
             blocks: vec![0u8; 16*256*16],
             block_data: vec![0u8; 16*256*16],
@@ -207,8 +201,7 @@ impl Chunk {
         let has_populated = level.byte("TerrainPopulated").expect("Chunk has populated");
         
         Ok(Chunk {
-            x,
-            z,
+            coords: Coords { x, z },
             last_update,
             blocks,
             block_data,
@@ -228,8 +221,8 @@ impl Chunk {
         let c = Nbt::Some(BaseNbt::new(
             "Level",
             NbtCompound::from_values(vec![
-                ("xPos".into(), NbtTag::Int(self.x)),
-                ("zPos".into(), NbtTag::Int(self.z)),
+                ("xPos".into(), NbtTag::Int(self.coords.x)),
+                ("zPos".into(), NbtTag::Int(self.coords.z)),
                 ("LastUpdate".into(), NbtTag::Long(self.last_update)),
                 ("Blocks".into(), NbtTag::ByteArray(self.blocks.clone())),
                 ("Data".into(), NbtTag::ByteArray(self.block_data.clone())),
