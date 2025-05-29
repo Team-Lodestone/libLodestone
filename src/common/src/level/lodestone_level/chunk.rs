@@ -24,6 +24,23 @@ pub struct Chunk {
 }
 
 impl Chunk {
+    pub fn new(height: i16) -> Chunk {
+        Chunk {
+            width: 16,
+            height,
+            depth: 16,
+            
+            blocks: vec![],
+            data: vec![],
+            block_light: vec![],
+            sky_light: vec![],
+            
+            height_map: vec![],
+            block_map: vec![],
+            custom_data: vec![],
+        }
+    }
+    
     pub fn generate_heightmap(&self) -> Vec<i16> {
         let mut heightmap: Vec<i16> = Vec::with_capacity(16 * 16);
 

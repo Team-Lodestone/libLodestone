@@ -171,7 +171,7 @@ impl IndevLevel {
     pub fn set_block_light_level(&mut self, x: i16, y: i16, z: i16, level: u8) {
         let i = self.get_index(x, y, z);
 
-        if (level > 15) {
+        if level > 15 {
             panic!("Light level out of range");
         }
 
