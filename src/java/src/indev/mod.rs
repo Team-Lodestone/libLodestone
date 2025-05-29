@@ -1,7 +1,6 @@
+use simdnbt::owned::{BaseNbt, Nbt, NbtCompound, NbtList, NbtTag};
 use std::io::{Cursor, Write};
 use std::time::SystemTime;
-use simdnbt::owned::{BaseNbt, Nbt, NbtCompound, NbtList, NbtTag};
-use simdnbt::owned::NbtTag::Compound;
 use wasm_bindgen::prelude::*;
 
 #[derive(Debug, Clone)]
@@ -116,7 +115,7 @@ impl IndevLevel {
 
     #[wasm_bindgen]
     pub fn resize(&mut self, width: i16, depth: i16, height: i16) {
-        if (width % 2 != 0 || height % 2 != 0 || depth % 2 != 0) {
+        if width % 2 != 0 || height % 2 != 0 || depth % 2 != 0 {
             panic!("It seems Indev world sizes must be a power of 2, otherwise the game will index out of bounds.");
         }
 
@@ -144,15 +143,15 @@ impl IndevLevel {
             }
         }
 
-        if (self.map.spawn.x > width || self.map.spawn.x < width) {
+        if self.map.spawn.x > width || self.map.spawn.x < width {
             self.map.spawn.x = width / 2;
         }
 
-        if (self.map.spawn.y > height || self.map.spawn.y < height) {
+        if self.map.spawn.y > height || self.map.spawn.y < height {
             self.map.spawn.y = height / 2;
         }
 
-        if (self.map.spawn.z > depth || self.map.spawn.z < depth) {
+        if self.map.spawn.z > depth || self.map.spawn.z < depth {
             self.map.spawn.z = depth / 2;
         }
 

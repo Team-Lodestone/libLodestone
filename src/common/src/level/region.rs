@@ -9,8 +9,8 @@ pub struct Coords {
     pub z: i32,
 }
 
-#[wasm_bindgen(getter_with_clone)]
 #[derive(PartialEq)]
+#[wasm_bindgen]
 pub enum Compression {
     pub GZip = 1,
     pub Zlib = 2,

@@ -66,7 +66,7 @@ impl MineV2 {
         println!("World name: {}", name);
         println!("Author: {}", author);
 
-        if (signature != 0x271BB788) {
+        if signature != 0x271BB788 {
             return Err("Signature does not match required '27 1B B7 88'".to_string());
         }
 
@@ -90,7 +90,7 @@ impl MineV2 {
 
     #[wasm_bindgen]
     pub fn write(&self, out: &mut [u8]) {
-        if (out.len() < self.get_byte_size()) {
+        if out.len() < self.get_byte_size() {
             panic!("Output buffer is too small");
         }
 

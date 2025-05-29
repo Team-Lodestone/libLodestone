@@ -77,7 +77,7 @@ impl Region {
         }
 
         for l in locations.iter() {
-            if ((l.size as usize) * 4096 == 0) {
+            if (l.size as usize) * 4096 == 0 {
                 chunks.push(Chunk::new(-127, -127));
                 continue;
             }
@@ -102,7 +102,7 @@ impl Region {
                 _ => { panic!("Unsupported compression format!") } // is this a good idea? I don't know if you can "catch" a panic...
             };
 
-            if (compression != Compression::None) {
+            if compression != Compression::None {
                 dec.expect("Decompressor").read_to_end(&mut chunk_data).expect("Decompressed chunk data");
             } else {
                 chunk_data = compressed.to_vec();
@@ -150,7 +150,7 @@ impl Chunk {
             for x in 0..16 {
                 for y in (0..128).rev() {
                     let blk = self.get_block(x, y, z);
-                    if (blk != 0) {
+                    if blk != 0 {
                         heightmap.push((y + 1).min(127) as u8);
                         break;
                     }
@@ -161,14 +161,14 @@ impl Chunk {
         heightmap
     }
 
-    pub fn generate_blockmap(&self) -> Vec<u8> {
-        let mut blkmap: Vec<u8> = Vec::with_capacity(16*16);
+    pub fn generate_blockmap(&self) -> Vec<u16> {
+        let mut blkmap: Vec<u16> = Vec::with_capacity(16*16);
 
         for z in 0..16 {
             for x in 0..16 {
                 for y in (0..128).rev() {
                     let blk = self.get_block(x, y, z);
-                    if (!lodestone_common::block::get_block(blk).expect("Get block for blockmap").is_translucent_map) {
+                    if !lodestone_common::block::get_block(blk).expect("Get block for blockmap").is_translucent_map {
                         blkmap.push(blk);
                         break;
                     }
@@ -179,13 +179,13 @@ impl Chunk {
         blkmap
     }
 
-    pub fn get_block(&self, x: i16, y: i16, z: i16) -> u8 {
-        if (x > 16 || y > 128 || z > 16
-            || x < 0 || y < 0 || z < 0) {
+    pub fn get_block(&self, x: i16, y: i16, z: i16) -> u16 {
+        if x > 16 || y > 128 || z > 16
+            || x < 0 || y < 0 || z < 0 {
             return 0;
         }
 
-        self.blocks[(y as usize) + (z as usize) * 128 + (x as usize) * 128 * 16]
+        self.blocks[(y as usize) + (z as usize) * 128 + (x as usize) * 128 * 16] as u16
     }
 
     #[wasm_bindgen]
