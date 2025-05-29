@@ -9,6 +9,7 @@ mod tests {
     use flate2::Compression;
     use lodestone_java;
     use lodestone_common;
+    use lodestone_common::level::region::Coords;
 
     // #[test]
     fn mcg_level() {
@@ -173,7 +174,7 @@ mod tests {
 
         for cx in mcr.region_like.get_min_chunk_coord_x()..mcr.region_like.get_max_chunk_coord_x() {
             for cz in mcr.region_like.get_min_chunk_coord_z()..mcr.region_like.get_max_chunk_coord_z() {
-                if let Some(chunk) = mcr.get_chunk(cx, cz) {
+                if let Some(chunk) = mcr.get_chunk(Coords { x: cx, z: cz }) {
                     // let hm = chunk.generate_heightmap();
                     //
                     // println!("Writing heightmap");

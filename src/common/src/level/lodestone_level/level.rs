@@ -1,26 +1,30 @@
 use crate::level::lodestone_level::chunk::{Chunk, Light};
-use std::collections::HashMap;
 use crate::level::region::Coords;
+use std::collections::HashMap;
 
 pub struct Level {
     pub name: String,
     pub time: i64,
 
-    chunks: HashMap<Coords, Chunk>
+    chunks: HashMap<Coords, Chunk>,
 }
 
 impl Level {
     pub fn new(name: String) -> Level {
-        Level { name, time: 0, chunks: HashMap::new() }
+        Level {
+            name,
+            time: 0,
+            chunks: HashMap::new(),
+        }
     }
 
-    pub fn get_chunk(&mut self, coords: Coords) -> Option<&Chunk> {
-        self.chunks.get(&coords)
+    pub fn get_chunk(&mut self, coords: Coords) -> Option<&mut Chunk> {
+        self.chunks.get_mut(&coords)
     }
 
-    pub fn get_chunk_by_block_coords(&mut self, x: i32, z: i32) -> Option<&Chunk> {
+    pub fn get_chunk_by_block_coords(&mut self, x: i32, z: i32) -> Option<&mut Chunk> {
         let coords = Coords { x, z };
-        self.chunks.get(&coords)
+        self.chunks.get_mut(&coords)
     }
 
     pub fn add_chunk(&mut self, coords: Coords, chunk: Chunk) {
@@ -39,9 +43,9 @@ impl Level {
         }
     }
 
-    pub fn set_data(&mut self, x: i32, y: i16, z: i32, block: u16) {
+    pub fn set_data(&mut self, x: i32, y: i16, z: i32, block: u8) {
         if let Some(chunk) = self.get_chunk_by_block_coords(x, z) {
-            chunk.get_data((x % 16) as i8, y, (z % 16) as i8, block);
+            chunk.set_state((x % 16) as i8, y, (z % 16) as i8, block);
         }
     }
 

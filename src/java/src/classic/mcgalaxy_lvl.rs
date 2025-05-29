@@ -22,7 +22,17 @@ pub struct MCGLevel {
 }
 
 //HACK: HORRIBLE!!!
-static READ_BLOCK_MAPPINGS: [u16; 256] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 512, 768, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+static READ_BLOCK_MAPPINGS: [u16; 256] = [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 512, 768, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0,
+];
 static WRITE_BLOCK_MAPPINGS: [u8; 4] = [0, 163, 198, 199];
 
 #[wasm_bindgen]
@@ -60,7 +70,11 @@ impl MCGLevel {
 
             section_width,
             section_depth,
-            custom_block_sections: vec![vec![0u8; 0]; ((section_width as usize) * (section_height as usize) * (section_depth as usize)) as usize],
+            custom_block_sections: vec![
+                vec![0u8; 0];
+                ((section_width as usize) * (section_height as usize) * (section_depth as usize))
+                    as usize
+            ],
         }
     }
 
@@ -109,7 +123,7 @@ impl MCGLevel {
         println!("sig: {}", signature);
         // note: not required to be 1874 apparently.
         // although why wouldn't it be?
-        if (signature != 1874) {
+        if signature != 1874 {
             return Err("Signature does not match required '1874'".to_string());
         }
 
@@ -122,13 +136,18 @@ impl MCGLevel {
         // TODO: I think there's a performance issue with loading the blocks...
         let mut blocks: Vec<u8> = vec![0; (w as usize) * (d as usize) * (h as usize)];
 
-        c.read_exact(&mut blocks).expect("Failed to read block array");
+        c.read_exact(&mut blocks)
+            .expect("Failed to read block array");
 
         let section_width = (w as f32 / 16.0).ceil() as i16;
         let section_height = (h as f32 / 16.0).ceil() as i16;
         let section_depth = (d as f32 / 16.0).ceil() as i16;
 
-        let mut custom_block_sections: Vec<Vec<u8>> = vec![vec![0u8; 0]; ((section_width as usize) * (section_height as usize) * (section_depth as usize))];
+        let mut custom_block_sections: Vec<Vec<u8>> =
+            vec![
+                vec![0u8; 0];
+                (section_width as usize) * (section_height as usize) * (section_depth as usize)
+            ];
 
         if c.read_u8().unwrap() == 0xBD {
             for y in 0..section_height {
@@ -137,10 +156,12 @@ impl MCGLevel {
                         let b = c.read_u8().unwrap();
 
                         if b == 1 {
-                            let section_index = ((y * section_depth + z) * section_width + x) as usize;
+                            let section_index =
+                                ((y * section_depth + z) * section_width + x) as usize;
                             let mut section: Vec<u8> = vec![0u8; 4096];
 
-                            c.read_exact(&mut section).expect(format!("Failed to read section {x} {y} {z}").as_str());
+                            c.read_exact(&mut section)
+                                .expect(format!("Failed to read section {x} {y} {z}").as_str());
                             custom_block_sections[section_index] = section;
                         }
                     }
@@ -165,7 +186,7 @@ impl MCGLevel {
 
             section_width,
             section_depth,
-            custom_block_sections
+            custom_block_sections,
         };
 
         Ok(mcg)
@@ -236,7 +257,8 @@ impl MCGLevel {
         let section_y = y >> 4;
         let section_z = z >> 4;
 
-        let index = ((section_y * self.section_depth + section_z) * self.section_width + section_x) as usize;
+        let index = ((section_y * self.section_depth + section_z) * self.section_width + section_x)
+            as usize;
         let mut section = &mut self.custom_block_sections[index];
 
         if !section.is_empty() {
@@ -263,25 +285,48 @@ impl MCGLevel {
 
     #[wasm_bindgen]
     pub fn write(&self, out: &mut [u8]) {
-        if (out.len() < 2 + 2 + 2 + 2 + 2 + 2 + 2 + 1 + 1 + 1 + 1 + 1 + self.classic_level.blocks.len() + self.calc_section_length()) {
+        if out.len()
+            < 2 + 2
+            + 2
+            + 2
+            + 2
+            + 2
+            + 2
+            + 1
+            + 1
+            + 1
+            + 1
+            + 1
+            + self.classic_level.blocks.len()
+            + self.calc_section_length()
+        {
             panic!("Output buffer is too small");
         }
 
         let mut c = Cursor::new(out);
 
         c.write_i16::<LittleEndian>(1874).expect("Signature write");
-        c.write_i16::<LittleEndian>(self.classic_level.width).expect("Width write");
-        c.write_i16::<LittleEndian>(self.classic_level.length).expect("Depth write");
-        c.write_i16::<LittleEndian>(self.classic_level.height).expect("Height write");
-        c.write_i16::<LittleEndian>(self.spawn_x).expect("SpawnX write");
-        c.write_i16::<LittleEndian>(self.spawn_z).expect("SpawnZ write");
-        c.write_i16::<LittleEndian>(self.spawn_y).expect("SpawnY write");
+        c.write_i16::<LittleEndian>(self.classic_level.width)
+            .expect("Width write");
+        c.write_i16::<LittleEndian>(self.classic_level.length)
+            .expect("Depth write");
+        c.write_i16::<LittleEndian>(self.classic_level.height)
+            .expect("Height write");
+        c.write_i16::<LittleEndian>(self.spawn_x)
+            .expect("SpawnX write");
+        c.write_i16::<LittleEndian>(self.spawn_z)
+            .expect("SpawnZ write");
+        c.write_i16::<LittleEndian>(self.spawn_y)
+            .expect("SpawnY write");
         c.write_u8(self.spawn_yaw).expect("Spawn Yaw write");
         c.write_u8(self.spawn_pitch).expect("Spawn Pitch write");
-        c.write_u8(self.min_access_perm).expect("Min Access Perm write");
-        c.write_u8(self.min_build_perm).expect("Min Build Perm write");
+        c.write_u8(self.min_access_perm)
+            .expect("Min Access Perm write");
+        c.write_u8(self.min_build_perm)
+            .expect("Min Build Perm write");
 
-        c.write_all(&self.classic_level.blocks).expect("Blocks write");
+        c.write_all(&self.classic_level.blocks)
+            .expect("Blocks write");
 
         c.write_u8(0xBD).expect("Custom block section start");
         for s in self.custom_block_sections.iter() {
@@ -304,8 +349,7 @@ impl MCGLevel {
         let d = self.classic_level.length as usize;
         let h = self.classic_level.height as usize;
 
-        if x < 0 || y < 0 || z < 0 ||
-            x >= w || y >= h || z >= d {
+        if x < 0 || y < 0 || z < 0 || x >= w || y >= h || z >= d {
             return !0;
         }
 

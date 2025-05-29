@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use byteorder::{BigEndian, ReadBytesExt};
 use flate2::read::{GzDecoder, ZlibDecoder};
 use lodestone_common::level::region::ChunkLocation;
@@ -10,8 +11,7 @@ use wasm_bindgen::prelude::wasm_bindgen;
 #[derive(Clone, Default)]
 #[wasm_bindgen(getter_with_clone)]
 pub struct Chunk {
-    pub x: i32,
-    pub z: i32,
+    pub coords: Coords,
     pub last_update: i64,
     pub blocks: Vec<u8>,
     pub block_data: Vec<u8>,
@@ -26,7 +26,7 @@ pub struct Chunk {
 #[wasm_bindgen(getter_with_clone)]
 pub struct Region {
     pub region_like: RegionLike,
-    chunks: Vec<Chunk>
+    chunks: HashMap<Coords, Chunk>
 }
 
 #[wasm_bindgen]
@@ -35,7 +35,7 @@ impl Region {
     #[wasm_bindgen]
     pub fn new() -> Region {
         Region {
-            chunks: Vec::with_capacity(1024),
+            chunks: HashMap::new(),
             region_like: RegionLike {
                 pos: Coords::default()
             }
@@ -44,15 +44,9 @@ impl Region {
 
     // error: cannot return a borrowed ref with #[wasm_bindgen]
     // how can we fix this?
-    // also, we need to find a better way to get coords... this is slow.
     #[wasm_bindgen]
-    pub fn get_chunk(&self, x: i32, z: i32) -> Option<Chunk> {
-        for chunk in &self.chunks {
-            if chunk.x == x && chunk.z == z {
-                return Some(chunk.clone());
-            }
-        }
-        None
+    pub fn get_chunk(&self, coords: Coords) -> Option<Chunk> {
+        self.chunks.get(&coords).cloned()
     }
 
     #[wasm_bindgen]
@@ -60,7 +54,7 @@ impl Region {
         let mut c = Cursor::new(data);
         let mut locations = vec![ChunkLocation::default(); 1024];
         let mut timestamps = vec![0i32; 1024];
-        let mut chunks = Vec::with_capacity(1024);
+        let mut chunks = HashMap::new();
 
         for l in locations.iter_mut() {
             let offset = c.read_u24::<BigEndian>().expect("Offset in location");
@@ -77,8 +71,9 @@ impl Region {
         }
 
         for l in locations.iter() {
-            if ((l.size as usize) * 4096 == 0) {
-                chunks.push(Chunk::new(-127, -127));
+            if (l.size as usize) * 4096 == 0 {
+                let coords: Coords = Coords { x: -127, z: -127 };
+                chunks.insert(coords.clone(), Chunk::new(coords));
                 continue;
             }
 
@@ -102,14 +97,14 @@ impl Region {
                 _ => { panic!("Unsupported compression format!") } // is this a good idea? I don't know if you can "catch" a panic...
             };
 
-            if (compression != Compression::None) {
+            if compression != Compression::None {
                 dec.expect("Decompressor").read_to_end(&mut chunk_data).expect("Decompressed chunk data");
             } else {
                 chunk_data = compressed.to_vec();
             }
 
             let ch = Chunk::new_from_data(chunk_data).expect("Region Chunk from data");
-            chunks.push(ch);
+            chunks.insert(ch.clone().coords, ch);
         }
 
         Ok(Region {
@@ -127,10 +122,9 @@ impl Region {
 #[wasm_bindgen]
 impl Chunk {
     #[wasm_bindgen]
-    pub fn new(x: i32, z: i32) -> Chunk {
+    pub fn new(coords: Coords) -> Chunk {
         Chunk {
-            x,
-            z,
+            coords,
             last_update: 0,
             blocks: vec![0u8; 16*256*16],
             block_data: vec![0u8; 16*256*16],
@@ -150,7 +144,7 @@ impl Chunk {
             for x in 0..16 {
                 for y in (0..128).rev() {
                     let blk = self.get_block(x, y, z);
-                    if (blk != 0) {
+                    if blk != 0 {
                         heightmap.push((y + 1).min(127) as u8);
                         break;
                     }
@@ -161,14 +155,14 @@ impl Chunk {
         heightmap
     }
 
-    pub fn generate_blockmap(&self) -> Vec<u8> {
-        let mut blkmap: Vec<u8> = Vec::with_capacity(16*16);
+    pub fn generate_blockmap(&self) -> Vec<u16> {
+        let mut blkmap: Vec<u16> = Vec::with_capacity(16*16);
 
         for z in 0..16 {
             for x in 0..16 {
                 for y in (0..128).rev() {
                     let blk = self.get_block(x, y, z);
-                    if (!lodestone_common::block::get_block(blk).expect("Get block for blockmap").is_translucent_map) {
+                    if !lodestone_common::block::get_block(blk).expect("Get block for blockmap").is_translucent_map {
                         blkmap.push(blk);
                         break;
                     }
@@ -179,13 +173,13 @@ impl Chunk {
         blkmap
     }
 
-    pub fn get_block(&self, x: i16, y: i16, z: i16) -> u8 {
-        if (x > 16 || y > 128 || z > 16
-            || x < 0 || y < 0 || z < 0) {
+    pub fn get_block(&self, x: i16, y: i16, z: i16) -> u16 {
+        if x > 16 || y > 128 || z > 16
+            || x < 0 || y < 0 || z < 0 {
             return 0;
         }
 
-        self.blocks[(y as usize) + (z as usize) * 128 + (x as usize) * 128 * 16]
+        self.blocks[(y as usize) + (z as usize) * 128 + (x as usize) * 128 * 16] as u16
     }
 
     #[wasm_bindgen]
@@ -207,8 +201,7 @@ impl Chunk {
         let has_populated = level.byte("TerrainPopulated").expect("Chunk has populated");
         
         Ok(Chunk {
-            x,
-            z,
+            coords: Coords { x, z },
             last_update,
             blocks,
             block_data,
@@ -228,8 +221,8 @@ impl Chunk {
         let c = Nbt::Some(BaseNbt::new(
             "Level",
             NbtCompound::from_values(vec![
-                ("xPos".into(), NbtTag::Int(self.x)),
-                ("zPos".into(), NbtTag::Int(self.z)),
+                ("xPos".into(), NbtTag::Int(self.coords.x)),
+                ("zPos".into(), NbtTag::Int(self.coords.z)),
                 ("LastUpdate".into(), NbtTag::Long(self.last_update)),
                 ("Blocks".into(), NbtTag::ByteArray(self.blocks.clone())),
                 ("Data".into(), NbtTag::ByteArray(self.block_data.clone())),
