@@ -1,15 +1,15 @@
-use regex::Regex;
+// use regex::Regex;
 use wasm_bindgen::prelude::wasm_bindgen;
-use lodestone_level::level::level::Coords;
+// use lodestone_level::level::level::Coords;
 
 #[derive(PartialEq)]
 #[wasm_bindgen]
 pub enum Compression {
-    pub GZip = 1,
-    pub Zlib = 2,
-    pub None = 3,
-    pub LZ4 = 4,
-    pub Custom = 127 // never will properly support...
+    GZip = 1,
+    Zlib = 2,
+    None = 3,
+    LZ4 = 4,
+    Custom = 127 // never will properly support...
 }
 
 #[derive(Clone, Default)]
