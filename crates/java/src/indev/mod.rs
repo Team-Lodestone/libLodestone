@@ -1,4 +1,5 @@
-use simdnbt::owned::{BaseNbt, Nbt, NbtCompound, NbtList, NbtTag};
+use quartz_nbt::io::{self, Flavor};
+use quartz_nbt::{NbtTag, NbtCompound, NbtList};
 use std::io::{Cursor, Write};
 use std::time::SystemTime;
 use wasm_bindgen::prelude::*;
@@ -192,45 +193,55 @@ impl IndevLevel {
 
     #[wasm_bindgen]
     pub fn new_from_data(data: Vec<u8>) -> Result<IndevLevel, String> {
-        let nbt = simdnbt::borrow::read(&mut Cursor::new(&data)).expect("Level NBT data").unwrap();
+        let nbt = io::read_nbt(&mut Cursor::new(&data), Flavor::Uncompressed)
+            .expect("Level NBT data")
+            .0;
 
-        let about = nbt.compound("About").expect("About compound tag");
-        let environment = nbt.compound("Environment").expect("Environment compound tag");
-        let map = nbt.compound("Map").expect("Map compound tag");
-        let entities = nbt.list("Entities").expect("Entities tag");
-        let tile_entities = nbt.list("TileEntities").expect("TileEntities tag");
+        let about:         &NbtCompound = nbt.get("About")       .expect("About compound");
+        let environment:   &NbtCompound = nbt.get("Environment") .expect("Environment compound");
+        let map:           &NbtCompound = nbt.get("Map")         .expect("Map compound");
+        let entities:      &NbtCompound = nbt.get("Entities")    .expect("Entities compound");
+        let tile_entities: &NbtCompound = nbt.get("TileEntities").expect("TileEntities compound");
 
         // About
-        let author = about.string("Author").expect("Author tag").to_string();
-        let name = about.string("Name").expect("Name tag").to_string();
-        let created_on = about.long("CreatedOn").expect("Creation date tag");
+        let author:         &str         = nbt.get("Author")      .expect("Author string");
+        let name:           &str         = nbt.get("Name")        .expect("Name string");
+        let created_on:     i64          = nbt.get("CreatedOn")   .expect("CreatedOn i64");
 
         println!("author: {}, name: {}", author, name);
 
         // Environment
-        let time = environment.short("TimeOfDay").expect("Time of day");
-        let sky_brightness = environment.byte("SkyBrightness").expect("SkyBrightness tag");
-        let cloud_height = environment.short("CloudHeight").expect("Cloud Height");
-        let cloud_color = environment.int("CloudColor").expect("Cloud Color");
-        let sky_color = environment.int("SkyColor").expect("Sky Color");
-        let fog_color = environment.int("FogColor").expect("Fog Color");
-        let surrounding_ground_height = environment.short("SurroundingGroundHeight").expect("SurroundingGroundHeight tag");
-        let surrounding_water_height = environment.short("SurroundingWaterHeight").expect("SurroundingWaterHeight tag");
-        let surrounding_ground_type = environment.byte("SurroundingGroundType").expect("SurroundingGroundType tag");
-        let surrounding_water_type = environment.byte("SurroundingWaterType").expect("SurroundingWaterType tag");
+        let time:                      i16 = environment.get("TimeOfDay")    .expect("Time of day");
+        let sky_brightness:             i8 = environment.get("SkyBrightness").expect("SkyBrightness tag");
+        let cloud_height:              i16 = environment.get("CloudHeight")  .expect("Cloud Height");
+        let cloud_color:               i32 = environment.get("CloudColor")   .expect("Cloud Color");
+        let sky_color:                 i32 = environment.get("SkyColor")     .expect("Sky Color");
+        let fog_color:                 i32 = environment.get("FogColor")     .expect("Fog Color");
+        let surrounding_ground_height: i16 = environment
+            .get("SurroundingGroundHeight")
+            .expect("SurroundingGroundHeight tag");
+        let surrounding_water_height:  i16 = environment
+            .get("SurroundingWaterHeight")
+            .expect("SurroundingWaterHeight tag");
+        let surrounding_ground_type:    i8 = environment
+            .get("SurroundingGroundType")
+            .expect("SurroundingGroundType tag");
+        let surrounding_water_type:     i8 = environment
+            .get("SurroundingWaterType")
+            .expect("SurroundingWaterType tag");
 
         // Map
-        let width = map.short("Width").expect("Width tag");
-        let length = map.short("Length").expect("Length tag");
-        let height = map.short("Height").expect("Height tag");
-        let spawn = map.list("Spawn").expect("Spawn tag").shorts().expect("Spawn shorts vec");
-        let blocks = map.byte_array("Blocks").expect("Blocks tag").to_vec();
-        let data = map.byte_array("Data").expect("Data tag").to_vec();
+        let width:      i16 = map.get("Width").expect("Width tag");
+        let length:     i16 = map.get("Length").expect("Length tag");
+        let height:     i16 = map.get("Height").expect("Height tag");
+        let spawn: &NbtList = map.get("Spawn").expect("Spawn tag");
+        let blocks:   &[u8] = map.get("Blocks").expect("Blocks tag");
+        let data:     &[u8] = map.get("Data").expect("Data tag");
 
         // Spawn
-        let spawn_x = spawn[0];
-        let spawn_y = spawn[1];
-        let spawn_z = spawn[2];
+        let NbtTag::Short(spawn_x) = spawn[0] else { panic!("spawn_x was not a short") };
+        let NbtTag::Short(spawn_y) = spawn[1] else { panic!("spawn_y was not a short") };
+        let NbtTag::Short(spawn_z) = spawn[2] else { panic!("spawn_z was not a short") };
 
         let mcg = IndevLevel {
             environment: Environment {
@@ -246,8 +257,8 @@ impl IndevLevel {
                 surrounding_water_type,
             },
             map: Map {
-                blocks,
-                data,
+                blocks: blocks.to_owned(),
+                data: data.to_owned(),
                 width,
                 length,
                 height,
@@ -258,9 +269,9 @@ impl IndevLevel {
                 },
             },
             about: About {
-                author,
-                name,
-                created_on,
+                author:     author.to_owned(),
+                name:       name.to_owned(),
+                created_on: created_on,
             },
         };
 
@@ -274,8 +285,8 @@ impl IndevLevel {
         let mut about = NbtCompound::new();
         let mut env = NbtCompound::new();
         let mut map = NbtCompound::new();
-        let mut entities = NbtList::Compound(Vec::new());
-        let mut tile_entities = NbtList::Compound(Vec::new());
+        let mut entities = NbtList::new();
+        let mut tile_entities = NbtList::new();
 
         let this = self.clone();
 
@@ -309,8 +320,8 @@ impl IndevLevel {
 
         map.insert("Spawn".to_string(), NbtList::from(sp));
 
-        map.insert("Blocks".to_string(), NbtTag::ByteArray(this.map.blocks));
-        map.insert("Data".to_string(), NbtTag::ByteArray(this.map.data));
+        map.insert("Blocks".to_string(), NbtTag::from(this.map.blocks));
+        map.insert("Data".to_string(), NbtTag::from(this.map.data));
 
         // MinecraftLevel
         mclvl.insert("About".to_string(), about);
@@ -320,13 +331,8 @@ impl IndevLevel {
         mclvl.insert("Entities".to_string(), entities);
         mclvl.insert("TileEntities".to_string(), tile_entities);
 
-        let nbt = Nbt::Some(BaseNbt::new(
-            "MinecraftLevel",
-            mclvl
-        ));
-
         let mut out: Vec<u8> = Vec::new();
-        nbt.write(&mut out);
+        io::write_nbt(&mut out, Some("MinecraftLevel"), &mclvl, Flavor::Uncompressed).unwrap();
 
         out
     }
