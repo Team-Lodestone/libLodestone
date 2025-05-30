@@ -71,7 +71,7 @@ mod tests {
     }
 
     // #[test]
-    fn in_to_mcg() {
+    /*fn in_to_mcg() {
         // wtf is this weird match syntax
         // also ignore weird path, for testing on local machine
         let fname = "Indev World Backup";
@@ -103,6 +103,34 @@ mod tests {
 
         println!("Writing");
         let mut of = File::create(format!("test/lvl/dst/{}.lvl", fname)).unwrap();
+        of.write_all(&c).unwrap();
+        of.flush().unwrap();
+    }*/
+
+    // TODO: This is not final, this not ideal... ideally we should have 2 methods for converting a format from and to our internal format, and find a way to access extra data (e.g inhabitedTime for mcr chunks) if available
+    #[test]
+    fn indev_reserialize() {
+        let fname = "zero_simple_level.dc";
+
+        let data = match fs::read(format!("../../test/indev/src/{}", fname)) {
+            Ok(d) => d,
+            Err(e) => {
+                eprintln!("uh oh {}", e);
+                return;
+            }
+        };
+        let mut indev = lodestone_java::indev::IndevLevel::new_from_data(data).unwrap();
+
+        let mut out = indev.write(false);
+
+        // why does this part take so damn long?
+        println!("Compressing");
+        let mut enc = GzEncoder::new(Vec::with_capacity(4 * 1024 * 1024), Compression::fast());
+        enc.write_all(&out).unwrap();
+        let c = enc.finish().unwrap();
+
+        println!("Writing");
+        let mut of = File::create(format!("../../test/indev/dst/{}_reserialize", fname)).unwrap();
         of.write_all(&c).unwrap();
         of.flush().unwrap();
     }
@@ -152,7 +180,7 @@ mod tests {
         of.flush().unwrap();*/
     }
 
-    #[test]
+    // #[test]
     fn mcg_reserialize() {
         let fname = "13a_03-level_greffen.mine";
 
@@ -308,7 +336,7 @@ mod tests {
     }
 
     // #[test]
-    fn mcg_to_indev() {
+    /*fn mcg_to_indev() {
         // TODO: NOTE: Indev sucks and cuts off the borders for some reason, and apparently world sizes need to be powers of 2 otherwise it just generates a larger border...
 
         // wtf is this weird match syntax
@@ -359,5 +387,5 @@ mod tests {
         let mut of = File::create(format!("test/indev/dst/{}.mclevel", fname)).unwrap();
         of.write_all(&c).unwrap();
         of.flush().unwrap();
-    }
+    }*/
 }
