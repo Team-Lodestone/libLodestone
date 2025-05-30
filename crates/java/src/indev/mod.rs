@@ -6,7 +6,6 @@ use lodestone_level::level::chunk::Chunk;
 use lodestone_level::level::level::{Coords, Level};
 
 #[derive(Debug, Clone)]
-#[wasm_bindgen(getter_with_clone)]
 pub struct IndevLevel {
     pub level: Level,
     pub environment: Environment,
@@ -16,7 +15,6 @@ pub struct IndevLevel {
 }
 
 #[derive(Debug, Clone)]
-#[wasm_bindgen(getter_with_clone)]
 pub struct Environment {
     pub time: i16,
     pub sky_brightness: i8,
@@ -32,14 +30,11 @@ pub struct Environment {
 
 
 #[derive(Debug, Clone)]
-#[wasm_bindgen(getter_with_clone)]
 pub struct About {
     pub author: String,
     pub created_on: i64
 }
 
-
-#[wasm_bindgen]
 impl IndevLevel {
 
     pub fn new(height: i16, name: String, author: String) -> IndevLevel {
@@ -65,7 +60,6 @@ impl IndevLevel {
         }
     }
 
-    #[wasm_bindgen]
     pub fn new_from_data(data: Vec<u8>) -> Result<IndevLevel, String> {
         let nbt = simdnbt::borrow::read(&mut Cursor::new(&data)).expect("Level NBT data").unwrap();
 

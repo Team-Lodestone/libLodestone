@@ -9,16 +9,14 @@ use lodestone_level::level::chunk::Chunk;
 use lodestone_level::level::level::Coords;
 
 #[derive(Debug)]
-#[wasm_bindgen(getter_with_clone)]
 pub struct MineV2 {
     pub level: Level,
     pub version: i8,
     pub author: String,
     pub creation_time: i64,
 }
-#[wasm_bindgen]
+
 impl MineV2 {
-    #[wasm_bindgen]
     pub fn new(
         width: i16,
         height: i16,
@@ -51,7 +49,6 @@ impl MineV2 {
         size
     }
 
-    #[wasm_bindgen]
     pub fn new_from_data(data: Vec<u8>) -> Result<MineV2, String> {
         let mut c = Cursor::new(data);
         let signature = c.read_u32::<BigEndian>().expect("Signature");
@@ -102,7 +99,6 @@ impl MineV2 {
         })
     }
 
-    #[wasm_bindgen]
     pub fn write(&mut self, out: &mut [u8]) {
         if out.len() < self.get_byte_size() {
             panic!("Output buffer is too small");

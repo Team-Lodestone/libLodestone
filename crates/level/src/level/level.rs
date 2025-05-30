@@ -4,14 +4,12 @@ use wasm_bindgen::prelude::wasm_bindgen;
 
 // ffs need this bc can't do tuple with wasm toolchain
 #[derive(Clone, Default, PartialEq, Eq, Hash, Debug)]
-#[wasm_bindgen(getter_with_clone)]
 pub struct Coords {
     pub x: i32,
     pub z: i32,
 }
 
 #[derive(Debug, Clone)]
-#[wasm_bindgen(getter_with_clone)]
 pub struct Spawn {
     pub x: i16,
     pub y: i16,
@@ -19,7 +17,6 @@ pub struct Spawn {
 }
 
 #[derive(Clone, Debug)]
-#[wasm_bindgen(getter_with_clone)]
 pub struct Level {
     pub name: String,
     pub time: i64,
@@ -28,7 +25,6 @@ pub struct Level {
     chunks: HashMap<Coords, Chunk>
 }
 
-#[wasm_bindgen()]
 impl Level {
     pub fn new_with_name(name: String) -> Level {
         Level {

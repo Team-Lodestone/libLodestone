@@ -1,14 +1,12 @@
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[derive(PartialEq, Clone)]
-#[wasm_bindgen]
 pub enum Light {
     BLOCK,
     SKY,
 }
 
 #[derive(Clone, Debug)]
-#[wasm_bindgen(getter_with_clone)]
 pub struct Chunk {
     // Width and depth should always be 16 for our use cases.
     width: i8,
@@ -25,7 +23,6 @@ pub struct Chunk {
     pub block_map: Vec<u16>,
 }
 
-#[wasm_bindgen]
 impl Chunk {
     pub fn new(height: i16) -> Chunk {
         let width: usize = 16;

@@ -3,7 +3,6 @@ use wasm_bindgen::prelude::wasm_bindgen;
 // use lodestone_level::level::level::Coords;
 
 #[derive(PartialEq)]
-#[wasm_bindgen]
 pub enum Compression {
     GZip = 1,
     Zlib = 2,
@@ -13,7 +12,6 @@ pub enum Compression {
 }
 
 #[derive(Clone, Default)]
-#[wasm_bindgen(getter_with_clone)]
 pub struct ChunkLocation {
     pub offset: u32,
     pub size: u8
