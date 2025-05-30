@@ -1,7 +1,7 @@
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[derive(PartialEq, Clone)]
-#[wasm_bindgen(getter_with_clone)]
+#[wasm_bindgen]
 pub enum Light {
     BLOCK,
     SKY,
@@ -25,7 +25,7 @@ pub struct Chunk {
     pub block_map: Vec<u16>,
 }
 
-#[wasm_bindgen(getter_with_clone)]
+#[wasm_bindgen]
 impl Chunk {
     pub fn new(height: i16) -> Chunk {
         let width: usize = 16;
@@ -36,17 +36,17 @@ impl Chunk {
             width: width as i8,
             height: height as i16,
             depth: depth as i8,
-            
+
             blocks: vec![0u16; width * height * depth],
             data: vec![0u8; width * height * depth],
             block_light: vec![0u8; width * depth],
             sky_light: vec![0u8; width * depth],
-            
+
             height_map: vec![0i16; width * depth],
             block_map: vec![0u16; width * depth]
         }
     }
-    
+
     pub fn generate_heightmap(&self) -> Vec<i16> {
         let mut heightmap: Vec<i16> = Vec::with_capacity(16 * 16);
 

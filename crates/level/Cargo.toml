@@ -1,0 +1,28 @@
+[package]
+name = "lodestone_level"
+authors = ["Team Lodestone"]
+description = "libLodestone Internal Level format crate"
+
+edition    .workspace = true
+version    .workspace = true
+license    .workspace = true
+readme     .workspace = true
+repository .workspace = true
+homepage   .workspace = true
+
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = ["dep:console_error_panic_hook"]
+
+
+[dependencies]
+byteorder                .workspace = true
+phf                      = { workspace = true, features = ["macros"] }
+regex                    .workspace = true
+wasm-bindgen             .workspace = true
+
+console_error_panic_hook = { workspace = true, optional = true }
+wee_alloc                = { workspace = true, optional = true }
