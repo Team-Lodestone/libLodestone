@@ -9,10 +9,18 @@ pub struct Coords {
     pub z: i32,
 }
 
+#[derive(Debug, Clone)]
+pub struct Spawn {
+    pub x: i16,
+    pub y: i16,
+    pub z: i16
+}
+
 #[derive(Clone, Debug)]
 pub struct Level {
     pub name: String,
     pub time: i64,
+    pub spawn: Spawn,
 
     chunks: HashMap<Coords, Chunk>
 }
@@ -23,14 +31,34 @@ impl Level {
             name,
             time: 0,
             chunks: HashMap::new(),
+            spawn: Spawn {
+                x: 0,
+                y: 0,
+                z: 0
+            }
         }
     }
 
+    pub fn create_finite(&mut self, w: i32, h: i16, l: i32) {
+        for cx in 0..((w as usize) / 16) {
+            for cz in 0..((l as usize) / 16) {
+                let coords = Coords { x: cx as i32, z: cz as i32 };
+                let chunk = Chunk::new(h);
+
+                self.add_chunk(coords.clone(), chunk);
+            }
+        }
+    }
     pub fn new() -> Level {
         Level {
             name: "New World".to_string(),
             time: 0,
             chunks: HashMap::new(),
+            spawn: Spawn {
+                x: 0,
+                y: 0,
+                z: 0
+            }
         }
     }
 
@@ -56,6 +84,12 @@ impl Level {
         if let Some(chunk) = self.get_chunk_by_block_coords(x, z) {
             chunk.set_block((x % 16) as i8, y, (z % 16) as i8, block)
         }
+    }
+
+    pub fn set_spawn_point(&mut self, x: i16, y: i16, z: i16) {
+        self.spawn.x = x;
+        self.spawn.y = y;
+        self.spawn.z = z;
     }
 
     pub fn get_chunk_count(&self) -> usize {

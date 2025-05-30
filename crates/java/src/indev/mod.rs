@@ -2,12 +2,14 @@ use quartz_nbt::io::{self, Flavor};
 use quartz_nbt::{NbtTag, NbtCompound, NbtList};
 use std::io::{Cursor, Write};
 use std::time::SystemTime;
+use lodestone_level::level::chunk::Chunk;
+use lodestone_level::level::level::{Coords, Level};
 
 
 #[derive(Debug, Clone)]
 pub struct IndevLevel {
+    pub level: Level,
     pub environment: Environment,
-    pub map: Map,
     pub about: About
     // tile entities
     // entities
@@ -27,49 +29,19 @@ pub struct Environment {
     pub surrounding_water_type: i8
 }
 
-#[derive(Debug, Clone)]
-pub struct Map {
-    pub blocks: Vec<u8>,
-    pub data: Vec<u8>,
-    pub width: i16,
-    pub length: i16,
-    pub height: i16,
-    pub spawn: Spawn
-}
 
 #[derive(Debug, Clone)]
 pub struct About {
     pub author: String,
-    pub name: String,
     pub created_on: i64
-}
-
-
-// By default Spawn is stored in a short array, but the array is always spawn coords XYZ so why not just make it a struct
-#[derive(Debug, Clone)]
-pub struct Spawn {
-    pub x: i16,
-    pub y: i16,
-    pub z: i16
 }
 
 impl IndevLevel {
 
-    // TODO: Resizing
-    pub fn set_block(&mut self, x: i16, y: i16, z: i16, block: u8) {
-        let i = self.get_index(x, y, z);
-
-        self.map.blocks[i] = block;
-    }
-
-    pub fn get_block(&self, x: i16, y: i16, z: i16, block: u8) -> u8 {
-        let i = self.get_index(x, y, z);
-
-        self.map.blocks[i]
-    }
-
-    pub fn new(width: i16, height: i16, length: i16, name: String, author: String) -> IndevLevel {
+    pub fn new(height: i16, name: String, author: String) -> IndevLevel {
         IndevLevel {
+            level: Level::new_with_name(name),
+            // TODO: make this programmatic
             environment: Environment {
                 time: 0,
                 sky_brightness: 100,
@@ -82,106 +54,11 @@ impl IndevLevel {
                 surrounding_ground_type: 2,
                 surrounding_water_type: 8,
             },
-            map: Map {
-                blocks: vec![0u8; (width as usize) * (length as usize) * (height as usize)],
-                data: vec![0u8; (width as usize) * (length as usize) * (height as usize)],
-                width,
-                length,
-                height,
-                spawn: Spawn {
-                    x: width / 2,
-                    y: height / 2,
-                    z: length / 2
-                },
-            },
             about: About {
                 author,
-                name,
                 created_on: SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).expect("Time since unix epoch").as_millis() as i64,
             }
         }
-    }
-
-    pub fn set_block_data(&mut self, x: i16, y: i16, z: i16, data: u8) {
-        let i = self.get_index(x, y, z);
-
-        self.map.data[i] = (self.map.data[i] & 0x0F) | ((data & 0x0F) << 4);
-    }
-
-    pub fn resize(&mut self, width: i16, depth: i16, height: i16) {
-        if width % 2 != 0 || height % 2 != 0 || depth % 2 != 0 {
-            panic!("It seems Indev world sizes must be a power of 2, otherwise the game will index out of bounds.");
-        }
-
-        // old size
-        let x0 = self.map.width as usize;
-        let y0 = self.map.height as usize;
-        let z0 = self.map.length as usize;
-
-        // new size
-        let x1 = width as usize;
-        let y1 = height as usize;
-        let z1 = depth as usize;
-
-        let mut blocks = vec![0u8; x1 * y1 * z1];
-        let mut data = vec![0u8; x1 * y1 * z1];
-
-        for x in 0..x0.min(x1) {
-            for y in 0..y0.min(y1) {
-                for z in 0..z0.min(z1) {
-                    let p0 = (y * z0 + z) * x0 + x; // old
-                    let p1 = (y * z1 + z) * x1 + x; // new
-                    blocks[p1] = self.map.blocks[p0];
-                    data[p1] = self.map.data[p0];
-                }
-            }
-        }
-
-        if self.map.spawn.x > width || self.map.spawn.x < width {
-            self.map.spawn.x = width / 2;
-        }
-
-        if self.map.spawn.y > height || self.map.spawn.y < height {
-            self.map.spawn.y = height / 2;
-        }
-
-        if self.map.spawn.z > depth || self.map.spawn.z < depth {
-            self.map.spawn.z = depth / 2;
-        }
-
-        self.map.blocks = blocks;
-        self.map.data   = data;
-        self.map.width  = width;
-        self.map.height = height;
-        self.map.length = depth;
-    }
-
-    pub fn set_spawn_point(&mut self, x: i16, y: i16, z: i16) {
-        self.map.spawn.x = x;
-        self.map.spawn.y = y;
-        self.map.spawn.z = z;
-    }
-
-    pub fn set_block_light_level(&mut self, x: i16, y: i16, z: i16, level: u8) {
-        let i = self.get_index(x, y, z);
-
-        if level > 15 {
-            panic!("Light level out of range");
-        }
-
-        self.map.data[i] = (self.map.data[i] & 0xF0) | (level & 0x0F);
-    }
-
-    pub fn get_block_data(&mut self, x: i16, y: i16, z: i16) -> u8 {
-        let i = self.get_index(x, y, z);
-
-        (self.map.data[i] >> 4) & 0x0F
-    }
-
-    pub fn get_block_light_level(&mut self, x: i16, y: i16, z: i16) -> u8 {
-        let i = self.get_index(x, y, z);
-
-        self.map.data[i] & 0x0F
     }
 
     pub fn new_from_data(data: Vec<u8>) -> Result<IndevLevel, String> {
@@ -230,12 +107,36 @@ impl IndevLevel {
         let blocks:   &[u8] = map.get("Blocks").expect("Blocks tag");
         let data:     &[u8] = map.get("Data").expect("Data tag");
 
+        // // TODO: better impl for errors
+        // if blocks.len() != (width * length * height) {
+        //     panic!("Read blocks does not match level dimensions!");
+        // }
+
+        // if data.len() != (width * length * height) {
+        //     panic!("Read metadata does not match level dimensions!");
+        // }
+
         // Spawn
         let NbtTag::Short(spawn_x) = spawn[0] else { panic!("spawn_x was not a short") };
         let NbtTag::Short(spawn_y) = spawn[1] else { panic!("spawn_y was not a short") };
         let NbtTag::Short(spawn_z) = spawn[2] else { panic!("spawn_z was not a short") };
 
+        let mut level = Level::new_with_name(name.to_owned());
+
+        // again this is just meant to work at the moment, not be fast.
+        for y in 0..height {
+            for z in 0..length {
+                for x in 0..width {
+                    let i = (y as usize) * ((length as usize) * (width as usize)) + (z as usize) * (width as usize) + (x as usize);
+
+                    level.set_block(x as i32, y as i16, z as i32, blocks[i] as u16);
+                    level.set_data(x as i32, y as i16, z as i32, data[i]);
+                }
+            }
+        }
+
         let mcg = IndevLevel {
+            level,
             environment: Environment {
                 time,
                 sky_brightness,
@@ -248,22 +149,9 @@ impl IndevLevel {
                 surrounding_ground_type,
                 surrounding_water_type,
             },
-            map: Map {
-                blocks: blocks.to_owned(),
-                data: data.to_owned(),
-                width,
-                length,
-                height,
-                spawn: Spawn {
-                    x: spawn_x,
-                    y: spawn_y,
-                    z: spawn_z,
-                },
-            },
             about: About {
-                author:     author.to_owned(),
-                name:       name.to_owned(),
-                created_on: created_on,
+                author: author.to_owned(),
+                created_on,
             },
         };
 
@@ -272,7 +160,7 @@ impl IndevLevel {
 
     // TODO
     // HACK: wasm won't let me take in &mut Vec<u8> so bub fix for now
-    pub fn write(&self, compress: bool) -> Vec<u8> {
+    pub fn write(&mut self, compress: bool) -> Vec<u8> {
         let mut mclvl = NbtCompound::new();
         let mut about = NbtCompound::new();
         let mut env = NbtCompound::new();
@@ -280,12 +168,11 @@ impl IndevLevel {
         let mut entities = NbtList::new();
         let mut tile_entities = NbtList::new();
 
-        let this = self.clone();
-
+        let mut this = self.clone();
 
         // About
         about.insert("CreatedOn".to_string(), this.about.created_on);
-        about.insert("Name".to_string(), this.about.name);
+        about.insert("Name".to_string(), (this.level.clone()).name);
         about.insert("Author".to_string(), this.about.author);
 
         // env
@@ -300,20 +187,39 @@ impl IndevLevel {
         env.insert("SurroundingWaterType".to_string(), this.environment.surrounding_water_type);
         env.insert("SurroundingWaterHeight".to_string(), this.environment.surrounding_water_height);
 
+        let width = this.level.get_block_width();
+        let length = this.level.get_block_depth();
+        let height = this.level.get_block_height();
+
         // map
-        map.insert("Width".to_string(), this.map.width);
-        map.insert("Length".to_string(), this.map.length);
-        map.insert("Height".to_string(), this.map.height);
+        map.insert("Width".to_string(), width as i16);
+        map.insert("Length".to_string(), length as i16);
+        map.insert("Height".to_string(), height as i16);
 
         let mut sp = vec![0i16; 3];
-        sp[0] = this.map.spawn.x;
-        sp[1] = this.map.spawn.y;
-        sp[2] = this.map.spawn.z;
+        sp[0] = this.level.spawn.x;
+        sp[1] = this.level.spawn.y;
+        sp[2] = this.level.spawn.z;
 
         map.insert("Spawn".to_string(), NbtList::from(sp));
 
-        map.insert("Blocks".to_string(), NbtTag::from(this.map.blocks));
-        map.insert("Data".to_string(), NbtTag::from(this.map.data));
+        let mut blocks: Vec<i8> = Vec::with_capacity((width as usize) * (length as usize) * (height as usize));
+        blocks.resize((width as usize) * (length as usize) * (height as usize), 0);
+
+        for y in 0..height {
+            for z in 0..length {
+                for x in 0..width {
+                    let i = (y as usize) * ((length as usize) * (width as usize)) + (z as usize) * (width as usize) + (x as usize);
+
+                    blocks[i] = self.level.get_block(x, y, z) as i8;
+                }
+            }
+        }
+
+
+
+        map.insert("Blocks".to_string(), NbtTag::ByteArray(blocks));
+        map.insert("Data".to_string(), NbtTag::ByteArray(Vec::new()));
 
         // MinecraftLevel
         mclvl.insert("About".to_string(), about);
@@ -327,24 +233,5 @@ impl IndevLevel {
         io::write_nbt(&mut out, Some("MinecraftLevel"), &mclvl, Flavor::Uncompressed).unwrap();
 
         out
-    }
-
-    pub fn get_index(&self, x: i16, y: i16, z: i16) -> usize {
-        // our coords
-        let x = x as usize;
-        let y = y as usize;
-        let z = z as usize;
-
-        // world size
-        let w = self.map.width as usize;
-        let h = self.map.height as usize;
-        let d = self.map.length as usize;
-
-        if x < 0 || y < 0 || z < 0 ||
-            x >= w || y >= h || z >= d {
-            return !0;
-        }
-
-        (y * d + z) * w + x
     }
 }
