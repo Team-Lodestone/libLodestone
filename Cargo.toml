@@ -26,6 +26,7 @@ wasm-bindgen = "0.2.100"
 
 lodestone_common = { path = "src/common" }
 lodestone_java = { path = "src/java" }
+lodestone_level = { path = "src/level" }
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires

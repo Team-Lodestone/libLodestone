@@ -1,13 +1,6 @@
 use regex::Regex;
 use wasm_bindgen::prelude::wasm_bindgen;
-
-// ffs need this bc can't do tuple with wasm toolchain
-#[derive(Clone, Default, PartialEq, Eq, Hash)]
-#[wasm_bindgen(getter_with_clone)]
-pub struct Coords {
-    pub x: i32,
-    pub z: i32,
-}
+use lodestone_level::level::level::Coords;
 
 #[derive(PartialEq)]
 #[wasm_bindgen]
@@ -41,44 +34,38 @@ impl TryFrom<i8> for Compression {
     }
 }
 
-#[wasm_bindgen(getter_with_clone)]
-#[derive(Clone, Default)]
-pub struct RegionLike {
-    pub pos: Coords
-}
-
 // h
-#[wasm_bindgen]
-impl RegionLike {
-    #[wasm_bindgen]
-    pub fn get_min_chunk_coord_x(&self) -> i32 {
-        self.pos.x * 32
-    }
-
-    #[wasm_bindgen]
-    pub fn get_max_chunk_coord_x(&self) -> i32 {
-        self.pos.x * 32 + 32
-    }
-
-    #[wasm_bindgen]
-    pub fn get_min_chunk_coord_z(&self) -> i32 {
-        self.pos.z * 32
-    }
-
-    #[wasm_bindgen]
-    pub fn get_max_chunk_coord_z(&self) -> i32 {
-        self.pos.z * 32 + 32
-    }
-
-    #[wasm_bindgen]
-    pub fn get_coords_from_filename(n: &str) -> Coords {
-        let r = Regex::new(r"r\.([-0-9]{1,2})\.([-0-9]{1,2})\.mcr");
-        if let Some(caps) = r.unwrap().captures(&n) {
-            let x = caps.get(1).unwrap().as_str().parse::<i32>().unwrap();
-            let z = caps.get(2).unwrap().as_str().parse::<i32>().unwrap();
-            Coords { x, z }
-        } else {
-            panic!("Filename does not match MCR name format... (r.(x).(z).mcr)");
-        }
-    }
-}
+// #[wasm_bindgen]
+// impl Region {
+//     #[wasm_bindgen]
+//     pub fn get_min_chunk_coord_x(&self) -> i32 {
+//         self.pos.x * 32
+//     }
+//
+//     #[wasm_bindgen]
+//     pub fn get_max_chunk_coord_x(&self) -> i32 {
+//         self.pos.x * 32 + 32
+//     }
+//
+//     #[wasm_bindgen]
+//     pub fn get_min_chunk_coord_z(&self) -> i32 {
+//         self.pos.z * 32
+//     }
+//
+//     #[wasm_bindgen]
+//     pub fn get_max_chunk_coord_z(&self) -> i32 {
+//         self.pos.z * 32 + 32
+//     }
+//
+//     #[wasm_bindgen]
+//     pub fn get_coords_from_filename(n: &str) -> Coords {
+//         let r = Regex::new(r"r\.([-0-9]{1,2})\.([-0-9]{1,2})\.mcr");
+//         if let Some(caps) = r.unwrap().captures(&n) {
+//             let x = caps.get(1).unwrap().as_str().parse::<i32>().unwrap();
+//             let z = caps.get(2).unwrap().as_str().parse::<i32>().unwrap();
+//             Coords { x, z }
+//         } else {
+//             panic!("Filename does not match MCR name format... (r.(x).(z).mcr)");
+//         }
+//     }
+// }

@@ -9,7 +9,7 @@ mod tests {
     use flate2::Compression;
     use lodestone_java;
     use lodestone_common;
-    use lodestone_common::level::region::Coords;
+    use lodestone_level::level::level::Coords;
 
     // #[test]
     fn mcg_level() {
@@ -122,9 +122,9 @@ mod tests {
         };
         let mut minev2 = lodestone_java::classic::mine_v2::MineV2::new_from_data(data).unwrap();
 
-        let mut mcg = lodestone_java::classic::mcgalaxy_lvl::MCGLevel::new(minev2.classic_level.width, minev2.classic_level.height, minev2.classic_level.length, 0, 0, 0, 0, 0, 0, 0);
+        // let mut mcg = lodestone_java::classic::mcgalaxy_lvl::MCGLevel::new(minev2.width, minev2.height, minev2.length, 0, 0, 0, 0, 0, 0, 0);
 
-        for y in 0..minev2.classic_level.height {
+        /*for y in 0..minev2.classic_level.height {
             for z in 0..minev2.classic_level.length {
                 for x in 0..minev2.classic_level.width {
                     // println!("x: {}, y: {}, z: {}", x, y, z);
@@ -149,11 +149,40 @@ mod tests {
         println!("Writing");
         let mut of = File::create(format!("test/lvl/dst/{}.lvl", fname)).unwrap();
         of.write_all(&c).unwrap();
-        of.flush().unwrap();
+        of.flush().unwrap();*/
     }
 
     #[test]
-    fn mcr_to_mcg() {
+    fn mcg_reserialize() {
+        let fname = "13a_03-level_greffen.mine";
+
+        let data = match fs::read(format!("test/minev2/src/{}", fname)) {
+            Ok(d) => d,
+            Err(e) => {
+                eprintln!("uh oh {}", e);
+                return;
+            }
+        };
+        let mut minev2 = lodestone_java::classic::mine_v2::MineV2::new_from_data(data).unwrap();
+
+        let mut out = vec![0u8; minev2.get_byte_size()];
+
+        minev2.write(&mut out);
+
+        // why does this part take so damn long?
+        println!("Compressing");
+        let mut enc = GzEncoder::new(Vec::with_capacity(4 * 1024 * 1024), Compression::fast());
+        enc.write_all(&out).unwrap();
+        let c = enc.finish().unwrap();
+
+        println!("Writing");
+        let mut of = File::create(format!("test/minev2/dst/{}_reserialize.mine", fname)).unwrap();
+        of.write_all(&c).unwrap();
+        of.flush().unwrap();
+    }
+
+    // #[test]
+    /*fn mcr_to_mcg() {
         // wtf is this weird match syntax
         // also ignore weird path, for testing on local machine
         let fname = "r.-1.0.mcr";
@@ -225,7 +254,7 @@ mod tests {
         let mut of = File::create(format!("test/lvl/dst/{}.lvl", fname)).unwrap();
         of.write_all(&c).unwrap();
         of.flush().unwrap();
-    }
+    }*/
 
     // #[test]
     fn mcg_to_mv2() {
@@ -244,7 +273,7 @@ mod tests {
 
         let mut minev2 = lodestone_java::classic::mine_v2::MineV2::new(mcg.classic_level.width, mcg.classic_level.height, mcg.classic_level.length, "Test world".to_string(), "Dexrn".to_string());
 
-        for y in 0..mcg.classic_level.height {
+        /*for y in 0..mcg.classic_level.height {
             for z in 0..mcg.classic_level.length {
                 for x in 0..mcg.classic_level.width {
                     // println!("x: {}, y: {}, z: {}", x, y, z);
@@ -258,7 +287,7 @@ mod tests {
                     minev2.classic_level.set_block(x, y, z, block);
                 }
             }
-        }
+        }*/
 
         // can't be bothered to figure out a good way to do this...
         // although I can already think of just putting in a `get_size` method in every Level impl.

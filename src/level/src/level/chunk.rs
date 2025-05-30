@@ -1,11 +1,14 @@
-use std::any::Any;
+use wasm_bindgen::prelude::wasm_bindgen;
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone)]
+#[wasm_bindgen(getter_with_clone)]
 pub enum Light {
     BLOCK,
     SKY,
 }
 
+#[derive(Clone, Debug)]
+#[wasm_bindgen(getter_with_clone)]
 pub struct Chunk {
     // Width and depth should always be 16 for our use cases.
     width: i8,
@@ -18,26 +21,29 @@ pub struct Chunk {
     pub block_light: Vec<u8>,
     pub sky_light: Vec<u8>,
 
-    pub height_map: Vec<u16>,
+    pub height_map: Vec<i16>,
     pub block_map: Vec<u16>,
-    pub custom_data: Vec<std::collections::HashMap<String, Box<dyn Any>>>,
 }
 
+#[wasm_bindgen(getter_with_clone)]
 impl Chunk {
     pub fn new(height: i16) -> Chunk {
+        let width: usize = 16;
+        let depth: usize = 16;
+        let height: usize = height as usize;
+
         Chunk {
-            width: 16,
-            height,
-            depth: 16,
+            width: width as i8,
+            height: height as i16,
+            depth: depth as i8,
             
-            blocks: vec![],
-            data: vec![],
-            block_light: vec![],
-            sky_light: vec![],
+            blocks: vec![0u16; width * height * depth],
+            data: vec![0u8; width * height * depth],
+            block_light: vec![0u8; width * depth],
+            sky_light: vec![0u8; width * depth],
             
-            height_map: vec![],
-            block_map: vec![],
-            custom_data: vec![],
+            height_map: vec![0i16; width * depth],
+            block_map: vec![0u16; width * depth]
         }
     }
     
@@ -80,8 +86,8 @@ impl Chunk {
         blkmap
     }
 
-    pub fn get_index(x: i8, y: i16, z: i8) -> usize {
-        (y as usize) + (z as usize) * 128 + (x as usize) * 128 * 16
+    pub fn get_index(&self, x: i8, y: i16, z: i8) -> usize {
+        (y as usize) + (z as usize) * (self.height as usize) + (x as usize) * (self.height as usize) * 16
     }
 
     pub fn get_block(&self, x: i8, y: i16, z: i8) -> u16 {
@@ -89,7 +95,7 @@ impl Chunk {
             return 0;
         }
 
-        self.blocks[Chunk::get_index(x, y, z)]
+        self.blocks[self.get_index(x, y, z)]
     }
 
     pub fn set_block(&mut self, x: i8, y: i16, z: i8, block: u16) {
@@ -97,7 +103,10 @@ impl Chunk {
             return;
         }
 
-        self.blocks[Chunk::get_index(x, y, z)] = block;
+        let i = self.get_index(x, y, z);
+
+        // println!("{}", self.height);
+        self.blocks[i] = block;
     }
 
     pub fn get_data(&self, x: i8, y: i16, z: i8) -> u8 {
@@ -105,7 +114,7 @@ impl Chunk {
             return 0;
         }
 
-        self.data[Chunk::get_index(x, y, z)]
+        self.data[self.get_index(x, y, z)]
     }
 
     pub fn set_state(&mut self, x: i8, y: i16, z: i8, state: u8) {
@@ -113,7 +122,9 @@ impl Chunk {
             return;
         }
 
-        self.data[Chunk::get_index(x, y, z)] = state;
+        let i = self.get_index(x, y, z);
+
+        self.data[i] = state;
     }
 
     pub fn get_light(&self, light_type: Light, x: i8, y: i16, z: i8) -> u8 {
@@ -122,9 +133,9 @@ impl Chunk {
         }
 
         if light_type == Light::SKY {
-            self.sky_light[Chunk::get_index(x, y, z)]
+            self.sky_light[self.get_index(x, y, z)]
         } else {
-            self.block_light[Chunk::get_index(x, y, z)]
+            self.block_light[self.get_index(x, y, z)]
         }
     }
 
@@ -138,10 +149,19 @@ impl Chunk {
             level = 15;
         }
 
+        let i = self.get_index(x, y, z);
+
         if light_type == Light::SKY {
-            self.sky_light[Chunk::get_index(x, y, z)] = level;
+            self.sky_light[i] = level;
         } else {
-            self.block_light[Chunk::get_index(x, y, z)] = level;
+            self.block_light[i] = level;
         }
+    }
+
+    pub fn set_height(&mut self, height: i16) {
+        self.height = height;
+
+        // code we stole from temu
+        self.blocks.resize((self.width as usize) * (height as usize) * (self.depth as usize), 0);
     }
 }
