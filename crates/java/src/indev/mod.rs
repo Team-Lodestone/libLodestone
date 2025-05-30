@@ -1,9 +1,8 @@
+use lodestone_level::level::level::Level;
 use quartz_nbt::io::{self, Flavor};
-use quartz_nbt::{NbtTag, NbtCompound, NbtList};
-use std::io::{Cursor, Write};
+use quartz_nbt::{NbtCompound, NbtList, NbtTag};
+use std::io::Cursor;
 use std::time::SystemTime;
-use lodestone_level::level::chunk::Chunk;
-use lodestone_level::level::level::{Coords, Level};
 
 
 #[derive(Debug, Clone)]
@@ -116,12 +115,14 @@ impl IndevLevel {
         //     panic!("Read metadata does not match level dimensions!");
         // }
 
+        let mut level = Level::new_with_name(name.to_owned());
+
         // Spawn
         let NbtTag::Short(spawn_x) = spawn[0] else { panic!("spawn_x was not a short") };
         let NbtTag::Short(spawn_y) = spawn[1] else { panic!("spawn_y was not a short") };
         let NbtTag::Short(spawn_z) = spawn[2] else { panic!("spawn_z was not a short") };
 
-        let mut level = Level::new_with_name(name.to_owned());
+        level.set_spawn_point(spawn_x, spawn_y, spawn_z);
 
         // again this is just meant to work at the moment, not be fast.
         for y in 0..height {
@@ -129,8 +130,8 @@ impl IndevLevel {
                 for x in 0..width {
                     let i = (y as usize) * ((length as usize) * (width as usize)) + (z as usize) * (width as usize) + (x as usize);
 
-                    level.set_block(x as i32, y as i16, z as i32, blocks[i] as u16);
-                    level.set_data(x as i32, y as i16, z as i32, data[i]);
+                    level.set_block(x as i32, y, z as i32, blocks[i] as u16);
+                    level.set_data(x as i32, y, z as i32, data[i]);
                 }
             }
         }
@@ -158,53 +159,52 @@ impl IndevLevel {
         Ok(mcg)
     }
 
-    // TODO
-    // HACK: wasm won't let me take in &mut Vec<u8> so bub fix for now
     pub fn write(&mut self, compress: bool) -> Vec<u8> {
         let mut mclvl = NbtCompound::new();
         let mut about = NbtCompound::new();
         let mut env = NbtCompound::new();
         let mut map = NbtCompound::new();
-        let mut entities = NbtList::new();
-        let mut tile_entities = NbtList::new();
-
-        let mut this = self.clone();
+        let entities = NbtList::new();
+        let tile_entities = NbtList::new();
 
         // About
-        about.insert("CreatedOn".to_string(), this.about.created_on);
-        about.insert("Name".to_string(), (this.level.clone()).name);
-        about.insert("Author".to_string(), this.about.author);
+        about.insert("CreatedOn".to_string(), self.about.created_on);
+        about.insert("Name".to_string(), self.level.name.clone());
+        about.insert("Author".to_string(), self.about.author.clone());
 
         // env
-        env.insert("TimeOfDay".to_string(), this.environment.time);
-        env.insert("SkyBrightness".to_string(), this.environment.sky_brightness);
-        env.insert("SkyColor".to_string(), this.environment.sky_color);
-        env.insert("FogColor".to_string(), this.environment.fog_color);
-        env.insert("CloudColor".to_string(), this.environment.cloud_color);
-        env.insert("CloudHeight".to_string(), this.environment.cloud_height);
-        env.insert("SurroundingGroundType".to_string(), this.environment.surrounding_ground_type);
-        env.insert("SurroundingGroundHeight".to_string(), this.environment.surrounding_ground_height);
-        env.insert("SurroundingWaterType".to_string(), this.environment.surrounding_water_type);
-        env.insert("SurroundingWaterHeight".to_string(), this.environment.surrounding_water_height);
+        env.insert("TimeOfDay".to_string(), self.environment.time);
+        env.insert("SkyBrightness".to_string(), self.environment.sky_brightness);
+        env.insert("SkyColor".to_string(), self.environment.sky_color);
+        env.insert("FogColor".to_string(), self.environment.fog_color);
+        env.insert("CloudColor".to_string(), self.environment.cloud_color);
+        env.insert("CloudHeight".to_string(), self.environment.cloud_height);
+        env.insert("SurroundingGroundType".to_string(), self.environment.surrounding_ground_type);
+        env.insert("SurroundingGroundHeight".to_string(), self.environment.surrounding_ground_height);
+        env.insert("SurroundingWaterType".to_string(), self.environment.surrounding_water_type);
+        env.insert("SurroundingWaterHeight".to_string(), self.environment.surrounding_water_height);
 
-        let width = this.level.get_block_width();
-        let length = this.level.get_block_depth();
-        let height = this.level.get_block_height();
+        let width = self.level.get_block_width();
+        let length = self.level.get_block_depth();
+        let height = self.level.get_block_height();
 
         // map
         map.insert("Width".to_string(), width as i16);
         map.insert("Length".to_string(), length as i16);
-        map.insert("Height".to_string(), height as i16);
+        map.insert("Height".to_string(), height);
 
         let mut sp = vec![0i16; 3];
-        sp[0] = this.level.spawn.x;
-        sp[1] = this.level.spawn.y;
-        sp[2] = this.level.spawn.z;
+        sp[0] = self.level.spawn.x;
+        sp[1] = self.level.spawn.y;
+        sp[2] = self.level.spawn.z;
 
         map.insert("Spawn".to_string(), NbtList::from(sp));
 
         let mut blocks: Vec<i8> = Vec::with_capacity((width as usize) * (length as usize) * (height as usize));
         blocks.resize((width as usize) * (length as usize) * (height as usize), 0);
+
+        let mut data: Vec<i8> = Vec::with_capacity((width as usize) * (length as usize) * (height as usize));
+        data.resize((width as usize) * (length as usize) * (height as usize), 0);
 
         for y in 0..height {
             for z in 0..length {
@@ -212,14 +212,13 @@ impl IndevLevel {
                     let i = (y as usize) * ((length as usize) * (width as usize)) + (z as usize) * (width as usize) + (x as usize);
 
                     blocks[i] = self.level.get_block(x, y, z) as i8;
+                    data[i] = self.level.get_data(x, y, z) as i8;
                 }
             }
         }
 
-
-
         map.insert("Blocks".to_string(), NbtTag::ByteArray(blocks));
-        map.insert("Data".to_string(), NbtTag::ByteArray(Vec::new()));
+        map.insert("Data".to_string(), NbtTag::ByteArray(data));
 
         // MinecraftLevel
         mclvl.insert("About".to_string(), about);
