@@ -1,12 +1,9 @@
 pub mod mcgalaxy_lvl;
 pub mod mine_v2;
 
-use wasm_bindgen::prelude::*;
-
 // TODO: central Level class that we can inherit
 // well actually idk if this will happen, still trying to figure that out...
 #[derive(Debug, Clone)]
-#[wasm_bindgen(getter_with_clone)]
 pub struct ClassicLevel {
     pub width: i16,
     pub height: i16,
@@ -14,9 +11,7 @@ pub struct ClassicLevel {
     pub blocks: Vec<u8>, // TODO: think about restricting access to the block array and instead provide helpers to access and manipulate it.
 }
 
-#[wasm_bindgen]
 impl ClassicLevel {
-    #[wasm_bindgen]
     pub fn resize(&mut self, width: i16, depth: i16, height: i16) {
         // old size
         let x0 = self.width as usize;
@@ -51,7 +46,6 @@ impl ClassicLevel {
         2 + 2 + 2 + ((self.width as usize) * (self.length as usize) * (self.height as usize))
     }
 
-    #[wasm_bindgen]
     pub fn get_block(&self, x: i16, y: i16, z: i16) -> u8 {
         let index = self.get_index(x, y, z);
         if index == !0 {
@@ -61,7 +55,6 @@ impl ClassicLevel {
         self.blocks[index]
     }
 
-    #[wasm_bindgen]
     pub fn set_block(&mut self, x: i16, y: i16, z: i16, block: u8) {
         let index = self.get_index(x, y, z);
         if index == !0 {
@@ -71,7 +64,6 @@ impl ClassicLevel {
         self.blocks[index] = block;
     }
 
-    #[wasm_bindgen]
     pub fn get_index(&self, x: i16, y: i16, z: i16) -> usize {
         // our coords
         let x = x as usize;

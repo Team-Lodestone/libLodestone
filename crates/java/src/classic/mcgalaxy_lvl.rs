@@ -1,7 +1,7 @@
 use crate::classic::ClassicLevel;
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use std::io::{Cursor, Read, Write};
-use wasm_bindgen::prelude::*;
+
 
 // IMPORTANT: there can be extra data after the block array due to extensions to the format made by both the server software and plugins.
 #[derive(Debug)]

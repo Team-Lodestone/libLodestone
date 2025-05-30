@@ -1,6 +1,6 @@
 use crate::level::chunk::{Chunk, Light};
 use std::collections::HashMap;
-use wasm_bindgen::prelude::wasm_bindgen;
+
 
 // ffs need this bc can't do tuple with wasm toolchain
 #[derive(Clone, Default, PartialEq, Eq, Hash, Debug)]

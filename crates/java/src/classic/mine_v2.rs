@@ -2,11 +2,11 @@ use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
 use lodestone_common::io::{read_prefixed_2_byte_string, write_prefixed_2_byte_string};
 use std::io::{Cursor, Read, Write};
 use std::time::SystemTime;
-use wasm_bindgen::prelude::*;
 use lodestone_level::level::level::Level;
 use std::collections::HashMap;
 use lodestone_level::level::chunk::Chunk;
 use lodestone_level::level::level::Coords;
+
 
 #[derive(Debug)]
 pub struct MineV2 {

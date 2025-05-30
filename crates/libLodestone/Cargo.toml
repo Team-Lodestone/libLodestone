@@ -1,5 +1,5 @@
 [package]
-name = "libLodestone"
+name = "lodestone"
 authors = ["Team Lodestone"]
 description = "Provides reading, writing, and format conversion for most editions and versions of Minecraft."
 

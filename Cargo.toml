@@ -1,16 +1,19 @@
 [workspace]
-workspace.resolver = "3"
+resolver = "3"
 members = [
     "crates/common",
     "crates/java",
     "crates/level",
-    "crates/libLodestone"
+    "crates/libLodestone",
+
+    "examples/*"
 ]
 
 [workspace.package]
 edition    = "2024"
 # usually I've been incrementing minor ver everytime I add a new supported level format...
 version    = "0.4.0"
+# TODO: specify MSRV (minimum supported rust version)
 license    = "LGPL-2.1"
 readme     = "README.md"
 repository = "https://github.com/team-lodestone/libLodestone"
@@ -29,13 +32,16 @@ lodestone_common = { version = "=0.4.0", path = "crates/common" }
 lodestone_java   = { version = "=0.4.0", path = "crates/java" }
 lodestone_level  = { version = "=0.4.0", path = "crates/level"}
 
-byteorder    = "1.5.0"
-flate2       = "1.1.1"
-phf          = "0.11.3"
-regex        = "1.11.1"
-simdnbt      = "0.7.1"
-log          = "0.4.27"
-wasm-bindgen = "0.2.100"
+byteorder            = "1.5.0"
+flate2               = "1.1.1"
+phf                  = "0.11.3"
+regex                = "1.11.1"
+quartz_nbt           = "0.2.9"
+log                  = "0.4.27"
+wasm-bindgen         = "0.2.100"
+wasm-bindgen-futures = "0.4.0"
+wasm-logger          = "0.2.0"
+web-sys              = "0.3.70"
 
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
