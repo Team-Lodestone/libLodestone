@@ -24,6 +24,7 @@ lodestone_level          .workspace = true
 
 byteorder                .workspace = true
 flate2                   .workspace = true
+log                      .workspace = true
 quartz_nbt               .workspace = true
 wasm-bindgen             .workspace = true
 

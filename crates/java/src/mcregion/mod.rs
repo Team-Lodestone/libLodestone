@@ -6,24 +6,19 @@
 // use lodestone_common::level::region::{Compression, RegionLike};
 // use simdnbt::owned::{BaseNbt, Nbt, NbtCompound, NbtList, NbtTag};
 // use std::io::{Cursor, Read};
-// use wasm_bindgen::prelude::wasm_bindgen;
 // use lodestone_level::level::chunk::Chunk;
 //
 // #[derive(Clone, Default)]
-// #[wasm_bindgen(getter_with_clone)]
 // pub struct MCRChunk {
 //     pub chunk: Chunk,
 //     pub last_update: i64,
 //     pub has_populated: i8,
 // }
 //
-// #[wasm_bindgen(getter_with_clone)]
 // pub struct Region {}
 //
-// #[wasm_bindgen]
 // impl Region {
 //
-//     #[wasm_bindgen]
 //     pub fn new_from_data(data: Vec<u8>, x: i32, z: i32) -> Result<Level, String> {
 //         let mut c = Cursor::new(data);
 //         let mut locations = vec![ChunkLocation::default(); 1024];
@@ -93,9 +88,7 @@
 //     }
 // }
 //
-// #[wasm_bindgen]
 // impl MCRChunk {
-//     #[wasm_bindgen]
 //     pub fn new() -> MCRChunk {
 //         MCRChunk {
 //             Chunk::new(128),
@@ -111,7 +104,6 @@
 //         }
 //     }
 //
-//     #[wasm_bindgen]
 //     pub fn new_from_data(data: Vec<u8>) -> Result<MCRChunk, String> {
 //         let nbt = simdnbt::borrow::read(&mut Cursor::new(&data)).expect("Chunk NBT data").unwrap();
 //

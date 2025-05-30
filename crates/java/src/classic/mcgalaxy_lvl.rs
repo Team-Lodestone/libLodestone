@@ -1,11 +1,10 @@
 use crate::classic::ClassicLevel;
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use std::io::{Cursor, Read, Write};
-use wasm_bindgen::prelude::*;
+
 
 // IMPORTANT: there can be extra data after the block array due to extensions to the format made by both the server software and plugins.
 #[derive(Debug)]
-#[wasm_bindgen(getter_with_clone)]
 pub struct MCGLevel {
     pub classic_level: ClassicLevel,
     pub spawn_x: i16,
@@ -35,9 +34,7 @@ static READ_BLOCK_MAPPINGS: [u16; 256] = [
 ];
 static WRITE_BLOCK_MAPPINGS: [u8; 4] = [0, 163, 198, 199];
 
-#[wasm_bindgen]
 impl MCGLevel {
-    #[wasm_bindgen]
     pub fn new(
         width: i16,
         height: i16,
@@ -78,7 +75,6 @@ impl MCGLevel {
         }
     }
 
-    #[wasm_bindgen]
     pub fn resize(&mut self, width: i16, depth: i16, height: i16) {
         let x0 = self.classic_level.width as usize;
         let z0 = self.classic_level.length as usize;
@@ -107,7 +103,6 @@ impl MCGLevel {
         self.classic_level.height = y1 as i16;
     }
 
-    #[wasm_bindgen]
     pub fn new_from_data(data: Vec<u8>) -> Result<MCGLevel, String> {
         let mut c = Cursor::new(data); // literally just array with position ig
         let signature = c.read_u16::<LittleEndian>().unwrap();
@@ -192,20 +187,17 @@ impl MCGLevel {
         Ok(mcg)
     }
 
-    #[wasm_bindgen]
     pub fn set_world_spawn(&mut self, x: i16, y: i16, z: i16) {
         self.spawn_x = x;
         self.spawn_y = y;
         self.spawn_z = z;
     }
 
-    #[wasm_bindgen]
     pub fn set_world_spawn_rot(&mut self, yaw: u8, pitch: u8) {
         self.spawn_yaw = yaw;
         self.spawn_pitch = pitch;
     }
 
-    #[wasm_bindgen]
     pub fn get_block(&mut self, x: i16, y: i16, z: i16) -> u16 {
         let index = self.get_index(x, y, z);
         if index == !0 {
@@ -235,7 +227,6 @@ impl MCGLevel {
         0
     }
 
-    #[wasm_bindgen]
     pub fn set_block(&mut self, x: i16, y: i16, z: i16, block: i16) {
         let mut set = block as u8;
 
@@ -283,7 +274,6 @@ impl MCGLevel {
         len
     }
 
-    #[wasm_bindgen]
     pub fn write(&self, out: &mut [u8]) {
         if out.len()
             < 2 + 2
@@ -339,7 +329,6 @@ impl MCGLevel {
         }
     }
 
-    #[wasm_bindgen]
     pub fn get_index(&self, x: i16, y: i16, z: i16) -> usize {
         let x = x as usize;
         let y = y as usize;

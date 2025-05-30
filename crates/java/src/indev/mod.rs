@@ -2,10 +2,9 @@ use quartz_nbt::io::{self, Flavor};
 use quartz_nbt::{NbtTag, NbtCompound, NbtList};
 use std::io::{Cursor, Write};
 use std::time::SystemTime;
-use wasm_bindgen::prelude::*;
+
 
 #[derive(Debug, Clone)]
-#[wasm_bindgen(getter_with_clone)]
 pub struct IndevLevel {
     pub environment: Environment,
     pub map: Map,
@@ -15,7 +14,6 @@ pub struct IndevLevel {
 }
 
 #[derive(Debug, Clone)]
-#[wasm_bindgen(getter_with_clone)]
 pub struct Environment {
     pub time: i16,
     pub sky_brightness: i8,
@@ -30,7 +28,6 @@ pub struct Environment {
 }
 
 #[derive(Debug, Clone)]
-#[wasm_bindgen(getter_with_clone)]
 pub struct Map {
     pub blocks: Vec<u8>,
     pub data: Vec<u8>,
@@ -41,7 +38,6 @@ pub struct Map {
 }
 
 #[derive(Debug, Clone)]
-#[wasm_bindgen(getter_with_clone)]
 pub struct About {
     pub author: String,
     pub name: String,
@@ -51,14 +47,12 @@ pub struct About {
 
 // By default Spawn is stored in a short array, but the array is always spawn coords XYZ so why not just make it a struct
 #[derive(Debug, Clone)]
-#[wasm_bindgen(getter_with_clone)]
 pub struct Spawn {
     pub x: i16,
     pub y: i16,
     pub z: i16
 }
 
-#[wasm_bindgen]
 impl IndevLevel {
 
     // TODO: Resizing
@@ -114,7 +108,6 @@ impl IndevLevel {
         self.map.data[i] = (self.map.data[i] & 0x0F) | ((data & 0x0F) << 4);
     }
 
-    #[wasm_bindgen]
     pub fn resize(&mut self, width: i16, depth: i16, height: i16) {
         if width % 2 != 0 || height % 2 != 0 || depth % 2 != 0 {
             panic!("It seems Indev world sizes must be a power of 2, otherwise the game will index out of bounds.");
@@ -191,7 +184,6 @@ impl IndevLevel {
         self.map.data[i] & 0x0F
     }
 
-    #[wasm_bindgen]
     pub fn new_from_data(data: Vec<u8>) -> Result<IndevLevel, String> {
         let nbt = io::read_nbt(&mut Cursor::new(&data), Flavor::Uncompressed)
             .expect("Level NBT data")
@@ -337,7 +329,6 @@ impl IndevLevel {
         out
     }
 
-    #[wasm_bindgen]
     pub fn get_index(&self, x: i16, y: i16, z: i16) -> usize {
         // our coords
         let x = x as usize;

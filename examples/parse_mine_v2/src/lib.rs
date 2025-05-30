@@ -15,10 +15,13 @@ pub fn process_file(file_bytes: Vec<u8>) {
     log::debug!("MineV2 parse result: {:?}", parse_res);
 }
 
-#[wasm_bindgen(main)]
-fn main() {
+#[wasm_bindgen(start)]
+fn start() {
     #[cfg(feature = "js")]
     wasm_logger::init(Config::default());
+
+    #[cfg(feature = "js")]
+    console_error_panic_hook::set_once();
 }
 
 
