@@ -2,54 +2,40 @@ use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
 use lodestone_common::io::{read_prefixed_2_byte_string, write_prefixed_2_byte_string};
 use std::io::{Cursor, Read, Write};
 use std::time::SystemTime;
-use lodestone_level::level::level::Level;
-use std::collections::HashMap;
-use lodestone_level::level::chunk::Chunk;
-use lodestone_level::level::level::Coords;
+use lodestone_common::types::hashmap_ext::HashMapExt;
+use lodestone_level::level::{metadata, Level};
 
-
-#[derive(Debug)]
-pub struct MineV2 {
-    pub level: Level,
-    pub version: i8,
-    pub author: String,
-    pub creation_time: i64,
-}
-
-impl MineV2 {
-    pub fn new(
+pub trait MineV2Level {
+    fn new_minev2(
         width: i16,
         height: i16,
         length: i16,
         name: String,
         author: String
-    ) -> MineV2 {
-        MineV2 {
-            level: Level::new_with_name(name),
-            version: 1,
-            author,
-            creation_time: SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).expect("Time since unix epoch").as_millis() as i64,
-        }
+    ) -> Level;
+    fn read_minev2(data: Vec<u8>) -> Result<Level, String>;
+    fn write_minev2(&mut self, out: &mut [u8]);
+    fn get_minev2_file_size(&self) -> usize;
+}
+
+impl MineV2Level for Level {
+    fn new_minev2(
+        width: i16,
+        height: i16,
+        length: i16,
+        name: String,
+        author: String
+    ) -> Level {
+        let mut level = Level::new_with_name(name);
+        level.create_finite(width as i32, height, length as i32);
+
+        level.custom_data.set_value(metadata::AUTHOR.to_string(), author);
+        level.custom_data.set_value(metadata::CREATION_TIME.to_string(), SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).expect("Time since unix epoch").as_millis() as i64);
+
+        level
     }
 
-    pub fn get_byte_size(&self) -> usize {
-        let mut size = 4; // signature
-        size += 1; // version
-        size += 2 + self.level.name.len(); // world name
-        size += 2 + self.author.len(); // author name
-        size += 8; // time created
-        size += 2; // width
-        size += 2; // length
-        size += 2; // height
-
-        size += (self.level.get_block_width() as usize) * (self.level.get_block_height() as usize) * (self.level.get_block_depth() as usize);
-
-        println!("w: {}, d: {}, h: {}", self.level.get_block_width(), self.level.get_block_height(), self.level.get_block_depth());
-
-        size
-    }
-
-    pub fn new_from_data(data: Vec<u8>) -> Result<MineV2, String> {
+    fn read_minev2(data: Vec<u8>) -> Result<Level, String> {
         let mut c = Cursor::new(data);
         let signature = c.read_u32::<BigEndian>().expect("Signature");
         let version = c.read_i8().expect("Version");
@@ -74,14 +60,10 @@ impl MineV2 {
 
         let mut level = Level::new();
 
-        for cx in 0..((width as usize) / 16) {
-            for cz in 0..((length as usize) / 16) {
-                let coords = Coords { x: cx as i32, z: cz as i32 };
-                let chunk = Chunk::new(height);
+        level.custom_data.set_value(metadata::AUTHOR.to_string(), author);
+        level.custom_data.set_value(metadata::CREATION_TIME.to_string(), creation_time);
 
-                level.add_chunk(coords.clone(), chunk);
-            }
-        }
+        level.create_finite(width as i32, height, length as i32);
 
         for y in 0..height {
             for z in 0..length {
@@ -91,46 +73,56 @@ impl MineV2 {
             }
         }
 
-        Ok(MineV2 {
-            level,
-            version,
-            author,
-            creation_time
-        })
+        Ok(level)
     }
 
-    pub fn write(&mut self, out: &mut [u8]) {
-        if out.len() < self.get_byte_size() {
-            panic!("Output buffer is too small");
-        }
+    fn write_minev2(&mut self, out: &mut [u8]) {
+       if out.len() < self.get_minev2_file_size() {
+           panic!("Output buffer is too small");
+       }
 
-        let mut c = Cursor::new(out);
+       let mut c = Cursor::new(out);
 
-        c.write_i32::<BigEndian>(0x271BB788).expect("Signature write");
-        c.write_i8(self.version).expect("Version");
-        write_prefixed_2_byte_string(&mut c, &self.level.name);
-        write_prefixed_2_byte_string(&mut c, &self.author);
-        c.write_i64::<BigEndian>(self.creation_time).expect("Creation timestamp");
+       c.write_i32::<BigEndian>(0x271BB788).expect("Signature write");
+       c.write_i8(1).expect("Version");
+       write_prefixed_2_byte_string(&mut c, &self.name);
+       write_prefixed_2_byte_string(&mut c, &self.custom_data.get_value::<String, _>(metadata::AUTHOR).unwrap_or("Project Lodestone User".to_string()));
+       c.write_i64::<BigEndian>(self.custom_data.get_value(metadata::CREATION_TIME).unwrap_or(0)).expect("Creation timestamp");
 
-        let width = self.level.get_block_width() as usize;
-        let depth = self.level.get_block_depth() as usize;
-        let height = self.level.get_block_height() as usize;
+       let width = self.get_block_width() as usize;
+       let depth = self.get_block_depth() as usize;
+       let height = self.get_block_height() as usize;
 
-        c.write_i16::<BigEndian>(width as i16).expect("Width");
-        c.write_i16::<BigEndian>(depth as i16).expect("Depth");
-        c.write_i16::<BigEndian>(height as i16).expect("Height");
+       c.write_i16::<BigEndian>(width as i16).expect("Width");
+       c.write_i16::<BigEndian>(depth as i16).expect("Depth");
+       c.write_i16::<BigEndian>(height as i16).expect("Height");
 
-        let mut blocks: Vec<u8> = Vec::new();
-        blocks.resize(width * height * depth, 0);
+       let mut blocks: Vec<u8> = Vec::new();
+       blocks.resize(width * height * depth, 0);
 
-        for y in 0..height {
-            for z in 0..depth {
-                for x in 0..width {
-                    blocks[(y) * (depth * width) + (z) * (width) + (x)] = self.level.get_block(x as i32, y as i16, z as i32) as u8;
-                }
-            }
-        }
+       for y in 0..height {
+           for z in 0..depth {
+               for x in 0..width {
+                   blocks[(y) * (depth * width) + (z) * (width) + (x)] = self.get_block(x as i32, y as i16, z as i32) as u8;
+               }
+           }
+       }
 
-        c.write_all(blocks.as_slice()).expect("Block array");
+       c.write_all(blocks.as_slice()).expect("Block array");
+   }
+
+    fn get_minev2_file_size(&self) -> usize {
+        let mut size = 4; // signature
+        size += 1; // version
+        size += 2 + self.name.len(); // world name
+        size += 2 + self.custom_data.get_value::<String, _>(metadata::AUTHOR).unwrap_or("Project Lodestone User".to_string()).len(); // author name
+        size += 8; // time created
+        size += 2; // width
+        size += 2; // length
+        size += 2; // height
+
+        size += (self.get_block_width() as usize) * (self.get_block_height() as usize) * (self.get_block_depth() as usize);
+
+        size
     }
 }

@@ -4,7 +4,7 @@ members = [
     "crates/common",
     "crates/java",
     "crates/level",
-    "crates/libLodestone",
+    "crates/core",
 
     "examples/*"
 ]
@@ -27,7 +27,7 @@ opt-level = "s"
 [workspace.dependencies]
 # NOTE: for now we keep all version numbers in lockstep, as the version specified
 # in [workspace.package] above
-libLodestone     = { version = "=0.4.0", path = "crates/libLodestone"}
+lodestone     = { version = "=0.4.0", path = "crates/core"}
 lodestone_common = { version = "=0.4.0", path = "crates/common" }
 lodestone_java   = { version = "=0.4.0", path = "crates/java" }
 lodestone_level  = { version = "=0.4.0", path = "crates/level"}

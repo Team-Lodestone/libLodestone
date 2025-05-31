@@ -19,7 +19,6 @@ default = ["dep:console_error_panic_hook"]
 
 
 [dependencies]
-lodestone_level          .workspace = true
 
 byteorder                .workspace = true
 phf                      = { workspace = true, features = ["macros"] }

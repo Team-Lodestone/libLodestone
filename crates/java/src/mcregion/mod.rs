@@ -8,6 +8,8 @@
 // use std::io::{Cursor, Read};
 // use lodestone_level::level::chunk::Chunk;
 //
+// TODO: use new nbt library, also allow for reading into a vec of chunks that one can just add to the Level's own chunks. Or we could make a read_mcregion_into_level which will add the new chunks to an existing level.
+//
 // #[derive(Clone, Default)]
 // pub struct MCRChunk {
 //     pub chunk: Chunk,

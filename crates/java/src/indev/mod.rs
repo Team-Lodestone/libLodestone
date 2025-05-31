@@ -1,66 +1,23 @@
-use lodestone_level::level::level::Level;
+use lodestone_level::level::Level;
 use quartz_nbt::io::{self, Flavor};
 use quartz_nbt::{NbtCompound, NbtList, NbtTag};
 use std::io::Cursor;
-use std::time::SystemTime;
+use lodestone_common::types::hashmap_ext::HashMapExt;
+use lodestone_level::level::{metadata};
 
-
-#[derive(Debug, Clone)]
-pub struct IndevLevel {
-    pub level: Level,
-    pub environment: Environment,
-    pub about: About
-    // tile entities
-    // entities
+pub trait IndevLevel {
+    fn new_indev(height: i16, name: String, author: String) -> Level;
+    fn read_indev(data: Vec<u8>) -> Result<Level, String>;
+    fn write_indev(&mut self) -> Vec<u8>;
 }
 
-#[derive(Debug, Clone)]
-pub struct Environment {
-    pub time: i16,
-    pub sky_brightness: i8,
-    pub cloud_height: i16,
-    pub cloud_color: i32,
-    pub sky_color: i32,
-    pub fog_color: i32,
-    pub surrounding_ground_height: i16,
-    pub surrounding_water_height: i16,
-    pub surrounding_ground_type: i8,
-    pub surrounding_water_type: i8
-}
-
-
-#[derive(Debug, Clone)]
-pub struct About {
-    pub author: String,
-    pub created_on: i64
-}
-
-impl IndevLevel {
-
-    pub fn new(height: i16, name: String, author: String) -> IndevLevel {
-        IndevLevel {
-            level: Level::new_with_name(name),
-            // TODO: make this programmatic
-            environment: Environment {
-                time: 0,
-                sky_brightness: 100,
-                cloud_height: height - 64,
-                cloud_color: 0xFFFFFF,
-                sky_color: 0x99CCFF,
-                fog_color: 0xFFFFFF,
-                surrounding_ground_height: height / 2,
-                surrounding_water_height: height / 2,
-                surrounding_ground_type: 2,
-                surrounding_water_type: 8,
-            },
-            about: About {
-                author,
-                created_on: SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).expect("Time since unix epoch").as_millis() as i64,
-            }
-        }
+impl IndevLevel for Level {
+    fn new_indev(height: i16, name: String, author: String) -> Level {
+        // TODO: impl with default values
+        Level::new()
     }
 
-    pub fn new_from_data(data: Vec<u8>) -> Result<IndevLevel, String> {
+    fn read_indev(data: Vec<u8>) -> Result<Level, String> {
         let nbt = io::read_nbt(&mut Cursor::new(&data), Flavor::Uncompressed)
             .expect("Level NBT data")
             .0;
@@ -68,13 +25,13 @@ impl IndevLevel {
         let about:         &NbtCompound = nbt.get("About")       .expect("About compound");
         let environment:   &NbtCompound = nbt.get("Environment") .expect("Environment compound");
         let map:           &NbtCompound = nbt.get("Map")         .expect("Map compound");
-        let entities:      &NbtCompound = nbt.get("Entities")    .expect("Entities compound");
-        let tile_entities: &NbtCompound = nbt.get("TileEntities").expect("TileEntities compound");
+        let entities:      &NbtList = nbt.get("Entities")    .expect("Entities compound list");
+        let tile_entities: &NbtList = nbt.get("TileEntities").expect("TileEntities compound list");
 
         // About
-        let author:         &str         = nbt.get("Author")      .expect("Author string");
-        let name:           &str         = nbt.get("Name")        .expect("Name string");
-        let created_on:     i64          = nbt.get("CreatedOn")   .expect("CreatedOn i64");
+        let author:         &str         = about.get("Author")      .expect("Author string");
+        let name:           &str         = about.get("Name")        .expect("Name string");
+        let created_on:     i64          = about.get("CreatedOn")   .expect("CreatedOn i64");
 
         println!("author: {}, name: {}", author, name);
 
@@ -118,11 +75,12 @@ impl IndevLevel {
         let mut level = Level::new_with_name(name.to_owned());
 
         // Spawn
-        let NbtTag::Short(spawn_x) = spawn[0] else { panic!("spawn_x was not a short") };
+        let NbtTag::Short(spawn_x) = spawn[0] else { panic!("spawn_x was not a short") }; // can't we just do .expect?
         let NbtTag::Short(spawn_y) = spawn[1] else { panic!("spawn_y was not a short") };
         let NbtTag::Short(spawn_z) = spawn[2] else { panic!("spawn_z was not a short") };
 
         level.set_spawn_point(spawn_x, spawn_y, spawn_z);
+        level.create_finite(width as i32, height, length as i32);
 
         // again this is just meant to work at the moment, not be fast.
         for y in 0..height {
@@ -136,30 +94,27 @@ impl IndevLevel {
             }
         }
 
-        let mcg = IndevLevel {
-            level,
-            environment: Environment {
-                time,
-                sky_brightness,
-                cloud_height,
-                cloud_color,
-                sky_color,
-                fog_color,
-                surrounding_ground_height,
-                surrounding_water_height,
-                surrounding_ground_type,
-                surrounding_water_type,
-            },
-            about: About {
-                author: author.to_owned(),
-                created_on,
-            },
-        };
 
-        Ok(mcg)
+        // About
+        level.custom_data.set_value(metadata::CREATION_TIME.to_string(), created_on);
+        level.name = name.to_string();
+        level.custom_data.set_value(metadata::AUTHOR.to_string(), author.to_string());
+        // Environment
+        level.time = time;
+        level.custom_data.set_value(metadata::SKY_BRIGHTNESS.to_string(), sky_brightness);
+        level.custom_data.set_value(metadata::SKY_COLOR.to_string(), sky_color);
+        level.custom_data.set_value(metadata::FOG_COLOR.to_string(), fog_color);
+        level.custom_data.set_value(metadata::CLOUD_COLOR.to_string(), cloud_color);
+        level.custom_data.set_value(metadata::CLOUD_HEIGHT.to_string(), cloud_height);
+        level.custom_data.set_value(metadata::SURROUNDING_GROUND_TYPE.to_string(), surrounding_ground_type);
+        level.custom_data.set_value(metadata::SURROUNDING_GROUND_HEIGHT.to_string(), surrounding_ground_height);
+        level.custom_data.set_value(metadata::SURROUNDING_WATER_TYPE.to_string(), surrounding_water_type);
+        level.custom_data.set_value(metadata::SURROUNDING_WATER_HEIGHT.to_string(), surrounding_water_height);
+
+        Ok(level)
     }
 
-    pub fn write(&mut self, compress: bool) -> Vec<u8> {
+    fn write_indev(&mut self) -> Vec<u8> {
         let mut mclvl = NbtCompound::new();
         let mut about = NbtCompound::new();
         let mut env = NbtCompound::new();
@@ -168,25 +123,25 @@ impl IndevLevel {
         let tile_entities = NbtList::new();
 
         // About
-        about.insert("CreatedOn".to_string(), self.about.created_on);
-        about.insert("Name".to_string(), self.level.name.clone());
-        about.insert("Author".to_string(), self.about.author.clone());
+        about.insert("CreatedOn".to_string(), self.custom_data.get_value::<i64, _>(metadata::CREATION_TIME).unwrap_or(0));
+        about.insert("Name".to_string(), self.clone().name);
+        about.insert("Author".to_string(), self.custom_data.get_value::<String, _>(metadata::AUTHOR).unwrap_or("Player".to_string()));
 
         // env
-        env.insert("TimeOfDay".to_string(), self.environment.time);
-        env.insert("SkyBrightness".to_string(), self.environment.sky_brightness);
-        env.insert("SkyColor".to_string(), self.environment.sky_color);
-        env.insert("FogColor".to_string(), self.environment.fog_color);
-        env.insert("CloudColor".to_string(), self.environment.cloud_color);
-        env.insert("CloudHeight".to_string(), self.environment.cloud_height);
-        env.insert("SurroundingGroundType".to_string(), self.environment.surrounding_ground_type);
-        env.insert("SurroundingGroundHeight".to_string(), self.environment.surrounding_ground_height);
-        env.insert("SurroundingWaterType".to_string(), self.environment.surrounding_water_type);
-        env.insert("SurroundingWaterHeight".to_string(), self.environment.surrounding_water_height);
+        env.insert("TimeOfDay".to_string(), self.time);
+        env.insert("SkyBrightness".to_string(), self.custom_data.get_value::<i8, _>(metadata::SKY_BRIGHTNESS).unwrap_or(15));
+        env.insert("SkyColor".to_string(), self.custom_data.get_value::<i32, _>(metadata::SKY_COLOR).unwrap_or(0x99CCFF));
+        env.insert("FogColor".to_string(), self.custom_data.get_value::<i32, _>(metadata::FOG_COLOR).unwrap_or(0xFFFFFF));
+        env.insert("CloudColor".to_string(), self.custom_data.get_value::<i32, _>(metadata::CLOUD_COLOR).unwrap_or(0xFFFFFF));
+        env.insert("CloudHeight".to_string(), self.custom_data.get_value::<i16, _>(metadata::CLOUD_HEIGHT).unwrap_or(self.get_block_height() / 2));
+        env.insert("SurroundingGroundType".to_string(), self.custom_data.get_value::<i8, _>(metadata::SURROUNDING_GROUND_TYPE).unwrap_or(2));
+        env.insert("SurroundingGroundHeight".to_string(), self.custom_data.get_value::<i16, _>(metadata::SURROUNDING_GROUND_HEIGHT).unwrap_or(self.get_block_height() / 3));
+        env.insert("SurroundingWaterType".to_string(), self.custom_data.get_value::<i8, _>(metadata::SURROUNDING_WATER_TYPE).unwrap_or(8));
+        env.insert("SurroundingWaterHeight".to_string(), self.custom_data.get_value::<i16, _>(metadata::SURROUNDING_WATER_HEIGHT).unwrap_or(self.get_block_height() / 2));
 
-        let width = self.level.get_block_width();
-        let length = self.level.get_block_depth();
-        let height = self.level.get_block_height();
+        let width = self.get_block_width();
+        let length = self.get_block_depth();
+        let height = self.get_block_height();
 
         // map
         map.insert("Width".to_string(), width as i16);
@@ -194,9 +149,9 @@ impl IndevLevel {
         map.insert("Height".to_string(), height);
 
         let mut sp = vec![0i16; 3];
-        sp[0] = self.level.spawn.x;
-        sp[1] = self.level.spawn.y;
-        sp[2] = self.level.spawn.z;
+        sp[0] = self.spawn.x;
+        sp[1] = self.spawn.y;
+        sp[2] = self.spawn.z;
 
         map.insert("Spawn".to_string(), NbtList::from(sp));
 
@@ -211,8 +166,8 @@ impl IndevLevel {
                 for x in 0..width {
                     let i = (y as usize) * ((length as usize) * (width as usize)) + (z as usize) * (width as usize) + (x as usize);
 
-                    blocks[i] = self.level.get_block(x, y, z) as i8;
-                    data[i] = self.level.get_data(x, y, z) as i8;
+                    blocks[i] = self.get_block(x, y, z) as i8;
+                    data[i] = self.get_data(x, y, z) as i8;
                 }
             }
         }

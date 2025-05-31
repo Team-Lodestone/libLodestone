@@ -2,6 +2,7 @@
 
 #[cfg(test)]
 mod tests {
+    use std::collections::HashMap;
     use std::fs;
     use std::fs::File;
     use std::io::{Write};
@@ -9,7 +10,9 @@ mod tests {
     use flate2::Compression;
     use lodestone_java;
     use lodestone_common;
-    use lodestone_level::level::level::Coords;
+    use lodestone_java::classic::mine_v2::MineV2Level;
+    use lodestone_java::indev::IndevLevel;
+
 
     // #[test]
     fn mcg_level() {
@@ -51,7 +54,7 @@ mod tests {
                 return;
             }
         };
-        let indev = lodestone_java::indev::IndevLevel::new_from_data(data).unwrap();
+        // let indev = lodestone_java::indev::IndevLevel::new_from_data(data).unwrap();
 
         // // can't be bothered to figure out a good way to do this...
         // // although I can already think of just putting in a `get_size` method in every Level impl.
@@ -106,11 +109,10 @@ mod tests {
         of.write_all(&c).unwrap();
         of.flush().unwrap();
     }*/
-
-    // TODO: This is not final, this not ideal... ideally we should have 2 methods for converting a format from and to our internal format, and find a way to access extra data (e.g inhabitedTime for mcr chunks) if available
+    
     #[test]
-    fn indev_reserialize() {
-        let fname = "zero_simple_level.dc";
+    fn indev_to_minev2() {
+        let fname = "omnimain.lvl";
 
         let data = match fs::read(format!("../../test/indev/src/{}", fname)) {
             Ok(d) => d,
@@ -119,36 +121,37 @@ mod tests {
                 return;
             }
         };
-        let mut indev = lodestone_java::indev::IndevLevel::new_from_data(data).unwrap();
+        let mut indev = lodestone_level::level::Level::read_indev(data).unwrap();
 
-        let mut out = indev.write(false);
+        let mut out = vec![0u8; indev.get_minev2_file_size()];
+        indev.write_minev2(out.as_mut_slice());
 
         // why does this part take so damn long?
         println!("Compressing");
-        let mut enc = GzEncoder::new(Vec::with_capacity(4 * 1024 * 1024), Compression::fast());
+        let mut enc = GzEncoder::new(Vec::with_capacity(indev.get_minev2_file_size()), Compression::best());
         enc.write_all(&out).unwrap();
         let c = enc.finish().unwrap();
 
         println!("Writing");
-        let mut of = File::create(format!("../../test/indev/dst/{}_reserialize", fname)).unwrap();
+        let mut of = File::create(format!("../../test/minev2/dst/{}.mine", fname)).unwrap();
         of.write_all(&c).unwrap();
         of.flush().unwrap();
     }
 
     // #[test]
-    fn mv2_to_mcg() {
-        // wtf is this weird match syntax
-        // also ignore weird path, for testing on local machine
-        let fname = "13a_03-level_greffen.mine";
-
-        let data = match fs::read(format!("test/minev2/src/{}", fname)) {
-            Ok(d) => d,
-            Err(e) => {
-                eprintln!("uh oh {}", e);
-                return;
-            }
-        };
-        let mut minev2 = lodestone_java::classic::mine_v2::MineV2::new_from_data(data).unwrap();
+    // fn mv2_to_mcg() {
+    //     // wtf is this weird match syntax
+    //     // also ignore weird path, for testing on local machine
+    //     let fname = "13a_03-level_greffen.mine";
+    //
+    //     let data = match fs::read(format!("test/minev2/src/{}", fname)) {
+    //         Ok(d) => d,
+    //         Err(e) => {
+    //             eprintln!("uh oh {}", e);
+    //             return;
+    //         }
+    //     };
+    //     let mut minev2 = lodestone_level::level::Level::read_indev(data).unwrap();
 
         // let mut mcg = lodestone_java::classic::mcgalaxy_lvl::MCGLevel::new(minev2.width, minev2.height, minev2.length, 0, 0, 0, 0, 0, 0, 0);
 
@@ -178,36 +181,36 @@ mod tests {
         let mut of = File::create(format!("test/lvl/dst/{}.lvl", fname)).unwrap();
         of.write_all(&c).unwrap();
         of.flush().unwrap();*/
-    }
+    // }
 
     // #[test]
-    fn mcg_reserialize() {
-        let fname = "13a_03-level_greffen.mine";
-
-        let data = match fs::read(format!("test/minev2/src/{}", fname)) {
-            Ok(d) => d,
-            Err(e) => {
-                eprintln!("uh oh {}", e);
-                return;
-            }
-        };
-        let mut minev2 = lodestone_java::classic::mine_v2::MineV2::new_from_data(data).unwrap();
-
-        let mut out = vec![0u8; minev2.get_byte_size()];
-
-        minev2.write(&mut out);
-
-        // why does this part take so damn long?
-        println!("Compressing");
-        let mut enc = GzEncoder::new(Vec::with_capacity(4 * 1024 * 1024), Compression::fast());
-        enc.write_all(&out).unwrap();
-        let c = enc.finish().unwrap();
-
-        println!("Writing");
-        let mut of = File::create(format!("test/minev2/dst/{}_reserialize.mine", fname)).unwrap();
-        of.write_all(&c).unwrap();
-        of.flush().unwrap();
-    }
+    // fn mcg_reserialize() {
+    //     let fname = "13a_03-level_greffen.mine";
+    //
+    //     let data = match fs::read(format!("test/minev2/src/{}", fname)) {
+    //         Ok(d) => d,
+    //         Err(e) => {
+    //             eprintln!("uh oh {}", e);
+    //             return;
+    //         }
+    //     };
+    //     let mut minev2 = lodestone_java::classic::mine_v2::MineV2::new_from_data(data).unwrap();
+    //
+    //     let mut out = vec![0u8; minev2.get_byte_size()];
+    //
+    //     minev2.write(&mut out);
+    //
+    //     // why does this part take so damn long?
+    //     println!("Compressing");
+    //     let mut enc = GzEncoder::new(Vec::with_capacity(4 * 1024 * 1024), Compression::fast());
+    //     enc.write_all(&out).unwrap();
+    //     let c = enc.finish().unwrap();
+    //
+    //     println!("Writing");
+    //     let mut of = File::create(format!("test/minev2/dst/{}_reserialize.mine", fname)).unwrap();
+    //     of.write_all(&c).unwrap();
+    //     of.flush().unwrap();
+    // }
 
     // #[test]
     /*fn mcr_to_mcg() {
@@ -289,17 +292,17 @@ mod tests {
         // wtf is this weird match syntax
         // also ignore weird path, for testing on local machine
         let fname = "omnimain.lvl";
+        //
+        // let data = match fs::read(format!("test/lvl/src/{}", fname)) {
+        //     Ok(d) => d,
+        //     Err(e) => {
+        //         eprintln!("uh oh {}", e);
+        //         return;
+        //     }
+        // };
+        // let mut mcg = lodestone_java::classic::mcgalaxy_lvl::MCGLevel::new_from_data(data).expect("MCGalaxy Level");
 
-        let data = match fs::read(format!("test/lvl/src/{}", fname)) {
-            Ok(d) => d,
-            Err(e) => {
-                eprintln!("uh oh {}", e);
-                return;
-            }
-        };
-        let mut mcg = lodestone_java::classic::mcgalaxy_lvl::MCGLevel::new_from_data(data).expect("MCGalaxy Level");
-
-        let mut minev2 = lodestone_java::classic::mine_v2::MineV2::new(mcg.classic_level.width, mcg.classic_level.height, mcg.classic_level.length, "Test world".to_string(), "Dexrn".to_string());
+        // let mut minev2 = lodestone_java::classic::mine_v2::MineV2::new(mcg.classic_level.width, mcg.classic_level.height, mcg.classic_level.length, "Test world".to_string(), "Dexrn".to_string());
 
         /*for y in 0..mcg.classic_level.height {
             for z in 0..mcg.classic_level.length {
@@ -319,20 +322,20 @@ mod tests {
 
         // can't be bothered to figure out a good way to do this...
         // although I can already think of just putting in a `get_size` method in every Level impl.
-        let mut out = vec![0u8; minev2.get_byte_size()];
-
-        minev2.write(&mut out);
-
-        // why does this part take so damn long?
-        println!("Compressing");
-        let mut enc = GzEncoder::new(Vec::with_capacity(4 * 1024 * 1024), Compression::fast());
-        enc.write_all(&out).unwrap();
-        let c = enc.finish().unwrap();
-
-        println!("Writing");
-        let mut of = File::create(format!("test/minev2/dst/{}.mine", fname)).unwrap();
-        of.write_all(&c).unwrap();
-        of.flush().unwrap();
+        // let mut out = vec![0u8; minev2.get_byte_size()];
+        //
+        // minev2.write(&mut out);
+        //
+        // // why does this part take so damn long?
+        // println!("Compressing");
+        // let mut enc = GzEncoder::new(Vec::with_capacity(4 * 1024 * 1024), Compression::fast());
+        // enc.write_all(&out).unwrap();
+        // let c = enc.finish().unwrap();
+        //
+        // println!("Writing");
+        // let mut of = File::create(format!("test/minev2/dst/{}.mine", fname)).unwrap();
+        // of.write_all(&c).unwrap();
+        // of.flush().unwrap();
     }
 
     // #[test]

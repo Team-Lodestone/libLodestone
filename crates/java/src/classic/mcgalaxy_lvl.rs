@@ -3,6 +3,8 @@ use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use std::io::{Cursor, Read, Write};
 
 
+// TODO: make this work (when Zero is back)
+
 // IMPORTANT: there can be extra data after the block array due to extensions to the format made by both the server software and plugins.
 #[derive(Debug)]
 pub struct MCGLevel {

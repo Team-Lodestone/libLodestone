@@ -2,17 +2,15 @@ use wasm_bindgen::prelude::wasm_bindgen;
 #[cfg(feature = "js")]
 use wasm_logger::Config;
 
-use lodestone_java::classic::mine_v2::MineV2;
-
 
 #[wasm_bindgen]
 pub fn process_file(file_bytes: Vec<u8>) {
-    let parse_res = MineV2::new_from_data(file_bytes);
+    // let parse_res = Level::new_from_data(file_bytes);
 
     // In real code, this could send a message to some part of an app, and the app
     // would surely be capable of passing information back in some way. At the very least,
     // it could manipulate the DOM.
-    log::debug!("MineV2 parse result: {:?}", parse_res);
+    // log::debug!("MineV2 parse result: {:?}", parse_res);
 }
 
 #[wasm_bindgen(start)]
