@@ -7,6 +7,5 @@ wasm-pack.log
 /.idea
 /heightmaps
 /test
-/test
 /test/regions
 /test/regions/src

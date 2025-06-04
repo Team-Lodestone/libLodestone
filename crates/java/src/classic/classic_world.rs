@@ -187,7 +187,7 @@ impl CWLevel for Level {
         );
 
         // env
-        env.insert("TimeOfDay".to_string(), self.time);
+        env.insert("TimeOfDay".to_string(), self.time as i16);
         env.insert(
             "SkyBrightness".to_string(),
             self.custom_data

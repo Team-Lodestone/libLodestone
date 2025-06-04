@@ -130,7 +130,7 @@ impl IndevLevel for Level {
             .custom_data
             .set_value(metadata::AUTHOR.to_string(), author.to_string());
         // Environment
-        level.time = time;
+        level.time = time as i64;
         level
             .custom_data
             .set_value(metadata::SKY_BRIGHTNESS.to_string(), sky_brightness);
@@ -190,7 +190,7 @@ impl IndevLevel for Level {
         );
 
         // env
-        env.insert("TimeOfDay".to_string(), self.time);
+        env.insert("TimeOfDay".to_string(), self.time as i16);
         env.insert(
             "SkyBrightness".to_string(),
             self.custom_data

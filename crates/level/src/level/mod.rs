@@ -24,7 +24,7 @@ pub struct Spawn {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Level {
     pub name: String,
-    pub time: i16,
+    pub time: i64,
     pub spawn: Spawn,
 
     #[serde_as(as = "Vec<(_, _)>")]
