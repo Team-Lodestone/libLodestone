@@ -28,9 +28,9 @@ opt-level = "s"
 # NOTE: for now we keep all version numbers in lockstep, as the version specified
 # in [workspace.package] above
 lodestone     = { version = "=0.4.0", path = "crates/core"}
-lodestone_common = { version = "=0.4.0", path = "crates/common" }
-lodestone_java   = { version = "=0.4.0", path = "crates/java" }
-lodestone_level  = { version = "=0.4.0", path = "crates/level"}
+lodestone_common = { version = "=0.5.0", path = "crates/common" }
+lodestone_java   = { version = "=0.5.0", path = "crates/java" }
+lodestone_level  = { version = "=0.5.0", path = "crates/level"}
 
 byteorder            = "1.5.0"
 flate2               = "1.1.1"
