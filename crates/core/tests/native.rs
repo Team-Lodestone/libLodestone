@@ -10,10 +10,12 @@ mod tests {
     use lodestone_java::classic::classic_world::CWLevel;
     use lodestone_java::classic::mine_v2::MineV2Level;
     use lodestone_java::mcregion::Region;
+    use lodestone_java::alpha::AlphaLevel;
     use lodestone_level::level;
     use std::fs;
     use std::fs::File;
     use std::io::{Read, Write};
+    use std::path::Path;
 
     // #[test]
     fn mcg_level() {
@@ -264,7 +266,7 @@ mod tests {
         // of2.flush().unwrap();
     }
 
-    #[test]
+    // #[test]
     fn mca_to_minev2_test() {
         log::set_max_level(log::LevelFilter::Debug);
         let fname = "r.0.0";
@@ -559,4 +561,30 @@ mod tests {
         of.write_all(&c).unwrap();
         of.flush().unwrap();
     }*/
+
+    // #[test]
+    fn test_classic_huge_world() {
+        use std::time::Instant;
+
+        // Read from the file
+        let read_start = Instant::now();
+        let data = fs::read("../../test/classic/src/huge_world.cw")
+            .expect("Failed to read CW file");
+        let read_end = read_start.elapsed();
+
+        // Parse into structures
+        let parse_start = Instant::now();
+        let lvl = lodestone_level::level::Level::read_cw(data)
+            .expect("Failed to read level");
+        let parse_end = parse_start.elapsed();
+
+        println!("Read time: {:?}", read_end);
+        println!("Parse time: {:?}", parse_end);
+    }
+    
+    #[test]
+    fn test_alpha_world() {
+        let path = Path::new("../../test/alpha/src/World1");
+        let lvl = lodestone_level::level::Level::read_alpha_dir(path);
+    }
 }

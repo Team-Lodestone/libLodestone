@@ -1,5 +1,6 @@
 pub const AUTHOR: &str = "Author";
 pub const CREATION_TIME: &str = "CreationTime";
+
 // Indev
 pub const SKY_BRIGHTNESS: &str = "SkyBrightness";
 pub const SKY_COLOR: &str = "SkyColor";
@@ -10,15 +11,27 @@ pub const SURROUNDING_GROUND_TYPE: &str = "SurroundingGroundType";
 pub const SURROUNDING_GROUND_HEIGHT: &str = "SurroundingGroundHeight";
 pub const SURROUNDING_WATER_TYPE: &str = "SurroundingWaterType";
 pub const SURROUNDING_WATER_HEIGHT: &str = "SurroundingWaterHeight";
+
 // CW
 pub const UUID: &str = "Uuid";
 pub const LAST_MODIFIED: &str = "LastModified";
 pub const LAST_ACCESSED: &str = "LastAccessed";
 pub const SPAWN_YAW: &str = "SpawnYaw";
 pub const SPAWN_PITCH: &str = "SpawnPitch";
+
+// Alpha
+pub const LAST_PLAYED: &str = "LastPlayed";
+pub const RANDOM_SEED: &str = "RandomSeed";
+pub const SIZE_ON_DISK: &str = "SizeOnDisk";
+pub const SPAWN_X: &str = "SpawnX";
+pub const SPAWN_Y: &str = "SpawnY";
+pub const SPAWN_Z: &str = "SpawnZ";
+pub const TIME: &str = "Time";
+
 // McRegion+
 pub const LAST_UPDATE: &str = "LastUpdate";
 pub const TERRAIN_POPULATED: &str = "TerrainPopulated";
+
 // Anvil
 pub const INHABITED_TIME: &str = "InhabitedTime";
 pub const LIGHT_POPULATED: &str = "LightPopulated";

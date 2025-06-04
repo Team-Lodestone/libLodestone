@@ -10,6 +10,7 @@ pub enum Value {
     Int32(i32),
     Int16(i16),
     Int8(i8),
+    Bool(bool),
     // possible values
 }
 
@@ -26,6 +27,7 @@ hashmap_impl_type!(i64, Int64);
 hashmap_impl_type!(i32, Int32);
 hashmap_impl_type!(i16, Int16);
 hashmap_impl_type!(i8, Int8);
+hashmap_impl_type!(bool, Bool);
 
 pub trait HashMapExt {
     fn set_value<T>(&mut self, key: String, value: T)
