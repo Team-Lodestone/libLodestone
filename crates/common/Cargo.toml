@@ -3,12 +3,12 @@ name = "lodestone_common"
 authors = ["Team Lodestone"]
 description = "libLodestone Commons crate"
 
-edition    .workspace = true
-version    .workspace = true
-license    .workspace = true
-readme     .workspace = true
-repository .workspace = true
-homepage   .workspace = true
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+readme.workspace = true
+repository.workspace = true
+homepage.workspace = true
 
 
 [lib]
@@ -20,10 +20,12 @@ default = ["dep:console_error_panic_hook"]
 
 [dependencies]
 
-byteorder                .workspace = true
-phf                      = { workspace = true, features = ["macros"] }
-regex                    .workspace = true
-wasm-bindgen             .workspace = true
+byteorder.workspace = true
+phf = { workspace = true, features = ["macros"] }
+regex.workspace = true
+wasm-bindgen.workspace = true
 
 console_error_panic_hook = { workspace = true, optional = true }
-wee_alloc                = { workspace = true, optional = true }
+wee_alloc = { workspace = true, optional = true }
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = { version = "1.0" }

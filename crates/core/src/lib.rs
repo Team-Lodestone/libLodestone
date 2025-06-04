@@ -1,6 +1,6 @@
 mod utils;
-pub use lodestone_java;
 pub use lodestone_common;
+pub use lodestone_java;
 pub use lodestone_level;
 // ==== GOALS ====
 // libLodestone will handle all conversion, plus Bedrock/PE and Java Edition reading/writing.
@@ -18,4 +18,3 @@ pub use lodestone_level;
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
-

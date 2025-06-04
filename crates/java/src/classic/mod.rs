@@ -1,3 +1,4 @@
+pub mod classic_world;
 pub mod mcgalaxy_lvl;
 pub mod mine_v2;
 
@@ -24,7 +25,7 @@ impl ClassicLevel {
         let z1 = depth as usize;
         let y1 = height as usize;
 
-        let mut blocks = vec![0; y1 * z1 * x1 ];
+        let mut blocks = vec![0; y1 * z1 * x1];
         // can't wait for the order to change between every edition of minecraft
         for y in 0..y0.min(y1) {
             for z in 0..z0.min(z1) {
@@ -75,8 +76,7 @@ impl ClassicLevel {
         let h = self.height as usize;
         let d = self.length as usize;
 
-        if x < 0 || y < 0 || z < 0 ||
-            x >= w || y >= h || z >= d {
+        if x >= w || y >= h || z >= d {
             return !0;
         }
 

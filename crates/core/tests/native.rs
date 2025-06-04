@@ -1,18 +1,19 @@
 #![cfg(target_arch = "x86_64")]
 
 #[cfg(test)]
+#[allow(dead_code)]
 mod tests {
-    use std::collections::HashMap;
-    use std::fs;
-    use std::fs::File;
-    use std::io::{Write};
     use flate2::write::GzEncoder;
     use flate2::Compression;
     use lodestone_java;
-    use lodestone_common;
+    use lodestone_java::anvil::Anvil;
+    use lodestone_java::classic::classic_world::CWLevel;
     use lodestone_java::classic::mine_v2::MineV2Level;
-    use lodestone_java::indev::IndevLevel;
-
+    use lodestone_java::mcregion::Region;
+    use lodestone_level::level;
+    use std::fs;
+    use std::fs::File;
+    use std::io::{Read, Write};
 
     // #[test]
     fn mcg_level() {
@@ -109,26 +110,147 @@ mod tests {
         of.write_all(&c).unwrap();
         of.flush().unwrap();
     }*/
-    
-    #[test]
-    fn indev_to_minev2() {
-        let fname = "omnimain.lvl";
 
-        let data = match fs::read(format!("../../test/indev/src/{}", fname)) {
+    // #[test]
+    fn region_folder_test() {
+        log::set_max_level(log::LevelFilter::Debug);
+        let mut level = level::Level::new();
+
+
+        println!("Reading level");
+        // https://stackoverflow.com/questions/76955637/rust-iterate-through-a-folder-and-open-each-file
+        let path = "D:\\Home\\Downloads\\lux whateverthefuck\\region";
+        let entries = std::fs::read_dir(path).unwrap();
+        for entry in entries {
+            match entry {
+                Ok(entry) => {
+                    println!("Processing region: {:?}", entry);
+                    let file = std::fs::File::open(entry.path());
+                    match file {
+                        Ok(mut file) => {
+                            let mut buffer = Vec::new();
+                            let content = file.read_to_end(&mut buffer);
+                            match content {
+                                Ok(sz) => {
+                                    level.read_mcr_into_existing(buffer).unwrap();
+                                }
+                                Err(e) => {
+                                    println!("  read error: {:?}", e);
+                                }
+                            }
+                        }
+                        Err(e) => {
+                            println!("  open error: {:?}", e);
+                        }
+                    }
+                }
+                Err(e) => {
+                    println!("  entry error: {:?}", e);
+                }
+            }
+        }
+
+        println!(
+            "World bounds (XYZ): {}x{}x{}",
+            level.get_block_width(),
+            level.get_block_height(),
+            level.get_block_length()
+        );
+
+        // println!("Generating blockmap");
+        // let blockmap = level.get_blockmap();
+
+        let mut out = vec![0u8; level.get_minev2_file_size()];
+        level.write_minev2(&mut out);
+
+        // why does this part take so damn long?
+        println!("Compressing");
+        let mut enc = GzEncoder::new(
+            Vec::with_capacity(level.get_minev2_file_size()),
+            Compression::fast(),
+        );
+        enc.write_all(&out).unwrap();
+        let c = enc.finish().unwrap();
+
+        println!("Writing");
+        let mut of =
+            File::create(format!("../../test/indev/dst/{}.mcworld", "level_test")).unwrap();
+        of.write_all(&c).unwrap();
+        of.flush().unwrap();
+
+        // let mut of2 = File::create(format!("../../test/regions/dst/{}_blockmap.dat", "level_test")).unwrap();
+        // of2.write_all(cast_slice(blockmap.as_slice())).unwrap();
+        // of2.flush().unwrap();
+    }
+
+    // #[test]
+    fn minev2_to_mcr_test() {
+        log::set_max_level(log::LevelFilter::Debug);
+        let fname = "Main 3";
+
+        println!("Reading file");
+        let data = match fs::read(format!("../../test/cw/src/{}.cw", fname)) {
             Ok(d) => d,
             Err(e) => {
                 eprintln!("uh oh {}", e);
                 return;
             }
         };
-        let mut indev = lodestone_level::level::Level::read_indev(data).unwrap();
 
-        let mut out = vec![0u8; indev.get_minev2_file_size()];
-        indev.write_minev2(out.as_mut_slice());
+        println!("Reading level");
+        let mut mv2 = lodestone_level::level::Level::read_cw(data).unwrap();
+        // let mut mv2 = lodestone_level::level::Level::read_minev2(data).unwrap();
+        // println!("Generating blockmap");
+        // let blockmap = mv2.get_blockmap();
+
+        let mut out = Vec::new();
+        mv2.write_mcr(&mut out);
+
+        // // why does this part take so damn long?
+        // println!("Compressing");
+        // let mut enc = GzEncoder::new(Vec::with_capacity(mv2.get_minev2_file_size()), Compression::fast());
+        // enc.write_all(&out).unwrap();
+        // let c = enc.finish().unwrap();
+        //
+        println!("Writing");
+        let mut of = File::create(format!("../../test/regions/dst/{}.mcr", fname)).unwrap();
+        of.write_all(&out).unwrap();
+        of.flush().unwrap();
+        //
+        // let mut of2 = File::create(format!("../../test/regions/dst/{}_blockmap.dat", fname)).unwrap();
+        // of2.write_all(cast_slice(blockmap.as_slice())).unwrap();
+        // of2.flush().unwrap();
+    }
+
+    // #[test]
+    fn mine_v2_test() {
+        log::set_max_level(log::LevelFilter::Debug);
+        let fname = "13a_03-level_greffen";
+
+        println!("Reading file");
+        let data = match fs::read(format!("../../test/minev2/src/{}.mine", fname)) {
+            Ok(d) => d,
+            Err(e) => {
+                eprintln!("uh oh {}", e);
+                return;
+            }
+        };
+
+        println!("Reading level");
+        // let mut mv2 = lodestone_level::level::Level::read_cw(data).unwrap();
+        let mut mv2 = lodestone_level::level::Level::read_minev2(data).unwrap();
+        // println!("Generating blockmap");
+        // let blockmap = mv2.get_blockmap();
+
+        let mut out = vec![0u8; mv2.get_minev2_file_size()];
+        mv2.write_minev2(&mut out);
 
         // why does this part take so damn long?
         println!("Compressing");
-        let mut enc = GzEncoder::new(Vec::with_capacity(indev.get_minev2_file_size()), Compression::best());
+        let mut enc = GzEncoder::new(
+            Vec::with_capacity(mv2.get_minev2_file_size()),
+            Compression::fast(),
+        );
         enc.write_all(&out).unwrap();
         let c = enc.finish().unwrap();
 
@@ -136,6 +258,52 @@ mod tests {
         let mut of = File::create(format!("../../test/minev2/dst/{}.mine", fname)).unwrap();
         of.write_all(&c).unwrap();
         of.flush().unwrap();
+        //
+        // let mut of2 = File::create(format!("../../test/regions/dst/{}_blockmap.dat", fname)).unwrap();
+        // of2.write_all(cast_slice(blockmap.as_slice())).unwrap();
+        // of2.flush().unwrap();
+    }
+
+    #[test]
+    fn mca_to_minev2_test() {
+        log::set_max_level(log::LevelFilter::Debug);
+        let fname = "r.0.0";
+
+        println!("Reading file");
+        let data = match fs::read(format!("../../test/anvil/src/{}.mca", fname)) {
+            Ok(d) => d,
+            Err(e) => {
+                eprintln!("uh oh {}", e);
+                return;
+            }
+        };
+
+        println!("Reading level");
+        // let mut mv2 = lodestone_level::level::Level::read_cw(data).unwrap();
+        let mut mv2 = lodestone_level::level::Level::read_anvil(data).unwrap();
+        // println!("Generating blockmap");
+        // let blockmap = mv2.get_blockmap();
+
+        let mut out = vec![0u8; mv2.get_minev2_file_size()];
+        mv2.write_minev2(&mut out);
+
+        // why does this part take so damn long?
+        println!("Compressing");
+        let mut enc = GzEncoder::new(
+            Vec::with_capacity(mv2.get_minev2_file_size()),
+            Compression::fast(),
+        );
+        enc.write_all(&out).unwrap();
+        let c = enc.finish().unwrap();
+
+        println!("Writing");
+        let mut of = File::create(format!("../../test/minev2/dst/{}.mine", fname)).unwrap();
+        of.write_all(&c).unwrap();
+        of.flush().unwrap();
+        //
+        // let mut of2 = File::create(format!("../../test/regions/dst/{}_blockmap.dat", fname)).unwrap();
+        // of2.write_all(cast_slice(blockmap.as_slice())).unwrap();
+        // of2.flush().unwrap();
     }
 
     // #[test]
@@ -153,34 +321,34 @@ mod tests {
     //     };
     //     let mut minev2 = lodestone_level::level::Level::read_indev(data).unwrap();
 
-        // let mut mcg = lodestone_java::classic::mcgalaxy_lvl::MCGLevel::new(minev2.width, minev2.height, minev2.length, 0, 0, 0, 0, 0, 0, 0);
+    // let mut mcg = lodestone_java::classic::mcgalaxy_lvl::MCGLevel::new(minev2.width, minev2.height, minev2.length, 0, 0, 0, 0, 0, 0, 0);
 
-        /*for y in 0..minev2.classic_level.height {
-            for z in 0..minev2.classic_level.length {
-                for x in 0..minev2.classic_level.width {
-                    // println!("x: {}, y: {}, z: {}", x, y, z);
+    /*for y in 0..minev2.classic_level.height {
+        for z in 0..minev2.classic_level.length {
+            for x in 0..minev2.classic_level.width {
+                // println!("x: {}, y: {}, z: {}", x, y, z);
 
-                    mcg.set_block(x, y, z, minev2.classic_level.get_block(x, y, z) as i16);
-                }
+                mcg.set_block(x, y, z, minev2.classic_level.get_block(x, y, z) as i16);
             }
         }
+    }
 
-        // can't be bothered to figure out a good way to do this...
-        // although I can already think of just putting in a `get_size` method in every Level impl.
-        let mut out = vec![0u8; 2 + 2 + 2 + 2 + 2 + 2 + 2 + 1 + 1 + 1 + 1 + 1 + mcg.classic_level.blocks.len() + mcg.calc_section_length()];
+    // can't be bothered to figure out a good way to do this...
+    // although I can already think of just putting in a `get_size` method in every Level impl.
+    let mut out = vec![0u8; 2 + 2 + 2 + 2 + 2 + 2 + 2 + 1 + 1 + 1 + 1 + 1 + mcg.classic_level.blocks.len() + mcg.calc_section_length()];
 
-        mcg.write(&mut out);
+    mcg.write(&mut out);
 
-        // why does this part take so damn long?
-        println!("Compressing");
-        let mut enc = GzEncoder::new(Vec::with_capacity(4 * 1024 * 1024), Compression::fast());
-        enc.write_all(&out).unwrap();
-        let c = enc.finish().unwrap();
+    // why does this part take so damn long?
+    println!("Compressing");
+    let mut enc = GzEncoder::new(Vec::with_capacity(4 * 1024 * 1024), Compression::fast());
+    enc.write_all(&out).unwrap();
+    let c = enc.finish().unwrap();
 
-        println!("Writing");
-        let mut of = File::create(format!("test/lvl/dst/{}.lvl", fname)).unwrap();
-        of.write_all(&c).unwrap();
-        of.flush().unwrap();*/
+    println!("Writing");
+    let mut of = File::create(format!("test/lvl/dst/{}.lvl", fname)).unwrap();
+    of.write_all(&c).unwrap();
+    of.flush().unwrap();*/
     // }
 
     // #[test]

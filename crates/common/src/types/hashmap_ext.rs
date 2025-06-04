@@ -1,8 +1,8 @@
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-
 // Thanks, @robofinch!
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum Value {
     String(String),
     Vec(Vec<u8>),
@@ -28,9 +28,9 @@ hashmap_impl_type!(i16, Int16);
 hashmap_impl_type!(i8, Int8);
 
 pub trait HashMapExt {
-
     fn set_value<T>(&mut self, key: String, value: T)
-    where Value: From<T>;
+    where
+        Value: From<T>;
 
     fn get_value<T, S>(&self, key: S) -> Option<T>
     where
@@ -39,9 +39,9 @@ pub trait HashMapExt {
 }
 
 impl HashMapExt for HashMap<String, Value> {
-
     fn set_value<T>(&mut self, key: String, value: T)
-    where Value: From<T>
+    where
+        Value: From<T>,
     {
         self.insert(key, value.into());
     }

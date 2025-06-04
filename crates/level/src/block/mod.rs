@@ -5,7 +5,7 @@ pub struct Block {
     pub string_id: &'static str,
     pub id: u16,
     pub is_translucent: bool,
-    pub is_translucent_map: bool
+    pub is_translucent_map: bool,
 }
 
 // closest thing I could come up with

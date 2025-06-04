@@ -3,94 +3,133 @@ use lodestone_level::level::chunk::{CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_level::level::metadata;
 use lodestone_level::level::Level;
 use quartz_nbt::io::{self, Flavor};
-use quartz_nbt::{NbtCompound, NbtList, NbtTag};
+use quartz_nbt::{NbtCompound, NbtList, NbtReprError, NbtTag};
 use rayon::iter::IntoParallelRefMutIterator;
 use rayon::iter::ParallelIterator;
 use std::io::Cursor;
 
-pub trait IndevLevel {
-    fn new_indev(height: i16, name: String, author: String) -> Level;
-    fn read_indev(data: Vec<u8>) -> Result<Level, String>;
-    fn write_indev(&mut self, out: &mut Vec<u8>);
+pub trait CWLevel {
+    fn new_cw(height: i16, name: String, author: String) -> Level;
+    fn read_cw(data: Vec<u8>) -> Result<Level, String>;
+    fn write_cw(&mut self) -> Vec<u8>;
 }
 
-impl IndevLevel for Level {
-    fn new_indev(_height: i16, name: String, _author: String) -> Level {
+impl CWLevel for Level {
+    fn new_cw(_height: i16, name: String, _author: String) -> Level {
         // TODO: impl with default values
         Level::new_with_name(name)
     }
 
-    fn read_indev(data: Vec<u8>) -> Result<Level, String> {
+    fn read_cw(data: Vec<u8>) -> Result<Level, String> {
+        log::debug!("Reading compound");
         let nbt = io::read_nbt(&mut Cursor::new(&data), Flavor::Uncompressed)
-            .expect("Level NBT data")
+            .expect("ClassicWorld NBT data")
             .0;
 
-        let about: &NbtCompound = nbt.get("About").expect("About compound");
-        let environment: &NbtCompound = nbt.get("Environment").expect("Environment compound");
-        let map: &NbtCompound = nbt.get("Map").expect("Map compound");
-        // let entities: &NbtList = nbt.get("Entities").expect("Entities compound list");
-        // let tile_entities: &NbtList = nbt.get("TileEntities").expect("TileEntities compound list");
+        log::debug!("Reading header");
+        // let format_version: i8 = nbt.get("FormatVersion").expect("Level version");
+        let name: &str = nbt.get("Name").unwrap_or("Unknown");
+        // let uuid: &[u8] = nbt.get("UUID").expect("Level UUID");
 
-        // About
-        let author: &str = about.get("Author").expect("Author string");
-        let name: &str = about.get("Name").expect("Name string");
-        let created_on: i64 = about.get("CreatedOn").expect("CreatedOn i64");
+        let width: i16 = nbt.get("X").expect("Level width");
+        let height: i16 = nbt.get("Y").expect("Level height");
+        let length: i16 = nbt.get("Z").expect("Level length");
 
-        println!("author: {}, name: {}", author, name);
+        let created_by: Result<&NbtCompound, NbtReprError> = nbt.get("CreatedBy");
 
-        // Environment
-        let time: i16 = environment.get("TimeOfDay").expect("Time of day");
-        let sky_brightness: i8 = environment.get("SkyBrightness").expect("SkyBrightness tag");
-        let cloud_height: i16 = environment.get("CloudHeight").expect("Cloud Height");
-        let cloud_color: i32 = environment.get("CloudColor").expect("Cloud Color");
-        let sky_color: i32 = environment.get("SkyColor").expect("Sky Color");
-        let fog_color: i32 = environment.get("FogColor").expect("Fog Color");
-        let surrounding_ground_height: i16 = environment
-            .get("SurroundingGroundHeight")
-            .expect("SurroundingGroundHeight tag");
-        let surrounding_water_height: i16 = environment
-            .get("SurroundingWaterHeight")
-            .expect("SurroundingWaterHeight tag");
-        let surrounding_ground_type: i8 = environment
-            .get("SurroundingGroundType")
-            .expect("SurroundingGroundType tag");
-        let surrounding_water_type: i8 = environment
-            .get("SurroundingWaterType")
-            .expect("SurroundingWaterType tag");
+        let software: &str;
+        let username: &str;
 
-        // Map
-        let width: i16 = map.get("Width").expect("Width tag");
-        let length: i16 = map.get("Length").expect("Length tag");
-        let height: i16 = map.get("Height").expect("Height tag");
-        let spawn: &NbtList = map.get("Spawn").expect("Spawn tag");
-        let blocks: &[u8] = map.get("Blocks").expect("Blocks tag");
-        // let data: &[u8] = map.get("Data").expect("Data tag");
+        match created_by {
+            Ok(created) => {
+                software = created.get("Software").unwrap_or("Unknown");
+                username = created.get("Username").unwrap_or("Unknown");
+            }
+            Err(_) => {
+                software = "Unknown";
+                username = "Unknown";
+            }
+        }
 
-        // // TODO: better impl for errors
-        // if blocks.len() != (width * length * height) {
-        //     panic!("Read blocks does not match level dimensions!");
-        // }
+        println!(
+            "name: {}, username: {}, software: {}",
+            name, username, software
+        );
 
-        // if data.len() != (width * length * height) {
-        //     panic!("Read metadata does not match level dimensions!");
-        // }
+        let map_generator: Result<&NbtCompound, NbtReprError> = nbt.get("MapGenerator");
 
+        let map_software: &str;
+        let map_generator_name: &str;
+
+        match map_generator {
+            Ok(generator) => {
+                map_software = generator.get("Software").unwrap_or("Unknown");
+                map_generator_name = generator.get("MapGeneratorName").unwrap_or("Unknown");
+            }
+            Err(_) => {
+                map_software = "Unknown";
+                map_generator_name = "Unknown";
+            }
+        }
+
+        println!(
+            "map gen software: {}, map gen name: {}",
+            map_software, map_generator_name
+        );
+
+        let time_created: i64 = nbt.get("TimeCreated").unwrap_or(0);
+        let last_accessed: i64 = nbt.get("LastAccessed").unwrap_or(0);
+        let last_modified: i64 = nbt.get("LastModified").unwrap_or(0);
+
+        let spawn: Result<&NbtCompound, NbtReprError> = nbt.get("Spawn");
+
+        let spawn_x: i16;
+        let spawn_y: i16;
+        let spawn_z: i16;
+        let spawn_yaw: i8;
+        let spawn_pitch: i8;
+
+        match spawn {
+            Ok(sp) => {
+                spawn_x = sp.get("X").unwrap_or(0);
+                spawn_y = sp.get("Y").unwrap_or(0);
+                spawn_z = sp.get("Z").unwrap_or(0);
+                spawn_yaw = sp.get("H").unwrap_or(0);
+                spawn_pitch = sp.get("P").unwrap_or(0);
+            }
+            Err(_) => {
+                spawn_x = 0;
+                spawn_y = 0;
+                spawn_z = 0;
+                spawn_yaw = 0;
+                spawn_pitch = 0;
+            }
+        }
+
+        log::debug!("width: {}, height: {}, length: {}", width, height, length);
+        log::debug!("Reading block array");
+
+        let blocks: &[u8] = nbt.get("BlockArray").expect("Level blocks");
+
+        log::debug!("Preparing level");
         let mut level = Level::new_with_name(name.to_owned());
 
-        // Spawn
-        let NbtTag::Short(spawn_x) = spawn[0] else {
-            panic!("spawn_x was not a short")
-        }; // can't we just do .expect?
-        let NbtTag::Short(spawn_y) = spawn[1] else {
-            panic!("spawn_y was not a short")
-        };
-        let NbtTag::Short(spawn_z) = spawn[2] else {
-            panic!("spawn_z was not a short")
-        };
+        // TODO: store later
+        // level.custom_data.set_value(metadata::UUID.to_string(), uuid);
+        level.custom_data.set_value(metadata::LAST_MODIFIED.to_string(), last_modified);
+        level.custom_data.set_value(metadata::LAST_ACCESSED.to_string(), last_accessed);
+        level.custom_data.set_value(metadata::CREATION_TIME.to_string(), time_created);
+        level.custom_data.set_value(metadata::SPAWN_YAW.to_string(), spawn_yaw);
+        level.custom_data.set_value(metadata::SPAWN_PITCH.to_string(), spawn_pitch);
 
+        log::debug!("Setting level spawn point");
         level.set_spawn_point(spawn_x, spawn_y, spawn_z);
+        log::debug!("Creating chunks");
+        log::debug!("Width: {}, Height: {}, Length: {}", width, height, length);
         level.create_finite(width as i32, height, length as i32);
 
+        log::debug!("Read into chunks");
+        // let s = Instant::now();
         let chunks = level.get_chunks_mut();
 
         let _ = chunks.par_iter_mut().for_each(|c| {
@@ -121,52 +160,10 @@ impl IndevLevel for Level {
             }
         });
 
-        // About
-        level
-            .custom_data
-            .set_value(metadata::CREATION_TIME.to_string(), created_on);
-        level.name = name.to_string();
-        level
-            .custom_data
-            .set_value(metadata::AUTHOR.to_string(), author.to_string());
-        // Environment
-        level.time = time;
-        level
-            .custom_data
-            .set_value(metadata::SKY_BRIGHTNESS.to_string(), sky_brightness);
-        level
-            .custom_data
-            .set_value(metadata::SKY_COLOR.to_string(), sky_color);
-        level
-            .custom_data
-            .set_value(metadata::FOG_COLOR.to_string(), fog_color);
-        level
-            .custom_data
-            .set_value(metadata::CLOUD_COLOR.to_string(), cloud_color);
-        level
-            .custom_data
-            .set_value(metadata::CLOUD_HEIGHT.to_string(), cloud_height);
-        level.custom_data.set_value(
-            metadata::SURROUNDING_GROUND_TYPE.to_string(),
-            surrounding_ground_type,
-        );
-        level.custom_data.set_value(
-            metadata::SURROUNDING_GROUND_HEIGHT.to_string(),
-            surrounding_ground_height,
-        );
-        level.custom_data.set_value(
-            metadata::SURROUNDING_WATER_TYPE.to_string(),
-            surrounding_water_type,
-        );
-        level.custom_data.set_value(
-            metadata::SURROUNDING_WATER_HEIGHT.to_string(),
-            surrounding_water_height,
-        );
-
         Ok(level)
     }
 
-    fn write_indev(&mut self, out: &mut Vec<u8>) {
+    fn write_cw(&mut self) -> Vec<u8> {
         let mut mclvl = NbtCompound::new();
         let mut about = NbtCompound::new();
         let mut env = NbtCompound::new();
@@ -246,9 +243,9 @@ impl IndevLevel for Level {
                 .unwrap_or(self.get_max_block_y() / 2),
         );
 
-        let width = self.get_block_width();
-        let length = self.get_block_length();
-        let height = self.get_block_height();
+        let width = self.get_max_block_x();
+        let length = self.get_max_block_z();
+        let height = self.get_max_block_y();
 
         // map
         map.insert("Width".to_string(), width as i16);
@@ -270,16 +267,15 @@ impl IndevLevel for Level {
             Vec::with_capacity((width as usize) * (length as usize) * (height as usize));
         data.resize((width as usize) * (length as usize) * (height as usize), 0);
 
-        let mx = self.get_min_block_x();
-        let mz = self.get_min_block_z();
-
         for y in 0..height {
             for z in 0..length {
                 for x in 0..width {
-                    blocks[(y as usize) * (length as usize * width as usize)
+                    let i = (y as usize) * ((length as usize) * (width as usize))
                         + (z as usize) * (width as usize)
-                        + (x as usize)] =
-                        self.get_block(x as i32 + mx, y as i16, z as i32 + mz) as i8;
+                        + (x as usize);
+
+                    blocks[i] = self.get_block(x, y, z) as i8;
+                    data[i] = self.get_data(x, y, z) as i8;
                 }
             }
         }
@@ -295,6 +291,15 @@ impl IndevLevel for Level {
         mclvl.insert("Entities".to_string(), entities);
         mclvl.insert("TileEntities".to_string(), tile_entities);
 
-        io::write_nbt(out, Some("MinecraftLevel"), &mclvl, Flavor::Uncompressed).unwrap();
+        let mut out: Vec<u8> = Vec::new();
+        io::write_nbt(
+            &mut out,
+            Some("MinecraftLevel"),
+            &mclvl,
+            Flavor::Uncompressed,
+        )
+        .unwrap();
+
+        out
     }
 }

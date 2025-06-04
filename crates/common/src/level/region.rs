@@ -7,13 +7,13 @@ pub enum Compression {
     Zlib = 2,
     None = 3,
     LZ4 = 4,
-    Custom = 127 // never will properly support...
+    Custom = 127, // never will properly support...
 }
 
 #[derive(Clone, Default)]
 pub struct ChunkLocation {
     pub offset: u32,
-    pub size: u8
+    pub size: u8,
 }
 
 impl TryFrom<i8> for Compression {

@@ -12,7 +12,7 @@ members = [
 [workspace.package]
 edition    = "2024"
 # usually I've been incrementing minor ver everytime I add a new supported level format...
-version    = "0.4.0"
+version    = "0.5.0"
 # TODO: specify MSRV (minimum supported rust version)
 license    = "LGPL-2.1"
 readme     = "README.md"
@@ -42,6 +42,7 @@ wasm-bindgen         = "0.2.100"
 wasm-bindgen-futures = "0.4.0"
 wasm-logger          = "0.2.0"
 web-sys              = "0.3.70"
+serde_with           = "3.12.0"
 
 
 # The `console_error_panic_hook` crate provides better debugging of panics by

@@ -2,7 +2,6 @@ use crate::classic::ClassicLevel;
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use std::io::{Cursor, Read, Write};
 
-
 // TODO: make this work (when Zero is back)
 
 // IMPORTANT: there can be extra data after the block array due to extensions to the format made by both the server software and plugins.
@@ -279,18 +278,18 @@ impl MCGLevel {
     pub fn write(&self, out: &mut [u8]) {
         if out.len()
             < 2 + 2
-            + 2
-            + 2
-            + 2
-            + 2
-            + 2
-            + 1
-            + 1
-            + 1
-            + 1
-            + 1
-            + self.classic_level.blocks.len()
-            + self.calc_section_length()
+                + 2
+                + 2
+                + 2
+                + 2
+                + 2
+                + 1
+                + 1
+                + 1
+                + 1
+                + 1
+                + self.classic_level.blocks.len()
+                + self.calc_section_length()
         {
             panic!("Output buffer is too small");
         }
@@ -340,7 +339,7 @@ impl MCGLevel {
         let d = self.classic_level.length as usize;
         let h = self.classic_level.height as usize;
 
-        if x < 0 || y < 0 || z < 0 || x >= w || y >= h || z >= d {
+        if x >= w || y >= h || z >= d {
             return !0;
         }
 

@@ -19,3 +19,9 @@ pub fn write_prefixed_2_byte_string(c: &mut Cursor<&mut [u8]>, str: &String) {
     c.write_i16::<BigEndian>(len as i16).expect("String length");
     c.write_all(str.as_bytes()).expect("Write string");
 }
+
+pub fn into_nibble_array(data: Vec<u8>) -> Vec<u8> {
+    data.chunks(2)
+        .map(|c| (c[0] << 4) | (c[1] & 0x0F))
+        .collect()
+}

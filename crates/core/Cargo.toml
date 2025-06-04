@@ -3,12 +3,12 @@ name = "lodestone"
 authors = ["Team Lodestone"]
 description = "Provides reading, writing, and format conversion for most editions and versions of Minecraft."
 
-edition    .workspace = true
-version    .workspace = true
-license    .workspace = true
-readme     .workspace = true
-repository .workspace = true
-homepage   .workspace = true
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+readme.workspace = true
+repository.workspace = true
+homepage.workspace = true
 
 
 [lib]
@@ -19,16 +19,17 @@ default = ["dep:console_error_panic_hook"]
 
 
 [dependencies]
-lodestone_common         .workspace = true
-lodestone_java           .workspace = true
-lodestone_level          .workspace = true
+lodestone_common.workspace = true
+lodestone_java.workspace = true
+lodestone_level.workspace = true
 
-flate2                   .workspace = true
-log                      .workspace = true
-wasm-bindgen             .workspace = true
+flate2.workspace = true
+log.workspace = true
+wasm-bindgen.workspace = true
 
 console_error_panic_hook = { workspace = true, optional = true }
-wee_alloc                = { workspace = true, optional = true }
+wee_alloc = { workspace = true, optional = true }
+bytemuck = "1.23.0"
 
 [dev-dependencies]
 wasm-bindgen-test.workspace = true
