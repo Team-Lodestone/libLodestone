@@ -7,6 +7,8 @@ use lodestone_level::level::chunk::{Chunk, CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_level::level::{metadata, Coords, Level};
 use quartz_nbt::io::Flavor;
 use quartz_nbt::{io, NbtCompound, NbtList};
+use rayon::iter::ParallelIterator;
+use rayon::prelude::IntoParallelRefIterator;
 use std::io::{Cursor, Read, Seek, SeekFrom, Write};
 // TODO: use new nbt library, also allow for reading into a vec of chunks that one can just add to the Level's own chunks. Or we could make a read_mcregion_into_level which will add the new chunks to an existing level.
 
@@ -38,48 +40,55 @@ impl Region for Level {
             *ts = c.read_i32::<BigEndian>().expect("Chunk timestamp");
         }
 
-        // TODO: find a way to make parallel
-        for l in locations.iter() {
-            if (l.size as usize) * 4096 == 0 {
-                continue;
-            }
-
-            c.set_position((l.offset as u64) * 4096);
-
-            let len = c.read_u32::<BigEndian>().expect("Chunk byte length");
-            let comp = c.read_i8().expect("Chunk compression");
-            let compression = Compression::try_from(comp).expect("Chunk compression enum");
-
-            let mut compressed = vec![0u8; (len - 1) as usize];
-            c.read_exact(compressed.as_mut_slice())
-                .expect("Compressed chunk data");
-
-            let mut chunk_data: Vec<u8> = Vec::new();
-
-            // TODO: support the other 2 methods
-            let dec: Option<Box<dyn Read>> = match compression {
-                Compression::Zlib => {
-                    Some(Box::new(ZlibDecoder::new(Cursor::new(compressed.clone()))))
-                } // cloning seems really janky...?
-                Compression::GZip => {
-                    Some(Box::new(GzDecoder::new(Cursor::new(compressed.clone()))))
+        let chunks: Vec<(Coords, Chunk)> = locations
+            .par_iter()
+            .filter_map(|l| {
+                if l.size == 0 {
+                    return None;
                 }
-                Compression::None => None,
-                _ => {
-                    panic!("Unsupported compression format!")
-                } // is this a good idea? I don't know if you can "catch" a panic...
-            };
 
-            if compression != Compression::None {
-                dec.expect("Decompressor")
-                    .read_to_end(&mut chunk_data)
-                    .expect("Decompressed chunk data");
-            } else {
-                chunk_data = compressed.to_vec();
-            }
+                let mut c = c.clone();
+                c.set_position((l.offset as u64) * 4096);
 
-            let ch = Chunk::read_mcr(chunk_data).expect("Region Chunk from data");
-            level.add_chunk(Coords { x: ch.1, z: ch.2 }, ch.0);
+                let len = c.read_u32::<BigEndian>().expect("Chunk byte length");
+                let comp = c.read_i8().expect("Chunk compression");
+                let compression = Compression::try_from(comp).expect("Chunk compression enum");
+
+                let mut compressed = vec![0u8; (len - 1) as usize];
+                c.read_exact(compressed.as_mut_slice())
+                    .expect("Compressed chunk data");
+
+                let mut chunk_data: Vec<u8> = Vec::new();
+
+                // TODO: support the other 2 methods
+                let dec: Option<Box<dyn Read>> = match compression {
+                    Compression::Zlib => {
+                        Some(Box::new(ZlibDecoder::new(Cursor::new(compressed.clone()))))
+                    } // cloning seems really janky...?
+                    Compression::GZip => {
+                        Some(Box::new(GzDecoder::new(Cursor::new(compressed.clone()))))
+                    }
+                    Compression::None => None,
+                    _ => {
+                        panic!("Unsupported compression format!")
+                    } // is this a good idea? I don't know if you can "catch" a panic...
+                };
+
+                if compression != Compression::None {
+                    dec.expect("Decompressor")
+                        .read_to_end(&mut chunk_data)
+                        .expect("Decompressed chunk data");
+                } else {
+                    chunk_data = compressed.to_vec();
+                }
+
+                let ch = Chunk::read_mcr(chunk_data).expect("Region Chunk from data");
+                Some((Coords { x: ch.1, z: ch.2 }, ch.0))
+            })
+            .collect();
+
+        for (coords, chunk) in chunks {
+            level.add_chunk(coords, chunk);
         }
 
         Ok(level)
@@ -101,47 +110,54 @@ impl Region for Level {
             *ts = c.read_i32::<BigEndian>().expect("Chunk timestamp");
         }
 
-        for l in locations.iter() {
-            if (l.size as usize) * 4096 == 0 {
-                continue;
-            }
-
-            c.set_position((l.offset as u64) * 4096);
-
-            let len = c.read_u32::<BigEndian>().expect("Chunk byte length");
-            let comp = c.read_i8().expect("Chunk compression");
-            let compression = Compression::try_from(comp).expect("Chunk compression enum");
-
-            let mut compressed = vec![0u8; (len - 1) as usize];
-            c.read_exact(compressed.as_mut_slice())
-                .expect("Compressed chunk data");
-
-            let mut chunk_data: Vec<u8> = Vec::new();
-
-            // TODO: support the other 2 methods
-            let dec: Option<Box<dyn Read>> = match compression {
-                Compression::Zlib => {
-                    Some(Box::new(ZlibDecoder::new(Cursor::new(compressed.clone()))))
-                } // cloning seems really janky...?
-                Compression::GZip => {
-                    Some(Box::new(GzDecoder::new(Cursor::new(compressed.clone()))))
+        let chunks: Vec<(Coords, Chunk)> = locations
+            .par_iter()
+            .filter_map(|l| {
+                if l.size == 0 {
+                    return None;
                 }
-                Compression::None => None,
-                _ => {
-                    panic!("Unsupported compression format!")
-                } // is this a good idea? I don't know if you can "catch" a panic...
-            };
 
-            if compression != Compression::None {
-                dec.expect("Decompressor")
-                    .read_to_end(&mut chunk_data)
-                    .expect("Decompressed chunk data");
-            } else {
-                chunk_data = compressed.to_vec();
-            }
+                let mut c = c.clone();
+                c.set_position((l.offset as u64) * 4096);
 
-            let ch = Chunk::read_mcr(chunk_data).expect("Region Chunk from data");
-            self.add_chunk(Coords { x: ch.1, z: ch.2 }, ch.0);
+                let len = c.read_u32::<BigEndian>().expect("Chunk byte length");
+                let comp = c.read_i8().expect("Chunk compression");
+                let compression = Compression::try_from(comp).expect("Chunk compression enum");
+
+                let mut compressed = vec![0u8; (len - 1) as usize];
+                c.read_exact(compressed.as_mut_slice())
+                    .expect("Compressed chunk data");
+
+                let mut chunk_data: Vec<u8> = Vec::new();
+
+                // TODO: support the other 2 methods
+                let dec: Option<Box<dyn Read>> = match compression {
+                    Compression::Zlib => {
+                        Some(Box::new(ZlibDecoder::new(Cursor::new(compressed.clone()))))
+                    } // cloning seems really janky...?
+                    Compression::GZip => {
+                        Some(Box::new(GzDecoder::new(Cursor::new(compressed.clone()))))
+                    }
+                    Compression::None => None,
+                    _ => {
+                        panic!("Unsupported compression format!")
+                    } // is this a good idea? I don't know if you can "catch" a panic...
+                };
+
+                if compression != Compression::None {
+                    dec.expect("Decompressor")
+                        .read_to_end(&mut chunk_data)
+                        .expect("Decompressed chunk data");
+                } else {
+                    chunk_data = compressed.to_vec();
+                }
+
+                let ch = Chunk::read_mcr(chunk_data).expect("Region Chunk from data");
+                Some((Coords { x: ch.1, z: ch.2 }, ch.0))
+            })
+            .collect();
+        for (coords, chunk) in chunks {
+            self.add_chunk(coords, chunk);
         }
     }
 

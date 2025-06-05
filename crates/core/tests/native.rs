@@ -16,6 +16,7 @@ mod tests {
     use std::fs::File;
     use std::io::{Read, Write};
     use std::path::Path;
+    use std::time::Instant;
 
     // #[test]
     fn mcg_level() {
@@ -50,7 +51,7 @@ mod tests {
     // #[test]
     fn indev_level() {
         // ignore weird path, for testing on local machine
-        let data = match fs::read("D:\\Home\\Downloads\\Indev World Backup") {
+        let _data = match fs::read("D:\\Home\\Downloads\\Indev World Backup") {
             Ok(d) => d,
             Err(e) => {
                 eprintln!("uh oh {}", e);
@@ -118,6 +119,7 @@ mod tests {
         log::set_max_level(log::LevelFilter::Debug);
         let mut level = Level::new();
 
+        let parse_start = Instant::now();
         println!("Reading level");
         // https://stackoverflow.com/questions/76955637/rust-iterate-through-a-folder-and-open-each-file
         let path = "../../test/regions/src/omni_beta/";
@@ -158,9 +160,12 @@ mod tests {
             level.get_block_length()
         );
 
+        let parse_elapsed = parse_start.elapsed();
+
         // println!("Generating blockmap");
         // let blockmap = level.get_blockmap();
 
+        let bitmap_start = Instant::now();
         let map = level.generate_bitmap();
 
         println!("Writing");
@@ -168,27 +173,9 @@ mod tests {
         of.write_all(&map).unwrap();
         of.flush().unwrap();
 
-        // let mut out = vec![0u8; level.get_minev2_file_size()];
-        // level.write_minev2(&mut out);
-        //
-        // // why does this part take so damn long?
-        // println!("Compressing");
-        // let mut enc = GzEncoder::new(
-        //     Vec::with_capacity(level.get_minev2_file_size()),
-        //     Compression::fast(),
-        // );
-        // enc.write_all(&out).unwrap();
-        // let c = enc.finish().unwrap();
-        //
-        // println!("Writing");
-        // let mut of =
-        //     File::create(format!("../../test/indev/dst/{}.mcworld", "level_test")).unwrap();
-        // of.write_all(&c).unwrap();
-        // of.flush().unwrap();
-
-        // let mut of2 = File::create(format!("../../test/regions/dst/{}_blockmap.dat", "level_test")).unwrap();
-        // of2.write_all(cast_slice(blockmap.as_slice())).unwrap();
-        // of2.flush().unwrap();
+        let bitmap_elapsed = bitmap_start.elapsed();
+        println!("Parse time {:?}", parse_elapsed);
+        println!("Bitmap time {:?}", bitmap_elapsed);
     }
 
     // #[test]
@@ -467,7 +454,7 @@ mod tests {
     fn mcg_to_mv2() {
         // wtf is this weird match syntax
         // also ignore weird path, for testing on local machine
-        let fname = "omnimain.lvl";
+        let _fname = "omnimain.lvl";
         //
         // let data = match fs::read(format!("test/lvl/src/{}", fname)) {
         //     Ok(d) => d,
