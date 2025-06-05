@@ -67,14 +67,16 @@ impl AlphaChunk for Chunk {
 
         // TODO: Batch this
         // TODO: Set state and lighting
-        for y in 0..chunk.height {
+        let chunk_length = CHUNK_LENGTH as usize;
+        let chunk_height = chunk.height as usize;
+        for y in 0..chunk_height {
+            let chunk_y = y as i16;
+
             for x in 0..16 {
                 for z in 0..16 {
-                    let block_idx = y as usize
-                        + (z * chunk.height as usize)
-                        + (x * chunk.height as usize) * CHUNK_LENGTH as usize;
+                    let block_idx = y + (z * chunk_height) + (x * chunk_height) * chunk_length;
 
-                    chunk.set_block(x as i8, y, z as i8, blocks[block_idx] as u16);
+                    chunk.set_block(x as i8, chunk_y, z as i8, blocks[block_idx] as u16);
                     // chunk.set_state(x, y, z, data[i] as u8);
                     // chunk.set_light(SKY, x, y, z, sky_light[i] as u8);
                     // chunk.set_light(BLOCK, x, y, z, block_light[i] as u8);
