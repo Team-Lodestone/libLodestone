@@ -87,7 +87,8 @@ impl AlphaChunk for Chunk {
 
     #[allow(unused_variables)]
     fn read_alpha_chunk_into_existing(mut lvl: Level, data: Vec<u8>) {
-        let chunk: (Coords, Chunk) = Self::read_alpha_chunk(data).expect("Could not read alpha chunk into existing level!");
+        let chunk: (Coords, Chunk) =
+            Self::read_alpha_chunk(data).expect("Could not read alpha chunk into existing level!");
 
         lvl.add_chunk(chunk.0, chunk.1);
     }
