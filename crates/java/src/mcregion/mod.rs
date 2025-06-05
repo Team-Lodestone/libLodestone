@@ -10,7 +10,8 @@ use quartz_nbt::{io, NbtCompound, NbtList};
 use rayon::iter::ParallelIterator;
 use rayon::prelude::IntoParallelRefIterator;
 use std::io::{Cursor, Read, Seek, SeekFrom, Write};
-// TODO: use new nbt library, also allow for reading into a vec of chunks that one can just add to the Level's own chunks. Or we could make a read_mcregion_into_level which will add the new chunks to an existing level.
+// TODO: Allow for reading into a vec of chunks that one can just add to the Level's own chunks. 
+// Or we could make a read_mcr_into_level which will add the new chunks to an existing level.
 
 pub trait Region {
     fn read_mcr(data: Vec<u8>) -> Result<Level, String>;
@@ -18,8 +19,8 @@ pub trait Region {
     fn write_mcr(&mut self, out: &mut Vec<u8>);
 }
 pub trait MCRChunk {
-    fn read_mcr(data: Vec<u8>) -> Result<(Chunk, i32, i32), String>;
-    fn write_mcr(&self, out: &mut Vec<u8>, x: i32, z: i32);
+    fn read_mcr(data: Vec<u8>) -> Result<(Chunk, Coords), String>;
+    fn write_mcr(&self, out: &mut Vec<u8>, coords: &Coords);
 }
 
 impl Region for Level {
@@ -83,7 +84,7 @@ impl Region for Level {
                 }
 
                 let ch = Chunk::read_mcr(chunk_data).expect("Region Chunk from data");
-                Some((Coords { x: ch.1, z: ch.2 }, ch.0))
+                Some((ch.1, ch.0))
             })
             .collect();
 
@@ -153,7 +154,7 @@ impl Region for Level {
                 }
 
                 let ch = Chunk::read_mcr(chunk_data).expect("Region Chunk from data");
-                Some((Coords { x: ch.1, z: ch.2 }, ch.0))
+                Some((ch.1, ch.0))
             })
             .collect();
         for (coords, chunk) in chunks {
@@ -174,7 +175,7 @@ impl Region for Level {
             let mut ch: Vec<u8> = Vec::new();
 
             chunk.set_height(128);
-            chunk.write_mcr(&mut ch, coords.x, coords.z);
+            chunk.write_mcr(&mut ch, coords);
 
             let len = ch.len();
             let sector_size = ((len + 5) + 4095) / 4096;
@@ -217,7 +218,7 @@ impl Region for Level {
 impl MCRChunk for Chunk {
     // INCOMPLETE: we need to store the light data correctly
     // plus need entities and all
-    fn read_mcr(data: Vec<u8>) -> Result<(Chunk, i32, i32), String> {
+    fn read_mcr(data: Vec<u8>) -> Result<(Chunk, Coords), String> {
         let nbt = io::read_nbt(&mut Cursor::new(&data), Flavor::Uncompressed)
             .expect("Chunk NBT data")
             .0;
@@ -264,17 +265,17 @@ impl MCRChunk for Chunk {
         // c.block_light = block_light.to_vec();
         // c.height_map = height_map.to_vec();
 
-        Ok((c, x, z))
+        Ok((c, Coords { x, z }))
     }
 
-    fn write_mcr(&self, out: &mut Vec<u8>, x: i32, z: i32) {
+    fn write_mcr(&self, out: &mut Vec<u8>, coords: &Coords) {
         // spent forever wondering why it wouldn't see the chunks
         // notch put the Level tag under another tag... why?
         let mut nbt = NbtCompound::new();
         let mut c = NbtCompound::new();
 
-        c.insert("xPos".to_string(), x);
-        c.insert("zPos".to_string(), z);
+        c.insert("xPos".to_string(), coords.x);
+        c.insert("zPos".to_string(), coords.z);
         c.insert(
             "Blocks".to_string(),
             self.blocks
