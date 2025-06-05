@@ -87,57 +87,9 @@ impl AlphaChunk for Chunk {
 
     #[allow(unused_variables)]
     fn read_alpha_chunk_into_existing(mut lvl: Level, data: Vec<u8>) {
-        let chunk_nbt = io::read_nbt(&mut Cursor::new(&data), Flavor::Uncompressed)
-            .expect("Alpha chunk NBT data")
-            .0;
+        let chunk: (Coords, Chunk) = Self::read_alpha_chunk(data).expect("Could not read alpha chunk into existing level!");
 
-        let root: &NbtCompound = chunk_nbt.get("Level").unwrap();
-
-        let last_update: i64 = root.get("LastUpdate").expect("LastUpdate value");
-        let terrain_populated: bool = root
-            .get("TerrainPopulated")
-            .expect("TerrainPopulated value");
-        let chunk_x: i32 = root.get("xPos").expect("xPos value");
-        let chunk_z: i32 = root.get("zPos").expect("zPos value");
-        let block_light: &Vec<i8> = root.get("BlockLight").expect("BlockLight array");
-        let blocks: &Vec<i8> = root.get("Blocks").expect("Blocks array");
-        let data: &Vec<i8> = root.get("Data").expect("Data array");
-        // Ignore heightmap
-        let sky_light: &Vec<i8> = root.get("SkyLight").expect("SkyLight array");
-
-        // Store chunk data into chunk
-        let coords: Coords = Coords {
-            x: chunk_x,
-            z: chunk_z,
-        };
-        let mut chunk = Chunk::new(128);
-        chunk
-            .custom_data
-            .insert(metadata::LAST_UPDATE.to_string(), Int64(last_update));
-        chunk.custom_data.insert(
-            metadata::TERRAIN_POPULATED.to_string(),
-            Bool(terrain_populated),
-        );
-
-        // TODO: Batch this
-        // TODO: Set state and lighting
-        for y in 0..chunk.height {
-            for x in 0..16 {
-                for z in 0..16 {
-                    // Probably incorrect... this is what the wiki says.
-                    let block_idx = y as usize
-                        + (z * chunk.height as usize)
-                        + (x * chunk.height as usize) * CHUNK_LENGTH as usize;
-
-                    chunk.set_block(x as i8, y, z as i8, blocks[block_idx] as u16);
-                    // chunk.set_state(x, y, z, data[i] as u8);
-                    // chunk.set_light(SKY, x, y, z, sky_light[i] as u8);
-                    // chunk.set_light(BLOCK, x, y, z, block_light[i] as u8);
-                }
-            }
-        }
-
-        lvl.add_chunk(coords, chunk);
+        lvl.add_chunk(chunk.0, chunk.1);
     }
 
     #[allow(unused_variables)]
