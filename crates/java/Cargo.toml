@@ -26,8 +26,6 @@ byteorder.workspace = true
 flate2.workspace = true
 log.workspace = true
 quartz_nbt.workspace = true
-wasm-bindgen.workspace = true
 
 console_error_panic_hook = { workspace = true, optional = true }
-wee_alloc = { workspace = true, optional = true }
 rayon = "1.10.0"

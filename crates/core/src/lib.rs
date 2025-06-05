@@ -12,9 +12,3 @@ pub use lodestone_level;
 // I hope to structure the codebase cleanly, taking inspiration from multi-project codebases...
 // For example... we could have a different "project" or module for each reader, which would allow ease of use in other projects.
 // I'm not sure if small size per package is essential here, unlike what I've seen with NPM, so we may not need to split it up in such a way.
-
-// When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
-// allocator.
-#[cfg(feature = "wee_alloc")]
-#[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
