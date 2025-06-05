@@ -224,13 +224,6 @@ impl AlphaLevel for Level {
                 base36(coords.z as u8)
             ));
 
-            if coords.x == 25 && coords.z == 25 {
-                println!(
-                    "Gold chunk found! X: {} Z: {}",
-                    base36(coords.x as u8),
-                    base36(coords.z as u8)
-                );
-            }
             if !chunk_file.exists() {
                 File::create(&chunk_file).expect("Chunk file could not be created!");
             }
