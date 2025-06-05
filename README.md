@@ -7,13 +7,14 @@ Not yet available
 LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE), once bindings are made for it.
 
 ## Roadmap
-- Formats
+### Formats
   - [ ] Java 
-    - [ ] .Mine V1
-    - [X] .Mine V2
-    - [ ] .Mine V3
-    - [X] ClassicWorld (CW)
-    - [ ] [MCGalaxy](https://github.com/ClassiCube/MCGalaxy) Level (LVL)
+    - [ ] Classic 
+      - [ ] .Mine V1
+      - [X] .Mine V2
+      - [ ] .Mine V3
+      - [X] ClassicWorld (CW)
+      - [ ] [MCGalaxy](https://github.com/ClassiCube/MCGalaxy) Level (LVL)
     - [X] Indev (MCLevel)
     - [X] Infdev (Alpha Save Format)
     - [X] Alpha (Alpha Save Format)
@@ -25,16 +26,16 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
     - [ ] V13
   - [ ] 3DS
   - [ ] PE (not known at this time)
-- Goals
-  - [ ] Internal Format
+### Goals
+  - [X] Internal Format
     - [X] Chunked
     - [ ] Sections
     - [ ] Palettes (for memory usage)
   - [ ] Internal Block IDs
     - [ ] Block ID conversion map between versions
     - [ ] Properly convert block states and other data
-  - [ ] Entities
-    - [ ] Tile Entities 
+  - [ ] Tile Entities
+    - [ ] Entities 
 
 # Disclaimer
 This project is not an official Microsoft, Minecraft, nor Mojang Studios product.
