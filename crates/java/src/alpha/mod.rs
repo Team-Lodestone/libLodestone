@@ -1,11 +1,11 @@
 use flate2::read::GzDecoder;
-use flate2::write::GzEncoder;
 use lodestone_common::types::hashmap_ext::HashMapExt;
 use lodestone_common::types::hashmap_ext::Value::{Bool, Int64};
+use lodestone_common::util::base36;
 use lodestone_level::level::chunk::{Chunk, CHUNK_LENGTH};
 use lodestone_level::level::{metadata, Coords, Level};
 use quartz_nbt::io::{write_nbt, Flavor};
-use quartz_nbt::{io, NbtCompound};
+use quartz_nbt::{io, NbtCompound, NbtList};
 use std::fs;
 use std::fs::File;
 use std::io::{BufWriter, Cursor};
@@ -17,12 +17,13 @@ pub trait AlphaLevel {
 
     fn read_alpha_dir(path: &Path) -> Result<Level, String>;
 
-    fn write_alpha_dir(&mut self, lvl: &Level, path: &Path) -> Vec<u8>;
+    fn write_alpha_dir(&mut self, path: &Path);
 }
 
 pub trait AlphaChunk {
     fn read_alpha_chunk(data: Vec<u8>) -> Option<(Coords, Chunk)>;
     fn read_alpha_chunk_into_existing(lvl: Level, data: Vec<u8>);
+    fn write_alpha_chunk(&mut self, coords: &Coords) -> Vec<u8>;
 }
 
 impl AlphaChunk for Chunk {
@@ -134,6 +135,65 @@ impl AlphaChunk for Chunk {
 
         lvl.add_chunk(coords, chunk);
     }
+
+    #[allow(unused_variables)]
+    fn write_alpha_chunk(&mut self, coords: &Coords) -> Vec<u8> {
+        let mut chunk_data: Vec<u8> = Vec::new();
+
+        self.set_height(128);
+
+        let mut chunk_nbt = NbtCompound::new();
+        let mut chunk_level = NbtCompound::new();
+
+        // TODO: Implement entities properly
+        let _entities = chunk_level.insert(metadata::ENTITIES.to_string(), NbtList::new());
+        let _tile_entities =
+            chunk_level.insert(metadata::TILE_ENTITIES.to_string(), NbtList::new());
+
+        let last_update = chunk_level.insert(
+            metadata::LAST_UPDATE.to_string(),
+            self.custom_data
+                .get_value::<i64, &str>(metadata::LAST_UPDATE)
+                .unwrap_or(0),
+        );
+
+        let terrain_populated = chunk_level.insert(
+            metadata::TERRAIN_POPULATED.to_string(),
+            self.custom_data
+                .get_value::<bool, &str>(metadata::TERRAIN_POPULATED)
+                .unwrap_or(true),
+        );
+
+        let chunk_x = chunk_level.insert("xPos", coords.x);
+        let chunk_z = chunk_level.insert("zPos", coords.z);
+
+        let block_light = chunk_level.insert(metadata::BLOCK_LIGHT, vec![15i8; 16384]);
+
+        // TODO: This is jank. Please fix.
+        let blocks = chunk_level.insert::<_, Vec<u8>>(
+            metadata::BLOCKS.to_string(),
+            self.blocks.clone().iter().map(|&x| x as u8).collect(),
+        );
+
+        let data = chunk_level.insert::<_, Vec<u8>>(metadata::DATA.to_string(), vec![0u8; 16384]);
+        let height_map = chunk_level.insert::<_, Vec<u8>>(
+            metadata::HEIGHT_MAP.to_string(),
+            self.generate_heightmap().iter().map(|&x| x as u8).collect(),
+        );
+        let sky_light = chunk_level.insert(metadata::SKY_LIGHT.to_string(), vec![15i8; 16384]);
+
+        chunk_nbt.insert(metadata::LEVEL, chunk_level);
+
+        write_nbt(
+            &mut chunk_data,
+            Some(metadata::LEVEL),
+            &chunk_nbt,
+            Flavor::GzCompressed,
+        )
+        .expect("Chunk data could not be serialized!");
+
+        chunk_data
+    }
 }
 
 impl AlphaLevel for Level {
@@ -157,17 +217,24 @@ impl AlphaLevel for Level {
         .expect("Alpha save NBT data")
         .0;
 
-        let root: &NbtCompound = nbt.get("Data").unwrap();
+        let root: &NbtCompound = nbt.get(metadata::DATA).unwrap();
 
-        let last_played: i64 = root.get("LastPlayed").expect("LastPlayed value");
-        let random_seed: i64 = root.get("RandomSeed").expect("RandomSeed value");
-        let size_on_disk: i64 = root.get("SizeOnDisk").expect("SizeOnDisk value");
-        let spawn_x: i32 = root.get("SpawnX").expect("SpawnX value");
-        let spawn_y: i32 = root.get("SpawnY").expect("SpawnY value");
-        let spawn_z: i32 = root.get("SpawnZ").expect("SpawnZ value");
-        let time: i64 = root.get("Time").expect("Time value");
+        let last_played: i64 = root.get(metadata::LAST_PLAYED).expect("LastPlayed value");
+        let random_seed: i64 = root.get(metadata::RANDOM_SEED).expect("RandomSeed value");
+        let size_on_disk: i64 = root.get(metadata::SIZE_ON_DISK).expect("SizeOnDisk value");
+        let spawn_x: i32 = root.get(metadata::SPAWN_X).expect("SpawnX value");
+        let spawn_y: i32 = root.get(metadata::SPAWN_Y).expect("SpawnY value");
+        let spawn_z: i32 = root.get(metadata::SPAWN_Z).expect("SpawnZ value");
+        let time: i64 = root.get(metadata::TIME).expect("Time value");
 
-        let mut lvl = Level::new_with_name("World1".to_string());
+        // this line is hell wtf
+        let mut lvl = Level::new_with_name(
+            path.file_name()
+                .unwrap()
+                .to_str()
+                .unwrap_or("World0")
+                .to_string(),
+        );
         lvl.time = time;
         lvl.set_spawn_point(spawn_x as i16, spawn_y as i16, spawn_z as i16);
         lvl.custom_data
@@ -179,11 +246,7 @@ impl AlphaLevel for Level {
 
         for x in 0..63 {
             for z in 0..63 {
-                // thanks rust
-                // why do we have to do this janky path shit
-                let chunk_dir = path
-                    .join(lodestone_common::util::base36(x) + "/")
-                    .join(lodestone_common::util::base36(z) + "/");
+                let chunk_dir = path.join(base36(x) + "/").join(base36(z) + "/");
 
                 if !chunk_dir.exists() || !chunk_dir.is_dir() {
                     continue;
@@ -206,7 +269,7 @@ impl AlphaLevel for Level {
     }
 
     #[allow(unused_variables)]
-    fn write_alpha_dir(&mut self, lvl: &Level, path: &Path) -> Vec<u8> {
+    fn write_alpha_dir(&mut self, path: &Path) {
         let level_dat = path.join("level.dat");
 
         let mut level_nbt = NbtCompound::new();
@@ -215,7 +278,7 @@ impl AlphaLevel for Level {
         // TODO: Player tag
         let last_played = level_nbt.insert(
             metadata::LAST_PLAYED,
-            lvl.custom_data
+            self.custom_data
                 .get_value::<i64, &str>(metadata::LAST_PLAYED)
                 .unwrap_or(
                     SystemTime::now()
@@ -226,45 +289,63 @@ impl AlphaLevel for Level {
         );
         let random_seed = level_nbt.insert(
             metadata::RANDOM_SEED,
-            lvl.custom_data
+            self.custom_data
                 .get_value::<i64, &str>(metadata::RANDOM_SEED)
                 .unwrap_or(0),
         );
         let size_on_disk = level_nbt.insert(
             metadata::SIZE_ON_DISK,
-            lvl.custom_data
+            self.custom_data
                 .get_value::<i64, &str>(metadata::SIZE_ON_DISK)
                 .unwrap_or(0),
         );
         let spawn_x = level_nbt.insert(
             metadata::SPAWN_X,
-            lvl.custom_data
-                .get_value::<i64, &str>(metadata::SPAWN_X)
-                .unwrap_or(0),
+            self.spawn.x as i32
         );
         let spawn_y = level_nbt.insert(
             metadata::SPAWN_Y,
-            lvl.custom_data
-                .get_value::<i64, &str>(metadata::SPAWN_Y)
-                .unwrap_or(64),
+            self.spawn.y as i32,
         );
         let spawn_z = level_nbt.insert(
             metadata::SPAWN_Z,
-            lvl.custom_data
-                .get_value::<i64, &str>(metadata::SPAWN_Z)
-                .unwrap_or(0),
+            self.spawn.z as i32
         );
-        let time = level_nbt.insert(metadata::TIME, lvl.time);
+        let time = level_nbt.insert(metadata::TIME, self.time);
 
         level_nbt.insert("Data", level_data);
 
         let level_dat_file = File::create(level_dat).unwrap();
-        let writer = BufWriter::new(level_dat_file);
+        let mut writer = BufWriter::new(level_dat_file);
 
-        let mut gz = GzEncoder::new(writer, flate2::Compression::default());
-        write_nbt(&mut gz, Some("Data"), &level_nbt, Flavor::Uncompressed)
+        write_nbt(&mut writer, Some("Data"), &level_nbt, Flavor::GzCompressed)
             .expect("Failed to write NBT data to level.dat");
 
-        todo!()
+        for (coords, chunk) in self.get_chunks_mut() {
+            let chunk_data = chunk.write_alpha_chunk(&coords);
+
+            let chunk_dir = path
+                .join(base36(coords.x as u8) + "/")
+                .join(base36(coords.z as u8) + "/");
+            if !chunk_dir.exists() {
+                fs::create_dir_all(&chunk_dir).expect("Chunk directory could not be created!");
+            }
+
+            let chunk_file = chunk_dir.join(format!(
+                "c.{}.{}.dat",
+                base36(coords.x as u8),
+                base36(coords.z as u8)
+            ));
+
+
+            if coords.x == 25 && coords.z == 25 {
+                println!("Gold chunk found! X: {} Z: {}", base36(coords.x as u8), base36(coords.z as u8));
+            }
+            if !chunk_file.exists() {
+                File::create(&chunk_file).expect("Chunk file could not be created!");
+            }
+
+            fs::write(chunk_file, &chunk_data).expect("Chunk file could not be written!");
+        }
     }
 }

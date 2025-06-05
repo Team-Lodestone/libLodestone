@@ -150,7 +150,7 @@ impl Level {
         }
     }
 
-    pub fn get_light(&self, light_type: Light, x: i32, y: i16, z: i32) -> u8 {
+    pub fn get_light(&self, light_type: Light, x: i32, y: i16, z: i32) -> i8 {
         if let Some(chunk) = self.get_chunk_by_block_coords(x, z) {
             chunk.get_light(
                 light_type,
@@ -163,7 +163,7 @@ impl Level {
         }
     }
 
-    pub fn set_light(&mut self, light_type: Light, x: i32, y: i16, z: i32, level: u8) {
+    pub fn set_light(&mut self, light_type: Light, x: i32, y: i16, z: i32, level: i8) {
         if let Some(chunk) = self.get_chunk_by_block_coords_mut(x, z) {
             chunk.set_light(
                 light_type,

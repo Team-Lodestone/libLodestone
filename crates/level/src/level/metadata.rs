@@ -27,6 +27,14 @@ pub const SPAWN_X: &str = "SpawnX";
 pub const SPAWN_Y: &str = "SpawnY";
 pub const SPAWN_Z: &str = "SpawnZ";
 pub const TIME: &str = "Time";
+pub const LEVEL: &str = "Level";
+pub const DATA: &str = "Data";
+pub const ENTITIES: &str = "Entities";
+pub const TILE_ENTITIES: &str = "TileEntities";
+pub const BLOCK_LIGHT: &str = "BlockLight";
+pub const SKY_LIGHT: &str = "SkyLight";
+pub const BLOCKS: &str = "Blocks";
+pub const HEIGHT_MAP: &str = "HeightMap";
 
 // McRegion+
 pub const LAST_UPDATE: &str = "LastUpdate";

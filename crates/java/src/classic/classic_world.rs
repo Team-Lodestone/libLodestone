@@ -22,7 +22,7 @@ impl CWLevel for Level {
 
     fn read_cw(data: Vec<u8>) -> Result<Level, String> {
         log::debug!("Reading compound");
-        let nbt = io::read_nbt(&mut Cursor::new(&data), Flavor::Uncompressed)
+        let nbt = io::read_nbt(&mut Cursor::new(&data), Flavor::GzCompressed)
             .expect("ClassicWorld NBT data")
             .0;
 
@@ -306,7 +306,7 @@ impl CWLevel for Level {
             &mut out,
             Some("MinecraftLevel"),
             &mclvl,
-            Flavor::Uncompressed,
+            Flavor::GzCompressed,
         )
         .unwrap();
 

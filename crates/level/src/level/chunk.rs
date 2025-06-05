@@ -21,8 +21,8 @@ pub struct Chunk {
     // YZX ordering
     pub blocks: Vec<u16>,
     pub data: Vec<u8>,
-    pub block_light: Vec<u8>,
-    pub sky_light: Vec<u8>,
+    pub block_light: Vec<i8>,
+    pub sky_light: Vec<i8>,
 
     pub height_map: Vec<i16>,
     pub block_map: Vec<u16>,
@@ -43,8 +43,8 @@ impl Chunk {
 
             blocks: vec![0u16; width * height * length],
             data: vec![0u8; width * height * length],
-            block_light: vec![0u8; width * length],
-            sky_light: vec![0u8; width * length],
+            block_light: vec![0i8; width * length],
+            sky_light: vec![0i8; width * length],
 
             height_map: vec![0i16; width * length],
             block_map: vec![0u16; width * length],
@@ -140,7 +140,7 @@ impl Chunk {
         self.data[i] = state;
     }
 
-    pub fn get_light(&self, light_type: Light, x: i8, y: i16, z: i8) -> u8 {
+    pub fn get_light(&self, light_type: Light, x: i8, y: i16, z: i8) -> i8 {
         if x > CHUNK_WIDTH || y > self.height || z > CHUNK_LENGTH || x < 0 || y < 0 || z < 0 {
             return 0;
         }
@@ -152,7 +152,7 @@ impl Chunk {
         }
     }
 
-    pub fn set_light(&mut self, light_type: Light, x: i8, y: i16, z: i8, mut level: u8) {
+    pub fn set_light(&mut self, light_type: Light, x: i8, y: i16, z: i8, mut level: i8) {
         if x > CHUNK_WIDTH || y > self.height || z > CHUNK_LENGTH || x < 0 || y < 0 || z < 0 {
             return;
         }

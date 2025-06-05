@@ -114,7 +114,7 @@ mod tests {
         of.flush().unwrap();
     }*/
 
-    #[test]
+    // #[test]
     fn region_folder_test() {
         log::set_max_level(log::LevelFilter::Debug);
         let mut level = Level::new();
@@ -178,7 +178,39 @@ mod tests {
         println!("Bitmap time {:?}", bitmap_elapsed);
     }
 
-    // #[test]
+    #[test]
+    fn cw_to_alpha_test() {
+        log::set_max_level(log::LevelFilter::Debug);
+        let fname = "13a_03-level_greffen";
+
+        println!("Reading file");
+        let data = match fs::read(format!("../../test/cw/src/{}.cw", fname)) {
+            Ok(d) => d,
+            Err(e) => {
+                eprintln!("uh oh {}", e);
+                return;
+            }
+        };
+
+        println!("Reading level");
+        let mut mv2 = Level::read_cw(data).unwrap();
+
+        /*println!("Generating bitmap");
+        let bitmap = mv2.generate_bitmap();
+
+        let mut of2 = File::create(format!("../../test/map/{}-{}_{}.raw", fname, mv2.get_block_width(), mv2.get_block_length())).unwrap();
+        of2.write_all(&bitmap).unwrap();
+        of2.flush().unwrap();*/
+
+        println!("Level bounds X: {}, Y: {}, Z: {}", mv2.get_block_width(), mv2.get_block_height(), mv2.get_block_length());
+
+        let output_dir: &Path = Path::new("../../test/alpha/dst/World1");
+        if !output_dir.exists() {
+            fs::create_dir_all(output_dir).expect("Could not create output dir");
+        }
+        mv2.write_alpha_dir(output_dir);
+    }
+
     fn minev2_to_mcr_test() {
         log::set_max_level(log::LevelFilter::Debug);
         let fname = "Main 3";
@@ -218,7 +250,7 @@ mod tests {
     }
 
     // #[test]
-    fn mine_v2_test() {
+    /*fn mine_v2_test() {
         log::set_max_level(log::LevelFilter::Debug);
         let fname = "13a_03-level_greffen";
 
@@ -257,7 +289,7 @@ mod tests {
         // let mut of2 = File::create(format!("../../test/regions/dst/{}_blockmap.dat", fname)).unwrap();
         // of2.write_all(cast_slice(blockmap.as_slice())).unwrap();
         // of2.flush().unwrap();
-    }
+    }*/
 
     // #[test]
     fn mca_to_minev2_test() {
