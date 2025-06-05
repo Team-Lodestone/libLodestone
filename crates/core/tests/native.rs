@@ -6,12 +6,12 @@ mod tests {
     use flate2::write::GzEncoder;
     use flate2::Compression;
     use lodestone_java;
+    use lodestone_java::alpha::AlphaLevel;
     use lodestone_java::anvil::Anvil;
     use lodestone_java::classic::classic_world::CWLevel;
     use lodestone_java::classic::mine_v2::MineV2Level;
     use lodestone_java::mcregion::Region;
-    use lodestone_java::alpha::AlphaLevel;
-    use lodestone_level::level;
+    use lodestone_level::level::Level;
     use std::fs;
     use std::fs::File;
     use std::io::{Read, Write};
@@ -113,28 +113,27 @@ mod tests {
         of.flush().unwrap();
     }*/
 
-    // #[test]
+    #[test]
     fn region_folder_test() {
         log::set_max_level(log::LevelFilter::Debug);
-        let mut level = level::Level::new();
-
+        let mut level = Level::new();
 
         println!("Reading level");
         // https://stackoverflow.com/questions/76955637/rust-iterate-through-a-folder-and-open-each-file
-        let path = "D:\\Home\\Downloads\\lux whateverthefuck\\region";
-        let entries = std::fs::read_dir(path).unwrap();
+        let path = "../../test/regions/src/omni_beta/";
+        let entries = fs::read_dir(path).unwrap();
         for entry in entries {
             match entry {
                 Ok(entry) => {
                     println!("Processing region: {:?}", entry);
-                    let file = std::fs::File::open(entry.path());
+                    let file = File::open(entry.path());
                     match file {
                         Ok(mut file) => {
                             let mut buffer = Vec::new();
                             let content = file.read_to_end(&mut buffer);
                             match content {
-                                Ok(sz) => {
-                                    level.read_mcr_into_existing(buffer).unwrap();
+                                Ok(_sz) => {
+                                    level.read_mcr_into_existing(buffer);
                                 }
                                 Err(e) => {
                                     println!("  read error: {:?}", e);
@@ -162,23 +161,30 @@ mod tests {
         // println!("Generating blockmap");
         // let blockmap = level.get_blockmap();
 
-        let mut out = vec![0u8; level.get_minev2_file_size()];
-        level.write_minev2(&mut out);
-
-        // why does this part take so damn long?
-        println!("Compressing");
-        let mut enc = GzEncoder::new(
-            Vec::with_capacity(level.get_minev2_file_size()),
-            Compression::fast(),
-        );
-        enc.write_all(&out).unwrap();
-        let c = enc.finish().unwrap();
+        let map = level.generate_bitmap();
 
         println!("Writing");
-        let mut of =
-            File::create(format!("../../test/indev/dst/{}.mcworld", "level_test")).unwrap();
-        of.write_all(&c).unwrap();
+        let mut of = File::create(format!("../../test/map/{}-{}_{}.raw", "RegionTest", level.get_block_width(), level.get_block_length())).unwrap();
+        of.write_all(&map).unwrap();
         of.flush().unwrap();
+
+        // let mut out = vec![0u8; level.get_minev2_file_size()];
+        // level.write_minev2(&mut out);
+        //
+        // // why does this part take so damn long?
+        // println!("Compressing");
+        // let mut enc = GzEncoder::new(
+        //     Vec::with_capacity(level.get_minev2_file_size()),
+        //     Compression::fast(),
+        // );
+        // enc.write_all(&out).unwrap();
+        // let c = enc.finish().unwrap();
+        //
+        // println!("Writing");
+        // let mut of =
+        //     File::create(format!("../../test/indev/dst/{}.mcworld", "level_test")).unwrap();
+        // of.write_all(&c).unwrap();
+        // of.flush().unwrap();
 
         // let mut of2 = File::create(format!("../../test/regions/dst/{}_blockmap.dat", "level_test")).unwrap();
         // of2.write_all(cast_slice(blockmap.as_slice())).unwrap();
@@ -200,7 +206,7 @@ mod tests {
         };
 
         println!("Reading level");
-        let mut mv2 = lodestone_level::level::Level::read_cw(data).unwrap();
+        let mut mv2 = Level::read_cw(data).unwrap();
         // let mut mv2 = lodestone_level::level::Level::read_minev2(data).unwrap();
         // println!("Generating blockmap");
         // let blockmap = mv2.get_blockmap();
@@ -240,7 +246,7 @@ mod tests {
 
         println!("Reading level");
         // let mut mv2 = lodestone_level::level::Level::read_cw(data).unwrap();
-        let mut mv2 = lodestone_level::level::Level::read_minev2(data).unwrap();
+        let mut mv2 = Level::read_minev2(data).unwrap();
         // println!("Generating blockmap");
         // let blockmap = mv2.get_blockmap();
 
@@ -566,25 +572,29 @@ mod tests {
     fn test_classic_huge_world() {
         use std::time::Instant;
 
-        // Read from the file
         let read_start = Instant::now();
-        let data = fs::read("../../test/classic/src/huge_world.cw")
-            .expect("Failed to read CW file");
+        let data =
+            fs::read("../../test/classic/src/huge_world.cw").expect("Failed to read CW file");
         let read_end = read_start.elapsed();
 
-        // Parse into structures
         let parse_start = Instant::now();
-        let lvl = lodestone_level::level::Level::read_cw(data)
-            .expect("Failed to read level");
+        let _lvl = Level::read_cw(data).expect("Failed to read level");
         let parse_end = parse_start.elapsed();
 
         println!("Read time: {:?}", read_end);
         println!("Parse time: {:?}", parse_end);
     }
-    
-    #[test]
+
+    // #[test]
     fn test_alpha_world() {
-        let path = Path::new("../../test/alpha/src/World1");
-        let lvl = lodestone_level::level::Level::read_alpha_dir(path);
+        let path = Path::new("../../test/alpha/src/World1/");
+        let lvl = Level::read_alpha_dir(path).expect("WTF");
+
+        let map = lvl.generate_bitmap();
+
+        println!("Writing");
+        let mut of = File::create(format!("../../test/map/{}-{}_{}.raw", "World1", lvl.get_block_width(), lvl.get_block_length())).unwrap();
+        of.write_all(&map).unwrap();
+        of.flush().unwrap();
     }
 }

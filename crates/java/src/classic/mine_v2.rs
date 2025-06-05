@@ -5,7 +5,7 @@ use lodestone_level::level::chunk::{CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_level::level::{metadata, Level};
 use rayon::prelude::*;
 use std::io::{Cursor, Read, Write};
-use std::time::{SystemTime};
+use std::time::SystemTime;
 
 pub trait MineV2Level {
     fn new_minev2(width: i16, height: i16, length: i16, name: String, author: String) -> Level;
@@ -37,8 +37,10 @@ impl MineV2Level for Level {
         let mut c = Cursor::new(data);
         let signature = c.read_u32::<BigEndian>().expect("Signature");
         let version = c.read_i8().expect("Version");
-        if version != 1 { panic!("This method only reads .Mine V2 files.") }
-        
+        if version != 1 {
+            panic!("This method only reads .Mine V2 files.")
+        }
+
         let name = read_prefixed_2_byte_string(&mut c);
         let author = read_prefixed_2_byte_string(&mut c);
         let creation_time = c.read_i64::<BigEndian>().expect("Creation time");

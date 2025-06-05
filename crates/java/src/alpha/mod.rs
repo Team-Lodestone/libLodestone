@@ -2,10 +2,10 @@ use flate2::read::GzDecoder;
 use flate2::write::GzEncoder;
 use lodestone_common::types::hashmap_ext::HashMapExt;
 use lodestone_common::types::hashmap_ext::Value::{Bool, Int64};
-use lodestone_level::level::chunk::{Chunk, CHUNK_LENGTH, CHUNK_WIDTH};
+use lodestone_level::level::chunk::{Chunk, CHUNK_LENGTH};
 use lodestone_level::level::{metadata, Coords, Level};
 use quartz_nbt::io::{write_nbt, Flavor};
-use quartz_nbt::{io, NbtCompound, NbtTag};
+use quartz_nbt::{io, NbtCompound};
 use std::fs;
 use std::fs::File;
 use std::io::{BufWriter, Cursor};
@@ -18,10 +18,122 @@ pub trait AlphaLevel {
     fn read_alpha_dir(path: &Path) -> Result<Level, String>;
 
     fn write_alpha_dir(&mut self, lvl: &Level, path: &Path) -> Vec<u8>;
+}
 
-    fn read_alpha_chunk(&mut self, path: &Path) -> Result<Chunk, String>;
+pub trait AlphaChunk {
+    fn read_alpha_chunk(data: Vec<u8>) -> Option<(Coords, Chunk)>;
+    fn read_alpha_chunk_into_existing(lvl: Level, data: Vec<u8>);
+}
 
-    fn base36(n: u8) -> String;
+impl AlphaChunk for Chunk {
+    #[allow(unused_variables)]
+    fn read_alpha_chunk(data: Vec<u8>) -> Option<(Coords, Chunk)> {
+        let chunk_nbt = io::read_nbt(&mut Cursor::new(&data), Flavor::GzCompressed)
+            .expect("Alpha chunk NBT data")
+            .0;
+
+        let root: &NbtCompound = chunk_nbt.get("Level").unwrap();
+
+        let last_update: i64 = root.get("LastUpdate").expect("LastUpdate value");
+        let terrain_populated: bool = root
+            .get("TerrainPopulated")
+            .expect("TerrainPopulated value");
+        let chunk_x: i32 = root.get("xPos").expect("xPos value");
+        let chunk_z: i32 = root.get("zPos").expect("zPos value");
+        let block_light: &Vec<i8> = root.get("BlockLight").expect("BlockLight array");
+        let blocks: &Vec<i8> = root.get("Blocks").expect("Blocks array");
+        let data: &Vec<i8> = root.get("Data").expect("Data array");
+        // Ignore heightmap
+        let sky_light: &Vec<i8> = root.get("SkyLight").expect("SkyLight array");
+
+        // Store chunk data into chunk
+        let coords: Coords = Coords {
+            x: chunk_x,
+            z: chunk_z,
+        };
+        let mut chunk = Chunk::new(128);
+        chunk
+            .custom_data
+            .insert(metadata::LAST_UPDATE.to_string(), Int64(last_update));
+        chunk.custom_data.insert(
+            metadata::TERRAIN_POPULATED.to_string(),
+            Bool(terrain_populated),
+        );
+
+        // TODO: Batch this
+        // TODO: Set state and lighting
+        for y in 0..chunk.height {
+            for x in 0..16 {
+                for z in 0..16 {
+                    let block_idx = y as usize
+                        + (z * chunk.height as usize)
+                        + (x * chunk.height as usize) * CHUNK_LENGTH as usize;
+
+                    chunk.set_block(x as i8, y, z as i8, blocks[block_idx] as u16);
+                    // chunk.set_state(x, y, z, data[i] as u8);
+                    // chunk.set_light(SKY, x, y, z, sky_light[i] as u8);
+                    // chunk.set_light(BLOCK, x, y, z, block_light[i] as u8);
+                }
+            }
+        }
+
+        Some((coords, chunk))
+    }
+
+    #[allow(unused_variables)]
+    fn read_alpha_chunk_into_existing(mut lvl: Level, data: Vec<u8>) {
+        let chunk_nbt = io::read_nbt(&mut Cursor::new(&data), Flavor::Uncompressed)
+            .expect("Alpha chunk NBT data")
+            .0;
+
+        let root: &NbtCompound = chunk_nbt.get("Level").unwrap();
+
+        let last_update: i64 = root.get("LastUpdate").expect("LastUpdate value");
+        let terrain_populated: bool = root
+            .get("TerrainPopulated")
+            .expect("TerrainPopulated value");
+        let chunk_x: i32 = root.get("xPos").expect("xPos value");
+        let chunk_z: i32 = root.get("zPos").expect("zPos value");
+        let block_light: &Vec<i8> = root.get("BlockLight").expect("BlockLight array");
+        let blocks: &Vec<i8> = root.get("Blocks").expect("Blocks array");
+        let data: &Vec<i8> = root.get("Data").expect("Data array");
+        // Ignore heightmap
+        let sky_light: &Vec<i8> = root.get("SkyLight").expect("SkyLight array");
+
+        // Store chunk data into chunk
+        let coords: Coords = Coords {
+            x: chunk_x,
+            z: chunk_z,
+        };
+        let mut chunk = Chunk::new(128);
+        chunk
+            .custom_data
+            .insert(metadata::LAST_UPDATE.to_string(), Int64(last_update));
+        chunk.custom_data.insert(
+            metadata::TERRAIN_POPULATED.to_string(),
+            Bool(terrain_populated),
+        );
+
+        // TODO: Batch this
+        // TODO: Set state and lighting
+        for y in 0..chunk.height {
+            for x in 0..16 {
+                for z in 0..16 {
+                    // Probably incorrect... this is what the wiki says.
+                    let block_idx = y as usize
+                        + (z * chunk.height as usize)
+                        + (x * chunk.height as usize) * CHUNK_LENGTH as usize;
+
+                    chunk.set_block(x as i8, y, z as i8, blocks[block_idx] as u16);
+                    // chunk.set_state(x, y, z, data[i] as u8);
+                    // chunk.set_light(SKY, x, y, z, sky_light[i] as u8);
+                    // chunk.set_light(BLOCK, x, y, z, block_light[i] as u8);
+                }
+            }
+        }
+
+        lvl.add_chunk(coords, chunk);
+    }
 }
 
 impl AlphaLevel for Level {
@@ -65,12 +177,29 @@ impl AlphaLevel for Level {
         lvl.custom_data
             .insert(metadata::SIZE_ON_DISK.to_string(), Int64(size_on_disk));
 
-        // Read all chunks
         for x in 0..63 {
             for z in 0..63 {
-                let mut chunk_dir = path.join(Self::base36(x)).join(Self::base36(z));
+                // thanks rust
+                // why do we have to do this janky path shit
+                let chunk_dir = path
+                    .join(lodestone_common::util::base36(x) + "/")
+                    .join(lodestone_common::util::base36(z) + "/");
 
-                let _chunk = Self::read_alpha_chunk(&mut lvl, &mut chunk_dir)?;
+                if !chunk_dir.exists() || !chunk_dir.is_dir() {
+                    continue;
+                }
+
+                for entry in fs::read_dir(chunk_dir).map_err(|e| e.to_string())? {
+                    let p = entry.map_err(|e| e.to_string())?.path();
+                    if !p.is_file() || !p.extension().map_or(false, |ext| ext == "dat") {
+                        continue;
+                    }
+
+                    let data: Vec<u8> = fs::read(p).expect("Read file");
+
+                    let chunk = Chunk::read_alpha_chunk(data).expect("Read chunk");
+                    lvl.add_chunk(chunk.0, chunk.1);
+                }
             }
         }
         Ok(lvl)
@@ -129,7 +258,6 @@ impl AlphaLevel for Level {
 
         level_nbt.insert("Data", level_data);
 
-        // Write level.dat
         let level_dat_file = File::create(level_dat).unwrap();
         let writer = BufWriter::new(level_dat_file);
 
@@ -138,85 +266,5 @@ impl AlphaLevel for Level {
             .expect("Failed to write NBT data to level.dat");
 
         todo!()
-    }
-
-    fn read_alpha_chunk(&mut self, path: &Path) -> Result<Chunk, String> {
-        // Chunk dir does not exist
-        if !path.exists() {
-            return Err(format!("Alpha chunk does not exist {}", path.display()));
-        }
-
-        // Chunk dir is not a folder
-        if !path.is_dir() {
-            return Err("Chunk directory is not a directory! Ignoring.".to_string());
-        }
-
-        // Read all chunk files inside chunk_dir
-        for entry in fs::read_dir(path).map_err(|e| e.to_string())? {
-            let path = entry.map_err(|e| e.to_string())?.path();
-            if !path.is_file() || !path.extension().map_or(false, |ext| ext == "dat") {
-                continue;
-            }
-
-            // Parse NBT data in chunk_data
-            let chunk_data = fs::read(path).map_err(|e| e.to_string())?;
-            let chunk_nbt = io::read_nbt(&mut Cursor::new(&chunk_data), Flavor::GzCompressed)
-                .expect("Alpha chunk NBT data")
-                .0;
-
-            let root: &NbtCompound = chunk_nbt.get("Level").unwrap();
-
-            let last_update: i64 = root.get("LastUpdate").expect("LastUpdate value");
-            let terrain_populated: bool = root
-                .get("TerrainPopulated")
-                .expect("TerrainPopulated value");
-            let chunk_x: i32 = root.get("xPos").expect("xPos value");
-            let chunk_z: i32 = root.get("zPos").expect("zPos value");
-            let block_light: &Vec<i8> = root.get("BlockLight").expect("BlockLight array");
-            let blocks: &Vec<i8> = root.get("Blocks").expect("Blocks array");
-            let data: &Vec<i8> = root.get("Data").expect("Data array");
-            // Ignore heightmap
-            let sky_light: &Vec<i8> = root.get("SkyLight").expect("SkyLight array");
-
-            // Store chunk data into chunk
-            let coords: Coords = Coords {
-                x: chunk_x,
-                z: chunk_z,
-            };
-            let mut chunk = Chunk::new(128);
-            chunk
-                .custom_data
-                .insert(metadata::LAST_UPDATE.to_string(), Int64(last_update));
-            chunk.custom_data.insert(
-                metadata::TERRAIN_POPULATED.to_string(),
-                Bool(terrain_populated),
-            );
-
-            // TODO: Batch this
-            // TODO: Set state and lighting
-            for y in 0..chunk.height {
-                for x in 0..16 {
-                    for z in 0..16 {
-                        // Probably incorrect... this is what the wiki says.
-                        let block_idx = y as usize
-                            + (z * CHUNK_WIDTH as usize)
-                            + (x * CHUNK_LENGTH as usize) * CHUNK_LENGTH as usize;
-
-                        chunk.set_block(x as i8, y, z as i8, blocks[block_idx] as u16);
-                        // chunk.set_state(x, y, z, data[i] as u8);
-                        // chunk.set_light(SKY, x, y, z, sky_light[i] as u8);
-                        // chunk.set_light(BLOCK, x, y, z, block_light[i] as u8);
-                    }
-                }
-            }
-
-            self.add_chunk(coords, chunk.clone());
-            return Ok(chunk);
-        }
-        Err("No chunks found!".to_string())
-    }
-
-    fn base36(n: u8) -> String {
-        format!("{:x}", n).to_lowercase()
     }
 }

@@ -12,7 +12,7 @@ use std::io::{Cursor, Read, Seek, SeekFrom, Write};
 
 pub trait Region {
     fn read_mcr(data: Vec<u8>) -> Result<Level, String>;
-    fn read_mcr_into_existing(&mut self, data: Vec<u8>) -> Result<(), String>;
+    fn read_mcr_into_existing(&mut self, data: Vec<u8>);
     fn write_mcr(&mut self, out: &mut Vec<u8>);
 }
 pub trait MCRChunk {
@@ -85,7 +85,7 @@ impl Region for Level {
         Ok(level)
     }
 
-    fn read_mcr_into_existing(&mut self, data: Vec<u8>) -> Result<(), String> {
+    fn read_mcr_into_existing(&mut self, data: Vec<u8>) {
         let mut c = Cursor::new(data);
         let mut locations = vec![ChunkLocation::default(); 1024];
         let mut timestamps = vec![0i32; 1024];
@@ -143,7 +143,6 @@ impl Region for Level {
             let ch = Chunk::read_mcr(chunk_data).expect("Region Chunk from data");
             self.add_chunk(Coords { x: ch.1, z: ch.2 }, ch.0);
         }
-        Ok(())
     }
 
     // TODO: coordinates
@@ -194,7 +193,7 @@ impl Region for Level {
         c.seek(SeekFrom::Start(0x1000)).unwrap();
 
         for t in timestamps.iter() {
-            c.write_i32::<BigEndian>(*t as i32).expect("Timestamp");
+            c.write_i32::<BigEndian>(*t).expect("Timestamp");
         }
     }
 }

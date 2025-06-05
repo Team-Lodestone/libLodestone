@@ -116,11 +116,21 @@ impl CWLevel for Level {
 
         // TODO: store later
         // level.custom_data.set_value(metadata::UUID.to_string(), uuid);
-        level.custom_data.set_value(metadata::LAST_MODIFIED.to_string(), last_modified);
-        level.custom_data.set_value(metadata::LAST_ACCESSED.to_string(), last_accessed);
-        level.custom_data.set_value(metadata::CREATION_TIME.to_string(), time_created);
-        level.custom_data.set_value(metadata::SPAWN_YAW.to_string(), spawn_yaw);
-        level.custom_data.set_value(metadata::SPAWN_PITCH.to_string(), spawn_pitch);
+        level
+            .custom_data
+            .set_value(metadata::LAST_MODIFIED.to_string(), last_modified);
+        level
+            .custom_data
+            .set_value(metadata::LAST_ACCESSED.to_string(), last_accessed);
+        level
+            .custom_data
+            .set_value(metadata::CREATION_TIME.to_string(), time_created);
+        level
+            .custom_data
+            .set_value(metadata::SPAWN_YAW.to_string(), spawn_yaw);
+        level
+            .custom_data
+            .set_value(metadata::SPAWN_PITCH.to_string(), spawn_pitch);
 
         log::debug!("Setting level spawn point");
         level.set_spawn_point(spawn_x, spawn_y, spawn_z);

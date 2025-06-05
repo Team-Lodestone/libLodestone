@@ -12,7 +12,7 @@ use std::io::{Cursor, Read};
 
 pub trait Anvil {
     fn read_anvil(data: Vec<u8>) -> Result<Level, String>;
-    fn read_anvil_into_existing(&mut self, data: Vec<u8>) -> Result<(), String>;
+    fn read_anvil_into_existing(&mut self, data: Vec<u8>);
     // fn write_anvil(&mut self, out: &mut Vec<u8>);
 }
 pub trait AnvilChunk {
@@ -86,7 +86,7 @@ impl Anvil for Level {
         Ok(level)
     }
 
-    fn read_anvil_into_existing(&mut self, data: Vec<u8>) -> Result<(), String> {
+    fn read_anvil_into_existing(&mut self, data: Vec<u8>) {
         let mut c = Cursor::new(data);
         let mut locations = vec![ChunkLocation::default(); 1024];
         let mut timestamps = vec![0i32; 1024];
@@ -145,7 +145,6 @@ impl Anvil for Level {
             let ch = Chunk::read_anvil(chunk_data).expect("Anvil Chunk from data");
             self.add_chunk(Coords { x: ch.1, z: ch.2 }, ch.0);
         }
-        Ok(())
     }
 }
 

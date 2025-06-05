@@ -1,8 +1,11 @@
+use rayon::iter::ParallelIterator;
+use std::cmp::min;
 pub mod chunk;
 pub mod metadata;
 
 use crate::level::chunk::{Chunk, Light, CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_common::types::hashmap_ext::Value;
+use rayon::iter::IntoParallelRefIterator;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 use std::collections::HashMap;
@@ -45,8 +48,8 @@ impl Level {
     }
 
     pub fn create_finite(&mut self, w: i32, h: i16, l: i32) {
-        for cx in 0..(w.div_ceil(CHUNK_WIDTH as i32)) {
-            for cz in 0..(l.div_ceil(CHUNK_LENGTH as i32)) {
+        for cx in 0..w.div_ceil(CHUNK_WIDTH as i32) {
+            for cz in 0..l.div_ceil(CHUNK_LENGTH as i32) {
                 // log::debug!("cx: {}, cz: {}", cx, cz);
 
                 let coords = Coords { x: cx, z: cz };
@@ -118,7 +121,7 @@ impl Level {
             chunk.set_state(
                 x.rem_euclid(CHUNK_WIDTH as i32) as i8,
                 y,
-                z.rem_euclid(CHUNK_LENGTH as i32) as i8 as i8,
+                z.rem_euclid(CHUNK_LENGTH as i32) as i8,
                 block,
             );
         }
@@ -129,7 +132,7 @@ impl Level {
             chunk.get_data(
                 x.rem_euclid(CHUNK_WIDTH as i32) as i8,
                 y,
-                z.rem_euclid(CHUNK_LENGTH as i32) as i8 as i8,
+                z.rem_euclid(CHUNK_LENGTH as i32) as i8,
             )
         } else {
             0
@@ -195,7 +198,7 @@ impl Level {
     }
 
     pub fn get_min_x(&self) -> i32 {
-        self.chunks.iter().map(|c| (c.0.x)).min().unwrap_or(0)
+        self.chunks.iter().map(|c| c.0.x).min().unwrap_or(0)
     }
 
     pub fn get_min_block_y(&self) -> i16 {
@@ -203,7 +206,7 @@ impl Level {
     }
 
     pub fn get_min_z(&self) -> i32 {
-        self.chunks.iter().map(|c| (c.0.z)).min().unwrap_or(0)
+        self.chunks.iter().map(|c| c.0.z).min().unwrap_or(0)
     }
 
     #[inline(always)]
@@ -247,19 +250,27 @@ impl Level {
     }
 
     // TODO: this works... but is very slow.
-    pub fn get_blockmap(&mut self) -> Vec<u16> {
+    // upd: slightly faster now
+    pub fn get_blockmap(&self) -> Vec<u16> {
         let mx = self.get_min_x();
         let mz = self.get_min_z();
 
         let w = self.get_width() as usize * CHUNK_WIDTH as usize;
         let l = self.get_length() as usize * CHUNK_LENGTH as usize;
 
+        let c: Vec<(Coords, Vec<u16>)> = self
+            .chunks
+            .par_iter()
+            .map(|(p, c)| {
+                let mut bm = c.generate_blockmap();
+                bm.resize((CHUNK_WIDTH as usize) * (CHUNK_LENGTH as usize), 65535);
+                (p.clone(), bm)
+            })
+            .collect();
+
         let mut blockmap = vec![65535u16; w * l];
 
-        for (chunk_pos, chunk) in self.chunks.iter_mut() {
-            let mut bm = chunk.generate_blockmap();
-            bm.resize((CHUNK_WIDTH as usize) * (CHUNK_LENGTH as usize), 65535);
-
+        for (chunk_pos, bm) in c {
             for x in 0..CHUNK_WIDTH as usize {
                 for z in 0..CHUNK_LENGTH as usize {
                     let gx = (chunk_pos.x - mx) as usize * CHUNK_WIDTH as usize + x;
@@ -276,19 +287,26 @@ impl Level {
         blockmap
     }
 
-    pub fn get_heightmap(&mut self) -> Vec<i16> {
+    pub fn get_heightmap(&self) -> Vec<i16> {
         let mx = self.get_min_x();
         let mz = self.get_min_z();
 
         let w = self.get_width() as usize * CHUNK_WIDTH as usize;
         let l = self.get_length() as usize * CHUNK_LENGTH as usize;
 
+        let c: Vec<(Coords, Vec<i16>)> = self
+            .chunks
+            .par_iter()
+            .map(|(p, c)| {
+                let mut hm = c.generate_heightmap();
+                hm.resize((CHUNK_WIDTH as usize) * (CHUNK_LENGTH as usize), -1);
+                (p.clone(), hm)
+            })
+            .collect();
+
         let mut heightmap = vec![-1i16; w * l];
 
-        for (chunk_pos, chunk) in self.chunks.iter_mut() {
-            let mut hm = chunk.generate_heightmap();
-            hm.resize((CHUNK_WIDTH as usize) * (CHUNK_LENGTH as usize), -1);
-
+        for (chunk_pos, hm) in c {
             for x in 0..CHUNK_WIDTH as usize {
                 for z in 0..CHUNK_LENGTH as usize {
                     let gx = (chunk_pos.x - mx) as usize * CHUNK_WIDTH as usize + x;
@@ -328,5 +346,48 @@ impl Level {
     #[inline(always)]
     pub fn get_block_length(&self) -> i32 {
         self.get_length() * CHUNK_LENGTH as i32
+    }
+
+    pub fn generate_bitmap(&self) -> Vec<u8> {
+        let width = self.get_block_width() as usize;
+        let length = self.get_block_length() as usize;
+        println!("Getting blockmap");
+        let block_map = self.get_blockmap();
+        println!("Getting heightmap");
+        let height_map = self.get_heightmap();
+
+        let mut img = vec![0u8; width * length * 4];
+
+        println!("Writing heightmap");
+
+        // shading written by friend (who does not wish to be named) :)
+        for y in 0..length {
+            for x in 0..width {
+                // TODO: use block map from id to internal block struct which contains Material
+                let mut rgb: [f32; 3] = crate::block::palette::CLASSIC_PALETTE
+                    [min(50, block_map[x + y * width]) as usize];
+
+                if height_map[x + y * width]
+                    < height_map[x + (y as i64 - 1).max(0) as usize * width]
+                {
+                    rgb[0] *= 0.75;
+                    rgb[1] *= 0.75;
+                    rgb[2] *= 0.75;
+                } else if height_map[x + y * width]
+                    > height_map[x + (y as i64 - 1).max(0) as usize * width]
+                {
+                    rgb[0] *= 1.25;
+                    rgb[1] *= 1.25;
+                    rgb[2] *= 1.25;
+                }
+
+                img[(x + y * width) * 4 + 0] = rgb[0].floor() as u8;
+                img[(x + y * width) * 4 + 1] = rgb[1].floor() as u8;
+                img[(x + y * width) * 4 + 2] = rgb[2].floor() as u8;
+                img[(x + y * width) * 4 + 3] = 0xff;
+            }
+        }
+
+        img
     }
 }

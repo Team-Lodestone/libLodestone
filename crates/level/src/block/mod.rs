@@ -1,3 +1,5 @@
+pub mod palette;
+
 use phf::phf_map;
 
 pub struct Block {
