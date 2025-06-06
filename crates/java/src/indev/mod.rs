@@ -21,7 +21,7 @@ impl IndevLevel for Level {
     }
 
     fn read_indev(data: Vec<u8>) -> Result<Level, String> {
-        let nbt = io::read_nbt(&mut Cursor::new(&data), Flavor::Uncompressed)
+        let nbt = io::read_nbt(&mut Cursor::new(&data), Flavor::GzCompressed)
             .expect("Level NBT data")
             .0;
 
@@ -112,10 +112,7 @@ impl IndevLevel for Level {
                             + (lz as usize) * (width as usize)
                             + (lx as usize);
 
-                        c.1.blocks[(y as usize)
-                            + (z as usize) * (height as usize)
-                            + (x as usize) * (height as usize) * CHUNK_LENGTH as usize] =
-                            blocks[i] as u16;
+                        c.1.set_block(x, y, z, blocks[i] as u16)
                     }
                 }
             }
@@ -295,6 +292,6 @@ impl IndevLevel for Level {
         mclvl.insert("Entities".to_string(), entities);
         mclvl.insert("TileEntities".to_string(), tile_entities);
 
-        io::write_nbt(out, Some("MinecraftLevel"), &mclvl, Flavor::Uncompressed).unwrap();
+        io::write_nbt(out, Some("MinecraftLevel"), &mclvl, Flavor::GzCompressed).unwrap();
     }
 }

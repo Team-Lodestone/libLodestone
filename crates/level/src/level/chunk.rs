@@ -1,9 +1,13 @@
+use crate::level::chunk_section::ChunkSection;
 use lodestone_common::types::hashmap_ext::Value;
+use rayon::iter::ParallelIterator;
+use rayon::prelude::IntoParallelRefIterator;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 pub const CHUNK_WIDTH: i8 = 16;
 pub const CHUNK_LENGTH: i8 = 16;
+pub const CHUNK_SECTION_HEIGHT: i8 = 16;
 
 #[derive(PartialEq, Clone, Serialize, Deserialize)]
 pub enum Light {
@@ -15,14 +19,10 @@ pub enum Light {
 pub struct Chunk {
     // Width and depth should always be 16 for our use cases.
     width: i8,
-    pub height: i16,
+    pub height: i16, // TODO: we can remove this due to the presence of sections (likely, we need to figure out finite worlds though)
     length: i8,
 
-    // YZX ordering
-    pub blocks: Vec<u16>,
-    pub data: Vec<u8>,
-    pub block_light: Vec<i8>,
-    pub sky_light: Vec<i8>,
+    pub chunk_sections: Vec<ChunkSection>,
 
     pub height_map: Vec<i16>,
     pub block_map: Vec<u16>,
@@ -41,10 +41,7 @@ impl Chunk {
             height: height as i16,
             length: length as i8,
 
-            blocks: vec![0u16; width * height * length],
-            data: vec![0u8; width * height * length],
-            block_light: vec![0i8; width * length],
-            sky_light: vec![0i8; width * length],
+            chunk_sections: Vec::with_capacity(height / CHUNK_SECTION_HEIGHT as usize),
 
             height_map: vec![0i16; width * length],
             block_map: vec![0u16; width * length],
@@ -103,31 +100,89 @@ impl Chunk {
             + (x as usize) * (self.height as usize) * CHUNK_LENGTH as usize // might actually be CHUNK_LENGTH
     }
 
+    #[inline(always)]
+    pub fn get_chunk_section(&self, y: i16) -> Option<&ChunkSection> {
+        self.chunk_sections
+            .get((y / CHUNK_SECTION_HEIGHT as i16) as usize)
+    }
+
+    #[inline(always)]
+    pub fn get_chunk_section_mut(&mut self, y: i16) -> Option<&mut ChunkSection> {
+        self.chunk_sections
+            .get_mut((y / CHUNK_SECTION_HEIGHT as i16) as usize)
+    }
+
+    #[inline(always)]
+    pub fn get_chunk_section_mut_i(&mut self, i: i16) -> Option<&mut ChunkSection> {
+        self.chunk_sections.get_mut(i as usize)
+    }
+
+    #[inline(always)]
+    pub fn get_or_create_chunk_section_mut_i(&mut self, index: i16) -> &mut ChunkSection {
+        println!("i: {}", index);
+
+        if self.get_chunk_section_mut_i(index).is_none() {
+            if index >= self.chunk_sections.len() as i16 {
+                self.chunk_sections
+                    .resize_with((index + 1) as usize, ChunkSection::new);
+            }
+
+            self.chunk_sections
+                .insert(index as usize, ChunkSection::new());
+        }
+
+        self.chunk_sections.get_mut(index as usize).unwrap()
+    }
+
+    #[inline(always)]
+    pub fn get_or_create_chunk_section_mut(&mut self, y: i16) -> &mut ChunkSection {
+        let index = (y / CHUNK_SECTION_HEIGHT as i16) as usize;
+
+        if self.get_chunk_section(y).is_none() {
+            if index >= self.chunk_sections.len() {
+                self.chunk_sections
+                    .resize_with(index + 1, ChunkSection::new);
+            }
+
+            self.chunk_sections.insert(index, ChunkSection::new());
+        }
+
+        self.chunk_sections.get_mut(index).unwrap()
+    }
+
+    #[inline(always)]
     pub fn get_block(&self, x: i8, y: i16, z: i8) -> u16 {
         if x > CHUNK_WIDTH || y > self.height || z > CHUNK_LENGTH || x < 0 || y < 0 || z < 0 {
             return 0;
         }
 
-        self.blocks[self.get_index(x, y, z)]
+        match self.get_chunk_section(y) {
+            Some(s) => s.get_block(x, y % CHUNK_SECTION_HEIGHT as i16, z),
+            None => 0,
+        }
     }
 
+    #[inline(always)]
     pub fn set_block(&mut self, x: i8, y: i16, z: i8, block: u16) {
         if x > CHUNK_WIDTH || y > self.height || z > CHUNK_LENGTH || x < 0 || y < 0 || z < 0 {
             return;
         }
 
-        let i = self.get_index(x, y, z);
-
-        // println!("{}", self.height);
-        self.blocks[i] = block;
+        match self.get_chunk_section_mut(y) {
+            Some(s) => s.set_block(x, y % CHUNK_SECTION_HEIGHT as i16, z, block),
+            _ => {}
+        }
     }
 
-    pub fn get_data(&self, x: i8, y: i16, z: i8) -> u8 {
+    pub fn get_state(&self, x: i8, y: i16, z: i8) -> u8 {
         if x > CHUNK_WIDTH || y > self.height || z > CHUNK_LENGTH || x < 0 || y < 0 || z < 0 {
             return 0;
         }
 
-        self.data[self.get_index(x, y, z)]
+        match self.get_chunk_section(y) {
+            Some(s) => s.get_state(x, y % CHUNK_SECTION_HEIGHT as i16, z),
+            None => 0,
+        }
     }
 
     pub fn set_state(&mut self, x: i8, y: i16, z: i8, state: u8) {
@@ -135,44 +190,48 @@ impl Chunk {
             return;
         }
 
-        let i = self.get_index(x, y, z);
-
-        self.data[i] = state;
+        match self.get_chunk_section_mut(y) {
+            Some(s) => s.set_state(x, y % CHUNK_SECTION_HEIGHT as i16, z, state),
+            _ => {}
+        }
     }
 
-    pub fn get_light(&self, light_type: Light, x: i8, y: i16, z: i8) -> i8 {
+    pub fn get_light(&self, light_type: Light, x: i8, y: i16, z: i8) -> u8 {
         if x > CHUNK_WIDTH || y > self.height || z > CHUNK_LENGTH || x < 0 || y < 0 || z < 0 {
             return 0;
         }
 
-        if light_type == Light::SKY {
-            self.sky_light[self.get_index(x, y, z)]
-        } else {
-            self.block_light[self.get_index(x, y, z)]
+        match self.get_chunk_section(y) {
+            Some(s) => {
+                if light_type == Light::SKY {
+                    s.get_light(light_type, x, y % CHUNK_SECTION_HEIGHT as i16, z)
+                } else {
+                    s.get_light(light_type, x, y % CHUNK_SECTION_HEIGHT as i16, z)
+                }
+            }
+            None => 0,
         }
     }
 
-    pub fn set_light(&mut self, light_type: Light, x: i8, y: i16, z: i8, mut level: i8) {
+    pub fn set_light(&mut self, light_type: Light, x: i8, y: i16, z: i8, level: u8) {
         if x > CHUNK_WIDTH || y > self.height || z > CHUNK_LENGTH || x < 0 || y < 0 || z < 0 {
             return;
         }
 
-        // don't let it overflow past max light level
-        if level > 15 {
-            level = 15;
-        }
-
-        let i = self.get_index(x, y, z);
-
-        if light_type == Light::SKY {
-            self.sky_light[i] = level;
-        } else {
-            self.block_light[i] = level;
+        match self.get_chunk_section_mut(y) {
+            Some(s) => {
+                if light_type == Light::SKY {
+                    s.set_light(light_type, x, y % CHUNK_SECTION_HEIGHT as i16, z, level)
+                } else {
+                    s.set_light(light_type, x, y % CHUNK_SECTION_HEIGHT as i16, z, level)
+                }
+            }
+            None => return,
         }
     }
 
-    pub fn set_height(&mut self, height: i16) {
-        let h = self.height;
+    pub fn set_height(&mut self, _height: i16) {
+        /*let h = self.height;
         self.height = height;
 
         let new = (self.width as usize) * (height as usize) * (self.length as usize);
@@ -198,5 +257,28 @@ impl Chunk {
 
         self.blocks = new_blocks;
         self.data = new_data;
+         */
+    }
+
+    pub fn get_all_blocks(&self) -> Vec<u16> {
+        // TODO: What the fuck is this
+        let blocks: Vec<u16> = self
+            .chunk_sections
+            .par_iter()
+            .flat_map(|s| s.blocks.par_iter().cloned()) // TODO: is cloned a good/bad thing
+            .collect();
+
+        blocks
+    }
+
+    pub fn get_all_data(&self) -> Vec<u8> {
+        // TODO: What the fuck is this
+        let data: Vec<u8> = self
+            .chunk_sections
+            .par_iter()
+            .flat_map(|s| s.data.par_iter().cloned()) // TODO: is cloned a good/bad thing
+            .collect();
+
+        data
     }
 }

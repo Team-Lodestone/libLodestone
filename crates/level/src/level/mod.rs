@@ -1,13 +1,14 @@
-use rayon::iter::ParallelIterator;
-use std::cmp::min;
 pub mod chunk;
+pub mod chunk_section;
 pub mod metadata;
 
 use crate::level::chunk::{Chunk, Light, CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_common::types::hashmap_ext::Value;
 use rayon::iter::IntoParallelRefIterator;
+use rayon::iter::ParallelIterator;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
+use std::cmp::min;
 use std::collections::HashMap;
 
 #[derive(Clone, Default, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
@@ -129,7 +130,7 @@ impl Level {
 
     pub fn get_data(&self, x: i32, y: i16, z: i32) -> u8 {
         if let Some(chunk) = self.get_chunk_by_block_coords(x, z) {
-            chunk.get_data(
+            chunk.get_state(
                 x.rem_euclid(CHUNK_WIDTH as i32) as i8,
                 y,
                 z.rem_euclid(CHUNK_LENGTH as i32) as i8,
@@ -150,7 +151,7 @@ impl Level {
         }
     }
 
-    pub fn get_light(&self, light_type: Light, x: i32, y: i16, z: i32) -> i8 {
+    pub fn get_light(&self, light_type: Light, x: i32, y: i16, z: i32) -> u8 {
         if let Some(chunk) = self.get_chunk_by_block_coords(x, z) {
             chunk.get_light(
                 light_type,
@@ -163,7 +164,7 @@ impl Level {
         }
     }
 
-    pub fn set_light(&mut self, light_type: Light, x: i32, y: i16, z: i32, level: i8) {
+    pub fn set_light(&mut self, light_type: Light, x: i32, y: i16, z: i32, level: u8) {
         if let Some(chunk) = self.get_chunk_by_block_coords_mut(x, z) {
             chunk.set_light(
                 light_type,

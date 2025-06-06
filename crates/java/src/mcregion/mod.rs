@@ -3,14 +3,14 @@ use flate2::read::{GzDecoder, ZlibDecoder};
 use lodestone_common::level::region::ChunkLocation;
 use lodestone_common::level::region::Compression;
 use lodestone_common::types::hashmap_ext::HashMapExt;
-use lodestone_level::level::chunk::{Chunk, CHUNK_LENGTH, CHUNK_WIDTH};
+use lodestone_level::level::chunk::Chunk;
 use lodestone_level::level::{metadata, Coords, Level};
 use quartz_nbt::io::Flavor;
 use quartz_nbt::{io, NbtCompound, NbtList};
 use rayon::iter::ParallelIterator;
 use rayon::prelude::IntoParallelRefIterator;
 use std::io::{Cursor, Read, Seek, SeekFrom, Write};
-// TODO: Allow for reading into a vec of chunks that one can just add to the Level's own chunks. 
+// TODO: Allow for reading into a vec of chunks that one can just add to the Level's own chunks.
 // Or we could make a read_mcr_into_level which will add the new chunks to an existing level.
 
 pub trait Region {
@@ -244,17 +244,16 @@ impl MCRChunk for Chunk {
         c.custom_data
             .set_value(metadata::TERRAIN_POPULATED.to_string(), has_populated);
 
-        // TODO: custom data
-
         for y in 0..128 {
             for z in 0..16 {
                 for x in 0..16 {
-                    let i = x + z * 16 + y * 256;
+                    let i = y + (z * 128 + (x * 128 * 16));
 
-                    c.blocks[(y) * (CHUNK_LENGTH as usize * CHUNK_WIDTH as usize)
-                        + (z) * (CHUNK_WIDTH as usize)
-                        + (x)] = blocks[i] as u16;
-                    // c.data[y + z * 128 + x * 128 * 16] = block_data[i];
+                    let block_id = blocks[i] as u16;
+                    if block_id != 0 {
+                        c.get_or_create_chunk_section_mut(y as i16);
+                        c.set_block(x as i8, y as i16, z as i8, blocks[i] as u16);
+                    }
                 }
             }
         }
@@ -278,7 +277,7 @@ impl MCRChunk for Chunk {
         c.insert("zPos".to_string(), coords.z);
         c.insert(
             "Blocks".to_string(),
-            self.blocks
+            self.get_all_blocks()
                 .clone()
                 .iter()
                 .map(|&x| x as u8)
@@ -286,7 +285,7 @@ impl MCRChunk for Chunk {
         );
         c.insert(
             "Data".to_string(),
-            lodestone_common::io::into_nibble_array(self.data.clone()),
+            lodestone_common::io::into_nibble_array(self.get_all_data()),
         );
         c.insert("SkyLight".to_string(), vec![0u8; 16384]);
         c.insert("BlockLight".to_string(), vec![0u8; 16384]);

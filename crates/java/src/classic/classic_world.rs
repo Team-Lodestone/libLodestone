@@ -3,7 +3,7 @@ use lodestone_level::level::chunk::{CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_level::level::metadata;
 use lodestone_level::level::Level;
 use quartz_nbt::io::{self, Flavor};
-use quartz_nbt::{NbtCompound, NbtList, NbtReprError, NbtTag};
+use quartz_nbt::{NbtCompound, NbtReprError};
 use rayon::iter::IntoParallelRefMutIterator;
 use rayon::iter::ParallelIterator;
 use std::io::Cursor;
@@ -11,7 +11,7 @@ use std::io::Cursor;
 pub trait CWLevel {
     fn new_cw(height: i16, name: String, author: String) -> Level;
     fn read_cw(data: Vec<u8>) -> Result<Level, String>;
-    fn write_cw(&mut self) -> Vec<u8>;
+    // fn write_cw(&mut self, out: &mut Vec<u8>);
 }
 
 impl CWLevel for Level {
@@ -157,14 +157,12 @@ impl CWLevel for Level {
                         }
 
                         // magic
-                        let i = (y as usize) * (length as usize) * (width as usize)
-                            + (lz as usize) * (width as usize)
-                            + (lx as usize);
+                        let i = y as usize
+                            + (z as usize * height as usize
+                                + (x as usize * height as usize * length as usize));
 
-                        c.1.blocks[(y as usize)
-                            + (z as usize) * (height as usize)
-                            + (x as usize) * (height as usize) * CHUNK_LENGTH as usize] =
-                            blocks[i] as u16;
+                        // TODO: Fix
+                        c.1.set_block(x, y, z, blocks[i] as u16)
                     }
                 }
             }
@@ -173,143 +171,12 @@ impl CWLevel for Level {
         Ok(level)
     }
 
-    fn write_cw(&mut self) -> Vec<u8> {
+    /*fn write_cw(&mut self, mut out: &mut Vec<u8>) {
         let mut mclvl = NbtCompound::new();
         let mut about = NbtCompound::new();
         let mut env = NbtCompound::new();
         let mut map = NbtCompound::new();
         let entities = NbtList::new();
         let tile_entities = NbtList::new();
-
-        // About
-        about.insert(
-            "CreatedOn".to_string(),
-            self.custom_data
-                .get_value::<i64, _>(metadata::CREATION_TIME)
-                .unwrap_or(0),
-        );
-        about.insert("Name".to_string(), self.clone().name);
-        about.insert(
-            "Author".to_string(),
-            self.custom_data
-                .get_value::<String, _>(metadata::AUTHOR)
-                .unwrap_or("Player".to_string()),
-        );
-
-        // env
-        env.insert("TimeOfDay".to_string(), self.time as i16);
-        env.insert(
-            "SkyBrightness".to_string(),
-            self.custom_data
-                .get_value::<i8, _>(metadata::SKY_BRIGHTNESS)
-                .unwrap_or(15),
-        );
-        env.insert(
-            "SkyColor".to_string(),
-            self.custom_data
-                .get_value::<i32, _>(metadata::SKY_COLOR)
-                .unwrap_or(0x99CCFF),
-        );
-        env.insert(
-            "FogColor".to_string(),
-            self.custom_data
-                .get_value::<i32, _>(metadata::FOG_COLOR)
-                .unwrap_or(0xFFFFFF),
-        );
-        env.insert(
-            "CloudColor".to_string(),
-            self.custom_data
-                .get_value::<i32, _>(metadata::CLOUD_COLOR)
-                .unwrap_or(0xFFFFFF),
-        );
-        env.insert(
-            "CloudHeight".to_string(),
-            self.custom_data
-                .get_value::<i16, _>(metadata::CLOUD_HEIGHT)
-                .unwrap_or(self.get_max_block_y() / 2),
-        );
-        env.insert(
-            "SurroundingGroundType".to_string(),
-            self.custom_data
-                .get_value::<i8, _>(metadata::SURROUNDING_GROUND_TYPE)
-                .unwrap_or(2),
-        );
-        env.insert(
-            "SurroundingGroundHeight".to_string(),
-            self.custom_data
-                .get_value::<i16, _>(metadata::SURROUNDING_GROUND_HEIGHT)
-                .unwrap_or(self.get_max_block_y() / 3),
-        );
-        env.insert(
-            "SurroundingWaterType".to_string(),
-            self.custom_data
-                .get_value::<i8, _>(metadata::SURROUNDING_WATER_TYPE)
-                .unwrap_or(8),
-        );
-        env.insert(
-            "SurroundingWaterHeight".to_string(),
-            self.custom_data
-                .get_value::<i16, _>(metadata::SURROUNDING_WATER_HEIGHT)
-                .unwrap_or(self.get_max_block_y() / 2),
-        );
-
-        let width = self.get_max_block_x();
-        let length = self.get_max_block_z();
-        let height = self.get_max_block_y();
-
-        // map
-        map.insert("Width".to_string(), width as i16);
-        map.insert("Length".to_string(), length as i16);
-        map.insert("Height".to_string(), height);
-
-        let mut sp = vec![0i16; 3];
-        sp[0] = self.spawn.x;
-        sp[1] = self.spawn.y;
-        sp[2] = self.spawn.z;
-
-        map.insert("Spawn".to_string(), NbtList::from(sp));
-
-        let mut blocks: Vec<i8> =
-            Vec::with_capacity((width as usize) * (length as usize) * (height as usize));
-        blocks.resize((width as usize) * (length as usize) * (height as usize), 0);
-
-        let mut data: Vec<i8> =
-            Vec::with_capacity((width as usize) * (length as usize) * (height as usize));
-        data.resize((width as usize) * (length as usize) * (height as usize), 0);
-
-        for y in 0..height {
-            for z in 0..length {
-                for x in 0..width {
-                    let i = (y as usize) * ((length as usize) * (width as usize))
-                        + (z as usize) * (width as usize)
-                        + (x as usize);
-
-                    blocks[i] = self.get_block(x, y, z) as i8;
-                    data[i] = self.get_data(x, y, z) as i8;
-                }
-            }
-        }
-
-        map.insert("Blocks".to_string(), NbtTag::ByteArray(blocks));
-        map.insert("Data".to_string(), NbtTag::ByteArray(data));
-
-        // MinecraftLevel
-        mclvl.insert("About".to_string(), about);
-        mclvl.insert("Environment".to_string(), env);
-        mclvl.insert("Map".to_string(), map);
-
-        mclvl.insert("Entities".to_string(), entities);
-        mclvl.insert("TileEntities".to_string(), tile_entities);
-
-        let mut out: Vec<u8> = Vec::new();
-        io::write_nbt(
-            &mut out,
-            Some("MinecraftLevel"),
-            &mclvl,
-            Flavor::GzCompressed,
-        )
-        .unwrap();
-
-        out
-    }
+    }*/
 }

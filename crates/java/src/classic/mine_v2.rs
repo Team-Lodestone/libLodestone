@@ -96,10 +96,7 @@ impl MineV2Level for Level {
                             + (lz as usize) * (width as usize)
                             + (lx as usize);
 
-                        c.1.blocks[(y as usize)
-                            + (z as usize) * (height as usize)
-                            + (x as usize) * (height as usize) * CHUNK_LENGTH as usize] =
-                            blocks[i] as u16;
+                        c.1.set_block(x, y, z, blocks[i] as u16)
                     }
                 }
             }

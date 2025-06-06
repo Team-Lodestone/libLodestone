@@ -5,7 +5,7 @@ use byteorder::{BigEndian, ReadBytesExt};
 use flate2::read::{GzDecoder, ZlibDecoder};
 use lodestone_common::level::region::{ChunkLocation, Compression};
 use lodestone_common::types::hashmap_ext::HashMapExt;
-use lodestone_level::level::chunk::{Chunk, CHUNK_LENGTH};
+use lodestone_level::level::chunk::Chunk;
 use lodestone_level::level::{metadata, Coords, Level};
 use quartz_nbt::io::Flavor;
 use quartz_nbt::{io, NbtCompound, NbtList, NbtTag};
@@ -187,13 +187,11 @@ impl AnvilChunk for Chunk {
         let x: i32 = level.get("xPos").expect("Chunk x position");
         let z: i32 = level.get("zPos").expect("Chunk z position");
         let last_update: i64 = level.get("LastUpdate").expect("Chunk last modified");
-        let inhabited_time: i64 = level.get("InhabitedTime").expect("Chunk inhabited time");
+        let inhabited_time: i64 = level.get("InhabitedTime").unwrap_or(0);
         // let entities: &NbtList = level.get("Entities").expect("Chunk entities");
         // let tile_entities: &NbtList = level.get("TileEntities").expect("Chunk tile entities");
         let has_populated: i8 = level.get("TerrainPopulated").expect("Chunk has populated"); // DOES NOT EXIST ON 1.16 (TODO: DataVersion check to see what is available)
-        let has_light_populated: i8 = level
-            .get("LightPopulated")
-            .expect("Chunk light has populated");
+        let has_light_populated: i8 = level.get("LightPopulated").unwrap_or(1);
 
         let mut c = Chunk::new(256);
 
@@ -214,17 +212,8 @@ impl AnvilChunk for Chunk {
                 let sy: i8 = section.get("Y").expect("Section Y");
                 let blocks: &[u8] = section.get("Blocks").expect("Section blocks");
 
-                for y in 0..16 {
-                    for z in 0..16 {
-                        for x in 0..16 {
-                            let i = y * 16 * 16 + z * 16 + x;
-
-                            c.blocks[(sy as usize * 16 + y)
-                                + z * c.height as usize
-                                + x * c.height as usize * CHUNK_LENGTH as usize] = blocks[i] as u16;
-                        }
-                    }
-                }
+                let sc = c.get_or_create_chunk_section_mut(sy as i16 * 16);
+                sc.blocks = blocks.par_iter().map(|v| *v as u16).collect();
             }
         });
 

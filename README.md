@@ -29,7 +29,7 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
 ### Goals
   - [X] Internal Format
     - [X] Chunked
-    - [ ] Sections
+    - [X] Sections
     - [ ] Palettes (for memory usage)
   - [ ] Internal Block IDs
     - [ ] Block ID conversion map between versions

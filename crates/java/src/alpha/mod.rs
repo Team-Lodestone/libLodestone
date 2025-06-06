@@ -74,9 +74,14 @@ impl AlphaChunk for Chunk {
 
             for x in 0..16 {
                 for z in 0..16 {
-                    let block_idx = y + (z * chunk_height) + (x * chunk_height) * chunk_length;
+                    let idx = y + (z * chunk_height + (x * chunk_height * chunk_length));
 
-                    chunk.set_block(x as i8, chunk_y, z as i8, blocks[block_idx] as u16);
+                    if blocks[idx] != 0 {
+                        if chunk.get_chunk_section(chunk_y).is_none() {
+                            chunk.get_or_create_chunk_section_mut(chunk_y);
+                        }
+                        chunk.set_block(x as i8, chunk_y, z as i8, blocks[idx] as u16);
+                    }
                     // chunk.set_state(x, y, z, data[i] as u8);
                     // chunk.set_light(SKY, x, y, z, sky_light[i] as u8);
                     // chunk.set_light(BLOCK, x, y, z, block_light[i] as u8);
@@ -130,7 +135,7 @@ impl AlphaChunk for Chunk {
         // TODO: This is jank. Please fix.
         let blocks = chunk_level.insert::<_, Vec<u8>>(
             metadata::BLOCKS.to_string(),
-            self.blocks.clone().iter().map(|&x| x as u8).collect(),
+            self.get_all_blocks().iter().map(|&x| x as u8).collect(),
         );
 
         let data = chunk_level.insert::<_, Vec<u8>>(metadata::DATA.to_string(), vec![0u8; 16384]);
@@ -189,6 +194,7 @@ impl AlphaLevel for Level {
                     if !p.is_file() || !p.extension().map_or(false, |ext| ext == "dat") {
                         continue;
                     }
+                    println!("Reading {:?}", p);
 
                     let data: Vec<u8> = fs::read(p).expect("Read file");
 
