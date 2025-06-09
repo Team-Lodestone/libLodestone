@@ -6,6 +6,4 @@ pkg/
 wasm-pack.log
 /.idea
 /heightmaps
-/test
-/test/regions
-/test/regions/src
+/internal_tests

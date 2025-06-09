@@ -169,7 +169,7 @@ impl AlphaLevel for Level {
         let level_dat = path.join("level.dat");
 
         if !level_dat.exists() && !level_dat.is_file() {
-            panic!("level.dat does not exist or is not a file!");
+            return Err("level.dat does not exist or is not a file!".to_string());
         }
 
         let data = fs::read(level_dat).map_err(|e| e.to_string())?;

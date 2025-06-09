@@ -14,13 +14,13 @@ homepage.workspace = true
 [lib]
 crate-type = ["cdylib", "rlib"]
 
-[features]
-default = ["dep:console_error_panic_hook"]
+#[features]
+#default = ["dep:console_error_panic_hook"]
 
 
 [dependencies]
 
 byteorder.workspace = true
 
-console_error_panic_hook = { workspace = true, optional = true }
+#console_error_panic_hook = { workspace = true, optional = true }
 serde = { version = "1.0.219", features = ["derive"] }

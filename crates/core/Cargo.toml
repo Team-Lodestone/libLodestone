@@ -13,9 +13,9 @@ homepage.workspace = true
 
 [lib]
 crate-type = ["cdylib", "rlib"]
-
-[features]
-default = ["dep:console_error_panic_hook"]
+#
+#[features]
+#default = ["dep:console_error_panic_hook"]
 
 
 [dependencies]
@@ -23,10 +23,7 @@ lodestone_common.workspace = true
 lodestone_java.workspace = true
 lodestone_level.workspace = true
 
-flate2.workspace = true
-log.workspace = true
-
-console_error_panic_hook = { workspace = true, optional = true }
-
-[dev-dependencies]
-wasm-bindgen-test.workspace = true
+#console_error_panic_hook = { workspace = true, optional = true }
+#
+#[dev-dependencies]
+#wasm-bindgen-test.workspace = true

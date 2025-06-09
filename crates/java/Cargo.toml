@@ -14,8 +14,8 @@ homepage.workspace = true
 [lib]
 crate-type = ["cdylib", "rlib"]
 
-[features]
-default = ["dep:console_error_panic_hook"]
+#[features]
+#default = ["dep:console_error_panic_hook"]
 
 
 [dependencies]
@@ -27,5 +27,5 @@ flate2.workspace = true
 log.workspace = true
 quartz_nbt.workspace = true
 
-console_error_panic_hook = { workspace = true, optional = true }
+#console_error_panic_hook = { workspace = true, optional = true }
 rayon = "1.10.0"

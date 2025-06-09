@@ -12,7 +12,7 @@ members = [
 [workspace.package]
 edition    = "2024"
 # usually I've been incrementing minor ver everytime I add a new supported level format...
-version    = "0.5.1"
+version    = "0.5.2"
 # TODO: specify MSRV (minimum supported rust version)
 license    = "LGPL-2.1"
 readme     = "README.md"
@@ -27,26 +27,26 @@ opt-level = "s"
 [workspace.dependencies]
 # NOTE: for now we keep all version numbers in lockstep, as the version specified
 # in [workspace.package] above
-lodestone_common = { version = "=0.5.1", path = "crates/common" }
-lodestone_java   = { version = "=0.5.1", path = "crates/java" }
-lodestone_level  = { version = "=0.5.1", path = "crates/level"}
+lodestone_common = { version = "=0.5.2", path = "crates/common" }
+lodestone_java   = { version = "=0.5.2", path = "crates/java" }
+lodestone_level  = { version = "=0.5.2", path = "crates/level"}
 
 byteorder            = "1.5.0"
 flate2               = "1.1.1"
 phf                  = "0.11.3"
 quartz_nbt           = "0.2.9"
 log                  = "0.4.27"
-wasm-bindgen         = "0.2.100"
-wasm-logger          = "0.2.0"
-serde_with           = "3.12.0"
-
-
-# The `console_error_panic_hook` crate provides better debugging of panics by
-# logging them with `console.error`. This is great for development, but requires
-# all the `std::fmt` and `std::panicking` infrastructure, so isn't great for
-# code size when deploying.
-# Should be optional in each package.
-console_error_panic_hook = "0.1.7"
-
-# Should be only used in [dev-dependencies] sections of each package.
-wasm-bindgen-test = "0.3.50"
+#wasm-bindgen         = "0.2.100"
+#wasm-logger          = "0.2.0"
+#serde_with           = "3.12.0"
+#
+#
+## The `console_error_panic_hook` crate provides better debugging of panics by
+## logging them with `console.error`. This is great for development, but requires
+## all the `std::fmt` and `std::panicking` infrastructure, so isn't great for
+## code size when deploying.
+## Should be optional in each package.
+#console_error_panic_hook = "0.1.7"
+#
+## Should be only used in [dev-dependencies] sections of each package.
+#wasm-bindgen-test = "0.3.50"

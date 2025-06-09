@@ -14,8 +14,8 @@ homepage.workspace = true
 [lib]
 crate-type = ["cdylib", "rlib"]
 
-[features]
-default = ["dep:console_error_panic_hook"]
+#[features]
+#default = ["dep:console_error_panic_hook"]
 
 
 [dependencies]
@@ -23,7 +23,7 @@ lodestone_common.workspace = true
 
 phf = { workspace = true, features = ["macros"] }
 
-console_error_panic_hook = { workspace = true, optional = true }
+#console_error_panic_hook = { workspace = true, optional = true }
 serde = { version = "1.0.219", features = ["derive"] }
-serde_with = { workspace = true }
+serde_with = { version = "3.12.0" }
 rayon = "1.10.0"

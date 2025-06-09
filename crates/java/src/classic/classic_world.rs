@@ -1,3 +1,4 @@
+use flate2::bufread::GzDecoder;
 use lodestone_common::types::hashmap_ext::HashMapExt;
 use lodestone_level::level::chunk::{CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_level::level::metadata;
@@ -22,9 +23,12 @@ impl CWLevel for Level {
 
     fn read_cw(data: Vec<u8>) -> Result<Level, String> {
         log::debug!("Reading compound");
-        let nbt = io::read_nbt(&mut Cursor::new(&data), Flavor::GzCompressed)
-            .expect("ClassicWorld NBT data")
-            .0;
+        let nbt = io::read_nbt(
+            &mut GzDecoder::new(&mut Cursor::new(&data)),
+            Flavor::Uncompressed,
+        )
+        .expect("ClassicWorld NBT data")
+        .0;
 
         log::debug!("Reading header");
         // let format_version: i8 = nbt.get("FormatVersion").expect("Level version");
