@@ -7,3 +7,4 @@ wasm-pack.log
 /.idea
 /heightmaps
 /internal_tests
+/crates/java/tests/internal_tests.rs
