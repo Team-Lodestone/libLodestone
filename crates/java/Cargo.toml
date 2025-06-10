@@ -29,3 +29,4 @@ quartz_nbt.workspace = true
 
 #console_error_panic_hook = { workspace = true, optional = true }
 rayon = "1.10.0"
+uuid = { version = "1.17.0", features = ["v4"] }

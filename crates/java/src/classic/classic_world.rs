@@ -1,13 +1,15 @@
 use lodestone_common::types::hashmap_ext::HashMapExt;
 use lodestone_level::level::chunk::{CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_level::level::metadata;
+use lodestone_level::level::metadata::UUID;
 use lodestone_level::level::Level;
 use quartz_nbt::io::{self, Flavor};
-use quartz_nbt::{NbtCompound, NbtList, NbtReprError};
+use quartz_nbt::{NbtCompound, NbtReprError};
 use rayon::iter::IndexedParallelIterator;
 use rayon::iter::IntoParallelRefMutIterator;
 use rayon::iter::ParallelIterator;
 use std::io::Cursor;
+use uuid::Uuid;
 
 pub trait CWLevel {
     fn new_cw(height: i16, name: String, author: String) -> Level;
@@ -178,9 +180,8 @@ impl CWLevel for Level {
         let mut mclvl = NbtCompound::new();
         let mut created_by = NbtCompound::new();
         let mut map_generator = NbtCompound::new();
+        let mut metadata = NbtCompound::new();
         let mut spawn_tag = NbtCompound::new();
-        let entities = NbtList::new();
-        let tile_entities = NbtList::new();
 
         let width = self.get_block_width() as usize;
         let height = self.get_block_height() as usize;
@@ -188,11 +189,17 @@ impl CWLevel for Level {
 
         mclvl.insert("FormatVersion".to_string(), 1i8);
         mclvl.insert("Name".to_string(), &self.name);
+
+        let uuid = self
+            .custom_data
+            .get_value::<Vec<u8>, _>(UUID)
+            .unwrap_or(Uuid::new_v4().as_bytes().to_vec());
+        mclvl.insert("UUID".to_string(), uuid);
         mclvl.insert("X".to_string(), width as i16);
         mclvl.insert("Y".to_string(), height as i16);
         mclvl.insert("Z".to_string(), length as i16);
 
-        created_by.insert("Service".to_string(), "Project Lodestone");
+        created_by.insert("Service".to_string(), "Unknown");
         created_by.insert(
             "Username".to_string(),
             self.custom_data
@@ -202,8 +209,8 @@ impl CWLevel for Level {
 
         mclvl.insert("CreatedBy".to_string(), created_by);
 
-        map_generator.insert("Software".to_string(), "Unknown"); // todo: fill in with original version of mc it was generated with, or "Project Lodestone" if new.
-        map_generator.insert("MapGeneratorName".to_string(), "Unknown");
+        map_generator.insert("Software".to_string(), "libLodestone");
+        map_generator.insert("MapGeneratorName".to_string(), "write_cw");
 
         mclvl.insert("MapGenerator".to_string(), map_generator);
 
@@ -245,9 +252,6 @@ impl CWLevel for Level {
 
         mclvl.insert("Spawn", spawn_tag);
 
-        mclvl.insert("Entities".to_string(), entities);
-        mclvl.insert("TileEntities".to_string(), tile_entities);
-
         let mut blocks = vec![0u8; width * length * height];
 
         let mx = self.get_min_block_x();
@@ -262,6 +266,16 @@ impl CWLevel for Level {
         });
 
         mclvl.insert("BlockArray".to_string(), blocks);
+
+        let mut lodestone_tag = NbtCompound::new();
+        let mut level_info = NbtCompound::new();
+
+        level_info.insert(metadata::TIME.to_string(), self.time);
+        level_info.insert("ChunkCount", self.get_chunk_count() as i32);
+
+        lodestone_tag.insert("LevelInfo", level_info);
+        metadata.insert("libLodestone", lodestone_tag);
+        mclvl.insert("Metadata", metadata);
 
         io::write_nbt(&mut out, Some("ClassicWorld"), &mclvl, Flavor::GzCompressed)
             .expect("Write compound");

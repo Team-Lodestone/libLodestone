@@ -27,6 +27,7 @@ pub enum Value {
 
 // impl From<T> for Value for each T in the enum
 hashmap_impl_type!(String, String);
+hashmap_impl_type!(Vec<u8>, Vec);
 hashmap_impl_type!(i64, Int64);
 hashmap_impl_type!(u64, Uint64);
 hashmap_impl_type!(i32, Int32);
