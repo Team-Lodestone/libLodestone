@@ -1,10 +1,10 @@
-use flate2::bufread::GzDecoder;
 use lodestone_common::types::hashmap_ext::HashMapExt;
 use lodestone_level::level::chunk::{CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_level::level::metadata;
 use lodestone_level::level::Level;
 use quartz_nbt::io::{self, Flavor};
-use quartz_nbt::{NbtCompound, NbtReprError};
+use quartz_nbt::{NbtCompound, NbtList, NbtReprError};
+use rayon::iter::IndexedParallelIterator;
 use rayon::iter::IntoParallelRefMutIterator;
 use rayon::iter::ParallelIterator;
 use std::io::Cursor;
@@ -12,7 +12,7 @@ use std::io::Cursor;
 pub trait CWLevel {
     fn new_cw(height: i16, name: String, author: String) -> Level;
     fn read_cw(data: Vec<u8>) -> Result<Level, String>;
-    // fn write_cw(&mut self, out: &mut Vec<u8>);
+    fn write_cw(&mut self) -> Vec<u8>;
 }
 
 impl CWLevel for Level {
@@ -23,12 +23,9 @@ impl CWLevel for Level {
 
     fn read_cw(data: Vec<u8>) -> Result<Level, String> {
         log::debug!("Reading compound");
-        let nbt = io::read_nbt(
-            &mut GzDecoder::new(&mut Cursor::new(&data)),
-            Flavor::Uncompressed,
-        )
-        .expect("ClassicWorld NBT data")
-        .0;
+        let nbt = io::read_nbt(&mut Cursor::new(&data), Flavor::GzCompressed)
+            .expect("ClassicWorld NBT data")
+            .0;
 
         log::debug!("Reading header");
         // let format_version: i8 = nbt.get("FormatVersion").expect("Level version");
@@ -175,12 +172,100 @@ impl CWLevel for Level {
         Ok(level)
     }
 
-    /*fn write_cw(&mut self, mut out: &mut Vec<u8>) {
+    fn write_cw(&mut self) -> Vec<u8> {
+        let mut out: Vec<u8> = Vec::new();
+
         let mut mclvl = NbtCompound::new();
-        let mut about = NbtCompound::new();
-        let mut env = NbtCompound::new();
-        let mut map = NbtCompound::new();
+        let mut created_by = NbtCompound::new();
+        let mut map_generator = NbtCompound::new();
+        let mut spawn_tag = NbtCompound::new();
         let entities = NbtList::new();
         let tile_entities = NbtList::new();
-    }*/
+
+        let width = self.get_block_width() as usize;
+        let height = self.get_block_height() as usize;
+        let length = self.get_block_length() as usize;
+
+        mclvl.insert("FormatVersion".to_string(), 1i8);
+        mclvl.insert("Name".to_string(), &self.name);
+        mclvl.insert("X".to_string(), width as i16);
+        mclvl.insert("Y".to_string(), height as i16);
+        mclvl.insert("Z".to_string(), length as i16);
+
+        created_by.insert("Service".to_string(), "Project Lodestone");
+        created_by.insert(
+            "Username".to_string(),
+            self.custom_data
+                .get_value::<String, _>(metadata::AUTHOR)
+                .unwrap_or("Unknown".to_string()),
+        );
+
+        mclvl.insert("CreatedBy".to_string(), created_by);
+
+        map_generator.insert("Software".to_string(), "Unknown"); // todo: fill in with original version of mc it was generated with, or "Project Lodestone" if new.
+        map_generator.insert("MapGeneratorName".to_string(), "Unknown");
+
+        mclvl.insert("MapGenerator".to_string(), map_generator);
+
+        mclvl.insert(
+            "TimeCreated",
+            self.custom_data
+                .get_value::<i64, _>(metadata::CREATION_TIME)
+                .unwrap_or(0),
+        );
+        mclvl.insert(
+            "LastAccessed",
+            self.custom_data
+                .get_value::<i64, _>(metadata::LAST_ACCESSED)
+                .unwrap_or(0),
+        );
+        mclvl.insert(
+            "LastModified",
+            self.custom_data
+                .get_value::<i64, _>(metadata::LAST_MODIFIED)
+                .unwrap_or(0),
+        );
+
+        spawn_tag.insert("X", self.spawn.x);
+        spawn_tag.insert("Y", self.spawn.y);
+        spawn_tag.insert("Z", self.spawn.z);
+
+        spawn_tag.insert(
+            "H",
+            self.custom_data
+                .get_value::<u8, _>(metadata::SPAWN_YAW)
+                .unwrap_or(0),
+        );
+        spawn_tag.insert(
+            "P",
+            self.custom_data
+                .get_value::<u8, _>(metadata::SPAWN_PITCH)
+                .unwrap_or(0),
+        );
+
+        mclvl.insert("Spawn", spawn_tag);
+
+        mclvl.insert("Entities".to_string(), entities);
+        mclvl.insert("TileEntities".to_string(), tile_entities);
+
+        let mut blocks = vec![0u8; width * length * height];
+
+        let mx = self.get_min_block_x();
+        let mz = self.get_min_block_z();
+
+        blocks.par_iter_mut().enumerate().for_each(|(i, v)| {
+            let y = i / (length * width);
+            let z = (i / width) % length;
+            let x = i % width;
+
+            *v = self.get_block(x as i32 + mx, y as i16, z as i32 + mz) as u8;
+        });
+
+        mclvl.insert("BlockArray".to_string(), blocks);
+
+        io::write_nbt(&mut out, Some("ClassicWorld"), &mclvl, Flavor::GzCompressed)
+            .expect("Write compound");
+
+        out
+    }
 }

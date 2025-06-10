@@ -11,7 +11,7 @@ use std::io::Cursor;
 pub trait IndevLevel {
     fn new_indev(height: i16, name: String, author: String) -> Level;
     fn read_indev(data: Vec<u8>) -> Result<Level, String>;
-    fn write_indev(&mut self, out: &mut Vec<u8>);
+    fn write_indev(&mut self) -> Vec<u8>;
 }
 
 impl IndevLevel for Level {
@@ -163,7 +163,9 @@ impl IndevLevel for Level {
         Ok(level)
     }
 
-    fn write_indev(&mut self, out: &mut Vec<u8>) {
+    fn write_indev(&mut self) -> Vec<u8> {
+        let mut out: Vec<u8> = Vec::new();
+
         let mut mclvl = NbtCompound::new();
         let mut about = NbtCompound::new();
         let mut env = NbtCompound::new();
@@ -275,8 +277,7 @@ impl IndevLevel for Level {
                 for x in 0..width {
                     blocks[(y as usize) * (length as usize * width as usize)
                         + (z as usize) * (width as usize)
-                        + (x as usize)] =
-                        self.get_block(x as i32 + mx, y as i16, z as i32 + mz) as i8;
+                        + (x as usize)] = self.get_block(x + mx, y, z + mz) as i8;
                 }
             }
         }
@@ -292,6 +293,14 @@ impl IndevLevel for Level {
         mclvl.insert("Entities".to_string(), entities);
         mclvl.insert("TileEntities".to_string(), tile_entities);
 
-        io::write_nbt(out, Some("MinecraftLevel"), &mclvl, Flavor::GzCompressed).unwrap();
+        io::write_nbt(
+            &mut out,
+            Some("MinecraftLevel"),
+            &mclvl,
+            Flavor::GzCompressed,
+        )
+        .unwrap();
+
+        out
     }
 }

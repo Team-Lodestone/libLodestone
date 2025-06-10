@@ -10,16 +10,17 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
 ### Formats
   - [ ] Java 
     - [ ] Classic 
-      - [ ] .Mine V1
+      - [X] .Mine V1
       - [X] .Mine V2
       - [ ] .Mine V3
       - [X] ClassicWorld (CW)
-      - [ ] [MCGalaxy](https://github.com/ClassiCube/MCGalaxy) Level (LVL)
+      - [X] [MCGalaxy](https://github.com/ClassiCube/MCGalaxy) Level (LVL)
     - [X] Indev (MCLevel)
     - [X] Infdev (Alpha Save Format)
     - [X] Alpha (Alpha Save Format)
     - [X] MCR
     - [ ] Anvil
+    - [ ] 1.13 Anvil 
   - [ ] LCE
     - [ ] V11
     - [ ] V12

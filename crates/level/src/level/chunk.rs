@@ -170,7 +170,14 @@ impl Chunk {
 
         match self.get_chunk_section_mut(y) {
             Some(s) => s.set_block(x, y % CHUNK_SECTION_HEIGHT as i16, z, block),
-            _ => {}
+            _ => {
+                if block == 0 {
+                    return;
+                } // if block is zero we don't want to create new section for lower memory usage
+
+                let cs = self.get_or_create_chunk_section_mut(y);
+                cs.set_block(x, y % CHUNK_SECTION_HEIGHT as i16, z, block);
+            }
         }
     }
 

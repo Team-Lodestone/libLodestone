@@ -54,8 +54,7 @@ mod anvil_tests {
         // println!("Generating blockmap");
         // let blockmap = mv2.get_blockmap();
 
-        let mut out = vec![0u8; level.get_minev2_file_size()];
-        level.write_minev2(&mut out);
+        let out = level.write_minev2();
 
         println!("Compressing");
         let mut enc = GzEncoder::new(

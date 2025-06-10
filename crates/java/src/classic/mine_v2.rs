@@ -10,9 +10,11 @@ use std::time::SystemTime;
 pub trait MineV2Level {
     fn new_minev2(width: i16, height: i16, length: i16, name: String, author: String) -> Level;
     fn read_minev2(data: Vec<u8>) -> Result<Level, String>;
-    fn write_minev2(&mut self, out: &mut [u8]);
+    fn write_minev2(&mut self) -> Vec<u8>;
     fn get_minev2_file_size(&self) -> usize;
 }
+
+// TODO: auto compress when writing, auto decompress when reading, for all formats that are compressed by default.
 
 impl MineV2Level for Level {
     fn new_minev2(width: i16, height: i16, length: i16, name: String, author: String) -> Level {
@@ -107,12 +109,8 @@ impl MineV2Level for Level {
         Ok(level)
     }
 
-    fn write_minev2(&mut self, out: &mut [u8]) {
-        if out.len() < self.get_minev2_file_size() {
-            panic!("Output buffer is too small");
-        }
-
-        let mut c = Cursor::new(out);
+    fn write_minev2(&mut self) -> Vec<u8> {
+        let mut c = Cursor::new(vec![0u8; self.get_minev2_file_size()]);
 
         c.write_i32::<BigEndian>(0x271BB788)
             .expect("Signature write");
@@ -154,6 +152,8 @@ impl MineV2Level for Level {
         });
 
         c.write_all(blocks.as_slice()).expect("Block array");
+
+        c.into_inner()
     }
 
     fn get_minev2_file_size(&self) -> usize {

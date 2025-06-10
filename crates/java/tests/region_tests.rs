@@ -3,6 +3,9 @@ mod test_utils;
 mod region_tests {
     use crate::test_utils::{write_world, write_world_dc};
     use lodestone_java::alpha::AlphaLevel;
+    use lodestone_java::classic::classic_world::CWLevel;
+    use lodestone_java::classic::mcgalaxy_lvl::MCGLevel;
+    use lodestone_java::classic::mine_v1::MineV1Level;
     use lodestone_java::classic::mine_v2::MineV2Level;
     use lodestone_java::indev::IndevLevel;
     use lodestone_java::mcregion::Region;
@@ -77,29 +80,39 @@ mod region_tests {
         println!("Regions parse time {:?}", parse_elapsed);
         println!("Bitmap creation time {:?}", bitmap_elapsed);
 
+        println!("Writing Mine V1 world");
+        let mv1_start = Instant::now();
+        let mv1 = level.write_minev1();
+        write_world(mv1, "RegionTest.mine", "minev1");
+        let mv1_end = mv1_start.elapsed();
+
         println!("Writing Mine V2 world");
         let mv2_start = Instant::now();
 
-        let mut mv2 = vec![0u8; level.get_minev2_file_size()];
-        level.write_minev2(&mut mv2);
+        let mv2: Vec<u8> = level.write_minev2();
         write_world(mv2, "RegionTest.mine", "minev2");
         let mv2_end = mv2_start.elapsed();
 
-        // println!("Writing ClassicWorld world");
-        // let cw_start = Instant::now();
-        //
-        // let mut cw: Vec<u8> = Vec::new();
-        // level.write_cw(&mut cw);
-        // write_world_dc(cw, "RegionTest.cw", "cw");
-        // let cw_end = cw_start.elapsed();
+        println!("Writing ClassicWorld world");
+        let cw_start = Instant::now();
+
+        let cw: Vec<u8> = level.write_cw();
+        write_world_dc(cw, "RegionTest.cw", "cw");
+        let cw_end = cw_start.elapsed();
 
         println!("Writing Indev world");
         let indev_start = Instant::now();
-        let mut indev = Vec::new();
-        level.write_indev(&mut indev);
+        let indev = level.write_indev();
         write_world_dc(indev, "RegionTest.mclevel", "indev");
 
         let indev_end = indev_start.elapsed();
+
+        println!("Writing MCG world");
+        let mcg_start = Instant::now();
+        let mcg = level.write_mcgalaxy_level();
+        write_world_dc(mcg, "RegionTest.lvl", "lvl");
+
+        let mcg_end = mcg_start.elapsed();
 
         // so we do not write into existing folder
         println!("Writing Alpha world");
@@ -115,8 +128,10 @@ mod region_tests {
         let alpha_end = alpha_start.elapsed();
 
         println!("Statistics: ");
+        println!("Mine V1: {:?}", mv1_end);
         println!("Mine V2: {:?}", mv2_end);
-        // println!("ClassicWorld: {:?}", cw_end);
+        println!("ClassicWorld: {:?}", cw_end);
+        println!("MCGalaxy: {:?}", mcg_end);
         println!("Indev: {:?}", indev_end);
         println!("Alpha: {:?}", alpha_end);
     }

@@ -10,7 +10,7 @@ pub fn read_prefixed_2_byte_string(c: &mut Cursor<Vec<u8>>) -> String {
     String::from_utf8(str).expect("Convert to UTF-8")
 }
 
-pub fn write_prefixed_2_byte_string(c: &mut Cursor<&mut [u8]>, str: &String) {
+pub fn write_prefixed_2_byte_string<W: Write>(c: &mut W, str: &String) {
     let len = str.len();
     if len > (2 ^ 31) - 1 {
         panic!("String is too long to store inside an i16");

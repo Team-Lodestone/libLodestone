@@ -10,6 +10,10 @@ pub enum Value {
     Int32(i32),
     Int16(i16),
     Int8(i8),
+    Uint64(u64),
+    Uint32(u32),
+    Uint16(u16),
+    Uint8(u8),
     Bool(bool),
     // possible values
 }
@@ -24,9 +28,13 @@ pub enum Value {
 // impl From<T> for Value for each T in the enum
 hashmap_impl_type!(String, String);
 hashmap_impl_type!(i64, Int64);
+hashmap_impl_type!(u64, Uint64);
 hashmap_impl_type!(i32, Int32);
+hashmap_impl_type!(u32, Uint32);
 hashmap_impl_type!(i16, Int16);
+hashmap_impl_type!(u16, Uint16);
 hashmap_impl_type!(i8, Int8);
+hashmap_impl_type!(u8, Uint8);
 hashmap_impl_type!(bool, Bool);
 
 pub trait HashMapExt {

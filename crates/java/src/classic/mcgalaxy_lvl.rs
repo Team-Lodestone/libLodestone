@@ -1,120 +1,38 @@
-use crate::classic::ClassicLevel;
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
+use lodestone_common::types::hashmap_ext::HashMapExt;
+use lodestone_level::level::chunk::{CHUNK_LENGTH, CHUNK_WIDTH};
+use lodestone_level::level::{metadata, Level};
+use rayon::iter::IndexedParallelIterator;
+use rayon::iter::ParallelIterator;
+use rayon::prelude::IntoParallelRefMutIterator;
 use std::io::{Cursor, Read, Write};
 
-// TODO: make this work (when Zero is back)
-
-// IMPORTANT: there can be extra data after the block array due to extensions to the format made by both the server software and plugins.
-#[derive(Debug)]
-pub struct MCGLevel {
-    pub classic_level: ClassicLevel,
-    pub spawn_x: i16,
-    pub spawn_y: i16,
-    pub spawn_z: i16,
-    pub spawn_yaw: u8,
-    pub spawn_pitch: u8,
-    pub min_access_perm: u8,
-    pub min_build_perm: u8,
-
-    section_width: i16,
-    section_depth: i16,
-    custom_block_sections: Vec<Vec<u8>>,
+// we need to make a trait
+pub trait MCGLevel {
+    fn read_mcgalaxy_level(data: Vec<u8>) -> Result<Level, String>;
+    fn get_mcgalaxy_level_file_size(&self) -> usize;
+    fn write_mcgalaxy_level(&self) -> Vec<u8>;
 }
 
-//HACK: HORRIBLE!!!
-static READ_BLOCK_MAPPINGS: [u16; 256] = [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 512, 768, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0,
-];
-static WRITE_BLOCK_MAPPINGS: [u8; 4] = [0, 163, 198, 199];
-
-impl MCGLevel {
-    pub fn new(
-        width: i16,
-        height: i16,
-        length: i16,
-        spawn_x: i16,
-        spawn_y: i16,
-        spawn_z: i16,
-        spawn_yaw: u8,
-        spawn_pitch: u8,
-        min_access_perm: u8,
-        min_build_perm: u8,
-    ) -> MCGLevel {
-        let section_width = (width as f32 / 16.0).ceil() as i16;
-        let section_height = (height as f32 / 16.0).ceil() as i16;
-        let section_depth = (length as f32 / 16.0).ceil() as i16;
-        MCGLevel {
-            classic_level: ClassicLevel {
-                width,
-                height,
-                length,
-                blocks: vec![0u8; (width as usize) * (height as usize) * (length as usize)],
-            },
-            spawn_x,
-            spawn_y,
-            spawn_z,
-            spawn_yaw,
-            spawn_pitch,
-            min_access_perm,
-            min_build_perm,
-
-            section_width,
-            section_depth,
-            custom_block_sections: vec![
-                vec![0u8; 0];
-                ((section_width as usize) * (section_height as usize) * (section_depth as usize))
-                    as usize
-            ],
-        }
-    }
-
-    pub fn resize(&mut self, width: i16, depth: i16, height: i16) {
-        let x0 = self.classic_level.width as usize;
-        let z0 = self.classic_level.length as usize;
-        let y0 = self.classic_level.height as usize;
-
-        // hate usize
-        let x1 = width as usize;
-        let z1 = depth as usize;
-        let y1 = height as usize;
-
-        let mut blocks = vec![0; x1 * z1 * y1];
-        // can't wait for the order to change between every edition of minecraft
-        for x in 0..x0.min(x1) {
-            for z in 0..z0.min(z1) {
-                for y in 0..y0.min(y1) {
-                    let p0 = x + x0 * (z + y * z0);
-                    let p1 = x + x1 * (z + y * z1);
-                    blocks[p1] = self.classic_level.blocks[p0];
-                }
-            }
-        }
-
-        self.classic_level.blocks = blocks;
-        self.classic_level.width = x1 as i16;
-        self.classic_level.length = z1 as i16;
-        self.classic_level.height = y1 as i16;
-    }
-
-    pub fn new_from_data(data: Vec<u8>) -> Result<MCGLevel, String> {
-        let mut c = Cursor::new(data); // literally just array with position ig
+impl MCGLevel for Level {
+    // NOTE: we don't want to deal with custom sections and blocks until we have everything working, then we'll think about it during free time.
+    fn read_mcgalaxy_level(data: Vec<u8>) -> Result<Level, String> {
+        let mut c = Cursor::new(data);
         let signature = c.read_u16::<LittleEndian>().unwrap();
-        let w = c.read_i16::<LittleEndian>().unwrap();
-        let d = c.read_i16::<LittleEndian>().unwrap();
-        let h = c.read_i16::<LittleEndian>().unwrap();
+        let width = c.read_i16::<LittleEndian>().unwrap();
+        let length = c.read_i16::<LittleEndian>().unwrap();
+        let height = c.read_i16::<LittleEndian>().unwrap();
         let spawn_x = c.read_i16::<LittleEndian>().unwrap();
         let spawn_z = c.read_i16::<LittleEndian>().unwrap();
         let spawn_y = c.read_i16::<LittleEndian>().unwrap();
         let spawn_yaw = c.read_u8().unwrap();
         let spawn_pitch = c.read_u8().unwrap();
+
+        let mut mcg = Level::new();
+        mcg.custom_data
+            .set_value::<u8>(metadata::SPAWN_YAW.to_string(), spawn_yaw);
+        mcg.custom_data
+            .set_value::<u8>(metadata::SPAWN_PITCH.to_string(), spawn_pitch);
 
         println!("sig: {}", signature);
         // note: not required to be 1874 apparently.
@@ -125,224 +43,133 @@ impl MCGLevel {
 
         let min_access_perm = c.read_u8().unwrap();
         let min_build_perm = c.read_u8().unwrap();
+        mcg.custom_data
+            .set_value::<u8>(metadata::MIN_ACCESS_PERM.to_string(), min_access_perm);
+        mcg.custom_data
+            .set_value::<u8>(metadata::MIN_BUILD_PERM.to_string(), min_build_perm);
 
-        println!("w: {}, h: {}, d: {}", w, d, h);
+        println!("w: {}, h: {}, l: {}", width, height, length);
         println!("spX: {}, spY: {}, spZ: {}", spawn_x, spawn_y, spawn_z);
 
-        // TODO: I think there's a performance issue with loading the blocks...
-        let mut blocks: Vec<u8> = vec![0; (w as usize) * (d as usize) * (h as usize)];
+        let mut blocks: Vec<u8> = vec![0; (width as usize) * (length as usize) * (height as usize)];
 
         c.read_exact(&mut blocks)
             .expect("Failed to read block array");
 
-        let section_width = (w as f32 / 16.0).ceil() as i16;
-        let section_height = (h as f32 / 16.0).ceil() as i16;
-        let section_depth = (d as f32 / 16.0).ceil() as i16;
+        mcg.create_finite(width as i32, height, length as i32);
 
-        let mut custom_block_sections: Vec<Vec<u8>> =
-            vec![
-                vec![0u8; 0];
-                (section_width as usize) * (section_height as usize) * (section_depth as usize)
-            ];
+        log::debug!("Read into chunks");
 
-        if c.read_u8().unwrap() == 0xBD {
-            for y in 0..section_height {
-                for z in 0..section_depth {
-                    for x in 0..section_width {
-                        let b = c.read_u8().unwrap();
+        let chunks = mcg.get_chunks_mut();
 
-                        if b == 1 {
-                            let section_index =
-                                ((y * section_depth + z) * section_width + x) as usize;
-                            let mut section: Vec<u8> = vec![0u8; 4096];
+        let _ = chunks.par_iter_mut().for_each(|c| {
+            for y in 0..height {
+                for z in 0..CHUNK_LENGTH {
+                    let lz = c.0.z * CHUNK_LENGTH as i32 + z as i32;
+                    if lz >= length as i32 {
+                        continue;
+                    }
 
-                            c.read_exact(&mut section)
-                                .expect(format!("Failed to read section {x} {y} {z}").as_str());
-                            custom_block_sections[section_index] = section;
+                    for x in 0..CHUNK_WIDTH {
+                        let lx = c.0.x * CHUNK_WIDTH as i32 + x as i32;
+                        if lx >= width as i32 {
+                            continue;
                         }
+
+                        // magic
+                        let i = (y as usize) * (length as usize) * (width as usize)
+                            + (lz as usize) * (width as usize)
+                            + (lx as usize);
+
+                        c.1.set_block(x, y, z, blocks[i] as u16)
                     }
                 }
             }
-        }
-
-        let mcg = MCGLevel {
-            classic_level: ClassicLevel {
-                width: w,
-                length: d,
-                height: h,
-                blocks,
-            },
-            spawn_x,
-            spawn_y,
-            spawn_z,
-            spawn_yaw,
-            spawn_pitch,
-            min_access_perm,
-            min_build_perm,
-
-            section_width,
-            section_depth,
-            custom_block_sections,
-        };
+        });
 
         Ok(mcg)
     }
 
-    pub fn set_world_spawn(&mut self, x: i16, y: i16, z: i16) {
-        self.spawn_x = x;
-        self.spawn_y = y;
-        self.spawn_z = z;
+    fn get_mcgalaxy_level_file_size(&self) -> usize {
+        2 // signature
+        + 2 // width
+        + 2 // length
+        + 2 // height
+        + 2 // spawn_x
+        + 2 // spawn_z
+        + 2 // spawn_y
+        + 1 // spawn_yaw
+        + 1 // spawn_pitch
+        + 1 // min_access_perm
+        + 1 // min_build_perm
+        + (self.get_block_width() as usize * self.get_block_height() as usize * self.get_block_length() as usize) // block array
     }
 
-    pub fn set_world_spawn_rot(&mut self, yaw: u8, pitch: u8) {
-        self.spawn_yaw = yaw;
-        self.spawn_pitch = pitch;
-    }
+    fn write_mcgalaxy_level(&self) -> Vec<u8> {
+        let mut c = Cursor::new(vec![0u8; self.get_mcgalaxy_level_file_size()]);
+        c.write_u16::<LittleEndian>(1874 as u16)
+            .expect("Unable to write signature!");
 
-    pub fn get_block(&mut self, x: i16, y: i16, z: i16) -> u16 {
-        let index = self.get_index(x, y, z);
-        if index == !0 {
-            return 0;
-        }
+        let width = self.get_block_width();
+        let length = self.get_block_length();
+        let height = self.get_block_height();
 
-        let block = self.classic_level.blocks[index];
+        c.write_i16::<LittleEndian>(width as i16)
+            .expect("Unable to write level width!");
+        c.write_i16::<LittleEndian>(length as i16)
+            .expect("Unable to write level length!");
+        c.write_i16::<LittleEndian>(height)
+            .expect("Unable to write level height!");
+        c.write_i16::<LittleEndian>(self.spawn.x)
+            .expect("Unable to write spawn X!");
+        c.write_i16::<LittleEndian>(self.spawn.z)
+            .expect("Unable to write spawn Z!");
+        c.write_i16::<LittleEndian>(self.spawn.y)
+            .expect("Unable to write spawn Y!");
 
-        if READ_BLOCK_MAPPINGS[block as usize] != 0 {
-            return READ_BLOCK_MAPPINGS[block as usize] | self.get_ext_block(x, y, z) as u16;
-        }
+        let spawn_yaw = self
+            .custom_data
+            .get_value::<u8, &str>(metadata::SPAWN_YAW)
+            .unwrap_or(0);
+        let spawn_pitch = self
+            .custom_data
+            .get_value::<u8, &str>(metadata::SPAWN_PITCH)
+            .unwrap_or(0);
 
-        block as u16
-    }
+        c.write_u8(spawn_yaw).expect("Unable to write spawn yaw!");
+        c.write_u8(spawn_pitch)
+            .expect("Unable to write spawn pitch!");
 
-    fn get_ext_block(&mut self, x: i16, y: i16, z: i16) -> u8 {
-        let section_x = x >> 4;
-        let section_y = y >> 4;
-        let section_z = z >> 4;
+        let min_access_perm = self
+            .custom_data
+            .get_value::<u8, &str>(metadata::MIN_ACCESS_PERM)
+            .unwrap_or(0);
+        let min_build_perm = self
+            .custom_data
+            .get_value::<u8, &str>(metadata::MIN_BUILD_PERM)
+            .unwrap_or(0);
 
-        let index = (section_y * self.section_depth + section_z) * self.section_width + section_x;
-        let section = &self.custom_block_sections[index as usize];
-        if !section.is_empty() {
-            return section[((y & 15) << 8 | (z & 15) << 4 | (x & 15)) as usize];
-        }
+        c.write_u8(min_access_perm)
+            .expect("Unable to write minimum access permissions!");
+        c.write_u8(min_build_perm)
+            .expect("Unable to write minimum build permissions!");
 
-        0
-    }
+        let mut blocks = vec![0u8; width as usize * length as usize * height as usize];
 
-    pub fn set_block(&mut self, x: i16, y: i16, z: i16, block: i16) {
-        let mut set = block as u8;
+        let mx = self.get_min_block_x();
+        let mz = self.get_min_block_z();
 
-        if block >= 256 {
-            set = WRITE_BLOCK_MAPPINGS[(block >> 8) as usize];
-            self.set_ext_block(x, y, z, (block & 0xFF) as u8);
-        }
+        // Write blocks
+        blocks.par_iter_mut().enumerate().for_each(|(i, v)| {
+            let y = i / (length as usize * width as usize);
+            let z = (i / width as usize) % length as usize;
+            let x = i % width as usize;
 
-        let index = self.get_index(x, y, z);
-        if index == !0 {
-            return;
-        }
+            *v = self.get_block(x as i32 + mx, y as i16, z as i32 + mz) as u8;
+        });
 
-        self.classic_level.blocks[index] = set;
-    }
+        c.write_all(blocks.as_slice()).expect("Block array");
 
-    fn set_ext_block(&mut self, x: i16, y: i16, z: i16, block: u8) {
-        let section_x = x >> 4;
-        let section_y = y >> 4;
-        let section_z = z >> 4;
-
-        let index = ((section_y * self.section_depth + section_z) * self.section_width + section_x)
-            as usize;
-        let mut section = &mut self.custom_block_sections[index];
-
-        if !section.is_empty() {
-            let new_section = vec![0u8; 4096];
-            self.custom_block_sections[index] = new_section;
-
-            section = &mut self.custom_block_sections[index];
-        }
-
-        section[((y & 15) << 8 | (z & 15) << 4 | (x & 15)) as usize] = block;
-    }
-
-    pub fn calc_section_length(&self) -> usize {
-        let mut len = self.custom_block_sections.len();
-
-        for s in self.custom_block_sections.iter() {
-            if !s.is_empty() {
-                len += s.len();
-            }
-        }
-
-        len
-    }
-
-    pub fn write(&self, out: &mut [u8]) {
-        if out.len()
-            < 2 + 2
-                + 2
-                + 2
-                + 2
-                + 2
-                + 2
-                + 1
-                + 1
-                + 1
-                + 1
-                + 1
-                + self.classic_level.blocks.len()
-                + self.calc_section_length()
-        {
-            panic!("Output buffer is too small");
-        }
-
-        let mut c = Cursor::new(out);
-
-        c.write_i16::<LittleEndian>(1874).expect("Signature write");
-        c.write_i16::<LittleEndian>(self.classic_level.width)
-            .expect("Width write");
-        c.write_i16::<LittleEndian>(self.classic_level.length)
-            .expect("Depth write");
-        c.write_i16::<LittleEndian>(self.classic_level.height)
-            .expect("Height write");
-        c.write_i16::<LittleEndian>(self.spawn_x)
-            .expect("SpawnX write");
-        c.write_i16::<LittleEndian>(self.spawn_z)
-            .expect("SpawnZ write");
-        c.write_i16::<LittleEndian>(self.spawn_y)
-            .expect("SpawnY write");
-        c.write_u8(self.spawn_yaw).expect("Spawn Yaw write");
-        c.write_u8(self.spawn_pitch).expect("Spawn Pitch write");
-        c.write_u8(self.min_access_perm)
-            .expect("Min Access Perm write");
-        c.write_u8(self.min_build_perm)
-            .expect("Min Build Perm write");
-
-        c.write_all(&self.classic_level.blocks)
-            .expect("Blocks write");
-
-        c.write_u8(0xBD).expect("Custom block section start");
-        for s in self.custom_block_sections.iter() {
-            if s.is_empty() {
-                c.write_u8(0).unwrap();
-            } else {
-                c.write_u8(1).unwrap();
-                c.write_all(s).expect("Custom block section");
-            }
-        }
-    }
-
-    pub fn get_index(&self, x: i16, y: i16, z: i16) -> usize {
-        let x = x as usize;
-        let y = y as usize;
-        let z = z as usize;
-
-        let w = self.classic_level.width as usize;
-        let d = self.classic_level.length as usize;
-        let h = self.classic_level.height as usize;
-
-        if x >= w || y >= h || z >= d {
-            return !0;
-        }
-
-        x + z * w + y * w * d
+        c.into_inner()
     }
 }

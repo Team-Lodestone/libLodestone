@@ -1,6 +1,7 @@
 mod classic_tests {
     use lodestone_java::alpha::AlphaLevel;
     use lodestone_java::classic::classic_world::CWLevel;
+    use lodestone_java::classic::mcgalaxy_lvl::MCGLevel;
     use lodestone_java::mcregion::Region;
     use lodestone_level::level::Level;
     use std::fs;
@@ -9,7 +10,7 @@ mod classic_tests {
     use std::path::Path;
 
     #[test]
-    fn minev2_to_mcr_test() {
+    fn cw_to_mcr_test() {
         log::set_max_level(log::LevelFilter::Debug);
         let fname = "Main 3";
 
@@ -25,8 +26,7 @@ mod classic_tests {
         println!("Reading level");
         let mut mv2 = Level::read_cw(data).unwrap();
 
-        let mut out = Vec::new();
-        mv2.write_mcr(&mut out);
+        let out = mv2.write_mcr();
 
         println!("Writing");
         let output_dir = Path::new("../../internal_tests/regions/dst/");
@@ -42,10 +42,10 @@ mod classic_tests {
     #[test]
     fn cw_to_alpha_test() {
         log::set_max_level(log::LevelFilter::Debug);
-        let fname = "13a_03-level_greffen";
+        let file_name = "13a_03-level_greffen";
 
         println!("Reading file");
-        let data = match fs::read(format!("../../internal_tests/cw/src/{}.cw", fname)) {
+        let data = match fs::read(format!("../../internal_tests/cw/src/{}.cw", file_name)) {
             Ok(d) => d,
             Err(e) => {
                 eprintln!("uh oh {}", e);
@@ -54,20 +54,20 @@ mod classic_tests {
         };
 
         println!("Reading level");
-        let mut mv2 = Level::read_cw(data).unwrap();
+        let mut level = Level::read_cw(data).unwrap();
 
         println!(
             "Level bounds X: {}, Y: {}, Z: {}",
-            mv2.get_block_width(),
-            mv2.get_block_height(),
-            mv2.get_block_length()
+            level.get_block_width(),
+            level.get_block_height(),
+            level.get_block_length()
         );
 
         let output_dir: &Path = Path::new("../../internal_tests/alpha/dst/World1");
         if !output_dir.exists() {
             create_dir_all(output_dir).expect("Could not create output dir");
         }
-        mv2.write_alpha_dir(output_dir);
+        level.write_alpha_dir(output_dir);
     }
 
     #[test]
@@ -87,32 +87,26 @@ mod classic_tests {
         println!("Parse time: {:?}", parse_end);
     }
 
-    /*
     #[test]
     fn mcg_level() {
-        let data = match fs::read("D:\\Home\\Downloads\\download(40).dat") {
-            Ok(d) => d,
-            Err(e) => {
-                eprintln!("uh oh {}", e);
-                return;
-            }
-        };
-        let mut mcg = lodestone_java::classic::mcgalaxy_lvl::MCGLevel::new_from_data(data).unwrap();
+        let file_name = "omni_main";
+        let data = fs::read(format!(
+            "../../internal_tests/classic/mcg/src/{file_name}.lvl"
+        ))
+        .expect("Failed to read MCGalaxy file!");
+        let mcg = Level::read_mcgalaxy_level(data).unwrap();
 
-        // can't be bothered to figure out a good way to do this...
-        // although I can already think of just putting in a `get_size` method in every Level impl.
-        let mut out = vec![0u8; (1024 * 512 * 1024) + 2 + 2 + 2 + 2 + 2 + 2 + 2 + 1 + 1 + 1 + 1];
+        let map = mcg.generate_bitmap();
 
-        // resize
-        mcg.classic_level.resize(1024, 1024, 512);
-        mcg.write(&mut out);
-
-        let mut enc = GzEncoder::new(Vec::new(), Compression::default());
-        enc.write_all(&out).unwrap();
-        let c = enc.finish().unwrap();
-
-        let mut of = File::create("mcgOut.lvl").unwrap();
-        of.write_all(&c).unwrap();
+        println!("Writing");
+        let mut of = File::create(format!(
+            "../../internal_tests/map/{}-{}_{}.raw",
+            file_name,
+            mcg.get_block_width(),
+            mcg.get_block_length()
+        ))
+        .unwrap();
+        of.write_all(&map).unwrap();
         of.flush().unwrap();
-    }*/
+    }
 }

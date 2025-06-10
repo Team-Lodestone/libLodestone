@@ -59,8 +59,8 @@ impl AlphaChunk for Chunk {
         let mut chunk = Chunk::new(128);
         chunk
             .custom_data
-            .insert(metadata::LAST_UPDATE.to_string(), Int64(last_update));
-        chunk.custom_data.insert(
+            .set_value(metadata::LAST_UPDATE.to_string(), Int64(last_update));
+        chunk.custom_data.set_value(
             metadata::TERRAIN_POPULATED.to_string(),
             Bool(terrain_populated),
         );

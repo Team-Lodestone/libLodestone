@@ -19,6 +19,10 @@ pub const LAST_ACCESSED: &str = "LastAccessed";
 pub const SPAWN_YAW: &str = "SpawnYaw";
 pub const SPAWN_PITCH: &str = "SpawnPitch";
 
+// MCGalaxy
+pub const MIN_ACCESS_PERM: &str = "MinAccessPerm";
+pub const MIN_BUILD_PERM: &str = "MinBuildPerm";
+
 // Alpha
 pub const LAST_PLAYED: &str = "LastPlayed";
 pub const RANDOM_SEED: &str = "RandomSeed";

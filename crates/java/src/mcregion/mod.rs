@@ -16,11 +16,11 @@ use std::io::{Cursor, Read, Seek, SeekFrom, Write};
 pub trait Region {
     fn read_mcr(data: Vec<u8>) -> Result<Level, String>;
     fn read_mcr_into_existing(&mut self, data: Vec<u8>);
-    fn write_mcr(&mut self, out: &mut Vec<u8>);
+    fn write_mcr(&mut self) -> Vec<u8>;
 }
 pub trait MCRChunk {
     fn read_mcr(data: Vec<u8>) -> Result<(Chunk, Coords), String>;
-    fn write_mcr(&self, out: &mut Vec<u8>, coords: &Coords);
+    fn write_mcr(&self, coords: &Coords) -> Vec<u8>;
 }
 
 impl Region for Level {
@@ -163,7 +163,8 @@ impl Region for Level {
     }
 
     // TODO: coordinates
-    fn write_mcr(&mut self, out: &mut Vec<u8>) {
+    fn write_mcr(&mut self) -> Vec<u8> {
+        let out: Vec<u8> = Vec::with_capacity(0x2000 + (1000 * self.get_chunk_count()));
         let mut c = Cursor::new(out);
 
         let mut locations = vec![ChunkLocation::default(); 1024];
@@ -172,10 +173,8 @@ impl Region for Level {
         c.seek(SeekFrom::Start(0x2000)).expect("Chunk position");
 
         for (coords, chunk) in self.get_chunks_mut().iter_mut() {
-            let mut ch: Vec<u8> = Vec::new();
-
             chunk.set_height(128);
-            chunk.write_mcr(&mut ch, coords);
+            let mut ch = chunk.write_mcr(coords);
 
             let len = ch.len();
             let sector_size = ((len + 5) + 4095) / 4096;
@@ -212,6 +211,8 @@ impl Region for Level {
         for t in timestamps.iter() {
             c.write_i32::<BigEndian>(*t).expect("Timestamp");
         }
+
+        c.into_inner()
     }
 }
 
@@ -267,7 +268,8 @@ impl MCRChunk for Chunk {
         Ok((c, Coords { x, z }))
     }
 
-    fn write_mcr(&self, out: &mut Vec<u8>, coords: &Coords) {
+    fn write_mcr(&self, coords: &Coords) -> Vec<u8> {
+        let mut out: Vec<u8> = Vec::new();
         // spent forever wondering why it wouldn't see the chunks
         // notch put the Level tag under another tag... why?
         let mut nbt = NbtCompound::new();
@@ -303,6 +305,8 @@ impl MCRChunk for Chunk {
 
         nbt.insert("Level".to_string(), c);
 
-        io::write_nbt(out, Some(""), &nbt, Flavor::ZlibCompressed).unwrap();
+        io::write_nbt(&mut out, Some(""), &nbt, Flavor::ZlibCompressed).unwrap();
+
+        out
     }
 }
