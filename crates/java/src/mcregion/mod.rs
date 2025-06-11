@@ -1,9 +1,9 @@
 use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
 use flate2::read::{GzDecoder, ZlibDecoder};
-use lodestone_common::level::region::ChunkLocation;
-use lodestone_common::level::region::Compression;
 use lodestone_common::types::hashmap_ext::HashMapExt;
 use lodestone_level::level::chunk::Chunk;
+use lodestone_level::level::region::ChunkLocation;
+use lodestone_level::level::region::Compression;
 use lodestone_level::level::{metadata, Coords, Level};
 use quartz_nbt::io::Flavor;
 use quartz_nbt::{io, NbtCompound, NbtList};
@@ -172,6 +172,8 @@ impl Region for Level {
 
         c.seek(SeekFrom::Start(0x2000)).expect("Chunk position");
 
+        // TODO: when writing we need to make sure that we're only writing max 1024 chunks
+        // meaning we need region coordinate system (separate from Level but in a common impl...)
         for (coords, chunk) in self.get_chunks_mut().iter_mut() {
             chunk.set_height(128);
             let mut ch = chunk.write_mcr(coords);

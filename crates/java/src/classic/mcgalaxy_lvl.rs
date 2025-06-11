@@ -29,6 +29,7 @@ impl MCGLevel for Level {
         let spawn_pitch = c.read_u8().unwrap();
 
         let mut mcg = Level::new();
+        mcg.set_spawn_point(spawn_x as i32, spawn_y as i32, spawn_z as i32);
         mcg.custom_data
             .set_value::<u8>(metadata::SPAWN_YAW.to_string(), spawn_yaw);
         mcg.custom_data
@@ -120,11 +121,11 @@ impl MCGLevel for Level {
             .expect("Unable to write level length!");
         c.write_i16::<LittleEndian>(height)
             .expect("Unable to write level height!");
-        c.write_i16::<LittleEndian>(self.spawn.x)
+        c.write_i16::<LittleEndian>(self.spawn.x as i16)
             .expect("Unable to write spawn X!");
-        c.write_i16::<LittleEndian>(self.spawn.z)
+        c.write_i16::<LittleEndian>(self.spawn.z as i16)
             .expect("Unable to write spawn Z!");
-        c.write_i16::<LittleEndian>(self.spawn.y)
+        c.write_i16::<LittleEndian>(self.spawn.y as i16)
             .expect("Unable to write spawn Y!");
 
         let spawn_yaw = self

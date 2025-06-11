@@ -1,6 +1,7 @@
 pub mod chunk;
 pub mod chunk_section;
 pub mod metadata;
+pub mod region;
 
 use crate::level::chunk::{Chunk, Light, CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_common::types::hashmap_ext::Value;
@@ -19,9 +20,9 @@ pub struct Coords {
 
 #[derive(Debug, Clone, Serialize, Deserialize, Copy)]
 pub struct Spawn {
-    pub x: i16,
-    pub y: i16,
-    pub z: i16,
+    pub x: i32,
+    pub y: i32,
+    pub z: i32,
 }
 
 #[serde_as]
@@ -107,7 +108,7 @@ impl Level {
         }
     }
 
-    pub fn set_spawn_point(&mut self, x: i16, y: i16, z: i16) {
+    pub fn set_spawn_point(&mut self, x: i32, y: i32, z: i32) {
         self.spawn.x = x;
         self.spawn.y = y;
         self.spawn.z = z;
@@ -220,7 +221,7 @@ impl Level {
         self.get_max_z() * CHUNK_LENGTH as i32
     }
 
-    pub fn get_chunk(&mut self, coords: Coords) -> Option<&mut Chunk> {
+    pub fn get_chunk(&mut self, coords: &Coords) -> Option<&mut Chunk> {
         self.chunks.get_mut(&coords)
     }
 

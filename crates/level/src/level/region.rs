@@ -1,6 +1,8 @@
 // use regex::Regex;
 // use lodestone_level::level::level::Coords;
 
+use serde::{Deserialize, Serialize};
+
 #[derive(PartialEq)]
 pub enum Compression {
     GZip = 1,
@@ -8,6 +10,18 @@ pub enum Compression {
     None = 3,
     LZ4 = 4,
     Custom = 127, // never will properly support...
+}
+
+#[derive(PartialEq)]
+pub enum RegionType {
+    MCR,
+    MCA,
+}
+
+#[derive(Clone, Default, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
+pub struct RegionCoords {
+    pub x: i32,
+    pub z: i32,
 }
 
 #[derive(Clone, Default)]

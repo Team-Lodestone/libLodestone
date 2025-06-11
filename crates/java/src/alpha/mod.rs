@@ -19,20 +19,20 @@ pub trait AlphaLevel {
 
     fn write_alpha_dir(&mut self, path: &Path);
 
-    fn read_alpha_level(level_name: String, data: Vec<u8>) -> Level;
+    fn read_alpha_level(level_name: String, data: Vec<u8>) -> Result<Level, String>;
 
     fn write_alpha_level(&self) -> Vec<u8>;
 }
 
 pub trait AlphaChunk {
-    fn read_alpha_chunk(data: Vec<u8>) -> Option<(Coords, Chunk)>;
+    fn read_alpha_chunk(data: Vec<u8>) -> Result<(Coords, Chunk), String>;
     fn read_alpha_chunk_into_existing(lvl: &mut Level, data: Vec<u8>);
     fn write_alpha_chunk(&mut self, coords: &Coords) -> Vec<u8>;
 }
 
 impl AlphaChunk for Chunk {
     #[allow(unused_variables)]
-    fn read_alpha_chunk(data: Vec<u8>) -> Option<(Coords, Chunk)> {
+    fn read_alpha_chunk(data: Vec<u8>) -> Result<(Coords, Chunk), String> {
         let chunk_nbt = io::read_nbt(&mut Cursor::new(&data), Flavor::GzCompressed)
             .expect("Alpha chunk NBT data")
             .0;
@@ -89,7 +89,7 @@ impl AlphaChunk for Chunk {
             }
         }
 
-        Some((coords, chunk))
+        Ok((coords, chunk))
     }
 
     fn read_alpha_chunk_into_existing(lvl: &mut Level, data: Vec<u8>) {
@@ -179,7 +179,7 @@ impl AlphaLevel for Level {
             .to_str()
             .unwrap_or("World0")
             .to_string();
-        let mut lvl = Self::read_alpha_level(level_name, data);
+        let mut lvl = Self::read_alpha_level(level_name, data).expect("Could not parse level!");
 
         for x in 0..63 {
             for z in 0..63 {
@@ -239,7 +239,7 @@ impl AlphaLevel for Level {
         }
     }
 
-    fn read_alpha_level(level_name: String, data: Vec<u8>) -> Level {
+    fn read_alpha_level(level_name: String, data: Vec<u8>) -> Result<Level, String> {
         let nbt = io::read_nbt(
             &mut GzDecoder::new(&mut Cursor::new(&data)),
             Flavor::Uncompressed,
@@ -259,15 +259,15 @@ impl AlphaLevel for Level {
 
         let mut lvl = Level::new_with_name(level_name);
         lvl.time = time;
-        lvl.set_spawn_point(spawn_x as i16, spawn_y as i16, spawn_z as i16);
+        lvl.set_spawn_point(spawn_x, spawn_y, spawn_z);
         lvl.custom_data
-            .insert(metadata::LAST_PLAYED.to_string(), Int64(last_played));
+            .set_value::<i64>(metadata::LAST_PLAYED.to_string(), last_played);
         lvl.custom_data
-            .insert(metadata::RANDOM_SEED.to_string(), Int64(random_seed));
+            .set_value::<i64>(metadata::RANDOM_SEED.to_string(), random_seed);
         lvl.custom_data
-            .insert(metadata::SIZE_ON_DISK.to_string(), Int64(size_on_disk));
+            .set_value::<i64>(metadata::SIZE_ON_DISK.to_string(), size_on_disk);
 
-        lvl
+        Ok(lvl)
     }
 
     #[allow(unused_variables)]

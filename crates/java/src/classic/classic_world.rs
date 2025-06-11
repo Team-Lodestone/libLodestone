@@ -136,7 +136,7 @@ impl CWLevel for Level {
             .set_value(metadata::SPAWN_PITCH.to_string(), spawn_pitch);
 
         log::debug!("Setting level spawn point");
-        level.set_spawn_point(spawn_x, spawn_y, spawn_z);
+        level.set_spawn_point(spawn_x as i32, spawn_y as i32, spawn_z as i32);
         log::debug!("Creating chunks");
         log::debug!("Width: {}, Height: {}, Length: {}", width, height, length);
         level.create_finite(width as i32, height, length as i32);
@@ -160,11 +160,10 @@ impl CWLevel for Level {
                         }
 
                         // magic
-                        let i = y as usize
-                            + (z as usize * height as usize
-                                + (x as usize * height as usize * length as usize));
+                        let i = (y as usize) * (length as usize) * (width as usize)
+                            + (lz as usize) * (width as usize)
+                            + (lx as usize);
 
-                        // TODO: Fix
                         c.1.set_block(x, y, z, blocks[i] as u16)
                     }
                 }
@@ -233,9 +232,9 @@ impl CWLevel for Level {
                 .unwrap_or(0),
         );
 
-        spawn_tag.insert("X", self.spawn.x);
-        spawn_tag.insert("Y", self.spawn.y);
-        spawn_tag.insert("Z", self.spawn.z);
+        spawn_tag.insert("X", self.spawn.x as i16);
+        spawn_tag.insert("Y", self.spawn.y as i16);
+        spawn_tag.insert("Z", self.spawn.z as i16);
 
         spawn_tag.insert(
             "H",

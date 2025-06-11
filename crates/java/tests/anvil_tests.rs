@@ -2,31 +2,22 @@ mod anvil_tests {
     use flate2::write::GzEncoder;
     use flate2::Compression;
     use lodestone_java::anvil::Anvil;
+    use lodestone_java::classic::classic_world::CWLevel;
     use lodestone_java::classic::mine_v2::MineV2Level;
+    use lodestone_level::level::Level;
     use std::fs;
     use std::fs::File;
     use std::io::Write;
+    use std::path::Path;
 
     #[test]
-    fn mca_to_minev2_test() {
+    fn anvil_to_minev2_test() {
         log::set_max_level(log::LevelFilter::Debug);
-        let fname = "r.0.0";
-
-        println!("Reading file");
-        let data = match fs::read(format!(
-            "../../internal_tests/anvil/NewWorld2/region/{}.mca",
-            fname
-        )) {
-            Ok(d) => d,
-            Err(e) => {
-                eprintln!("uh oh {}", e);
-                return;
-            }
-        };
+        let fname = "NewWorld2";
+        let file_dir = Path::new("../../internal_tests/anvil/src/NewWorld2/");
 
         println!("Reading level");
-        // let mut mv2 = lodestone_level::level::Level::read_cw(data).unwrap();
-        let mut level = lodestone_level::level::Level::read_anvil(data).unwrap();
+        let mut level = Level::read_anvil_dir(file_dir).unwrap();
 
         println!(
             "World bounds (XYZ): {}x{}x{}",
@@ -34,9 +25,6 @@ mod anvil_tests {
             level.get_block_height(),
             level.get_block_length()
         );
-
-        // println!("Generating blockmap");
-        // let blockmap = level.get_blockmap();
 
         let map = level.generate_bitmap();
 
@@ -50,9 +38,6 @@ mod anvil_tests {
         .unwrap();
         of.write_all(&map).unwrap();
         of.flush().unwrap();
-
-        // println!("Generating blockmap");
-        // let blockmap = mv2.get_blockmap();
 
         let out = level.write_minev2();
 
@@ -69,5 +54,48 @@ mod anvil_tests {
             File::create(format!("../../internal_tests/minev2/dst/{}.mine", fname)).unwrap();
         of.write_all(&c).unwrap();
         of.flush().unwrap();
+    }
+
+    #[test]
+    fn cw_to_anvil_test() {
+        log::set_max_level(log::LevelFilter::Debug);
+        // let fname = "World2";
+
+        // let file_dir = Path::new("../../internal_tests/alpha/src/World2/");
+        println!("Reading file");
+        let data = match fs::read("../../internal_tests/classic/src/large_world.cw") {
+            Ok(d) => d,
+            Err(e) => {
+                eprintln!("uh oh {}", e);
+                return;
+            }
+        };
+
+        println!("Reading level");
+        // let mut level = Level::read_alpha_dir(file_dir).expect("Could not read Alpha level!");
+        let mut level = Level::read_cw(data).expect("shart");
+
+        println!(
+            "World bounds (XYZ): {}x{}x{}",
+            level.get_block_width(),
+            level.get_block_height(),
+            level.get_block_length()
+        );
+
+        /*let map = level.generate_bitmap();
+
+        println!("Writing");
+        let mut of = File::create(format!(
+            "../../internal_tests/map/{}-{}_{}.raw",
+            fname,
+            level.get_block_width(),
+            level.get_block_length()
+        ))
+            .unwrap();
+        of.write_all(&map).unwrap();
+        of.flush().unwrap();*/
+
+        let output_dir = Path::new("../../internal_tests/anvil/dst/World2/");
+        level.write_anvil_dir(output_dir);
     }
 }

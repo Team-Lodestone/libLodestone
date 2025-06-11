@@ -47,3 +47,19 @@ pub const TERRAIN_POPULATED: &str = "TerrainPopulated";
 // Anvil
 pub const INHABITED_TIME: &str = "InhabitedTime";
 pub const LIGHT_POPULATED: &str = "LightPopulated";
+pub const GAME_TYPE: &str = "GameType";
+// Why are these lowercase Notch?
+pub const GENERATOR_NAME: &str = "generatorName";
+pub const GENERATOR_VERSION: &str = "generatorVersion";
+pub const HARD_CORE: &str = "hardcore";
+pub const LEVEL_NAME: &str = "LevelName";
+pub const MAP_FEATURES: &str = "MapFeatures";
+pub const RAINING: &str = "raining";
+pub const RAIN_TIME: &str = "rainTime";
+pub const THUNDERING: &str = "thundering";
+pub const THUNDER_TIME: &str = "thunderTime";
+pub const VERSION: &str = "version";
+pub const DATA_VERSION: &str = "DataVersion";
+pub const POS_X: &str = "xPos";
+pub const POS_Z: &str = "zPos";
+pub const SECTIONS: &str = "Sections";

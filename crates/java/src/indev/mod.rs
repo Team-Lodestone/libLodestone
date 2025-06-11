@@ -88,7 +88,7 @@ impl IndevLevel for Level {
             panic!("spawn_z was not a short")
         };
 
-        level.set_spawn_point(spawn_x, spawn_y, spawn_z);
+        level.set_spawn_point(spawn_x as i32, spawn_y as i32, spawn_z as i32);
         level.create_finite(width as i32, height, length as i32);
 
         let chunks = level.get_chunks_mut();
@@ -255,9 +255,9 @@ impl IndevLevel for Level {
         map.insert("Height".to_string(), height);
 
         let mut sp = vec![0i16; 3];
-        sp[0] = self.spawn.x;
-        sp[1] = self.spawn.y;
-        sp[2] = self.spawn.z;
+        sp[0] = self.spawn.x as i16;
+        sp[1] = self.spawn.y as i16;
+        sp[2] = self.spawn.z as i16;
 
         map.insert("Spawn".to_string(), NbtList::from(sp));
 
