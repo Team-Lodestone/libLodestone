@@ -328,7 +328,7 @@ impl Level {
     #[inline(always)]
     pub fn get_width(&self) -> i32 {
         self.get_max_x() - self.get_min_x()
-    }
+    } 
 
     #[inline(always)]
     pub fn get_block_height(&self) -> i16 {

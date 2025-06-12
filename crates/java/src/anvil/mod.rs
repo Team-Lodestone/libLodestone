@@ -398,10 +398,8 @@ impl Anvil for Level {
         let min_chunk_z = coords.z * 32;
         let max_chunk_z = (coords.z + 1) * 32;
 
-        let mut idx = 0;
-
-        for chunk_x in min_chunk_x..max_chunk_x {
-            for chunk_z in min_chunk_z..max_chunk_z {
+        for chunk_z in min_chunk_z..max_chunk_z {
+            for chunk_x in min_chunk_x..max_chunk_x {
                 log::debug!(
                     "Writing chunk X: {}, Z: {} to region X: {}, Z: {}",
                     chunk_x,
@@ -410,8 +408,8 @@ impl Anvil for Level {
                     coords.z
                 );
                 let chunk_coords = &Coords {
-                    x: chunk_z,
-                    z: chunk_x,
+                    x: chunk_x,
+                    z: chunk_z,
                 };
                 let chunk = self.get_chunk(chunk_coords);
                 match chunk {
@@ -424,12 +422,17 @@ impl Anvil for Level {
                         let size = sector_size;
                         let offset = c.stream_position().unwrap() / 4096;
 
+                        let idx = (chunk_x as usize % 32) + (chunk_z as usize % 32) * 32;
+                        if (idx > 1023) {
+                            println!("WARN: Chunk at X: {}, Z: {} is out of bounds in the location table.", chunk_x, chunk_z);
+                            continue;
+                        }
+
                         locations[idx] = ChunkLocation {
                             offset: offset as u32,
                             size: size as u8,
                         };
                         timestamps[idx] = 0;
-                        idx = idx + 1;
 
                         c.write_i32::<BigEndian>(len as i32).expect("Chunk size");
                         c.write_i8(2).expect("Chunk compression type");
@@ -563,11 +566,11 @@ impl AnvilChunk for Chunk {
         chunk_level.insert(metadata::TERRAIN_POPULATED, has_populated);
 
         // TODO: calculate light ourselves
-        // this option tells the game that lighting has not yet been calculated, which gives us a free pass when dealing with Anvil.
+        // turning this option to 0 tells the game that lighting has not yet been calculated, which gives us a free pass when dealing with Anvil, but also makes the world load take forever.
         let light_populated = self
             .custom_data
             .get_value::<i8, &str>(metadata::LIGHT_POPULATED)
-            .unwrap_or(0);
+            .unwrap_or(1);
         chunk_level.insert(metadata::LIGHT_POPULATED, light_populated);
 
         chunk_level.insert(
@@ -595,8 +598,8 @@ impl AnvilChunk for Chunk {
                     .collect::<Vec<u8>>(),
             );
             chunk_section_tag.insert(metadata::DATA, vec![0u8; 2048]);
-            chunk_section_tag.insert(metadata::BLOCK_LIGHT, vec![15u8; 2048]);
-            chunk_section_tag.insert(metadata::SKY_LIGHT, vec![15u8; 2048]);
+            chunk_section_tag.insert(metadata::BLOCK_LIGHT, vec![0xFFu8; 2048]);
+            chunk_section_tag.insert(metadata::SKY_LIGHT, vec![0xFFu8; 2048]);
 
             sections.push(chunk_section_tag);
         }
