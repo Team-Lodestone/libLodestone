@@ -52,10 +52,10 @@ impl MineV1Level for Level {
 
         if width > 256 || length > 256 || height > 256 {
             println!(
-                "WARN: Level bounds are too large for .mine v1's limited size of 256x64x256 (XYZ). Your level size is X: {}, Y: {}, Z: {}\
-                The level will be truncated to fit within these strict bounds.",
+                "WARN: Level bounds are too large for .mine v1's limited size of 256x64x256 (XYZ). Your level size is X: {}, Y: {}, Z: {}",
                 width, height, length
-            )
+            );
+            println!("The level will be truncated to fit within these strict bounds.");
         }
 
         let mut blocks = vec![0u8; Self::get_minev1_file_size()];

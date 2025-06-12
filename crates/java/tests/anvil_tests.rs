@@ -74,7 +74,7 @@ mod anvil_tests {
 
         println!("Reading level");
         // let mut level = Level::read_alpha_dir(file_dir).expect("Could not read Alpha level!");
-        let mut level = Level::read_minev2(data).expect("shart");
+        let level = Level::read_minev2(data).expect("shart");
 
         println!(
             "World bounds (XYZ): {}x{}x{}",
@@ -117,7 +117,7 @@ mod anvil_tests {
 
         println!("Reading level");
         // let mut level = Level::read_alpha_dir(file_dir).expect("Could not read Alpha level!");
-        let mut level = Level::read_cw(data).expect("shart");
+        let level = Level::read_cw(data).expect("shart");
 
         println!(
             "World bounds (XYZ): {}x{}x{}",
@@ -159,7 +159,7 @@ mod anvil_tests {
         // };
 
         println!("Reading level");
-        let mut level = Level::read_alpha_dir(file_dir).expect("Could not read Alpha level!");
+        let level = Level::read_alpha_dir(file_dir).expect("Could not read Alpha level!");
         // let mut level = Level::read_alpha_dir(file_dir).expect("shart");
 
         println!(

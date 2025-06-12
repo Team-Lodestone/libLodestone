@@ -17,10 +17,7 @@ pub enum Light {
 
 #[derive(Clone)]
 pub struct Chunk {
-    // Width and depth should always be 16 for our use cases.
-    width: i8,
     pub height: i16, // TODO: we can remove this due to the presence of sections (likely, we need to figure out finite worlds though)
-    length: i8,
 
     pub chunk_sections: Vec<ChunkSection>,
 
@@ -37,9 +34,7 @@ impl Chunk {
         let height: usize = height as usize;
 
         Chunk {
-            width: width as i8,
             height: height as i16,
-            length: length as i8,
 
             chunk_sections: Vec::with_capacity(height / CHUNK_SECTION_HEIGHT as usize),
 

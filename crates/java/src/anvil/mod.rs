@@ -1,4 +1,4 @@
-use rayon::iter::{IntoParallelRefMutIterator, ParallelIterator};
+use rayon::iter::ParallelIterator;
 use std::collections::HashSet;
 use std::fs;
 use std::fs::{create_dir_all, remove_dir_all, File};
@@ -294,7 +294,9 @@ impl Anvil for Level {
 
             // Write the region data
             let mut writer = BufWriter::new(region_file);
-            writer.write_all(&region_data); //.expect(
+            writer
+                .write_all(&region_data)
+                .expect("Could not write region!"); //.expect(
             // &*format!("Could not write to region at {}, {} for Anvil level!", c.x, &c.z).to_string(),
             //);
         });
