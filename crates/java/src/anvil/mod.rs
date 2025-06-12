@@ -424,7 +424,10 @@ impl Anvil for Level {
 
                         let idx = (chunk_x as usize % 32) + (chunk_z as usize % 32) * 32;
                         if idx > 1023 {
-                            println!("WARN: Chunk at X: {}, Z: {} is out of bounds in the location table.", chunk_x, chunk_z);
+                            println!(
+                                "WARN: Chunk at X: {}, Z: {} is out of bounds in the location table.",
+                                chunk_x, chunk_z
+                            );
                             continue;
                         }
 
