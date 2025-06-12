@@ -31,7 +31,7 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
   - [X] Internal Format
     - [X] Chunked
     - [X] Sections
-    - [ ] Palettes (for memory usage)
+    - [X] [Palettes](https://github.com/alexdesander/palettevec) (for memory usage)
   - [ ] Internal Block IDs
     - [ ] Block ID conversion map between versions
     - [ ] Properly convert block states and other data

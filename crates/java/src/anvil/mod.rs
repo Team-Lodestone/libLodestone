@@ -18,16 +18,31 @@ use std::path::Path;
 use lodestone_level::block::Block;
 use lodestone_level::level::chunk_section::BlockPaletteVec;
 
+// TODO LIST
+// move world folder reading into separate thing, make directory readers only read the `regions` folder.
+
 pub trait Anvil {
+    /// Creates a Level from an anvil world's directory
     fn read_anvil_dir(path: &Path) -> Result<Level, String>;
+    /// Reads Level.dat from an anvil world
+    ///
+    /// This method will soon be moved to its own thing as the impl should be separated from the format itself.
     fn read_anvil_level(level_name: String, data: Vec<u8>) -> Result<Level, String>;
-    fn read_anvil_region(level: &mut Level, data: Vec<u8>);
+    /// Reads an anvil region into an existing level
+    fn read_anvil_region(&mut self, data: Vec<u8>);
+    /// Writes an anvil world directory from a Level
     fn write_anvil_dir(&mut self, path: &Path);
+    /// Writes an anvil world style level.dat file
+    ///
+    /// This method will soon be moved to its own thing as the impl should be separated from the format itself.
     fn write_anvil_level(&mut self, level_name: String) -> Vec<u8>;
+    /// Writes a single Anvil region from given coords
     fn write_anvil_region(&mut self, coords: Coords) -> Vec<u8>;
 }
 pub trait AnvilChunk {
+    /// Reads an anvil chunk
     fn read_anvil_chunk(data: Vec<u8>) -> Result<(Chunk, Coords), String>;
+    /// Writes out an anvil chunk
     fn write_anvil_chunk(&mut self, coords: &Coords) -> Vec<u8>;
     // fn write_anvil(&self, out: &mut Vec<u8>, coords: Coords);
 }
@@ -139,7 +154,7 @@ impl Anvil for Level {
         Ok(lvl)
     }
 
-    fn read_anvil_region(level: &mut Level, data: Vec<u8>) {
+    fn read_anvil_region(&mut self, data: Vec<u8>) {
         let mut c = Cursor::new(data);
         let mut locations = vec![ChunkLocation::default(); 1024];
         let mut timestamps = vec![0i32; 1024];
@@ -204,7 +219,7 @@ impl Anvil for Level {
             .collect();
 
         for (coords, chunk) in chunks {
-            level.add_chunk(coords, chunk);
+            self.add_chunk(coords, chunk);
         }
     }
 
@@ -526,7 +541,7 @@ impl AnvilChunk for Chunk {
 
                 let sc = c.get_or_create_chunk_section_mut(sy as i16 * 16);
                 let mut p = BlockPaletteVec::new();
-                
+
                 // MAY BE WEIRD/SLOW, UNSURE.
                 let new: Vec<u16> = blocks.par_iter().map(|v| *v as u16).collect();
 

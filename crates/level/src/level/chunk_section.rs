@@ -7,7 +7,7 @@ use palettevec::{
 };
 use palettevec::index_buffer::FastIndexBuffer;
 
-pub type BlockPaletteVec = PaletteVec<u16, HybridPalette<64, u16>, FastIndexBuffer>;
+pub type BlockPaletteVec = PaletteVec<u16, HybridPalette<64, u16>, AlignedIndexBuffer>;
 
 #[derive(Clone)]
 pub struct ChunkSection {

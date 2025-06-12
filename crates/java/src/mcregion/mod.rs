@@ -10,12 +10,17 @@ use quartz_nbt::{io, NbtCompound, NbtList};
 use rayon::iter::ParallelIterator;
 use rayon::prelude::IntoParallelRefIterator;
 use std::io::{Cursor, Read, Seek, SeekFrom, Write};
-// TODO: Allow for reading into a vec of chunks that one can just add to the Level's own chunks.
-// Or we could make a read_mcr_into_level which will add the new chunks to an existing level.
+
+/// TODO: we need to make write_mcr use coords
+/// also need to read/write region directories.
+/// but entire world dir should be it's own impl in different module.
 
 pub trait Region {
+    /// Creates a new Level from an MCR file
     fn read_mcr(data: Vec<u8>) -> Result<Level, String>;
+    /// Reads an MCR level into an existing Level
     fn read_mcr_into_existing(&mut self, data: Vec<u8>);
+    /// Writes out the MCR file
     fn write_mcr(&mut self) -> Vec<u8>;
 }
 pub trait MCRChunk {
