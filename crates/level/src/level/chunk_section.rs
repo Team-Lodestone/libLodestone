@@ -1,11 +1,7 @@
 use crate::level::chunk::{Light, CHUNK_LENGTH, CHUNK_SECTION_HEIGHT, CHUNK_WIDTH};
-use serde::{Deserialize, Serialize};
 use palettevec::{
-    index_buffer::aligned::AlignedIndexBuffer,
-    palette::hybrid::HybridPalette,
-    PaletteVec,
+    index_buffer::aligned::AlignedIndexBuffer, palette::hybrid::HybridPalette, PaletteVec,
 };
-use palettevec::index_buffer::FastIndexBuffer;
 
 pub type BlockPaletteVec = PaletteVec<u16, HybridPalette<64, u16>, AlignedIndexBuffer>;
 
@@ -21,7 +17,10 @@ pub struct ChunkSection {
 
 impl ChunkSection {
     pub fn new() -> ChunkSection {
-        let blocks = BlockPaletteVec::filled(0, CHUNK_WIDTH as usize * CHUNK_SECTION_HEIGHT as usize * CHUNK_LENGTH as usize);
+        let blocks = BlockPaletteVec::filled(
+            0,
+            CHUNK_WIDTH as usize * CHUNK_SECTION_HEIGHT as usize * CHUNK_LENGTH as usize,
+        );
         ChunkSection {
             blocks,
             data: vec![

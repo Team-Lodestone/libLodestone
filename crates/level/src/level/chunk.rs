@@ -274,7 +274,7 @@ impl Chunk {
             .iter()
             .flat_map(|s| s.blocks.iter().cloned()) // TODO: is cloned a good/bad thing
             .collect();
-        
+
         blocks
     }
 

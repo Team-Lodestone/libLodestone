@@ -1,4 +1,5 @@
-use rayon::iter::ParallelIterator;
+use rayon::iter::{IntoParallelRefMutIterator, ParallelIterator};
+use std::collections::HashSet;
 use std::fs;
 use std::fs::{create_dir_all, remove_dir_all, File};
 
@@ -8,6 +9,7 @@ use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
 use flate2::read::{GzDecoder, ZlibDecoder};
 use lodestone_common::types::hashmap_ext::HashMapExt;
 use lodestone_level::level::chunk::Chunk;
+use lodestone_level::level::chunk_section::BlockPaletteVec;
 use lodestone_level::level::region::{ChunkLocation, Compression};
 use lodestone_level::level::{metadata, Coords, Level};
 use quartz_nbt::io::{write_nbt, Flavor};
@@ -15,8 +17,6 @@ use quartz_nbt::{io, NbtCompound, NbtList, NbtTag};
 use rayon::iter::IntoParallelRefIterator;
 use std::io::{BufWriter, Cursor, Read, Seek, SeekFrom, Write};
 use std::path::Path;
-use lodestone_level::block::Block;
-use lodestone_level::level::chunk_section::BlockPaletteVec;
 
 // TODO LIST
 // move world folder reading into separate thing, make directory readers only read the `regions` folder.
@@ -31,19 +31,19 @@ pub trait Anvil {
     /// Reads an anvil region into an existing level
     fn read_anvil_region(&mut self, data: Vec<u8>);
     /// Writes an anvil world directory from a Level
-    fn write_anvil_dir(&mut self, path: &Path);
+    fn write_anvil_dir(&self, path: &Path);
     /// Writes an anvil world style level.dat file
     ///
     /// This method will soon be moved to its own thing as the impl should be separated from the format itself.
-    fn write_anvil_level(&mut self, level_name: String) -> Vec<u8>;
+    fn write_anvil_level(&self, level_name: String) -> Vec<u8>;
     /// Writes a single Anvil region from given coords
-    fn write_anvil_region(&mut self, coords: Coords) -> Vec<u8>;
+    fn write_anvil_region(&self, coords: Coords) -> Vec<u8>;
 }
 pub trait AnvilChunk {
     /// Reads an anvil chunk
     fn read_anvil_chunk(data: Vec<u8>) -> Result<(Chunk, Coords), String>;
     /// Writes out an anvil chunk
-    fn write_anvil_chunk(&mut self, coords: &Coords) -> Vec<u8>;
+    fn write_anvil_chunk(&self, coords: &Coords) -> Vec<u8>;
     // fn write_anvil(&self, out: &mut Vec<u8>, coords: Coords);
 }
 
@@ -223,7 +223,7 @@ impl Anvil for Level {
         }
     }
 
-    fn write_anvil_dir(&mut self, path: &Path) {
+    fn write_anvil_dir(&self, path: &Path) {
         if path.exists() && path.is_dir() {
             remove_dir_all(path).expect("Could not remove output folder!");
         }
@@ -263,36 +263,44 @@ impl Anvil for Level {
             create_dir_all(data_dir).expect("Could not create data folder for Anvil level!");
         }
 
-        let min_region_x = self.get_min_x().div_floor(32);
-        let max_region_x = (self.get_max_x() - 1).div_floor(32);
-        let min_region_z = self.get_min_z().div_floor(32);
-        let max_region_z = (self.get_max_z() - 1).div_floor(32);
-        for x in min_region_x..=max_region_x {
-            for z in min_region_z..=max_region_z {
-                let region_path = region_dir.join(format!("r.{}.{}.mca", x, z));
-                let region_file = if !region_path.exists() || region_path.is_dir() {
-                    File::create(region_path).expect(
-                        &*format!("Could not create region at {x}, {z} for Anvil level!")
-                            .to_string(),
-                    )
-                } else {
-                    File::open(region_path).expect(
-                        &*format!("Could not open region at {x}, {z} for Anvil level!").to_string(),
-                    )
-                };
-
-                let region_data = self.write_anvil_region(Coords { x, z });
-
-                // Write the region data
-                let mut writer = BufWriter::new(region_file);
-                writer.write_all(&region_data).expect(
-                    &*format!("Could not write to region at {x}, {z} for Anvil level!").to_string(),
-                );
-            }
+        let mut region_coords = HashSet::new();
+        for coords in self.get_chunks().keys() {
+            let region_x = coords.x.div_floor(32);
+            let region_z = coords.z.div_floor(32);
+            region_coords.insert(Coords {
+                x: region_x,
+                z: region_z,
+            });
         }
+
+        region_coords.par_iter().for_each(|c| {
+            let region_path = region_dir.join(format!("r.{}.{}.mca", c.x, c.z));
+            let region_file = if !region_path.exists() || region_path.is_dir() {
+                File::create(region_path).expect(
+                    &*format!(
+                        "Could not create region at {}, {} for Anvil level!",
+                        c.x, c.z
+                    )
+                    .to_string(),
+                )
+            } else {
+                File::open(region_path).expect(
+                    &*format!("Could not open region at {}, {} for Anvil level!", c.x, c.z)
+                        .to_string(),
+                )
+            };
+
+            let region_data = self.write_anvil_region(c.clone());
+
+            // Write the region data
+            let mut writer = BufWriter::new(region_file);
+            writer.write_all(&region_data); //.expect(
+            // &*format!("Could not write to region at {}, {} for Anvil level!", c.x, &c.z).to_string(),
+            //);
+        });
     }
 
-    fn write_anvil_level(&mut self, level_name: String) -> Vec<u8> {
+    fn write_anvil_level(&self, level_name: String) -> Vec<u8> {
         let mut level_nbt = NbtCompound::new();
         let mut level_data = NbtCompound::new();
 
@@ -400,7 +408,7 @@ impl Anvil for Level {
         data
     }
 
-    fn write_anvil_region(&mut self, coords: Coords) -> Vec<u8> {
+    fn write_anvil_region(&self, coords: Coords) -> Vec<u8> {
         let out: Vec<u8> = Vec::new();
         let mut c = Cursor::new(out);
 
@@ -471,11 +479,6 @@ impl Anvil for Level {
         c.seek(SeekFrom::Start(0)).unwrap();
 
         for l in locations.iter() {
-            println!(
-                "Writing location {} at {}",
-                l.offset,
-                c.stream_position().unwrap()
-            );
             c.write_u24::<BigEndian>(l.offset).expect("Offset");
             c.write_u8(l.size).expect("Size");
         }
@@ -556,7 +559,7 @@ impl AnvilChunk for Chunk {
         Ok((c, Coords { x, z }))
     }
 
-    fn write_anvil_chunk(&mut self, coords: &Coords) -> Vec<u8> {
+    fn write_anvil_chunk(&self, coords: &Coords) -> Vec<u8> {
         let mut chunk_data: Vec<u8> = Vec::new();
 
         let mut chunk_nbt = NbtCompound::new();

@@ -1,6 +1,7 @@
 mod anvil_tests {
     use flate2::write::GzEncoder;
     use flate2::Compression;
+    use lodestone_java::alpha::AlphaLevel;
     use lodestone_java::anvil::Anvil;
     use lodestone_java::classic::classic_world::CWLevel;
     use lodestone_java::classic::mine_v2::MineV2Level;
@@ -9,7 +10,6 @@ mod anvil_tests {
     use std::fs::File;
     use std::io::Write;
     use std::path::Path;
-    use lodestone_java::alpha::AlphaLevel;
 
     #[test]
     fn anvil_to_minev2_test() {
@@ -99,7 +99,7 @@ mod anvil_tests {
         let output_dir = Path::new(anvilpath.as_str().into());
         level.write_anvil_dir(output_dir);
     }
-    
+
     #[test]
     fn cw_to_anvil_test() {
         log::set_max_level(log::LevelFilter::Debug);
@@ -178,7 +178,7 @@ mod anvil_tests {
             level.get_block_width(),
             level.get_block_length()
         ))
-            .unwrap();
+        .unwrap();
         of.write_all(&map).unwrap();
         of.flush().unwrap();
 

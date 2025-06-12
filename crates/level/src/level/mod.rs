@@ -8,7 +8,6 @@ use lodestone_common::types::hashmap_ext::Value;
 use rayon::iter::IntoParallelRefIterator;
 use rayon::iter::ParallelIterator;
 use serde::{Deserialize, Serialize};
-use serde_with::serde_as;
 use std::cmp::min;
 use std::collections::HashMap;
 
@@ -219,7 +218,11 @@ impl Level {
         self.get_max_z() * CHUNK_LENGTH as i32
     }
 
-    pub fn get_chunk(&mut self, coords: &Coords) -> Option<&mut Chunk> {
+    pub fn get_chunk(&self, coords: &Coords) -> Option<&Chunk> {
+        self.chunks.get(&coords)
+    }
+
+    pub fn get_chunk_mut(&mut self, coords: &Coords) -> Option<&mut Chunk> {
         self.chunks.get_mut(&coords)
     }
 
