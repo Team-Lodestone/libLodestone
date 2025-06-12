@@ -15,6 +15,8 @@ use quartz_nbt::{io, NbtCompound, NbtList, NbtTag};
 use rayon::iter::IntoParallelRefIterator;
 use std::io::{BufWriter, Cursor, Read, Seek, SeekFrom, Write};
 use std::path::Path;
+use lodestone_level::block::Block;
+use lodestone_level::level::chunk_section::BlockPaletteVec;
 
 pub trait Anvil {
     fn read_anvil_dir(path: &Path) -> Result<Level, String>;
@@ -523,7 +525,16 @@ impl AnvilChunk for Chunk {
                 let blocks: &[u8] = section.get("Blocks").expect("Section blocks");
 
                 let sc = c.get_or_create_chunk_section_mut(sy as i16 * 16);
-                sc.blocks = blocks.par_iter().map(|v| *v as u16).collect();
+                let mut p = BlockPaletteVec::new();
+                
+                // MAY BE WEIRD/SLOW, UNSURE.
+                let new: Vec<u16> = blocks.par_iter().map(|v| *v as u16).collect();
+
+                for value in &new {
+                    p.push_ref(value);
+                }
+
+                sc.blocks = p;
             }
         });
 

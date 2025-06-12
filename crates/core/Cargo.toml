@@ -22,6 +22,7 @@ crate-type = ["cdylib", "rlib"]
 lodestone_common.workspace = true
 lodestone_java.workspace = true
 lodestone_level.workspace = true
+palettevec.workspace = true
 
 #console_error_panic_hook = { workspace = true, optional = true }
 #

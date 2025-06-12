@@ -15,7 +15,7 @@ pub enum Light {
     SKY,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone)]
 pub struct Chunk {
     // Width and depth should always be 16 for our use cases.
     width: i8,
@@ -271,10 +271,10 @@ impl Chunk {
         // TODO: What the fuck is this
         let blocks: Vec<u16> = self
             .chunk_sections
-            .par_iter()
-            .flat_map(|s| s.blocks.par_iter().cloned()) // TODO: is cloned a good/bad thing
+            .iter()
+            .flat_map(|s| s.blocks.iter().cloned()) // TODO: is cloned a good/bad thing
             .collect();
-
+        
         blocks
     }
 

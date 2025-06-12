@@ -25,14 +25,12 @@ pub struct Spawn {
     pub z: i32,
 }
 
-#[serde_as]
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone)]
 pub struct Level {
     pub name: String,
     pub time: i64,
     pub spawn: Spawn,
 
-    #[serde_as(as = "Vec<(_, _)>")]
     chunks: HashMap<Coords, Chunk>,
 
     pub custom_data: HashMap<String, Value>,
@@ -328,7 +326,7 @@ impl Level {
     #[inline(always)]
     pub fn get_width(&self) -> i32 {
         self.get_max_x() - self.get_min_x()
-    } 
+    }
 
     #[inline(always)]
     pub fn get_block_height(&self) -> i16 {

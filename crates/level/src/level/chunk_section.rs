@@ -1,10 +1,19 @@
 use crate::level::chunk::{Light, CHUNK_LENGTH, CHUNK_SECTION_HEIGHT, CHUNK_WIDTH};
 use serde::{Deserialize, Serialize};
+use palettevec::{
+    index_buffer::aligned::AlignedIndexBuffer,
+    palette::hybrid::HybridPalette,
+    PaletteVec,
+};
+use palettevec::index_buffer::FastIndexBuffer;
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+pub type BlockPaletteVec = PaletteVec<u16, HybridPalette<64, u16>, FastIndexBuffer>;
+
+#[derive(Clone)]
 pub struct ChunkSection {
     // YZX ordering
-    pub blocks: Vec<u16>,
+    // TODO: we could also do palette of block states where we do say 3 bits for block id index and 3 for blockstate index (dynamic)
+    pub blocks: BlockPaletteVec,
     pub data: Vec<u8>,
     pub block_light: Vec<u8>,
     pub sky_light: Vec<u8>,
@@ -12,13 +21,9 @@ pub struct ChunkSection {
 
 impl ChunkSection {
     pub fn new() -> ChunkSection {
+        let blocks = BlockPaletteVec::filled(0, CHUNK_WIDTH as usize * CHUNK_SECTION_HEIGHT as usize * CHUNK_LENGTH as usize);
         ChunkSection {
-            blocks: vec![
-                0u16;
-                CHUNK_WIDTH as usize
-                    * CHUNK_SECTION_HEIGHT as usize
-                    * CHUNK_LENGTH as usize
-            ],
+            blocks,
             data: vec![
                 0u8;
                 CHUNK_WIDTH as usize * CHUNK_SECTION_HEIGHT as usize * CHUNK_LENGTH as usize
@@ -72,7 +77,7 @@ impl ChunkSection {
             return;
         }
 
-        self.blocks[Self::get_index(x, y, z)] = block;
+        self.blocks.set(Self::get_index(x, y, z), &block);
     }
 
     pub fn get_state(&self, x: i8, y: i16, z: i8) -> u8 {
