@@ -277,101 +277,101 @@ impl Anvil for Level {
 
     fn write_anvil_level(&mut self, level_name: String) -> Vec<u8> {
         let mut level_nbt = NbtCompound::new();
-        let level_data = NbtCompound::new();
+        let mut level_data = NbtCompound::new();
 
         // TODO: Player tag
         let game_type = self
             .custom_data
             .get_value::<i32, &str>(metadata::GAME_TYPE)
             .unwrap_or(0);
-        level_nbt.insert(metadata::GAME_TYPE, game_type);
+        level_data.insert(metadata::GAME_TYPE, game_type);
 
         let generator_name = self
             .custom_data
             .get_value::<String, &str>(metadata::GENERATOR_NAME)
             .unwrap_or("default".to_string());
-        level_nbt.insert(metadata::GENERATOR_NAME, generator_name);
+        level_data.insert(metadata::GENERATOR_NAME, generator_name);
 
         let generator_version = self
             .custom_data
             .get_value::<i32, &str>(metadata::GENERATOR_VERSION)
             .unwrap_or(1);
-        level_nbt.insert(metadata::GENERATOR_VERSION, generator_version);
+        level_data.insert(metadata::GENERATOR_VERSION, generator_version);
 
         let hard_core = self
             .custom_data
             .get_value::<bool, &str>(metadata::HARD_CORE)
             .unwrap_or(false);
-        level_nbt.insert(metadata::HARD_CORE, hard_core);
+        level_data.insert(metadata::HARD_CORE, hard_core);
 
         let last_played = self
             .custom_data
             .get_value::<i64, &str>(metadata::LAST_PLAYED)
             .unwrap_or(0);
-        level_nbt.insert(metadata::LAST_PLAYED, last_played);
+        level_data.insert(metadata::LAST_PLAYED, last_played);
 
         let level_name = self
             .custom_data
             .get_value::<String, &str>(metadata::LEVEL_NAME)
             .unwrap_or(level_name);
-        level_nbt.insert(metadata::LEVEL_NAME, level_name);
+        level_data.insert(metadata::LEVEL_NAME, level_name);
 
         let map_features = self
             .custom_data
             .get_value::<bool, &str>(metadata::MAP_FEATURES)
             .unwrap_or(false);
-        level_nbt.insert(metadata::MAP_FEATURES, map_features);
+        level_data.insert(metadata::MAP_FEATURES, map_features);
 
         let raining = self
             .custom_data
             .get_value::<bool, &str>(metadata::RAINING)
             .unwrap_or(false);
-        level_nbt.insert(metadata::RAINING, raining);
+        level_data.insert(metadata::RAINING, raining);
 
         let rain_time = self
             .custom_data
             .get_value::<i32, &str>(metadata::RAIN_TIME)
             .unwrap_or(0);
-        level_nbt.insert(metadata::RAIN_TIME, rain_time);
+        level_data.insert(metadata::RAIN_TIME, rain_time);
 
         let random_seed = self
             .custom_data
             .get_value::<i64, &str>(metadata::RANDOM_SEED)
             .unwrap_or(0);
-        level_nbt.insert(metadata::RANDOM_SEED, random_seed);
+        level_data.insert(metadata::RANDOM_SEED, random_seed);
 
         // This will actually always be 0 for Anvil worlds...
         let size_on_disk = self
             .custom_data
-            .get_value::<i32, &str>(metadata::SIZE_ON_DISK)
+            .get_value::<i64, &str>(metadata::SIZE_ON_DISK)
             .unwrap_or(0);
-        level_nbt.insert(metadata::SIZE_ON_DISK, size_on_disk);
+        level_data.insert(metadata::SIZE_ON_DISK, size_on_disk);
 
         // Write spawn tags
-        level_nbt.insert(metadata::SPAWN_X, self.spawn.x);
-        level_nbt.insert(metadata::SPAWN_Y, self.spawn.y);
-        level_nbt.insert(metadata::SPAWN_Z, self.spawn.z);
+        level_data.insert(metadata::SPAWN_X, self.spawn.x);
+        level_data.insert(metadata::SPAWN_Y, self.spawn.y);
+        level_data.insert(metadata::SPAWN_Z, self.spawn.z);
 
         let thundering = self
             .custom_data
             .get_value::<bool, &str>(metadata::THUNDERING)
             .unwrap_or(false);
-        level_nbt.insert(metadata::THUNDERING, thundering);
+        level_data.insert(metadata::THUNDERING, thundering);
 
         let thunder_time = self
             .custom_data
-            .get_value::<i64, &str>(metadata::THUNDER_TIME)
+            .get_value::<i32, &str>(metadata::THUNDER_TIME)
             .unwrap_or(0);
-        level_nbt.insert(metadata::THUNDER_TIME, thunder_time);
+        level_data.insert(metadata::THUNDER_TIME, thunder_time);
 
-        level_nbt.insert(metadata::TIME, self.time);
+        level_data.insert(metadata::TIME, self.time);
 
         // First Anvil version is labelled 19133
         let version = self
             .custom_data
             .get_value::<i32, &str>(metadata::VERSION)
             .unwrap_or(19133);
-        level_nbt.insert(metadata::VERSION, version);
+        level_data.insert(metadata::VERSION, version);
 
         level_nbt.insert("Data", level_data);
 
@@ -423,7 +423,7 @@ impl Anvil for Level {
                         let offset = c.stream_position().unwrap() / 4096;
 
                         let idx = (chunk_x as usize % 32) + (chunk_z as usize % 32) * 32;
-                        if (idx > 1023) {
+                        if idx > 1023 {
                             println!("WARN: Chunk at X: {}, Z: {} is out of bounds in the location table.", chunk_x, chunk_z);
                             continue;
                         }
