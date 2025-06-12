@@ -25,7 +25,7 @@ phf = { workspace = true, features = ["macros"] }
 
 #console_error_panic_hook = { workspace = true, optional = true }
 palettevec = { workspace = true }
-
+quartz_nbt.workspace = true
 
 serde = { version = "1.0.219", features = ["derive"] }
 serde_with = { version = "3.12.0" }
