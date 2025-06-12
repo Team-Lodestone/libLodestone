@@ -63,7 +63,7 @@ mod anvil_tests {
 
         // let file_dir = Path::new("../../internal_tests/alpha/src/World2/");
         println!("Reading file");
-        let data = match fs::read("../../internal_tests/classic/src/large_world.cw") {
+        let data = match fs::read("../../internal_tests/cw/src/large_world.cw") {
             Ok(d) => d,
             Err(e) => {
                 eprintln!("uh oh {}", e);

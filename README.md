@@ -19,7 +19,7 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
     - [X] Infdev (Alpha Save Format)
     - [X] Alpha (Alpha Save Format)
     - [X] MCR
-    - [ ] Anvil
+    - [X] Anvil
     - [ ] 1.13 Anvil 
   - [ ] LCE
     - [ ] V11

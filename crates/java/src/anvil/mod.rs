@@ -247,9 +247,9 @@ impl Anvil for Level {
         }
 
         let min_region_x = self.get_min_x().div_floor(32);
+        let max_region_x = (self.get_max_x() - 1).div_floor(32);
         let min_region_z = self.get_min_z().div_floor(32);
-        let max_region_x = self.get_max_x().div_floor(32);
-        let max_region_z = self.get_max_z().div_floor(32);
+        let max_region_z = (self.get_max_z() - 1).div_floor(32);
         for x in min_region_x..=max_region_x {
             for z in min_region_z..=max_region_z {
                 let region_path = region_dir.join(format!("r.{}.{}.mca", x, z));
@@ -393,10 +393,10 @@ impl Anvil for Level {
         c.seek(SeekFrom::Start(0x2000)).expect("Chunk position");
 
         let min_chunk_x = coords.x * 32;
-        let max_chunk_x = (coords.x + 1) * 32 - 1;
+        let max_chunk_x = (coords.x + 1) * 32;
 
         let min_chunk_z = coords.z * 32;
-        let max_chunk_z = (coords.z + 1) * 32 - 1;
+        let max_chunk_z = (coords.z + 1) * 32;
 
         let mut idx = 0;
 
@@ -410,8 +410,8 @@ impl Anvil for Level {
                     coords.z
                 );
                 let chunk_coords = &Coords {
-                    x: chunk_x,
-                    z: chunk_z,
+                    x: chunk_z,
+                    z: chunk_x,
                 };
                 let chunk = self.get_chunk(chunk_coords);
                 match chunk {
@@ -424,12 +424,12 @@ impl Anvil for Level {
                         let size = sector_size;
                         let offset = c.stream_position().unwrap() / 4096;
 
-                        idx = idx + 1;
                         locations[idx] = ChunkLocation {
                             offset: offset as u32,
                             size: size as u8,
                         };
                         timestamps[idx] = 0;
+                        idx = idx + 1;
 
                         c.write_i32::<BigEndian>(len as i32).expect("Chunk size");
                         c.write_i8(2).expect("Chunk compression type");
@@ -562,10 +562,12 @@ impl AnvilChunk for Chunk {
             .unwrap_or(1);
         chunk_level.insert(metadata::TERRAIN_POPULATED, has_populated);
 
+        // TODO: calculate light ourselves
+        // this option tells the game that lighting has not yet been calculated, which gives us a free pass when dealing with Anvil.
         let light_populated = self
             .custom_data
             .get_value::<i8, &str>(metadata::LIGHT_POPULATED)
-            .unwrap_or(1);
+            .unwrap_or(0);
         chunk_level.insert(metadata::LIGHT_POPULATED, light_populated);
 
         chunk_level.insert(
