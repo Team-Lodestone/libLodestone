@@ -3,6 +3,7 @@ mod test_utils;
 mod region_tests {
     use crate::test_utils::{write_world, write_world_dc};
     use lodestone_java::alpha::AlphaLevel;
+    use lodestone_java::anvil::Anvil;
     use lodestone_java::classic::classic_world::CWLevel;
     use lodestone_java::classic::mcgalaxy_lvl::MCGLevel;
     use lodestone_java::classic::mine_v1::MineV1Level;
@@ -134,5 +135,17 @@ mod region_tests {
         println!("MCGalaxy: {:?}", mcg_end);
         println!("Indev: {:?}", indev_end);
         println!("Alpha: {:?}", alpha_end);
+
+        println!("Writing Anvil world");
+        let anvil_dir = Path::new("../../internal_tests/anvil/dst/RegionTest/");
+        if exists(anvil_dir).unwrap() {
+            remove_dir_all(anvil_dir).expect("Failed to delete anvil dir");
+        }
+
+        create_dir_all(anvil_dir).expect("Failed to create anvil dir");
+        let anvil_start = Instant::now();
+        level.write_anvil_dir(anvil_dir);
+        let anvil_end = anvil_start.elapsed();
+        println!("Anvil: {:?}", anvil_end);
     }
 }
