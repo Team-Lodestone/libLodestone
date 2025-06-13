@@ -1,18 +1,26 @@
 const BASE36: &[u8] = b"0123456789abcdefghijklmnopqrstuvwxyz";
 
-pub fn base36(mut n: u8) -> String {
-    if n == 0 {
-        return "0".to_string();
+pub fn base36(mut n: i32) -> String {
+    let mut str = [0u8; 33];
+    let mut c = 32;
+
+    let negative = n < 0;
+    if !negative {
+        n = -n;
     }
 
-    let mut result = Vec::new();
-
-    while n > 0 {
-        let rem = (n % 36) as usize;
-        result.push(BASE36[rem]);
+    while n <= -36 {
+        str[c] = BASE36[-(n % 36) as usize];
+        c -= 1;
         n /= 36;
     }
 
-    result.reverse();
-    String::from_utf8(result).unwrap()
+    str[c] = BASE36[(-n) as usize];
+
+    if negative {
+        c -= 1;
+        str[c] = b'-';
+    }
+
+    String::from_utf8_lossy(&str[c..]).into_owned()
 }

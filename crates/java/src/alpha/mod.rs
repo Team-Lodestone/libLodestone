@@ -181,14 +181,23 @@ impl AlphaLevel for Level {
             .to_string();
         let mut lvl = Self::read_alpha_level(level_name, data).expect("Could not parse level!");
 
-        for x in 0..63 {
-            for z in 0..63 {
-                let chunk_dir = path.join(base36(x) + "/").join(base36(z) + "/");
-
-                if !chunk_dir.exists() || !chunk_dir.is_dir() {
+        for chunk_x_entry in fs::read_dir(path).map_err(|e| e.to_string())? {
+            let chunk_x = &chunk_x_entry.unwrap().path();
+            if !chunk_x.is_dir() {
+                continue;
+            }
+            for chunk_z_entry in fs::read_dir(&chunk_x).map_err(|e| e.to_string())? {
+                let chunk_z = &chunk_z_entry.unwrap().path();
+                if !chunk_z.is_dir() {
                     continue;
                 }
-
+                let chunk_dir = path
+                    .join(chunk_x.file_name().unwrap())
+                    .join(chunk_z.file_name().unwrap());
+                if !chunk_dir.exists() {
+                    println!("{:?}", chunk_dir);
+                    continue;
+                }
                 for entry in fs::read_dir(chunk_dir).map_err(|e| e.to_string())? {
                     let p = entry.map_err(|e| e.to_string())?.path();
                     if !p.is_file() || !p.extension().map_or(false, |ext| ext == "dat") {
@@ -202,6 +211,12 @@ impl AlphaLevel for Level {
                 }
             }
         }
+        println!(
+            "World bounds: {} {} {}",
+            lvl.get_block_width(),
+            lvl.get_block_height(),
+            lvl.get_block_length()
+        );
         Ok(lvl)
     }
 
@@ -219,17 +234,14 @@ impl AlphaLevel for Level {
             let chunk_data = chunk.write_alpha_chunk(&coords);
 
             let chunk_dir = path
-                .join(base36(coords.x as u8) + "/")
-                .join(base36(coords.z as u8) + "/");
+                .join(base36(coords.x & 63) + "/")
+                .join(base36(coords.z & 63) + "/");
             if !chunk_dir.exists() {
                 fs::create_dir_all(&chunk_dir).expect("Chunk directory could not be created!");
             }
 
-            let chunk_file = chunk_dir.join(format!(
-                "c.{}.{}.dat",
-                base36(coords.x as u8),
-                base36(coords.z as u8)
-            ));
+            let chunk_file =
+                chunk_dir.join(format!("c.{}.{}.dat", base36(coords.x), base36(coords.z)));
 
             if !chunk_file.exists() {
                 File::create(&chunk_file).expect("Chunk file could not be created!");
