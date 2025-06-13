@@ -1,3 +1,5 @@
+pub mod inf_624;
+
 use flate2::read::GzDecoder;
 use lodestone_common::types::hashmap_ext::HashMapExt;
 use lodestone_common::types::hashmap_ext::Value::{Bool, Int64};
