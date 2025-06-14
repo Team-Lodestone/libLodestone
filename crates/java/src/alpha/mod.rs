@@ -50,7 +50,7 @@ impl AlphaChunk for Chunk {
         let block_light: &Vec<i8> = root.get("BlockLight").expect("BlockLight array");
         let blocks: &Vec<i8> = root.get("Blocks").expect("Blocks array");
         let data: &Vec<i8> = root.get("Data").expect("Data array");
-        // Ignore heightmap
+        // let height_map: &Vec<i8> = root.get("HeightMap").expect("Heightmap");
         let sky_light: &Vec<i8> = root.get("SkyLight").expect("SkyLight array");
 
         // Store chunk data into chunk
@@ -78,12 +78,11 @@ impl AlphaChunk for Chunk {
                 for z in 0..16 {
                     let idx = y + (z * chunk_height + (x * chunk_height * chunk_length));
 
-                    if blocks[idx] != 0 {
-                        if chunk.get_chunk_section(chunk_y).is_none() {
-                            chunk.get_or_create_chunk_section_mut(chunk_y);
-                        }
-                        chunk.set_block(x as i8, chunk_y, z as i8, blocks[idx] as u16);
+                    let blk = blocks[idx];
+                    if (blk != 0) {
+                        chunk.set_block(x as i8, chunk_y, z as i8, blk as u16);
                     }
+
                     // chunk.set_state(x, y, z, data[i] as u8);
                     // chunk.set_light(SKY, x, y, z, sky_light[i] as u8);
                     // chunk.set_light(BLOCK, x, y, z, block_light[i] as u8);
@@ -143,7 +142,7 @@ impl AlphaChunk for Chunk {
         let data = chunk_level.insert::<_, Vec<u8>>(metadata::DATA.to_string(), vec![0u8; 16384]);
         let height_map = chunk_level.insert::<_, Vec<u8>>(
             metadata::HEIGHT_MAP.to_string(),
-            self.generate_heightmap().iter().map(|&x| x as u8).collect(),
+            self.get_heightmap().iter().map(|&x| x as u8).collect(),
         );
         let sky_light = chunk_level.insert(metadata::SKY_LIGHT.to_string(), vec![15i8; 16384]);
 

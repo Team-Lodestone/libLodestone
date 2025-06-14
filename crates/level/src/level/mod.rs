@@ -301,9 +301,7 @@ impl Level {
             .chunks
             .par_iter()
             .map(|(p, c)| {
-                let mut hm = c.generate_heightmap();
-                hm.resize((CHUNK_WIDTH as usize) * (CHUNK_LENGTH as usize), -1);
-                (p.clone(), hm)
+                (p.clone(), c.get_heightmap().to_vec())
             })
             .collect();
 

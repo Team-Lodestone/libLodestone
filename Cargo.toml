@@ -12,7 +12,7 @@ members = [
 [workspace.package]
 edition    = "2024"
 # usually I've been incrementing minor ver everytime I add a new supported level format...
-version    = "0.6.0"
+version    = "0.6.1"
 # TODO: specify MSRV (minimum supported rust version)
 license    = "LGPL-2.1"
 readme     = "README.md"
@@ -27,9 +27,9 @@ opt-level = "s"
 [workspace.dependencies]
 # NOTE: for now we keep all version numbers in lockstep, as the version specified
 # in [workspace.package] above
-lodestone_common = { version = "=0.6.0", path = "crates/common" }
-lodestone_java   = { version = "=0.6.0", path = "crates/java" }
-lodestone_level  = { version = "=0.6.0", path = "crates/level"}
+lodestone_common = { version = "=0.6.1", path = "crates/common" }
+lodestone_java   = { version = "=0.6.1", path = "crates/java" }
+lodestone_level  = { version = "=0.6.1", path = "crates/level"}
 
 byteorder            = "1.5.0"
 flate2               = "1.1.1"

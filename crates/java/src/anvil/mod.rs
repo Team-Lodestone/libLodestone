@@ -609,7 +609,7 @@ impl AnvilChunk for Chunk {
 
         chunk_level.insert(
             metadata::HEIGHT_MAP,
-            self.generate_heightmap()
+            self.get_heightmap()
                 .iter()
                 .map(|v| *v as i32)
                 .collect::<Vec<i32>>(),

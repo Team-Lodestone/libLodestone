@@ -300,7 +300,7 @@ impl MCRChunk for Chunk {
         c.insert("BlockLight".to_string(), vec![0u8; 16384]);
         c.insert(
             "HeightMap".to_string(),
-            self.generate_heightmap()
+            self.get_heightmap()
                 .iter()
                 .map(|&x| x as u8)
                 .collect::<Vec<u8>>(),

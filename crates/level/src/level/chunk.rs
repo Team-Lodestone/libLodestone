@@ -174,6 +174,27 @@ impl Chunk {
                 cs.set_block(x, y % CHUNK_SECTION_HEIGHT as i16, z, block);
             }
         }
+
+        // if our block isn't 0
+        if block != 0 {
+            if y >= self.get_height(x, z) {
+                *self.get_height_mut(x, z) = (y + 1).min(self.height - 1);
+            }
+        } else {
+            // if our air block's position is the topmost block of any column
+            if y + 1 == self.get_height(x, z) {
+                // then we get the new topmost block
+                for ny in (0..y).rev() {
+                    if self.get_block(x, ny, z) != 0 {
+                        *self.get_height_mut(x, z) = (ny + 1).min(self.height - 1); // is it any better to set a ref from a getter?
+                        return;
+                    }
+                }
+
+                // there were no blocks
+                *self.get_height_mut(x, z) = 0;
+            }
+        }
     }
 
     pub fn get_state(&self, x: i8, y: i16, z: i8) -> u8 {
@@ -282,5 +303,33 @@ impl Chunk {
             .collect();
 
         data
+    }
+
+    // somehow I didn't think about how you can just return a mutable ref to a value in an array and then set that
+    #[inline(always)]
+    pub fn get_height_mut(&mut self, x: i8, z: i8) -> &mut i16 {
+        let index = z as usize * CHUNK_WIDTH as usize + x as usize;
+        &mut self.height_map[index]
+    }
+
+    #[inline(always)]
+    pub fn get_height(&self, x: i8, z: i8) -> i16 {
+        let index = z as usize * CHUNK_WIDTH as usize + x as usize;
+        self.height_map[index]
+    }
+
+    #[inline(always)]
+    pub fn get_heightmap_mut(&mut self) -> &mut [i16] {
+        &mut self.height_map
+    }
+
+    #[inline(always)]
+    pub fn get_heightmap(&self) -> &[i16] {
+        &self.height_map
+    }
+
+    #[inline(always)]
+    pub fn recalc_heightmap(&mut self) {
+        self.height_map = self.generate_heightmap();
     }
 }
