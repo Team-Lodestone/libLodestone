@@ -3,7 +3,7 @@ use lodestone_common::types::hashmap_ext::Value;
 use rayon::iter::ParallelIterator;
 use rayon::prelude::IntoParallelRefIterator;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap};
 
 pub const CHUNK_WIDTH: i8 = 16;
 pub const CHUNK_LENGTH: i8 = 16;
@@ -74,10 +74,7 @@ impl Chunk {
             for x in 0..CHUNK_WIDTH {
                 for y in (0..self.height).rev() {
                     let blk = self.get_block(x, y, z);
-                    if !crate::block::get_block(blk)
-                        .expect("Get block for blockmap")
-                        .is_translucent_map
-                    {
+                    if blk != 0 {
                         blkmap[z as usize * CHUNK_WIDTH as usize + x as usize] = blk;
                         break;
                     }
@@ -197,24 +194,24 @@ impl Chunk {
         }
     }
 
-    pub fn get_state(&self, x: i8, y: i16, z: i8) -> u8 {
+    pub fn get_state(&self, x: i8, y: i16, z: i8) -> Option<&BTreeMap<String, String>> {
         if x > CHUNK_WIDTH || y > self.height || z > CHUNK_LENGTH || x < 0 || y < 0 || z < 0 {
-            return 0;
+            return None;
         }
 
         match self.get_chunk_section(y) {
             Some(s) => s.get_state(x, y % CHUNK_SECTION_HEIGHT as i16, z),
-            None => 0,
+            None => None,
         }
     }
 
-    pub fn set_state(&mut self, x: i8, y: i16, z: i8, state: u8) {
+    pub fn set_state(&mut self, x: i8, y: i16, z: i8, key: String, value: String) {
         if x > CHUNK_WIDTH || y > self.height || z > CHUNK_LENGTH || x < 0 || y < 0 || z < 0 {
             return;
         }
 
         match self.get_chunk_section_mut(y) {
-            Some(s) => s.set_state(x, y % CHUNK_SECTION_HEIGHT as i16, z, state),
+            Some(s) => s.set_state(x, y % CHUNK_SECTION_HEIGHT as i16, z, key, value),
             _ => {}
         }
     }
@@ -294,16 +291,16 @@ impl Chunk {
         blocks
     }
 
-    pub fn get_all_data(&self) -> Vec<u8> {
-        // TODO: What the fuck is this
-        let data: Vec<u8> = self
-            .chunk_sections
-            .par_iter()
-            .flat_map(|s| s.data.par_iter().cloned()) // TODO: is cloned a good/bad thing
-            .collect();
-
-        data
-    }
+    // pub fn get_all_data(&self) -> Vec<u8> {
+    //     // TODO: What the fuck is this
+    //     let data: Vec<u8> = self
+    //         .chunk_sections
+    //         .par_iter()
+    //         .flat_map(|s| s.data.par_iter().cloned()) // TODO: is cloned a good/bad thing
+    //         .collect();
+    //
+    //     data
+    // }
 
     // somehow I didn't think about how you can just return a mutable ref to a value in an array and then set that
     #[inline(always)]

@@ -9,7 +9,7 @@ use rayon::iter::IntoParallelRefIterator;
 use rayon::iter::ParallelIterator;
 use serde::{Deserialize, Serialize};
 use std::cmp::min;
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap};
 
 #[derive(Clone, Default, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 pub struct Coords {
@@ -115,18 +115,19 @@ impl Level {
         self.chunks.len()
     }
 
-    pub fn set_data(&mut self, x: i32, y: i16, z: i32, block: u8) {
+    pub fn set_data(&mut self, x: i32, y: i16, z: i32, key: String, value: String) {
         if let Some(chunk) = self.get_chunk_by_block_coords_mut(x, z) {
             chunk.set_state(
                 x.rem_euclid(CHUNK_WIDTH as i32) as i8,
                 y,
                 z.rem_euclid(CHUNK_LENGTH as i32) as i8,
-                block,
+                key,
+                value
             );
         }
     }
 
-    pub fn get_data(&self, x: i32, y: i16, z: i32) -> u8 {
+    pub fn get_states(&self, x: i32, y: i16, z: i32) -> Option<&BTreeMap<String, String>> {
         if let Some(chunk) = self.get_chunk_by_block_coords(x, z) {
             chunk.get_state(
                 x.rem_euclid(CHUNK_WIDTH as i32) as i8,
@@ -134,18 +135,7 @@ impl Level {
                 z.rem_euclid(CHUNK_LENGTH as i32) as i8,
             )
         } else {
-            0
-        }
-    }
-
-    pub fn set_state(&mut self, x: i32, y: i16, z: i32, state: u8) {
-        if let Some(chunk) = self.get_chunk_by_block_coords_mut(x, z) {
-            chunk.set_state(
-                x.rem_euclid(CHUNK_WIDTH as i32) as i8,
-                y,
-                z.rem_euclid(CHUNK_LENGTH as i32) as i8,
-                state,
-            );
+            None
         }
     }
 

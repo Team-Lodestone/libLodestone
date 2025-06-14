@@ -24,3 +24,9 @@ pub fn base36(mut n: i32) -> String {
 
     String::from_utf8_lossy(&str[c..]).into_owned()
 }
+
+/// Versions that need to be handled during conversion
+#[derive(Debug, PartialEq, Eq, Hash)]
+pub enum McVersion {
+    Classic030,
+}

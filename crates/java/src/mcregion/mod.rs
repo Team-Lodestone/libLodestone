@@ -292,10 +292,11 @@ impl MCRChunk for Chunk {
                 .map(|&x| x as u8)
                 .collect::<Vec<u8>>(),
         );
-        c.insert(
-            "Data".to_string(),
-            lodestone_common::io::into_nibble_array(self.get_all_data()),
-        );
+        // c.insert(
+        //     "Data".to_string(),
+        //     lodestone_common::io::into_nibble_array(self.get_all_data()),
+        // );
+        c.insert("Data", vec![0u8; 16384]);
         c.insert("SkyLight".to_string(), vec![0u8; 16384]);
         c.insert("BlockLight".to_string(), vec![0u8; 16384]);
         c.insert(

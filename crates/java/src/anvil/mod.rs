@@ -2,9 +2,6 @@ use rayon::iter::ParallelIterator;
 use std::collections::HashSet;
 use std::fs;
 use std::fs::{create_dir_all, remove_dir_all, File};
-
-mod version;
-
 use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
 use flate2::read::{GzDecoder, ZlibDecoder};
 use lodestone_common::types::hashmap_ext::HashMapExt;

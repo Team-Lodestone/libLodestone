@@ -1,16 +1,18 @@
+use std::collections::{BTreeMap, HashMap};
 use crate::level::chunk::{Light, CHUNK_LENGTH, CHUNK_SECTION_HEIGHT, CHUNK_WIDTH};
 use palettevec::{
     index_buffer::aligned::AlignedIndexBuffer, palette::hybrid::HybridPalette, PaletteVec,
 };
 
 pub type BlockPaletteVec = PaletteVec<u16, HybridPalette<64, u16>, AlignedIndexBuffer>;
+pub type StatePaletteVec = PaletteVec<BTreeMap<String, String>, HybridPalette<64, BTreeMap<String, String>>, AlignedIndexBuffer>;
 
 #[derive(Clone)]
 pub struct ChunkSection {
     // YZX ordering
     // TODO: we could also do palette of block states where we do say 3 bits for block id index and 3 for blockstate index (dynamic)
     pub blocks: BlockPaletteVec,
-    pub data: Vec<u8>,
+    pub data: StatePaletteVec,
     pub block_light: Vec<u8>,
     pub sky_light: Vec<u8>,
 }
@@ -21,12 +23,13 @@ impl ChunkSection {
             0,
             CHUNK_WIDTH as usize * CHUNK_SECTION_HEIGHT as usize * CHUNK_LENGTH as usize,
         );
+        let data = StatePaletteVec::filled(
+            BTreeMap::new(),
+            CHUNK_WIDTH as usize * CHUNK_SECTION_HEIGHT as usize * CHUNK_LENGTH as usize,
+        );
         ChunkSection {
             blocks,
-            data: vec![
-                0u8;
-                CHUNK_WIDTH as usize * CHUNK_SECTION_HEIGHT as usize * CHUNK_LENGTH as usize
-            ],
+            data,
             block_light: vec![
                 0u8;
                 CHUNK_WIDTH as usize
@@ -79,7 +82,7 @@ impl ChunkSection {
         self.blocks.set(Self::get_index(x, y, z), &block);
     }
 
-    pub fn get_state(&self, x: i8, y: i16, z: i8) -> u8 {
+    pub fn get_state(&self, x: i8, y: i16, z: i8) -> Option<&BTreeMap<String, String>> {
         if x > CHUNK_WIDTH
             || y > CHUNK_SECTION_HEIGHT as i16
             || z > CHUNK_LENGTH
@@ -87,13 +90,13 @@ impl ChunkSection {
             || y < 0
             || z < 0
         {
-            return 0;
+            return None;
         }
 
-        self.data[Self::get_index(x, y, z)]
+        self.data.get(Self::get_index(x, y, z))
     }
 
-    pub fn set_state(&mut self, x: i8, y: i16, z: i8, state: u8) {
+    pub fn set_state(&mut self, x: i8, y: i16, z: i8, key: String, value: String) {
         if x > CHUNK_WIDTH
             || y > CHUNK_SECTION_HEIGHT as i16
             || z > CHUNK_LENGTH
@@ -104,7 +107,9 @@ impl ChunkSection {
             return;
         }
 
-        self.data[Self::get_index(x, y, z)] = state;
+        let mut s = self.data.get(Self::get_index(x, y, z)).unwrap().clone();
+        s.insert(key, value);
+        self.data.set(Self::get_index(x, y, z), &s);
     }
 
     pub fn get_light(&self, light_type: Light, x: i8, y: i16, z: i8) -> u8 {
