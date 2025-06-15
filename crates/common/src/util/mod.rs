@@ -29,4 +29,5 @@ pub fn base36(mut n: i32) -> String {
 #[derive(Debug, PartialEq, Eq, Hash)]
 pub enum McVersion {
     Classic030,
+    Alpha1_2_6,
 }

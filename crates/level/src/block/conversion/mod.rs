@@ -14,5 +14,6 @@ fn get_internal_block_id(v: McVersion, id: usize) -> Block {
             .get(&(id as u8))
             .copied()
             .unwrap_or(Block::Air),
+        McVersion::Alpha1_2_6 => todo!(),
     }
 }

@@ -22,3 +22,5 @@ macro_rules! hashmap_impl_type {
 }
 
 pub mod hashmap_ext;
+pub mod vec2i;
+pub mod vec3i;

@@ -3,11 +3,13 @@ pub mod inf_624;
 use flate2::read::GzDecoder;
 use lodestone_common::types::hashmap_ext::HashMapExt;
 use lodestone_common::types::hashmap_ext::Value::{Bool, Int64};
-use lodestone_common::util::base36;
+use lodestone_common::types::vec3i::Vec3i;
+use lodestone_common::util::{base36, McVersion};
+use lodestone_level::entity::block_entity::BlockEntity;
 use lodestone_level::level::chunk::{Chunk, CHUNK_LENGTH};
 use lodestone_level::level::{metadata, Coords, Level};
 use quartz_nbt::io::{write_nbt, Flavor};
-use quartz_nbt::{io, NbtCompound, NbtList};
+use quartz_nbt::{io, NbtCompound, NbtList, NbtTag};
 use std::fs;
 use std::fs::File;
 use std::io::{BufWriter, Cursor, Write};
@@ -52,6 +54,9 @@ impl AlphaChunk for Chunk {
         let data: &Vec<i8> = root.get("Data").expect("Data array");
         // let height_map: &Vec<i8> = root.get("HeightMap").expect("Heightmap");
         let sky_light: &Vec<i8> = root.get("SkyLight").expect("SkyLight array");
+        let tile_entities = root
+            .get::<str, &NbtList>("TileEntities")
+            .expect("TileEntities list");
 
         // Store chunk data into chunk
         let coords: Coords = Coords {
@@ -86,6 +91,27 @@ impl AlphaChunk for Chunk {
                     // chunk.set_state(x, y, z, data[i] as u8);
                     // chunk.set_light(SKY, x, y, z, sky_light[i] as u8);
                     // chunk.set_light(BLOCK, x, y, z, block_light[i] as u8);
+                }
+            }
+        }
+
+        for tile_entity in tile_entities.iter() {
+            let compound = match tile_entity {
+                NbtTag::Compound(tile_entity) => Ok(tile_entity),
+                _ => Err("Not a compound"),
+            };
+
+            if compound.is_ok() {
+                let tile_entity = BlockEntity::from_nbt(McVersion::Alpha1_2_6, compound?);
+
+                if tile_entity.is_some() {
+                    let tile_entity = tile_entity.expect("Failed to unwrap tile entity!");
+                    let pos = Vec3i {
+                        x: tile_entity.x,
+                        y: tile_entity.y,
+                        z: tile_entity.z,
+                    };
+                    chunk.add_block_entity(pos, tile_entity);
                 }
             }
         }

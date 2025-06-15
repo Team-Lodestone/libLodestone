@@ -1,5 +1,7 @@
+use crate::entity::block_entity::BlockEntity;
 use crate::level::chunk_section::ChunkSection;
 use lodestone_common::types::hashmap_ext::Value;
+use lodestone_common::types::vec3i::Vec3i;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap};
 
@@ -22,6 +24,7 @@ pub struct Chunk {
     pub height_map: Vec<i16>,
     pub block_map: Vec<u16>,
 
+    pub block_entities: BTreeMap<Vec3i, BlockEntity>,
     pub custom_data: HashMap<String, Value>,
 }
 
@@ -39,6 +42,7 @@ impl Chunk {
             height_map: vec![0i16; width * length],
             block_map: vec![0u16; width * length],
 
+            block_entities: BTreeMap::new(),
             custom_data: Default::default(),
         }
     }
@@ -276,6 +280,14 @@ impl Chunk {
         self.blocks = new_blocks;
         self.data = new_data;
          */
+    }
+
+    pub fn add_block_entity(&mut self, coords: Vec3i, block_entity: BlockEntity) {
+        self.block_entities.insert(coords, block_entity);
+    }
+
+    pub fn remove_block_entity(&mut self, coords: Vec3i) {
+        self.block_entities.remove(&coords);
     }
 
     pub fn get_all_blocks(&self) -> Vec<u16> {
