@@ -1,11 +1,15 @@
-use std::collections::{BTreeMap, HashMap};
 use crate::level::chunk::{Light, CHUNK_LENGTH, CHUNK_SECTION_HEIGHT, CHUNK_WIDTH};
 use palettevec::{
     index_buffer::aligned::AlignedIndexBuffer, palette::hybrid::HybridPalette, PaletteVec,
 };
+use std::collections::BTreeMap;
 
 pub type BlockPaletteVec = PaletteVec<u16, HybridPalette<64, u16>, AlignedIndexBuffer>;
-pub type StatePaletteVec = PaletteVec<BTreeMap<String, String>, HybridPalette<64, BTreeMap<String, String>>, AlignedIndexBuffer>;
+pub type StatePaletteVec = PaletteVec<
+    BTreeMap<String, String>,
+    HybridPalette<64, BTreeMap<String, String>>,
+    AlignedIndexBuffer,
+>;
 
 #[derive(Clone)]
 pub struct ChunkSection {

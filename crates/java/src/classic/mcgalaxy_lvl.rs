@@ -7,7 +7,6 @@ use rayon::iter::ParallelIterator;
 use rayon::prelude::IntoParallelRefMutIterator;
 use std::io::{Cursor, Read, Write};
 
-// we need to make a trait
 pub trait MCGLevel {
     fn read_mcgalaxy_level(data: Vec<u8>) -> Result<Level, String>;
     fn get_mcgalaxy_level_file_size(&self) -> usize;
@@ -15,7 +14,6 @@ pub trait MCGLevel {
 }
 
 impl MCGLevel for Level {
-    // NOTE: we don't want to deal with custom sections and blocks until we have everything working, then we'll think about it during free time.
     fn read_mcgalaxy_level(data: Vec<u8>) -> Result<Level, String> {
         let mut c = Cursor::new(data);
         let signature = c.read_u16::<LittleEndian>().unwrap();
@@ -108,7 +106,7 @@ impl MCGLevel for Level {
 
     fn write_mcgalaxy_level(&self) -> Vec<u8> {
         let mut c = Cursor::new(vec![0u8; self.get_mcgalaxy_level_file_size()]);
-        c.write_u16::<LittleEndian>(1874 as u16)
+        c.write_u16::<LittleEndian>(1874u16)
             .expect("Unable to write signature!");
 
         let width = self.get_block_width();

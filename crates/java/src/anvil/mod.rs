@@ -1,7 +1,3 @@
-use rayon::iter::ParallelIterator;
-use std::collections::HashSet;
-use std::fs;
-use std::fs::{create_dir_all, remove_dir_all, File};
 use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
 use flate2::read::{GzDecoder, ZlibDecoder};
 use lodestone_common::types::hashmap_ext::HashMapExt;
@@ -12,6 +8,10 @@ use lodestone_level::level::{metadata, Coords, Level};
 use quartz_nbt::io::{write_nbt, Flavor};
 use quartz_nbt::{io, NbtCompound, NbtList, NbtTag};
 use rayon::iter::IntoParallelRefIterator;
+use rayon::iter::ParallelIterator;
+use std::collections::HashSet;
+use std::fs;
+use std::fs::{create_dir_all, remove_dir_all, File};
 use std::io::{BufWriter, Cursor, Read, Seek, SeekFrom, Write};
 use std::path::Path;
 
@@ -251,6 +251,7 @@ impl Anvil for Level {
         writer
             .write_all(&Self::write_anvil_level(self, level_name))
             .expect("Could not write to level.dat!");
+        writer.flush().expect("Could not flush level.dat!");
 
         if !region_dir.exists() && !region_dir.is_file() {
             create_dir_all(region_dir).expect("Could not create region folder for Anvil level!");
@@ -296,6 +297,7 @@ impl Anvil for Level {
                 .expect("Could not write region!"); //.expect(
             // &*format!("Could not write to region at {}, {} for Anvil level!", c.x, &c.z).to_string(),
             //);
+            writer.flush().expect("Could not flush region data!");
         });
     }
 

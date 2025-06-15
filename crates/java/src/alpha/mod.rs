@@ -79,7 +79,7 @@ impl AlphaChunk for Chunk {
                     let idx = y + (z * chunk_height + (x * chunk_height * chunk_length));
 
                     let blk = blocks[idx];
-                    if (blk != 0) {
+                    if blk != 0 {
                         chunk.set_block(x as i8, chunk_y, z as i8, blk as u16);
                     }
 
@@ -230,6 +230,7 @@ impl AlphaLevel for Level {
         writer
             .write_all(&level_data)
             .expect("Could not write to level.dat!");
+        writer.flush().expect("Could not flush level.dat!");
 
         for (coords, chunk) in self.get_chunks_mut() {
             let chunk_data = chunk.write_alpha_chunk(&coords);
@@ -312,9 +313,9 @@ impl AlphaLevel for Level {
                 .get_value::<i64, &str>(metadata::SIZE_ON_DISK)
                 .unwrap_or(0),
         );
-        let spawn_x = level_nbt.insert(metadata::SPAWN_X, self.spawn.x as i32);
-        let spawn_y = level_nbt.insert(metadata::SPAWN_Y, self.spawn.y as i32);
-        let spawn_z = level_nbt.insert(metadata::SPAWN_Z, self.spawn.z as i32);
+        let spawn_x = level_nbt.insert(metadata::SPAWN_X, self.spawn.x);
+        let spawn_y = level_nbt.insert(metadata::SPAWN_Y, self.spawn.y);
+        let spawn_z = level_nbt.insert(metadata::SPAWN_Z, self.spawn.z);
         let time = level_nbt.insert(metadata::TIME, self.time);
 
         level_nbt.insert("Data", level_data);

@@ -122,7 +122,7 @@ impl Level {
                 y,
                 z.rem_euclid(CHUNK_LENGTH as i32) as i8,
                 key,
-                value
+                value,
             );
         }
     }
@@ -290,9 +290,7 @@ impl Level {
         let c: Vec<(Coords, Vec<i16>)> = self
             .chunks
             .par_iter()
-            .map(|(p, c)| {
-                (p.clone(), c.get_heightmap().to_vec())
-            })
+            .map(|(p, c)| (p.clone(), c.get_heightmap().to_vec()))
             .collect();
 
         let mut heightmap = vec![-1i16; w * l];

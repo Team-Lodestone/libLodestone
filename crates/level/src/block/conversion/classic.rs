@@ -1,5 +1,5 @@
-use phf::phf_map;
 use crate::block::Block;
+use phf::phf_map;
 
 pub static CLASSIC_BLOCKS: phf::Map<u8, Block> = phf_map! {
     0u8 => Block::Air,

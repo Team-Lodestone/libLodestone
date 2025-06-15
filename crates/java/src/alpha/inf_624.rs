@@ -1,19 +1,18 @@
 use crate::alpha::AlphaLevel;
 use byteorder::{BigEndian, ReadBytesExt};
 use lodestone_common::types::hashmap_ext::HashMapExt;
-use lodestone_level::level::chunk::Chunk;
+use lodestone_level::level::chunk::{Chunk, CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_level::level::{metadata, Coords, Level};
 use std::fs;
-use std::io::{Cursor, Read};
+use std::fs::{create_dir_all, remove_dir_all, File};
+use std::io::{BufWriter, Cursor, Read, Write};
 use std::path::Path;
 
 pub trait Infdev624Level {
     fn read_infdev_624_dir(path: &Path) -> Result<Level, String>;
     fn read_infdev_624_zone(lvl: &mut Level, data: Vec<u8>);
-
-    // fn write_infdev_624_dir(&mut self, path: &Path);
-
-    // fn write_infdev_624_level(&self) -> Vec<u8>;
+    fn write_infdev_624_dir(&mut self, path: &Path);
+    fn write_infdev_624_zone(&self, coords: &Coords) -> Vec<u8>;
 }
 
 impl Infdev624Level for Level {
@@ -34,6 +33,7 @@ impl Infdev624Level for Level {
             .expect("Failed to parse Infdev 20100624 level.dat!");
 
         let data_dir = path.join("data");
+
         // Read zones
         for entry in fs::read_dir(data_dir).map_err(|e| e.to_string())? {
             match entry {
@@ -51,12 +51,10 @@ impl Infdev624Level for Level {
                         Self::read_infdev_624_zone(&mut lvl, data);
                     }
 
-                    if path.starts_with("entities_") {
-                        // fuck you notch
-                    }
+                    // Why Notch??
+                    if path.starts_with("entities_") {}
                 }
                 Err(_) => {
-                    // I LITERALLY DO NOT CARE!
                     continue;
                 }
             }
@@ -66,7 +64,6 @@ impl Infdev624Level for Level {
     }
 
     fn read_infdev_624_zone(lvl: &mut Level, data: Vec<u8>) {
-        // Notch go fuck yourself
         let mut c = Cursor::new(&data);
         let magic = c.read_u32::<BigEndian>().expect("Failed to read magic!");
 
@@ -75,9 +72,10 @@ impl Infdev624Level for Level {
             panic!("Magic mismatch!");
         }
 
-        let _unknown = c
-            .read_u16::<BigEndian>()
-            .expect("Failed to read unknown field!");
+        let version = c.read_u16::<BigEndian>().expect("Failed to read version!");
+        if version != 0 {
+            panic!("Version mismatch! Infdev 20100624 only supports Zones with version 0!");
+        }
         let slot_count = c
             .read_u16::<BigEndian>()
             .expect("Failed to read slot count!");
@@ -92,7 +90,7 @@ impl Infdev624Level for Level {
         let original_position = c.position();
         for slot in slots {
             // Why???
-            let read_position = slot as u64 * 98560 + 4096;
+            let read_position = (slot as u64 * 32768 * 3 + 256) + 4096;
             if read_position < data.len() as u64 {
                 c.set_position(read_position);
             } else {
@@ -108,9 +106,9 @@ impl Infdev624Level for Level {
 
             c.set_position(read_position);
 
-            let mut shitfuck2: Vec<u8> = vec![0u8; 256];
-            c.read_exact(&mut shitfuck2)
-                .expect("Failed to parse shitfuck2!");
+            let mut unknown: Vec<u8> = vec![0u8; 256];
+            c.read_exact(&mut unknown)
+                .expect("Failed to parse unknown field!");
 
             let mut blocks: Vec<u8> = vec![0u8; 32768];
             c.read_exact(&mut blocks)
@@ -139,10 +137,11 @@ impl Infdev624Level for Level {
                 is_terrain_populated,
             );
 
-            for y in 0..128 {
-                for z in 0..16 {
-                    for x in 0..16 {
-                        let i = y + (z * 128 + (x * 128 * 16));
+            let height = 128usize;
+            for y in 0..height {
+                for z in 0..CHUNK_LENGTH as usize {
+                    for x in 0..CHUNK_WIDTH as usize {
+                        let i = y + (z * height + (x * height * CHUNK_LENGTH as usize));
 
                         let block_id = blocks[i] as u16;
                         if block_id != 0 {
@@ -161,6 +160,32 @@ impl Infdev624Level for Level {
             );
         }
         c.set_position(original_position);
+    }
+
+    fn write_infdev_624_dir(&mut self, path: &Path) {
+        if path.exists() {
+            remove_dir_all(path).expect("Failed to remove output directories before writing!");
+        }
+        create_dir_all(path).expect("Failed to create output directories!");
+
+        let level_dat = path.join("level.dat");
+        let level_dat_file = if level_dat.exists() {
+            File::open(&level_dat).expect("Failed to open level.dat!")
+        } else {
+            File::create(&level_dat).expect("Failed to create level.dat!")
+        };
+        let level_data = Level::write_alpha_level(self);
+        let mut writer = BufWriter::new(level_dat_file);
+        writer
+            .write_all(&level_data)
+            .expect("Could not write to level.dat!");
+        writer.flush().expect("Could not flush level.dat!");
+
+        let data_dir = path.join("data");
+    }
+
+    fn write_infdev_624_zone(&self, coords: &Coords) -> Vec<u8> {
+        todo!()
     }
 }
 

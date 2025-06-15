@@ -1,7 +1,5 @@
 use crate::level::chunk_section::ChunkSection;
 use lodestone_common::types::hashmap_ext::Value;
-use rayon::iter::ParallelIterator;
-use rayon::prelude::IntoParallelRefIterator;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap};
 
@@ -281,7 +279,6 @@ impl Chunk {
     }
 
     pub fn get_all_blocks(&self) -> Vec<u16> {
-        // TODO: What the fuck is this
         let blocks: Vec<u16> = self
             .chunk_sections
             .iter()
@@ -292,17 +289,15 @@ impl Chunk {
     }
 
     // pub fn get_all_data(&self) -> Vec<u8> {
-    //     // TODO: What the fuck is this
     //     let data: Vec<u8> = self
     //         .chunk_sections
     //         .par_iter()
-    //         .flat_map(|s| s.data.par_iter().cloned()) // TODO: is cloned a good/bad thing
+    //         .flat_map(|s| s.data.par_iter().cloned())
     //         .collect();
     //
     //     data
     // }
 
-    // somehow I didn't think about how you can just return a mutable ref to a value in an array and then set that
     #[inline(always)]
     pub fn get_height_mut(&mut self, x: i8, z: i8) -> &mut i16 {
         let index = z as usize * CHUNK_WIDTH as usize + x as usize;

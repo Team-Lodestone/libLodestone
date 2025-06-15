@@ -277,8 +277,7 @@ impl MCRChunk for Chunk {
 
     fn write_mcr(&self, coords: &Coords) -> Vec<u8> {
         let mut out: Vec<u8> = Vec::new();
-        // spent forever wondering why it wouldn't see the chunks
-        // notch put the Level tag under another tag... why?
+
         let mut nbt = NbtCompound::new();
         let mut c = NbtCompound::new();
 

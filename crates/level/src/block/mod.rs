@@ -1,7 +1,5 @@
-pub mod palette;
 pub mod conversion;
-
-use phf::phf_map;
+pub mod palette;
 
 // pub struct Block {
 //     pub name: &'static str,
@@ -44,7 +42,6 @@ use phf::phf_map;
 // pub fn get_block(id: u16) -> Option<&'static Block> {
 //     BLOCKS.get(&id).or(BLOCKS.get(&255))
 // }
-
 
 /// Internal Block IDs
 #[repr(u16)]
@@ -100,5 +97,5 @@ enum Block {
     Tnt = 46,
     Bookshelf = 47,
     MossyCobblestone = 48,
-    Obsidian = 49
+    Obsidian = 49,
 }

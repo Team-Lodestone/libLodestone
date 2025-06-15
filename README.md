@@ -17,6 +17,7 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
       - [X] [MCGalaxy](https://github.com/ClassiCube/MCGalaxy) Level (LVL)
     - [X] Indev (MCLevel)
     - [X] Infdev (Alpha Save Format)
+    - [ ] Infdev 20100624
     - [X] Alpha (Alpha Save Format)
     - [X] MCR
     - [X] Anvil
