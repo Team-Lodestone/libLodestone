@@ -1,6 +1,6 @@
 # libLodestone
 NOTICE: Work will not be happening in the `main` branch until our Internal Format is completed.   
-To see the latest commits to this project, please take a look at the [internal-format branch](https://github.com/Team-Lodestone/libLodestone/tree/internal-format/).
+To see the latest commits to this project, please take a look at the [internal_format branch](https://github.com/Team-Lodestone/libLodestone/tree/internal_format/).
 
 Provides reading, writing, and format conversion for most editions and versions of Minecraft.
 
