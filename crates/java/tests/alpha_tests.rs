@@ -5,7 +5,13 @@ mod alpha_tests {
     use std::fs::{create_dir_all, remove_dir_all, File};
     use std::io::Write;
     use std::path::Path;
+    use lodestone_level::block::conversion::test;
 
+    #[test]
+    fn test_block_conv() {
+        test();
+    }
+    
     #[test]
     fn test_alpha_world() {
         let path = Path::new("../../internal_tests/alpha/src/World2/");

@@ -26,8 +26,10 @@ pub fn base36(mut n: i32) -> String {
 }
 
 /// Versions that need to be handled during conversion
-#[derive(Debug, PartialEq, Eq, Hash)]
+#[derive(Debug, PartialEq, Eq, Hash, Ord, PartialOrd)]
 pub enum McVersion {
+    PreClassic132211,
     Classic030,
     Alpha1_2_6,
+    Indev
 }

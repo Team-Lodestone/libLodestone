@@ -1,6 +1,12 @@
-pub mod conversion;
 pub mod palette;
+pub mod conversion;
 
+use std::collections::{BTreeMap, HashMap};
+use phf::phf_map;
+use lodestone_common::util::McVersion;
+use once_cell::sync::Lazy;
+use crate::add_block_conv;
+use crate::block::BlockId::Numeric;
 // pub struct Block {
 //     pub name: &'static str,
 //     pub string_id: &'static str,
@@ -42,6 +48,31 @@ pub mod palette;
 // pub fn get_block(id: u16) -> Option<&'static Block> {
 //     BLOCKS.get(&id).or(BLOCKS.get(&255))
 // }
+
+#[derive(Debug)]
+enum BlockId {
+    Numeric(u16),
+    Flattened(String),
+    NumericWithData(u16, u16),
+    NumericAndFlattened(u16, String),
+}
+
+
+pub struct BlockRegistry {
+    blocks: HashMap<Block, BTreeMap<McVersion, BlockId>>,
+}
+
+pub static BLOCK_REGISTRY: Lazy<BlockRegistry> = Lazy::new(|| {
+    let mut reg = BlockRegistry {
+        blocks: HashMap::new(),
+    };
+    
+    add_block_conv!(reg, Block::Stone, [
+        McVersion::PreClassic132211: Numeric(1u16),
+    ]);
+    
+    reg
+});
 
 /// Internal Block IDs
 #[repr(u16)]
@@ -97,5 +128,5 @@ enum Block {
     Tnt = 46,
     Bookshelf = 47,
     MossyCobblestone = 48,
-    Obsidian = 49,
+    Obsidian = 49
 }
