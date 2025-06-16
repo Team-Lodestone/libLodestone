@@ -1,6 +1,9 @@
 use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
 use lodestone_common::io::{read_prefixed_2_byte_string, write_prefixed_2_byte_string};
 use lodestone_common::types::hashmap_ext::HashMapExt;
+use lodestone_common::util::McVersion;
+use lodestone_level::block::conversion::get_internal_block_id;
+use lodestone_level::block::BlockId;
 use lodestone_level::level::chunk::{CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_level::level::{metadata, Level};
 use rayon::prelude::*;
@@ -9,8 +12,8 @@ use std::time::SystemTime;
 
 pub trait MineV2Level {
     fn new_minev2(width: i16, height: i16, length: i16, name: String, author: String) -> Level;
-    fn read_minev2(data: Vec<u8>) -> Result<Level, String>;
-    fn write_minev2(&mut self) -> Vec<u8>;
+    fn read_minev2(version: McVersion, data: Vec<u8>) -> Result<Level, String>;
+    fn write_minev2(&mut self, version: McVersion) -> Vec<u8>;
     fn get_minev2_file_size(&self) -> usize;
 }
 
@@ -35,11 +38,11 @@ impl MineV2Level for Level {
         level
     }
 
-    fn read_minev2(data: Vec<u8>) -> Result<Level, String> {
+    fn read_minev2(version: McVersion, data: Vec<u8>) -> Result<Level, String> {
         let mut c = Cursor::new(data);
         let signature = c.read_u32::<BigEndian>().expect("Signature");
-        let version = c.read_i8().expect("Version");
-        if version != 1 {
+        let save_version = c.read_i8().expect("Version");
+        if save_version != 1 {
             panic!("This method only reads .Mine V2 files.")
         }
 
@@ -98,7 +101,15 @@ impl MineV2Level for Level {
                             + (lz as usize) * (width as usize)
                             + (lx as usize);
 
-                        c.1.set_block(x, y, z, blocks[i] as u16)
+                        let blk =
+                            get_internal_block_id(version, &BlockId::Numeric(blocks[i] as u16));
+
+                        match blk {
+                            Some(blk) => {
+                                c.1.set_block(x, y, z, blk);
+                            }
+                            None => {}
+                        }
                     }
                 }
             }
@@ -109,7 +120,7 @@ impl MineV2Level for Level {
         Ok(level)
     }
 
-    fn write_minev2(&mut self) -> Vec<u8> {
+    fn write_minev2(&mut self, version: McVersion) -> Vec<u8> {
         let mut c = Cursor::new(vec![0u8; self.get_minev2_file_size()]);
 
         c.write_i32::<BigEndian>(0x271BB788)

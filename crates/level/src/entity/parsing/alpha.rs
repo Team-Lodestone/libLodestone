@@ -88,7 +88,7 @@ impl BlockEntityHandler for AlphaBlockEntityParser {
                     }
                 }
             }
-            McVersion::Classic030 => todo!(),
+            _ => todo!(),
         }
 
         nbt

@@ -1,6 +1,7 @@
 mod anvil_tests {
     use flate2::write::GzEncoder;
     use flate2::Compression;
+    use lodestone_common::util::McVersion;
     use lodestone_java::alpha::AlphaLevel;
     use lodestone_java::anvil::Anvil;
     use lodestone_java::classic::classic_world::CWLevel;
@@ -40,7 +41,7 @@ mod anvil_tests {
         of.write_all(&map).unwrap();
         of.flush().unwrap();
 
-        let out = level.write_minev2();
+        let out = level.write_minev2(McVersion::Release1_2_1);
 
         println!("Compressing");
         let mut enc = GzEncoder::new(
@@ -74,7 +75,7 @@ mod anvil_tests {
 
         println!("Reading level");
         // let mut level = Level::read_alpha_dir(file_dir).expect("Could not read Alpha level!");
-        let level = Level::read_minev2(data).expect("shart");
+        let level = Level::read_minev2(McVersion::Release1_2_1, data).expect("shart");
 
         println!(
             "World bounds (XYZ): {}x{}x{}",
@@ -103,7 +104,7 @@ mod anvil_tests {
     #[test]
     fn cw_to_anvil_test() {
         log::set_max_level(log::LevelFilter::Debug);
-        let fname = "large_world";
+        let fname = "13a_03-level_greffen";
 
         // let file_dir = Path::new("../../internal_tests/alpha/src/World2/");
         println!("Reading file");
@@ -117,7 +118,7 @@ mod anvil_tests {
 
         println!("Reading level");
         // let mut level = Level::read_alpha_dir(file_dir).expect("Could not read Alpha level!");
-        let level = Level::read_cw(data).expect("shart");
+        let level = Level::read_cw(McVersion::Classic0_30, data).expect("shart");
 
         println!(
             "World bounds (XYZ): {}x{}x{}",
@@ -159,7 +160,8 @@ mod anvil_tests {
         // };
 
         println!("Reading level");
-        let level = Level::read_alpha_dir(file_dir).expect("Could not read Alpha level!");
+        let level = Level::read_alpha_dir(McVersion::Release1_2_1, file_dir)
+            .expect("Could not read Alpha level!");
         // let mut level = Level::read_alpha_dir(file_dir).expect("shart");
 
         println!(

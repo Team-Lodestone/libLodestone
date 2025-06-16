@@ -2,6 +2,8 @@ mod test_utils;
 
 mod region_tests {
     use crate::test_utils::{write_world, write_world_dc};
+    use lodestone_common::util::McVersion;
+    use lodestone_common::util::McVersion::Classic0_0_12a;
     use lodestone_java::alpha::AlphaLevel;
     use lodestone_java::anvil::Anvil;
     use lodestone_java::classic::classic_world::CWLevel;
@@ -47,7 +49,7 @@ mod region_tests {
 
         println!("Writing Mine V1 world");
         let mv1_start = Instant::now();
-        let mv1 = level.write_minev1();
+        let mv1 = level.write_minev1(Classic0_0_12a);
         write_world(mv1, "RegionTest.mine", "minev1");
         let mv1_end = mv1_start.elapsed();
         println!("Mine V1: {:?}", mv1_end);
@@ -61,7 +63,7 @@ mod region_tests {
         println!("Writing Mine V2 world");
         let mv2_start = Instant::now();
 
-        let mv2: Vec<u8> = level.write_minev2();
+        let mv2: Vec<u8> = level.write_minev2(McVersion::Classic0_0_14a);
         write_world(mv2, "RegionTest.mine", "minev2");
         let mv2_end = mv2_start.elapsed();
 
@@ -76,7 +78,7 @@ mod region_tests {
         println!("Writing ClassicWorld world");
         let cw_start = Instant::now();
 
-        let cw: Vec<u8> = level.write_cw();
+        let cw: Vec<u8> = level.write_cw(McVersion::Classic0_30);
         write_world_dc(cw, "RegionTest.cw", "cw");
         let cw_end = cw_start.elapsed();
 
@@ -90,7 +92,7 @@ mod region_tests {
 
         println!("Writing MCG world");
         let mcg_start = Instant::now();
-        let mcg = level.write_mcgalaxy_level();
+        let mcg = level.write_mcgalaxy_level(McVersion::Classic0_30);
         write_world_dc(mcg, "RegionTest.lvl", "lvl");
 
         let mcg_end = mcg_start.elapsed();
@@ -105,7 +107,7 @@ mod region_tests {
 
         println!("Writing Indev world");
         let indev_start = Instant::now();
-        let indev = level.write_indev();
+        let indev = level.write_indev(McVersion::Infdev20100630);
         write_world_dc(indev, "RegionTest.mclevel", "indev");
 
         let indev_end = indev_start.elapsed();
@@ -128,7 +130,7 @@ mod region_tests {
         create_dir_all(alpha_dir).expect("Failed to create alpha dir");
 
         let alpha_start = Instant::now();
-        level.write_alpha_dir(alpha_dir);
+        level.write_alpha_dir(McVersion::Alpha1_2_6, alpha_dir);
         let alpha_end = alpha_start.elapsed();
 
         println!("Alpha: {:?}", alpha_end);
@@ -169,7 +171,7 @@ mod region_tests {
                             let content = file.read_to_end(&mut buffer);
                             match content {
                                 Ok(_sz) => {
-                                    level.read_mcr_into_existing(buffer);
+                                    level.read_mcr_into_existing(McVersion::Release1_1, buffer);
                                 }
                                 Err(e) => {
                                     println!("  read error: {:?}", e);

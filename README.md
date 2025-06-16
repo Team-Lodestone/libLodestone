@@ -6,6 +6,8 @@ Not yet available
 
 LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE), once bindings are made for it.
 
+TODO: make writing also convert blocks instead of directly writing out internal block ids
+
 ## Roadmap
 ### Formats
   - [ ] Java 
@@ -16,8 +18,8 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
       - [X] ClassicWorld (CW)
       - [X] [MCGalaxy](https://github.com/ClassiCube/MCGalaxy) Level (LVL)
     - [X] Indev (MCLevel)
-    - [X] Infdev (Alpha Save Format)
     - [ ] Infdev 20100624
+    - [X] Infdev (Alpha Save Format)
     - [X] Alpha (Alpha Save Format)
     - [X] MCR
     - [X] Anvil
@@ -33,8 +35,8 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
     - [X] Chunked
     - [X] Sections
     - [X] [Palettes](https://github.com/alexdesander/palettevec) (for memory usage)
-  - [ ] Internal Block IDs
-    - [ ] Block ID conversion map between versions
+  - [X] Internal Block IDs
+    - [X] Block ID conversion map between versions
     - [ ] Properly convert block states and other data
   - [ ] Tile Entities
     - [ ] Entities 

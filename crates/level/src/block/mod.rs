@@ -1,83 +1,221 @@
-pub mod palette;
 pub mod conversion;
+pub mod palette;
 
-use std::collections::{BTreeMap, HashMap};
-use phf::phf_map;
+use crate::add_block_conv;
+use crate::block::BlockId::{Numeric, NumericAndFlattened};
 use lodestone_common::util::McVersion;
 use once_cell::sync::Lazy;
-use crate::add_block_conv;
-use crate::block::BlockId::Numeric;
-// pub struct Block {
-//     pub name: &'static str,
-//     pub string_id: &'static str,
-//     pub id: u16,
-//     pub is_translucent: bool,
-//     pub is_translucent_map: bool,
-// }
-//
-// // closest thing I could come up with
-// // this is internal registry that is not tied to any one edition of the game, but can be resolved via id conversion between the editions
-// // we will need to have Variant registry though... so this current registry may change quite a lot.
-// pub static BLOCKS: phf::Map<u16, Block> = phf_map! {
-//     0u16 => Block { id: 0, string_id: "air", name: "Air", is_translucent: true, is_translucent_map: true },
-//     1u16 => Block { id: 1, string_id: "stone", name: "Stone", is_translucent: false, is_translucent_map: false },
-//     2u16 => Block { id: 2, string_id: "grass_block", name: "Grass Block", is_translucent: false, is_translucent_map: false },
-//     3u16 => Block { id: 3, string_id: "dirt", name: "Dirt", is_translucent: false, is_translucent_map: false },
-//     4u16 => Block { id: 4, string_id: "cobblestone", name: "Cobblestone", is_translucent: false, is_translucent_map: false },
-//     5u16 => Block { id: 5, string_id: "planks", name: "Planks", is_translucent: false, is_translucent_map: false }, // split up into different block per variant post 1.13
-//     6u16 => Block { id: 6, string_id: "sapling", name: "Sapling", is_translucent: true, is_translucent_map: true },
-//     7u16 => Block { id: 7, string_id: "bedrock", name: "Bedrock", is_translucent: false, is_translucent_map: false }, // I think the game considers them translucent for multiple things
-//     8u16 => Block { id: 8, string_id: "flowing_water", name: "Flowing Water", is_translucent: false, is_translucent_map: false },
-//     9u16 => Block { id: 9, string_id: "water", name: "Water", is_translucent: false, is_translucent_map: false },
-//     10u16 => Block { id: 10, string_id: "flowing_lava", name: "Flowing Lava", is_translucent: false, is_translucent_map: false },
-//     11u16 => Block { id: 11, string_id: "lava", name: "Lava", is_translucent: false, is_translucent_map: false },
-//     12u16 => Block { id: 12, string_id: "sand", name: "Sand", is_translucent: false, is_translucent_map: false },
-//     13u16 => Block { id: 13, string_id: "gravel", name: "Gravel", is_translucent: false, is_translucent_map: false },
-//     14u16 => Block { id: 14, string_id: "gold_ore", name: "Gold Ore", is_translucent: false, is_translucent_map: false },
-//     15u16 => Block { id: 15, string_id: "iron_ore", name: "Iron Ore", is_translucent: false, is_translucent_map: false },
-//     16u16 => Block { id: 16, string_id: "coal_ore", name: "Coal Ore", is_translucent: false, is_translucent_map: false },
-//     17u16 => Block { id: 17, string_id: "wood", name: "Wood", is_translucent: false, is_translucent_map: false },
-//     18u16 => Block { id: 18, string_id: "leaves", name: "Leaves", is_translucent: true, is_translucent_map: false },
-//     19u16 => Block { id: 19, string_id: "sponge", name: "Sponge", is_translucent: false, is_translucent_map: false },
-//     20u16 => Block { id: 20, string_id: "glass", name: "Glass", is_translucent: true, is_translucent_map: true },
-//     255u16 => Block { id: 255, string_id: "unknown", name: "Unknown", is_translucent: false, is_translucent_map: false }
-//     // gonna stop here because I would need to figure out variants as for Classic, all wools were seperated (and I think they were combined later on?)
-//     // we could also just do 1.13 strat and make every variant it's own unique block, would be easier in the long run
-// };
+use std::collections::{BTreeMap, HashMap};
 
-// pub fn get_block(id: u16) -> Option<&'static Block> {
-//     BLOCKS.get(&id).or(BLOCKS.get(&255))
-// }
-
-#[derive(Debug)]
-enum BlockId {
+#[derive(Debug, Eq, PartialEq, Clone)]
+pub enum BlockId {
+    /// Numeric id only
     Numeric(u16),
-    Flattened(String),
+    /// Block ID string only
+    Flattened(&'static str),
+    /// Numeric ID but the block also has data for its block state (e.g 1:6 for Polished Andesite)
     NumericWithData(u16, u16),
-    NumericAndFlattened(u16, String),
+    /// Numeric ID paired with a flattened block ID string
+    NumericAndFlattened(u16, &'static str),
 }
 
-
 pub struct BlockRegistry {
-    blocks: HashMap<Block, BTreeMap<McVersion, BlockId>>,
+    pub blocks: HashMap<Block, BTreeMap<McVersion, BlockId>>,
 }
 
 pub static BLOCK_REGISTRY: Lazy<BlockRegistry> = Lazy::new(|| {
     let mut reg = BlockRegistry {
         blocks: HashMap::new(),
     };
-    
-    add_block_conv!(reg, Block::Stone, [
-        McVersion::PreClassic132211: Numeric(1u16),
+
+    // TODO: rock is stored using same id as air, do we want to change ID?
+    add_block_conv!(reg, Block::Air, [
+        McVersion::PreClassic20090515: Numeric(0u16),
+        McVersion::Release1_13: NumericAndFlattened(0u16, "minecraft:air")
     ]);
-    
+
+    add_block_conv!(reg, Block::Stone, [
+        McVersion::PreClassic132211: Numeric(0u16),
+        McVersion::PreClassic20090515: Numeric(1u16),
+        McVersion::Release1_13: NumericAndFlattened(1u16, "minecraft:stone")
+    ]);
+
+    add_block_conv!(reg, Block::Grass, [
+        McVersion::PreClassic20090515: Numeric(2u16),
+        McVersion::Release1_13: NumericAndFlattened(2u16, "minecraft:grass_block")
+    ]);
+
+    add_block_conv!(reg, Block::Dirt, [
+        McVersion::PreClassic20090515: Numeric(3u16),
+        McVersion::Release1_13: NumericAndFlattened(3u16, "minecraft:dirt")
+    ]);
+
+    add_block_conv!(reg, Block::Cobblestone, [
+        McVersion::PreClassic20090515: Numeric(4u16),
+        McVersion::Release1_13: NumericAndFlattened(4u16, "minecraft:cobblestone")
+    ]);
+
+    add_block_conv!(reg, Block::OakPlanks, [
+        McVersion::PreClassic20090515: Numeric(5u16),
+    ]);
+
+    add_block_conv!(reg, Block::OakSapling, [
+       McVersion::PreClassic161348: Numeric(6u16),
+    ]);
+
+    add_block_conv!(reg, Block::Bedrock, [
+       McVersion::Classic0_0_12a: Numeric(7u16),
+    ]);
+
+    add_block_conv!(reg, Block::FlowingWater, [
+        McVersion::Classic0_0_12a: Numeric(8u16),
+    ]);
+
+    add_block_conv!(reg, Block::Water, [
+        McVersion::Classic0_0_12a: Numeric(9u16),
+    ]);
+
+    add_block_conv!(reg, Block::FlowingLava, [
+        McVersion::Classic0_0_12a: Numeric(10u16),
+    ]);
+
+    add_block_conv!(reg, Block::Lava, [
+        McVersion::Classic0_0_12a: Numeric(11u16),
+    ]);
+
+    add_block_conv!(reg, Block::Sand, [
+        McVersion::Classic0_0_14a: Numeric(12u16),
+    ]);
+
+    add_block_conv!(reg, Block::Gravel, [
+        McVersion::Classic0_0_14a: Numeric(13u16),
+    ]);
+
+    add_block_conv!(reg, Block::GoldOre, [
+       McVersion::Classic0_0_14a: Numeric(14u16),
+    ]);
+
+    add_block_conv!(reg, Block::IronOre, [
+        McVersion::Classic0_0_14a: Numeric(15u16),
+    ]);
+
+    add_block_conv!(reg, Block::CoalOre, [
+        McVersion::Classic0_0_14a: Numeric(16u16),
+    ]);
+
+    add_block_conv!(reg, Block::OakLog, [
+        McVersion::Classic0_0_14a: Numeric(17u16),
+    ]);
+
+    add_block_conv!(reg, Block::OakLeaves, [
+        McVersion::Classic0_0_14a: Numeric(18u16),
+    ]);
+
+    add_block_conv!(reg, Block::Sponge, [
+        McVersion::Classic0_0_19a: Numeric(19u16),
+    ]);
+
+    add_block_conv!(reg, Block::Glass, [
+        McVersion::Classic0_0_19a: Numeric(20u16),
+    ]);
+
+    add_block_conv!(reg, Block::RedWool, [
+        McVersion::Classic0_0_20a: Numeric(21u16)
+    ]);
+
+    add_block_conv!(reg, Block::OrangeWool, [
+        McVersion::Classic0_0_20a: Numeric(22u16),
+    ]);
+
+    add_block_conv!(reg, Block::YellowWool, [
+        McVersion::Classic0_0_20a: Numeric(23u16),
+    ]);
+
+    add_block_conv!(reg, Block::LimeWool, [
+        McVersion::Classic0_0_20a: Numeric(24u16),
+    ]);
+
+    add_block_conv!(reg, Block::GreenWool, [
+        McVersion::Classic0_0_20a: Numeric(25u16),
+    ]);
+
+    add_block_conv!(reg, Block::SpringGreenWool, [
+        McVersion::Classic0_0_20a: Numeric(26u16),
+    ]);
+
+    // Cyan in Classic
+    add_block_conv!(reg, Block::LightBlueWool, [
+        McVersion::Classic0_0_20a: Numeric(27u16),
+    ]);
+
+    // Capri in Classic
+    add_block_conv!(reg, Block::CyanWool, [
+        McVersion::Classic0_0_20a: Numeric(28u16),
+    ]);
+
+    add_block_conv!(reg, Block::BlueWool, [
+        McVersion::Classic0_0_20a: Numeric(29u16),
+    ]);
+
+    add_block_conv!(reg, Block::VioletWool, [
+        McVersion::Classic0_0_20a: Numeric(30u16),
+    ]);
+
+    add_block_conv!(reg, Block::PurpleWool, [
+        McVersion::Classic0_0_20a: Numeric(31u16),
+    ]);
+
+    add_block_conv!(reg, Block::MagentaWool, [
+        McVersion::Classic0_0_20a: Numeric(32u16),
+    ]);
+
+    add_block_conv!(reg, Block::PinkWool, [
+        McVersion::Classic0_0_20a: Numeric(33u16),
+    ]);
+
+    add_block_conv!(reg, Block::DarkGrayWool, [
+        McVersion::Classic0_0_20a: Numeric(34u16),
+    ]);
+
+    add_block_conv!(reg, Block::GrayWool, [
+        McVersion::Classic0_0_20a: Numeric(35u16),
+    ]);
+
+    add_block_conv!(reg, Block::WhiteWool, [
+        McVersion::Classic0_0_20a: Numeric(36u16),
+    ]);
+
+    add_block_conv!(reg, Block::Dandelion, [
+        McVersion::Classic0_0_20a: Numeric(37u16),
+    ]);
+
+    add_block_conv!(reg, Block::RedMushroom, [
+        McVersion::Classic0_0_20a: Numeric(38u16),
+    ]);
+
+    add_block_conv!(reg, Block::Rose, [
+        McVersion::Classic0_0_20a: Numeric(39u16),
+    ]);
+
+    add_block_conv!(reg, Block::BrownMushroom, [
+        McVersion::Classic0_0_20a: Numeric(40u16),
+    ]);
+
+    add_block_conv!(reg, Block::RedMushroom, [
+        McVersion::Classic0_0_20a: Numeric(41u16),
+    ]);
+
+    add_block_conv!(reg, Block::GoldBlock, [
+        McVersion::Classic0_0_20a: Numeric(42u16),
+    ]);
+
     reg
 });
 
 /// Internal Block IDs
-#[repr(u16)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-enum Block {
+#[repr(u16)]
+pub enum Block {
     Air = 0,
     Stone = 1,
     Grass = 2,
@@ -108,11 +246,11 @@ enum Block {
     SpringGreenWool = 26, // Only exists in Classic
     LightBlueWool = 27, // in Classic it's called Cyan Cloth
     CyanWool = 28, // in Classic it's called Capri Cloth
-    UltramarineWool = 29,
+    BlueWool = 29, // in Classic it's called Ultramarine Cloth
     PurpleWool = 30,
     VioletWool = 31,
     MagentaWool = 32,
-    PinkWool = 33,
+    PinkWool = 33, // in Classic it's called Rose Cloth
     DarkGrayWool = 34,
     GrayWool = 35,
     WhiteWool = 36, // Base wool block in modern
@@ -128,5 +266,5 @@ enum Block {
     Tnt = 46,
     Bookshelf = 47,
     MossyCobblestone = 48,
-    Obsidian = 49
+    Obsidian = 49,
 }

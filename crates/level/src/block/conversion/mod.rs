@@ -1,10 +1,11 @@
 mod classic;
 
+use crate::block::{Block, BlockId, BLOCK_REGISTRY};
 use lodestone_common::util::McVersion;
-use crate::block::{Block, BlockId};
-use crate::block::BlockId::{Flattened, Numeric};
-use crate::block::conversion::classic::CLASSIC_BLOCKS;
 
+/// Adds a block to the block registry
+/// When one wants to convert a block id to the internal id, they will provide an id and a version to the converter method
+/// which will get the id for the version closest (downward) to the provided version.
 #[macro_export]
 macro_rules! add_block_conv {
     (
@@ -24,10 +25,24 @@ macro_rules! add_block_conv {
     }};
 }
 
-// TODO: we need to be able to exclude certain blocks if they don't exist in the version that we're converting to
-// theoretically we could add a MinVersion field to each thing in the map but idk if that would be a good idea.
-// I just really don't want to make a map for every single version that added/removed a block
-// the bigger issue is how we will convert back into these block ids from our internal ones, is there some way to reverse the map?
-fn get_internal_block_id(v: McVersion, id: BlockId) -> Block {
-    todo!()
+// TODO: Match Numeric or Flattened with values that are NumericAndFlattened and NumericWithData
+pub fn get_internal_block_id(v: McVersion, id: &BlockId) -> Option<Block> {
+    for (block, ids) in &BLOCK_REGISTRY.blocks {
+        let m = ids.range(..=v).rev().find(|(_, blk_id)| *blk_id == id);
+
+        if m.is_some() {
+            return Some(*block);
+        }
+    }
+
+    None
+}
+
+pub fn get_version_block_id(v: McVersion, id: &Block) -> Option<BlockId> {
+    BLOCK_REGISTRY.blocks.get(&id).and_then(|ids| {
+        ids.range(..=v)
+            .rev()
+            .next()
+            .map(|(_, blk_id)| blk_id.clone())
+    })
 }

@@ -1,6 +1,9 @@
 use crate::alpha::AlphaLevel;
 use byteorder::{BigEndian, ReadBytesExt};
 use lodestone_common::types::hashmap_ext::HashMapExt;
+use lodestone_common::util::McVersion;
+use lodestone_level::block::conversion::get_internal_block_id;
+use lodestone_level::block::BlockId;
 use lodestone_level::level::chunk::{Chunk, CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_level::level::{metadata, Coords, Level};
 use std::fs;
@@ -29,7 +32,7 @@ impl Infdev624Level for Level {
             .unwrap_or("World1")
             .to_string();
         let data = fs::read(level_dat).map_err(|e| e.to_string())?;
-        let mut lvl = Level::read_alpha_level(level_name, data)
+        let mut lvl = Level::read_alpha_level(McVersion::Infdev20100624, level_name, data)
             .expect("Failed to parse Infdev 20100624 level.dat!");
 
         let data_dir = path.join("data");
@@ -145,8 +148,18 @@ impl Infdev624Level for Level {
 
                         let block_id = blocks[i] as u16;
                         if block_id != 0 {
-                            chunk.get_or_create_chunk_section_mut(y as i16);
-                            chunk.set_block(x as i8, y as i16, z as i8, blocks[i] as u16);
+                            let blk = get_internal_block_id(
+                                McVersion::Infdev20100624,
+                                &BlockId::Numeric(blocks[i] as u16),
+                            );
+
+                            match blk {
+                                Some(blk) => {
+                                    chunk.get_or_create_chunk_section_mut(y as i16);
+                                    chunk.set_block(x as i8, y as i16, z as i8, blk);
+                                }
+                                None => {}
+                            }
                         }
                     }
                 }
@@ -174,7 +187,7 @@ impl Infdev624Level for Level {
         } else {
             File::create(&level_dat).expect("Failed to create level.dat!")
         };
-        let level_data = Level::write_alpha_level(self);
+        let level_data = Level::write_alpha_level(self, McVersion::Infdev20100624);
         let mut writer = BufWriter::new(level_dat_file);
         writer
             .write_all(&level_data)

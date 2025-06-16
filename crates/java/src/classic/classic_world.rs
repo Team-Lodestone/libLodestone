@@ -1,4 +1,7 @@
 use lodestone_common::types::hashmap_ext::HashMapExt;
+use lodestone_common::util::McVersion;
+use lodestone_level::block::conversion::get_internal_block_id;
+use lodestone_level::block::BlockId;
 use lodestone_level::level::chunk::{CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_level::level::metadata;
 use lodestone_level::level::metadata::UUID;
@@ -13,8 +16,8 @@ use uuid::Uuid;
 
 pub trait CWLevel {
     fn new_cw(height: i16, name: String, author: String) -> Level;
-    fn read_cw(data: Vec<u8>) -> Result<Level, String>;
-    fn write_cw(&mut self) -> Vec<u8>;
+    fn read_cw(version: McVersion, data: Vec<u8>) -> Result<Level, String>;
+    fn write_cw(&mut self, version: McVersion) -> Vec<u8>;
 }
 
 impl CWLevel for Level {
@@ -23,7 +26,7 @@ impl CWLevel for Level {
         Level::new_with_name(name)
     }
 
-    fn read_cw(data: Vec<u8>) -> Result<Level, String> {
+    fn read_cw(version: McVersion, data: Vec<u8>) -> Result<Level, String> {
         log::debug!("Reading compound");
         let nbt = io::read_nbt(&mut Cursor::new(&data), Flavor::GzCompressed)
             .expect("ClassicWorld NBT data")
@@ -164,7 +167,13 @@ impl CWLevel for Level {
                             + (lz as usize) * (width as usize)
                             + (lx as usize);
 
-                        c.1.set_block(x, y, z, blocks[i] as u16)
+                        let blk =
+                            get_internal_block_id(version, &BlockId::Numeric(blocks[i] as u16));
+
+                        match blk {
+                            Some(blk) => c.1.set_block(x, y, z, blk),
+                            None => {}
+                        }
                     }
                 }
             }
@@ -173,7 +182,7 @@ impl CWLevel for Level {
         Ok(level)
     }
 
-    fn write_cw(&mut self) -> Vec<u8> {
+    fn write_cw(&mut self, version: McVersion) -> Vec<u8> {
         let mut out: Vec<u8> = Vec::new();
 
         let mut mclvl = NbtCompound::new();

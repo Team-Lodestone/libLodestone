@@ -1,10 +1,13 @@
+use crate::block::conversion::{get_internal_block_id, get_version_block_id};
+use crate::block::{Block, BlockId};
 use crate::level::chunk::{Light, CHUNK_LENGTH, CHUNK_SECTION_HEIGHT, CHUNK_WIDTH};
+use lodestone_common::util::McVersion;
 use palettevec::{
     index_buffer::aligned::AlignedIndexBuffer, palette::hybrid::HybridPalette, PaletteVec,
 };
 use std::collections::BTreeMap;
 
-pub type BlockPaletteVec = PaletteVec<u16, HybridPalette<64, u16>, AlignedIndexBuffer>;
+pub type BlockPaletteVec = PaletteVec<Block, HybridPalette<64, Block>, AlignedIndexBuffer>;
 pub type StatePaletteVec = PaletteVec<
     BTreeMap<String, String>,
     HybridPalette<64, BTreeMap<String, String>>,
@@ -24,7 +27,7 @@ pub struct ChunkSection {
 impl ChunkSection {
     pub fn new() -> ChunkSection {
         let blocks = BlockPaletteVec::filled(
-            0,
+            Block::Air,
             CHUNK_WIDTH as usize * CHUNK_SECTION_HEIGHT as usize * CHUNK_LENGTH as usize,
         );
         let data = StatePaletteVec::filled(
@@ -55,7 +58,7 @@ impl ChunkSection {
         y as usize * 16 * 16 + z as usize * 16 + x as usize
     }
 
-    pub fn get_block(&self, x: i8, y: i16, z: i8) -> u16 {
+    pub fn get_block(&self, x: i8, y: i16, z: i8) -> Block {
         if x > CHUNK_WIDTH
             || y > CHUNK_SECTION_HEIGHT as i16
             || z > CHUNK_LENGTH
@@ -63,16 +66,16 @@ impl ChunkSection {
             || y < 0
             || z < 0
         {
-            return 0;
+            return Block::Air;
         }
 
         match self.blocks.get(Self::get_index(x, y, z)) {
             Some(block) => *block,
-            None => 0,
+            None => Block::Air,
         }
     }
 
-    pub fn set_block(&mut self, x: i8, y: i16, z: i8, block: u16) {
+    pub fn set_block(&mut self, x: i8, y: i16, z: i8, block: Block) {
         if x > CHUNK_WIDTH
             || y > CHUNK_SECTION_HEIGHT as i16
             || z > CHUNK_LENGTH
@@ -157,5 +160,23 @@ impl ChunkSection {
         } else {
             self.block_light[i] = level;
         }
+    }
+
+    pub fn convert_blocks_to_internal_format(
+        version: McVersion,
+        arr: Vec<BlockId>,
+    ) -> Vec<Option<Block>> {
+        arr.iter()
+            .map(|v| get_internal_block_id(version, v))
+            .collect()
+    }
+
+    pub fn convert_blocks_from_internal_format(
+        version: McVersion,
+        arr: Vec<Block>,
+    ) -> Vec<Option<BlockId>> {
+        arr.iter()
+            .map(|v| get_version_block_id(version, v))
+            .collect()
     }
 }

@@ -1,4 +1,7 @@
 use lodestone_common::types::hashmap_ext::HashMapExt;
+use lodestone_common::util::McVersion;
+use lodestone_level::block::conversion::get_internal_block_id;
+use lodestone_level::block::BlockId;
 use lodestone_level::level::chunk::{CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_level::level::metadata;
 use lodestone_level::level::Level;
@@ -10,8 +13,8 @@ use std::io::Cursor;
 
 pub trait IndevLevel {
     fn new_indev(height: i16, name: String, author: String) -> Level;
-    fn read_indev(data: Vec<u8>) -> Result<Level, String>;
-    fn write_indev(&mut self) -> Vec<u8>;
+    fn read_indev(version: McVersion, data: Vec<u8>) -> Result<Level, String>;
+    fn write_indev(&mut self, version: McVersion) -> Vec<u8>;
 }
 
 impl IndevLevel for Level {
@@ -20,7 +23,7 @@ impl IndevLevel for Level {
         Level::new_with_name(name)
     }
 
-    fn read_indev(data: Vec<u8>) -> Result<Level, String> {
+    fn read_indev(version: McVersion, data: Vec<u8>) -> Result<Level, String> {
         let nbt = io::read_nbt(&mut Cursor::new(&data), Flavor::GzCompressed)
             .expect("Level NBT data")
             .0;
@@ -112,7 +115,15 @@ impl IndevLevel for Level {
                             + (lz as usize) * (width as usize)
                             + (lx as usize);
 
-                        c.1.set_block(x, y, z, blocks[i] as u16)
+                        let blk =
+                            get_internal_block_id(version, &BlockId::Numeric(blocks[i] as u16));
+
+                        match blk {
+                            Some(blk) => {
+                                c.1.set_block(x, y, z, blk);
+                            }
+                            None => {}
+                        }
                     }
                 }
             }
@@ -163,7 +174,7 @@ impl IndevLevel for Level {
         Ok(level)
     }
 
-    fn write_indev(&mut self) -> Vec<u8> {
+    fn write_indev(&mut self, version: McVersion) -> Vec<u8> {
         let mut out: Vec<u8> = Vec::new();
 
         let mut mclvl = NbtCompound::new();

@@ -3,6 +3,7 @@ pub mod chunk_section;
 pub mod metadata;
 pub mod region;
 
+use crate::block::Block;
 use crate::level::chunk::{Chunk, Light, CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_common::types::hashmap_ext::Value;
 use rayon::iter::IntoParallelRefIterator;
@@ -81,7 +82,7 @@ impl Level {
     }
 
     #[inline(always)]
-    pub fn get_block(&self, x: i32, y: i16, z: i32) -> u16 {
+    pub fn get_block(&self, x: i32, y: i16, z: i32) -> Block {
         if let Some(chunk) = self.get_chunk_by_block_coords(x, z) {
             chunk.get_block(
                 x.rem_euclid(CHUNK_WIDTH as i32) as i8,
@@ -89,12 +90,12 @@ impl Level {
                 z.rem_euclid(CHUNK_LENGTH as i32) as i8,
             )
         } else {
-            0
+            Block::Air
         }
     }
 
     #[inline(always)]
-    pub fn set_block(&mut self, x: i32, y: i16, z: i32, block: u16) {
+    pub fn set_block(&mut self, x: i32, y: i16, z: i32, block: Block) {
         if let Some(chunk) = self.get_chunk_by_block_coords_mut(x, z) {
             chunk.set_block(
                 x.rem_euclid(CHUNK_WIDTH as i32) as i8,
@@ -244,24 +245,24 @@ impl Level {
 
     // TODO: this works... but is very slow.
     // upd: slightly faster now
-    pub fn get_blockmap(&self) -> Vec<u16> {
+    pub fn get_blockmap(&self) -> Vec<Block> {
         let mx = self.get_min_x();
         let mz = self.get_min_z();
 
         let w = self.get_width() as usize * CHUNK_WIDTH as usize;
         let l = self.get_length() as usize * CHUNK_LENGTH as usize;
 
-        let c: Vec<(Coords, Vec<u16>)> = self
+        let c: Vec<(Coords, Vec<Block>)> = self
             .chunks
             .par_iter()
             .map(|(p, c)| {
                 let mut bm = c.generate_blockmap();
-                bm.resize((CHUNK_WIDTH as usize) * (CHUNK_LENGTH as usize), 65535);
+                bm.resize((CHUNK_WIDTH as usize) * (CHUNK_LENGTH as usize), Block::Air);
                 (p.clone(), bm)
             })
             .collect();
 
-        let mut blockmap = vec![65535u16; w * l];
+        let mut blockmap = vec![Block::Air; w * l];
 
         for (chunk_pos, bm) in c {
             for x in 0..CHUNK_WIDTH as usize {
@@ -354,7 +355,7 @@ impl Level {
             for x in 0..width {
                 // TODO: use block map from id to internal block struct which contains Material
                 let mut rgb: [f32; 3] = crate::block::palette::CLASSIC_PALETTE
-                    [min(50, block_map[x + y * width]) as usize];
+                    [min(50, block_map[x + y * width] as u16) as usize];
 
                 if height_map[x + y * width]
                     < height_map[x + (y as i64 - 1).max(0) as usize * width]

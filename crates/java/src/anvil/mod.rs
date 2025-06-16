@@ -1,6 +1,10 @@
 use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
 use flate2::read::{GzDecoder, ZlibDecoder};
 use lodestone_common::types::hashmap_ext::HashMapExt;
+use lodestone_common::util::McVersion;
+use lodestone_level::block::conversion::get_internal_block_id;
+use lodestone_level::block::BlockId::Numeric;
+use lodestone_level::block::{Block, BlockId};
 use lodestone_level::level::chunk::Chunk;
 use lodestone_level::level::chunk_section::BlockPaletteVec;
 use lodestone_level::level::region::{ChunkLocation, Compression};
@@ -14,7 +18,6 @@ use std::fs;
 use std::fs::{create_dir_all, remove_dir_all, File};
 use std::io::{BufWriter, Cursor, Read, Seek, SeekFrom, Write};
 use std::path::Path;
-
 // TODO LIST
 // move world folder reading into separate thing, make directory readers only read the `regions` folder.
 
@@ -547,7 +550,12 @@ impl AnvilChunk for Chunk {
                 let mut p = BlockPaletteVec::new();
 
                 // MAY BE WEIRD/SLOW, UNSURE.
-                let new: Vec<u16> = blocks.par_iter().map(|v| *v as u16).collect();
+                // TODO: map anvil versions to our internal versions and then use that instead of hardcoded 1.2.1
+                let new: Vec<Block> = blocks
+                    .par_iter()
+                    .map(|v| get_internal_block_id(McVersion::Release1_2_1, &Numeric(*v as u16)))
+                    .filter_map(|o| o)
+                    .collect();
 
                 for value in &new {
                     p.push_ref(value);

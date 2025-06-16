@@ -5,6 +5,8 @@ use lodestone_common::types::hashmap_ext::HashMapExt;
 use lodestone_common::types::hashmap_ext::Value::{Bool, Int64};
 use lodestone_common::types::vec3i::Vec3i;
 use lodestone_common::util::{base36, McVersion};
+use lodestone_level::block::conversion::get_internal_block_id;
+use lodestone_level::block::BlockId;
 use lodestone_level::entity::block_entity::BlockEntity;
 use lodestone_level::level::chunk::{Chunk, CHUNK_LENGTH};
 use lodestone_level::level::{metadata, Coords, Level};
@@ -19,24 +21,28 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 pub trait AlphaLevel {
     fn new(name: String) -> Level;
 
-    fn read_alpha_dir(path: &Path) -> Result<Level, String>;
+    fn read_alpha_dir(version: McVersion, path: &Path) -> Result<Level, String>;
 
-    fn write_alpha_dir(&mut self, path: &Path);
+    fn write_alpha_dir(&mut self, version: McVersion, path: &Path);
 
-    fn read_alpha_level(level_name: String, data: Vec<u8>) -> Result<Level, String>;
+    fn read_alpha_level(
+        version: McVersion,
+        level_name: String,
+        data: Vec<u8>,
+    ) -> Result<Level, String>;
 
-    fn write_alpha_level(&self) -> Vec<u8>;
+    fn write_alpha_level(&self, version: McVersion) -> Vec<u8>;
 }
 
 pub trait AlphaChunk {
-    fn read_alpha_chunk(data: Vec<u8>) -> Result<(Coords, Chunk), String>;
-    fn read_alpha_chunk_into_existing(lvl: &mut Level, data: Vec<u8>);
-    fn write_alpha_chunk(&mut self, coords: &Coords) -> Vec<u8>;
+    fn read_alpha_chunk(version: McVersion, data: Vec<u8>) -> Result<(Coords, Chunk), String>;
+    fn read_alpha_chunk_into_existing(lvl: &mut Level, version: McVersion, data: Vec<u8>);
+    fn write_alpha_chunk(&mut self, version: McVersion, coords: &Coords) -> Vec<u8>;
 }
 
 impl AlphaChunk for Chunk {
     #[allow(unused_variables)]
-    fn read_alpha_chunk(data: Vec<u8>) -> Result<(Coords, Chunk), String> {
+    fn read_alpha_chunk(version: McVersion, data: Vec<u8>) -> Result<(Coords, Chunk), String> {
         let chunk_nbt = io::read_nbt(&mut Cursor::new(&data), Flavor::GzCompressed)
             .expect("Alpha chunk NBT data")
             .0;
@@ -85,7 +91,14 @@ impl AlphaChunk for Chunk {
 
                     let blk = blocks[idx];
                     if blk != 0 {
-                        chunk.set_block(x as i8, chunk_y, z as i8, blk as u16);
+                        let blk = get_internal_block_id(version, &BlockId::Numeric(blk as u16));
+
+                        match blk {
+                            Some(blk) => {
+                                chunk.set_block(x as i8, chunk_y, z as i8, blk);
+                            }
+                            None => {}
+                        }
                     }
 
                     // chunk.set_state(x, y, z, data[i] as u8);
@@ -119,15 +132,15 @@ impl AlphaChunk for Chunk {
         Ok((coords, chunk))
     }
 
-    fn read_alpha_chunk_into_existing(lvl: &mut Level, data: Vec<u8>) {
-        let chunk: (Coords, Chunk) =
-            Self::read_alpha_chunk(data).expect("Could not read alpha chunk into existing level!");
+    fn read_alpha_chunk_into_existing(lvl: &mut Level, version: McVersion, data: Vec<u8>) {
+        let chunk: (Coords, Chunk) = Self::read_alpha_chunk(version, data)
+            .expect("Could not read alpha chunk into existing level!");
 
         lvl.add_chunk(chunk.0, chunk.1);
     }
 
     #[allow(unused_variables)]
-    fn write_alpha_chunk(&mut self, coords: &Coords) -> Vec<u8> {
+    fn write_alpha_chunk(&mut self, version: McVersion, coords: &Coords) -> Vec<u8> {
         let mut chunk_data: Vec<u8> = Vec::new();
 
         self.set_height(128);
@@ -198,7 +211,7 @@ impl AlphaLevel for Level {
         Level::new_with_name(name)
     }
 
-    fn read_alpha_dir(path: &Path) -> Result<Level, String> {
+    fn read_alpha_dir(version: McVersion, path: &Path) -> Result<Level, String> {
         log::debug!("Reading level.dat");
         let level_dat = path.join("level.dat");
 
@@ -213,7 +226,8 @@ impl AlphaLevel for Level {
             .to_str()
             .unwrap_or("World0")
             .to_string();
-        let mut lvl = Self::read_alpha_level(level_name, data).expect("Could not parse level!");
+        let mut lvl =
+            Self::read_alpha_level(version, level_name, data).expect("Could not parse level!");
 
         for chunk_x_entry in fs::read_dir(path).map_err(|e| e.to_string())? {
             let chunk_x = &chunk_x_entry.unwrap().path();
@@ -241,7 +255,7 @@ impl AlphaLevel for Level {
 
                     let data: Vec<u8> = fs::read(p).expect("Read file");
 
-                    Chunk::read_alpha_chunk_into_existing(&mut lvl, data);
+                    Chunk::read_alpha_chunk_into_existing(&mut lvl, version, data);
                 }
             }
         }
@@ -254,10 +268,10 @@ impl AlphaLevel for Level {
         Ok(lvl)
     }
 
-    fn write_alpha_dir(&mut self, path: &Path) {
+    fn write_alpha_dir(&mut self, version: McVersion, path: &Path) {
         let level_dat = path.join("level.dat");
 
-        let level_data = self.write_alpha_level();
+        let level_data = self.write_alpha_level(version);
         let level_dat_file = File::create(level_dat).unwrap();
         let mut writer = BufWriter::new(level_dat_file);
         writer
@@ -266,7 +280,7 @@ impl AlphaLevel for Level {
         writer.flush().expect("Could not flush level.dat!");
 
         for (coords, chunk) in self.get_chunks_mut() {
-            let chunk_data = chunk.write_alpha_chunk(&coords);
+            let chunk_data = chunk.write_alpha_chunk(version, &coords);
 
             let chunk_dir = path
                 .join(base36(coords.x & 63) + "/")
@@ -286,7 +300,11 @@ impl AlphaLevel for Level {
         }
     }
 
-    fn read_alpha_level(level_name: String, data: Vec<u8>) -> Result<Level, String> {
+    fn read_alpha_level(
+        version: McVersion,
+        level_name: String,
+        data: Vec<u8>,
+    ) -> Result<Level, String> {
         let nbt = io::read_nbt(
             &mut GzDecoder::new(&mut Cursor::new(&data)),
             Flavor::Uncompressed,
@@ -318,7 +336,7 @@ impl AlphaLevel for Level {
     }
 
     #[allow(unused_variables)]
-    fn write_alpha_level(&self) -> Vec<u8> {
+    fn write_alpha_level(&self, version: McVersion) -> Vec<u8> {
         let mut level_nbt = NbtCompound::new();
         let level_data = NbtCompound::new();
 

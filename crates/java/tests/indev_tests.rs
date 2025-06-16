@@ -1,4 +1,5 @@
 mod indev_tests {
+    use lodestone_common::util::McVersion;
     use lodestone_java::indev::IndevLevel;
     use lodestone_level::level::Level;
     use std::fs;
@@ -17,7 +18,8 @@ mod indev_tests {
             }
         };
 
-        let level = Level::read_indev(data).expect("Could not read Indev level from file!");
+        let level = Level::read_indev(McVersion::Infdev20100630, data)
+            .expect("Could not read Indev level from file!");
 
         println!(
             "World bounds (XYZ): {}x{}x{}",

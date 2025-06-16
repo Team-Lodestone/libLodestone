@@ -1,5 +1,8 @@
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use lodestone_common::types::hashmap_ext::HashMapExt;
+use lodestone_common::util::McVersion;
+use lodestone_level::block::conversion::get_internal_block_id;
+use lodestone_level::block::BlockId;
 use lodestone_level::level::chunk::{CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_level::level::{metadata, Level};
 use rayon::iter::IndexedParallelIterator;
@@ -8,13 +11,13 @@ use rayon::prelude::IntoParallelRefMutIterator;
 use std::io::{Cursor, Read, Write};
 
 pub trait MCGLevel {
-    fn read_mcgalaxy_level(data: Vec<u8>) -> Result<Level, String>;
+    fn read_mcgalaxy_level(version: McVersion, data: Vec<u8>) -> Result<Level, String>;
     fn get_mcgalaxy_level_file_size(&self) -> usize;
-    fn write_mcgalaxy_level(&self) -> Vec<u8>;
+    fn write_mcgalaxy_level(&self, version: McVersion) -> Vec<u8>;
 }
 
 impl MCGLevel for Level {
-    fn read_mcgalaxy_level(data: Vec<u8>) -> Result<Level, String> {
+    fn read_mcgalaxy_level(version: McVersion, data: Vec<u8>) -> Result<Level, String> {
         let mut c = Cursor::new(data);
         let signature = c.read_u16::<LittleEndian>().unwrap();
         let width = c.read_i16::<LittleEndian>().unwrap();
@@ -80,7 +83,13 @@ impl MCGLevel for Level {
                             + (lz as usize) * (width as usize)
                             + (lx as usize);
 
-                        c.1.set_block(x, y, z, blocks[i] as u16)
+                        let blk =
+                            get_internal_block_id(version, &BlockId::Numeric(blocks[i] as u16));
+
+                        match blk {
+                            Some(blk) => c.1.set_block(x, y, z, blk),
+                            None => {}
+                        }
                     }
                 }
             }
@@ -104,7 +113,7 @@ impl MCGLevel for Level {
         + (self.get_block_width() as usize * self.get_block_height() as usize * self.get_block_length() as usize) // block array
     }
 
-    fn write_mcgalaxy_level(&self) -> Vec<u8> {
+    fn write_mcgalaxy_level(&self, version: McVersion) -> Vec<u8> {
         let mut c = Cursor::new(vec![0u8; self.get_mcgalaxy_level_file_size()]);
         c.write_u16::<LittleEndian>(1874u16)
             .expect("Unable to write signature!");

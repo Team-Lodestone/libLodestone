@@ -1,3 +1,4 @@
+use crate::block::Block;
 use crate::entity::block_entity::BlockEntity;
 use crate::level::chunk_section::ChunkSection;
 use lodestone_common::types::hashmap_ext::Value;
@@ -56,7 +57,7 @@ impl Chunk {
             for x in 0..CHUNK_WIDTH {
                 for y in (0..self.height).rev() {
                     let blk = self.get_block(x, y, z);
-                    if blk != 0 {
+                    if blk != Block::Air {
                         heightmap[z as usize * CHUNK_WIDTH as usize + x as usize] =
                             (y + 1).min(self.height - 1);
                         break;
@@ -68,15 +69,16 @@ impl Chunk {
         heightmap
     }
 
-    pub fn generate_blockmap(&self) -> Vec<u16> {
-        let mut blkmap: Vec<u16> = Vec::with_capacity(CHUNK_WIDTH as usize * CHUNK_LENGTH as usize);
-        blkmap.resize(CHUNK_WIDTH as usize * CHUNK_LENGTH as usize, 0xFFFF);
+    pub fn generate_blockmap(&self) -> Vec<Block> {
+        let mut blkmap: Vec<Block> =
+            Vec::with_capacity(CHUNK_WIDTH as usize * CHUNK_LENGTH as usize);
+        blkmap.resize(CHUNK_WIDTH as usize * CHUNK_LENGTH as usize, Block::Air);
 
         for z in 0..CHUNK_LENGTH {
             for x in 0..CHUNK_WIDTH {
                 for y in (0..self.height).rev() {
                     let blk = self.get_block(x, y, z);
-                    if blk != 0 {
+                    if blk != Block::Air {
                         blkmap[z as usize * CHUNK_WIDTH as usize + x as usize] = blk;
                         break;
                     }
@@ -145,19 +147,19 @@ impl Chunk {
     }
 
     #[inline(always)]
-    pub fn get_block(&self, x: i8, y: i16, z: i8) -> u16 {
+    pub fn get_block(&self, x: i8, y: i16, z: i8) -> Block {
         if x > CHUNK_WIDTH || y > self.height || z > CHUNK_LENGTH || x < 0 || y < 0 || z < 0 {
-            return 0;
+            return Block::Air;
         }
 
         match self.get_chunk_section(y) {
             Some(s) => s.get_block(x, y % CHUNK_SECTION_HEIGHT as i16, z),
-            None => 0,
+            None => Block::Air,
         }
     }
 
     #[inline(always)]
-    pub fn set_block(&mut self, x: i8, y: i16, z: i8, block: u16) {
+    pub fn set_block(&mut self, x: i8, y: i16, z: i8, block: Block) {
         if x > CHUNK_WIDTH || y > self.height || z > CHUNK_LENGTH || x < 0 || y < 0 || z < 0 {
             return;
         }
@@ -165,7 +167,7 @@ impl Chunk {
         match self.get_chunk_section_mut(y) {
             Some(s) => s.set_block(x, y % CHUNK_SECTION_HEIGHT as i16, z, block),
             _ => {
-                if block == 0 {
+                if block == Block::Air {
                     return;
                 } // if block is zero we don't want to create new section for lower memory usage
 
@@ -175,7 +177,7 @@ impl Chunk {
         }
 
         // if our block isn't 0
-        if block != 0 {
+        if block != Block::Air {
             if y >= self.get_height(x, z) {
                 *self.get_height_mut(x, z) = (y + 1).min(self.height - 1);
             }
@@ -184,7 +186,7 @@ impl Chunk {
             if y + 1 == self.get_height(x, z) {
                 // then we get the new topmost block
                 for ny in (0..y).rev() {
-                    if self.get_block(x, ny, z) != 0 {
+                    if self.get_block(x, ny, z) != Block::Air {
                         *self.get_height_mut(x, z) = (ny + 1).min(self.height - 1); // is it any better to set a ref from a getter?
                         return;
                     }
@@ -290,8 +292,8 @@ impl Chunk {
         self.block_entities.remove(&coords);
     }
 
-    pub fn get_all_blocks(&self) -> Vec<u16> {
-        let blocks: Vec<u16> = self
+    pub fn get_all_blocks(&self) -> Vec<Block> {
+        let blocks: Vec<Block> = self
             .chunk_sections
             .iter()
             .flat_map(|s| s.blocks.iter().cloned()) // TODO: is cloned a good/bad thing

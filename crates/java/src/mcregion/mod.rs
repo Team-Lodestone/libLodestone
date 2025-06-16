@@ -1,6 +1,9 @@
 use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
 use flate2::read::{GzDecoder, ZlibDecoder};
 use lodestone_common::types::hashmap_ext::HashMapExt;
+use lodestone_common::util::McVersion;
+use lodestone_level::block::conversion::get_internal_block_id;
+use lodestone_level::block::BlockId;
 use lodestone_level::level::chunk::Chunk;
 use lodestone_level::level::region::ChunkLocation;
 use lodestone_level::level::region::Compression;
@@ -17,19 +20,19 @@ use std::io::{Cursor, Read, Seek, SeekFrom, Write};
 
 pub trait Region {
     /// Creates a new Level from an MCR file
-    fn read_mcr(data: Vec<u8>) -> Result<Level, String>;
+    fn read_mcr(version: McVersion, data: Vec<u8>) -> Result<Level, String>;
     /// Reads an MCR level into an existing Level
-    fn read_mcr_into_existing(&mut self, data: Vec<u8>);
+    fn read_mcr_into_existing(&mut self, version: McVersion, data: Vec<u8>);
     /// Writes out the MCR file
-    fn write_mcr(&mut self) -> Vec<u8>;
+    fn write_mcr(&mut self, version: McVersion) -> Vec<u8>;
 }
 pub trait MCRChunk {
-    fn read_mcr(data: Vec<u8>) -> Result<(Chunk, Coords), String>;
-    fn write_mcr(&self, coords: &Coords) -> Vec<u8>;
+    fn read_mcr(version: McVersion, data: Vec<u8>) -> Result<(Chunk, Coords), String>;
+    fn write_mcr(&self, version: McVersion, coords: &Coords) -> Vec<u8>;
 }
 
 impl Region for Level {
-    fn read_mcr(data: Vec<u8>) -> Result<Level, String> {
+    fn read_mcr(version: McVersion, data: Vec<u8>) -> Result<Level, String> {
         let mut c = Cursor::new(data);
         let mut locations = vec![ChunkLocation::default(); 1024];
         let mut timestamps = vec![0i32; 1024];
@@ -88,7 +91,7 @@ impl Region for Level {
                     chunk_data = compressed.to_vec();
                 }
 
-                let ch = Chunk::read_mcr(chunk_data).expect("Region Chunk from data");
+                let ch = Chunk::read_mcr(version, chunk_data).expect("Region Chunk from data");
                 Some((ch.1, ch.0))
             })
             .collect();
@@ -100,7 +103,7 @@ impl Region for Level {
         Ok(level)
     }
 
-    fn read_mcr_into_existing(&mut self, data: Vec<u8>) {
+    fn read_mcr_into_existing(&mut self, version: McVersion, data: Vec<u8>) {
         let mut c = Cursor::new(data);
         let mut locations = vec![ChunkLocation::default(); 1024];
         let mut timestamps = vec![0i32; 1024];
@@ -158,7 +161,7 @@ impl Region for Level {
                     chunk_data = compressed.to_vec();
                 }
 
-                let ch = Chunk::read_mcr(chunk_data).expect("Region Chunk from data");
+                let ch = Chunk::read_mcr(version, chunk_data).expect("Region Chunk from data");
                 Some((ch.1, ch.0))
             })
             .collect();
@@ -168,7 +171,7 @@ impl Region for Level {
     }
 
     // TODO: coordinates
-    fn write_mcr(&mut self) -> Vec<u8> {
+    fn write_mcr(&mut self, version: McVersion) -> Vec<u8> {
         let out: Vec<u8> = Vec::with_capacity(0x2000 + (1000 * self.get_chunk_count()));
         let mut c = Cursor::new(out);
 
@@ -181,7 +184,7 @@ impl Region for Level {
         // meaning we need region coordinate system (separate from Level but in a common impl...)
         for (coords, chunk) in self.get_chunks_mut().iter_mut() {
             chunk.set_height(128);
-            let mut ch = chunk.write_mcr(coords);
+            let mut ch = chunk.write_mcr(version, coords);
 
             let len = ch.len();
             let sector_size = ((len + 5) + 4095) / 4096;
@@ -226,7 +229,7 @@ impl Region for Level {
 impl MCRChunk for Chunk {
     // INCOMPLETE: we need to store the light data correctly
     // plus need entities and all
-    fn read_mcr(data: Vec<u8>) -> Result<(Chunk, Coords), String> {
+    fn read_mcr(version: McVersion, data: Vec<u8>) -> Result<(Chunk, Coords), String> {
         let nbt = io::read_nbt(&mut Cursor::new(&data), Flavor::Uncompressed)
             .expect("Chunk NBT data")
             .0;
@@ -260,7 +263,14 @@ impl MCRChunk for Chunk {
                     let block_id = blocks[i] as u16;
                     if block_id != 0 {
                         c.get_or_create_chunk_section_mut(y as i16);
-                        c.set_block(x as i8, y as i16, z as i8, blocks[i] as u16);
+
+                        let blk = get_internal_block_id(version, &BlockId::Numeric(block_id));
+                        match blk {
+                            Some(blk) => {
+                                c.set_block(x as i8, y as i16, z as i8, blk);
+                            }
+                            None => {}
+                        }
                     }
                 }
             }
@@ -275,7 +285,7 @@ impl MCRChunk for Chunk {
         Ok((c, Coords { x, z }))
     }
 
-    fn write_mcr(&self, coords: &Coords) -> Vec<u8> {
+    fn write_mcr(&self, version: McVersion, coords: &Coords) -> Vec<u8> {
         let mut out: Vec<u8> = Vec::new();
 
         let mut nbt = NbtCompound::new();

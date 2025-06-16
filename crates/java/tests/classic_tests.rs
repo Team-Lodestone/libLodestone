@@ -1,4 +1,5 @@
 mod classic_tests {
+    use lodestone_common::util::McVersion;
     use lodestone_java::alpha::AlphaLevel;
     use lodestone_java::classic::classic_world::CWLevel;
     use lodestone_java::classic::mcgalaxy_lvl::MCGLevel;
@@ -24,9 +25,9 @@ mod classic_tests {
         };
 
         println!("Reading level");
-        let mut mv2 = Level::read_cw(data).unwrap();
+        let mut mv2 = Level::read_cw(McVersion::Classic0_30, data).unwrap();
 
-        let out = mv2.write_mcr();
+        let out = mv2.write_mcr(McVersion::Release1_1);
 
         println!("Writing");
         let output_dir = Path::new("../../internal_tests/regions/dst/");
@@ -54,7 +55,7 @@ mod classic_tests {
         };
 
         println!("Reading level");
-        let mut level = Level::read_cw(data).unwrap();
+        let mut level = Level::read_cw(McVersion::Classic0_30, data).unwrap();
 
         println!(
             "Level bounds X: {}, Y: {}, Z: {}",
@@ -67,7 +68,7 @@ mod classic_tests {
         if !output_dir.exists() {
             create_dir_all(output_dir).expect("Could not create output dir");
         }
-        level.write_alpha_dir(output_dir);
+        level.write_alpha_dir(McVersion::Alpha1_2_6, output_dir);
     }
 
     #[test]
@@ -80,7 +81,7 @@ mod classic_tests {
         let read_end = read_start.elapsed();
 
         let parse_start = Instant::now();
-        let _lvl = Level::read_cw(data).expect("Failed to read level");
+        let _lvl = Level::read_cw(McVersion::Classic0_30, data).expect("Failed to read level");
         let parse_end = parse_start.elapsed();
 
         println!("Read time: {:?}", read_end);
@@ -94,7 +95,7 @@ mod classic_tests {
             "../../internal_tests/classic/mcg/src/{file_name}.lvl"
         ))
         .expect("Failed to read MCGalaxy file!");
-        let mcg = Level::read_mcgalaxy_level(data).unwrap();
+        let mcg = Level::read_mcgalaxy_level(McVersion::Classic0_30, data).unwrap();
 
         let map = mcg.generate_bitmap();
 

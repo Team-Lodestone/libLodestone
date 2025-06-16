@@ -1,3 +1,6 @@
+use lodestone_common::util::McVersion;
+use lodestone_level::block::conversion::get_internal_block_id;
+use lodestone_level::block::BlockId;
 use lodestone_level::level::chunk::{CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_level::level::Level;
 use rayon::iter::IndexedParallelIterator;
@@ -5,13 +8,13 @@ use rayon::iter::IntoParallelRefMutIterator;
 use rayon::iter::ParallelIterator;
 
 pub trait MineV1Level {
-    fn read_minev1(data: Vec<u8>) -> Result<Level, String>;
-    fn write_minev1(&self) -> Vec<u8>;
+    fn read_minev1(version: McVersion, data: Vec<u8>) -> Result<Level, String>;
+    fn write_minev1(&self, version: McVersion) -> Vec<u8>;
     fn get_minev1_file_size() -> usize;
 }
 
 impl MineV1Level for Level {
-    fn read_minev1(data: Vec<u8>) -> Result<Level, String> {
+    fn read_minev1(version: McVersion, data: Vec<u8>) -> Result<Level, String> {
         let mut level = Level::new();
         level.create_finite(256, 64, 256);
 
@@ -36,7 +39,12 @@ impl MineV1Level for Level {
                             + (lz as usize) * (256usize)
                             + (lx as usize);
 
-                        c.1.set_block(x, y, z, data[i] as u16)
+                        let blk = get_internal_block_id(version, &BlockId::Numeric(data[i] as u16));
+
+                        match blk {
+                            Some(blk) => c.1.set_block(x, y, z, blk),
+                            None => {}
+                        }
                     }
                 }
             }
@@ -45,7 +53,7 @@ impl MineV1Level for Level {
         Ok(level)
     }
 
-    fn write_minev1(&self) -> Vec<u8> {
+    fn write_minev1(&self, version: McVersion) -> Vec<u8> {
         let width = self.get_block_width() as usize;
         let length = self.get_block_length();
         let height = self.get_block_height() as usize;
