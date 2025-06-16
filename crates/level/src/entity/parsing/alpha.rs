@@ -3,7 +3,7 @@ use crate::entity::block_entity::{
 };
 use crate::entity::parsing::BlockEntityHandler;
 use lodestone_common::util::McVersion;
-use quartz_nbt::NbtCompound;
+use quartz_nbt::{NbtCompound, NbtList};
 
 pub struct AlphaBlockEntityParser;
 
@@ -52,7 +52,45 @@ impl BlockEntityHandler for AlphaBlockEntityParser {
         })
     }
 
-    fn write(version: McVersion) -> NbtCompound {
-        todo!()
+    fn write(version: McVersion, block_entity: BlockEntity) -> NbtCompound {
+        let mut nbt = NbtCompound::new();
+        nbt.insert("id", &block_entity.id);
+        nbt.insert("x", block_entity.x);
+        nbt.insert("y", block_entity.y);
+        nbt.insert("z", block_entity.z);
+
+        match version {
+            McVersion::Alpha1_2_6 => {
+                match block_entity.id.as_str() {
+                    "Chest" => {
+                        match &block_entity.data {
+                            HasBlockEntity::Found(BlockEntityType::Chest { items, .. }) => {
+                                let mut item_list = NbtList::new();
+                                for item in items.iter() {
+                                    let mut item_tag = NbtCompound::new();
+                                    item_tag.insert("id", item.id as i16);
+                                    item_tag.insert("Slot", item.slot);
+                                    item_tag.insert("Count", item.count as i16);
+                                    item_list.push(item_tag);
+                                }
+                                nbt.insert("items", item_list);
+                            }
+                            &HasBlockEntity::NotFound(_, _) => {
+                                // TO BE IMPLEMENTED!
+                            }
+                            _ => {
+                                // TO BE IMPLEMENTED!
+                            }
+                        }
+                    }
+                    _ => {
+                        // TO BE IMPLEMENTED!
+                    }
+                }
+            }
+            McVersion::Classic030 => todo!(),
+        }
+
+        nbt
     }
 }

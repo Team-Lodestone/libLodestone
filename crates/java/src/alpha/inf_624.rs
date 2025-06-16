@@ -90,7 +90,7 @@ impl Infdev624Level for Level {
         let original_position = c.position();
         for slot in slots {
             // Why???
-            let read_position = (slot as u64 * 32768 * 3 + 256) + 4096;
+            let read_position = slot as u64 * (32768 * 3 + 256) + 4096;
             if read_position < data.len() as u64 {
                 c.set_position(read_position);
             } else {

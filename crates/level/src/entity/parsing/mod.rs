@@ -6,5 +6,5 @@ pub mod alpha;
 
 pub trait BlockEntityHandler {
     fn parse(version: McVersion, nbt: &NbtCompound) -> Option<BlockEntity>;
-    fn write(version: McVersion) -> NbtCompound;
+    fn write(version: McVersion, block_entity: BlockEntity) -> NbtCompound;
 }

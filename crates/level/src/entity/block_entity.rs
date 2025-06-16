@@ -100,4 +100,11 @@ impl BlockEntity {
             _ => None,
         }
     }
+
+    pub fn to_nbt(&self, version: McVersion) -> Option<NbtCompound> {
+        match version {
+            McVersion::Alpha1_2_6 => Some(AlphaBlockEntityParser::write(version, self.clone())),
+            _ => None,
+        }
+    }
 }

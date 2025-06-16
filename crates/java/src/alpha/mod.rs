@@ -137,8 +137,15 @@ impl AlphaChunk for Chunk {
 
         // TODO: Implement entities properly
         let _entities = chunk_level.insert(metadata::ENTITIES.to_string(), NbtList::new());
-        let _tile_entities =
-            chunk_level.insert(metadata::TILE_ENTITIES.to_string(), NbtList::new());
+        let mut tile_entities = NbtList::new();
+        for (coords, tile_entity) in self.block_entities.iter() {
+            let nbt = tile_entity.to_nbt(McVersion::Alpha1_2_6);
+
+            if nbt.is_some() {
+                tile_entities.push(nbt.unwrap());
+            }
+        }
+        let tile_entities = chunk_level.insert(metadata::TILE_ENTITIES.to_string(), tile_entities);
 
         let last_update = chunk_level.insert(
             metadata::LAST_UPDATE.to_string(),
