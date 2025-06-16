@@ -1,7 +1,6 @@
-mod classic;
-
-use crate::block::{Block, BlockId, BLOCK_REGISTRY};
+use crate::block::{Block, BlockId};
 use lodestone_common::util::McVersion;
+use crate::block::registry::BLOCK_REGISTRY;
 
 /// Adds a block to the block registry
 /// When one wants to convert a block id to the internal id, they will provide an id and a version to the converter method
