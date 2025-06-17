@@ -2,23 +2,28 @@ mod alpha_tests {
     use lodestone_common::util::McVersion;
     use lodestone_java::alpha::inf_624::Infdev624Level;
     use lodestone_java::alpha::AlphaLevel;
-    use lodestone_level::block::BLOCK_REGISTRY;
     use lodestone_level::level::Level;
     use std::fs::{create_dir_all, remove_dir_all, File};
     use std::io::Write;
     use std::path::Path;
+    use std::time::Instant;
+    use lodestone_level::block::registry::BLOCK_REGISTRY;
 
     #[test]
     fn test_block_conv() {
         // println!("{:?}", get_internal_block_id(McVersion::Release1_13, Numeric(1)));
         println!("{:?}", BLOCK_REGISTRY.blocks);
+        println!("{:?}", BLOCK_REGISTRY.versions);
     }
 
     #[test]
     fn test_alpha_world() {
         let path = Path::new("../../internal_tests/alpha/src/World2/");
-        let lvl = Level::read_alpha_dir(McVersion::Infdev20100630, path).expect("WTF");
-
+        let timer = Instant::now();
+        let lvl = Level::read_alpha_dir(McVersion::Alpha1_2_6, path).expect("WTF");
+        let done = timer.elapsed();
+        println!("Done in {:?}", done);
+        
         let map = lvl.generate_bitmap();
 
         println!("Writing");

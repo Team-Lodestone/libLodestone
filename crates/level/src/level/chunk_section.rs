@@ -1,4 +1,4 @@
-use crate::block::conversion::{get_internal_block_id, get_version_block_id};
+use crate::block::conversion::{convert_blocks_from_internal_format, get_internal_block_id, get_version_block_id};
 use crate::block::{Block, BlockId};
 use crate::level::chunk::{Light, CHUNK_LENGTH, CHUNK_SECTION_HEIGHT, CHUNK_WIDTH};
 use lodestone_common::util::McVersion;
@@ -6,6 +6,7 @@ use palettevec::{
     index_buffer::aligned::AlignedIndexBuffer, palette::hybrid::HybridPalette, PaletteVec,
 };
 use std::collections::BTreeMap;
+use crate::block::BlockId::NumericAndFlattened;
 
 pub type BlockPaletteVec = PaletteVec<Block, HybridPalette<64, Block>, AlignedIndexBuffer>;
 pub type StatePaletteVec = PaletteVec<
@@ -162,21 +163,17 @@ impl ChunkSection {
         }
     }
 
-    pub fn convert_blocks_to_internal_format(
-        version: McVersion,
-        arr: Vec<BlockId>,
-    ) -> Vec<Option<Block>> {
-        arr.iter()
-            .map(|v| get_internal_block_id(version, v))
-            .collect()
-    }
+    pub fn get_all_blocks_converted(&self, version: McVersion) -> Vec<BlockId> {
+        let blocks: Vec<Block> = self
+            .blocks
+            .iter()
+            .cloned()
+            .collect();
 
-    pub fn convert_blocks_from_internal_format(
-        version: McVersion,
-        arr: Vec<Block>,
-    ) -> Vec<Option<BlockId>> {
-        arr.iter()
-            .map(|v| get_version_block_id(version, v))
+        let conv = convert_blocks_from_internal_format(version, blocks);
+
+        conv.into_iter()
+            .map(|b| b)
             .collect()
     }
 }

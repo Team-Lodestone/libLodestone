@@ -1,7 +1,7 @@
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use lodestone_common::types::hashmap_ext::HashMapExt;
 use lodestone_common::util::McVersion;
-use lodestone_level::block::conversion::get_internal_block_id;
+use lodestone_level::block::conversion::{get_internal_block_id, get_version_block_id};
 use lodestone_level::block::BlockId;
 use lodestone_level::level::chunk::{CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_level::level::{metadata, Level};
@@ -9,6 +9,7 @@ use rayon::iter::IndexedParallelIterator;
 use rayon::iter::ParallelIterator;
 use rayon::prelude::IntoParallelRefMutIterator;
 use std::io::{Cursor, Read, Write};
+use lodestone_level::block::BlockId::NumericAndFlattened;
 
 pub trait MCGLevel {
     fn read_mcgalaxy_level(version: McVersion, data: Vec<u8>) -> Result<Level, String>;
@@ -173,7 +174,7 @@ impl MCGLevel for Level {
             let z = (i / width as usize) % length as usize;
             let x = i % width as usize;
 
-            *v = self.get_block(x as i32 + mx, y as i16, z as i32 + mz) as u8;
+            *v = usize::try_from(get_version_block_id(version, &self.get_block(x as i32 + mx, y as i16, z as i32 + mz))).unwrap_or(0) as u8;
         });
 
         c.write_all(blocks.as_slice()).expect("Block array");

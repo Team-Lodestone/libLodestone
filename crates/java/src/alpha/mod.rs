@@ -182,7 +182,7 @@ impl AlphaChunk for Chunk {
         // TODO: This is jank. Please fix.
         let blocks = chunk_level.insert::<_, Vec<u8>>(
             metadata::BLOCKS.to_string(),
-            self.get_all_blocks().iter().map(|&x| x as u8).collect(),
+            self.get_all_blocks_converted(version).iter().map(|x| usize::try_from(x.clone()).unwrap_or(0) as u8).collect(),
         );
 
         let data = chunk_level.insert::<_, Vec<u8>>(metadata::DATA.to_string(), vec![0u8; 16384]);

@@ -1,3 +1,4 @@
+use strum::IntoEnumIterator;
 use crate::block::BTreeMap;
 use std::collections::HashMap;
 use once_cell::sync::Lazy;
@@ -9,9 +10,10 @@ use crate::block::{Block, BlockRegistry};
 pub static BLOCK_REGISTRY: Lazy<BlockRegistry> = Lazy::new(|| {
     let mut reg = BlockRegistry {
         blocks: HashMap::new(),
+        versions: HashMap::new(),
     };
 
-    // TODO: rock is stored using same id as air, do we want to change ID?
+    // TODO: rock is stored using same id as air, do we want to change air ID?
     add_block_conv!(reg, Block::Air, [
         McVersion::PreClassic20090515: Numeric(0u16),
         McVersion::Release1_13: NumericAndFlattened(0u16, "minecraft:air")
@@ -191,6 +193,18 @@ pub static BLOCK_REGISTRY: Lazy<BlockRegistry> = Lazy::new(|| {
     add_block_conv!(reg, Block::GoldBlock, [
         McVersion::Classic0_0_20a: Numeric(42u16),
     ]);
+
+    for (block, ids) in &reg.blocks {
+        for (&version, id) in ids {
+            for v in McVersion::iter().filter(|v| *v >= version) {
+                reg.versions
+                    .entry(v)
+                    .or_default()
+                    .entry(id.clone())
+                    .or_insert(*block);
+            }
+        }
+    }
 
     reg
 });

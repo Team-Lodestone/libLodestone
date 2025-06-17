@@ -1,6 +1,6 @@
 use lodestone_common::types::hashmap_ext::HashMapExt;
 use lodestone_common::util::McVersion;
-use lodestone_level::block::conversion::get_internal_block_id;
+use lodestone_level::block::conversion::{get_internal_block_id, get_version_block_id};
 use lodestone_level::block::BlockId;
 use lodestone_level::level::chunk::{CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_level::level::metadata;
@@ -288,7 +288,7 @@ impl IndevLevel for Level {
                 for x in 0..width {
                     blocks[(y as usize) * (length as usize * width as usize)
                         + (z as usize) * (width as usize)
-                        + (x as usize)] = self.get_block(x + mx, y, z + mz) as i8;
+                        + (x as usize)] = usize::try_from(get_version_block_id(version, &self.get_block(x + mx, y, z + mz))).unwrap_or(0) as i8;
                 }
             }
         }

@@ -1,6 +1,6 @@
 use lodestone_common::types::hashmap_ext::HashMapExt;
 use lodestone_common::util::McVersion;
-use lodestone_level::block::conversion::get_internal_block_id;
+use lodestone_level::block::conversion::{convert_blocks_from_internal_format, get_internal_block_id, get_version_block_id};
 use lodestone_level::block::BlockId;
 use lodestone_level::level::chunk::{CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_level::level::metadata;
@@ -13,6 +13,7 @@ use rayon::iter::IntoParallelRefMutIterator;
 use rayon::iter::ParallelIterator;
 use std::io::Cursor;
 use uuid::Uuid;
+use lodestone_level::block::BlockId::NumericAndFlattened;
 
 pub trait CWLevel {
     fn new_cw(height: i16, name: String, author: String) -> Level;
@@ -270,7 +271,8 @@ impl CWLevel for Level {
             let z = (i / width) % length;
             let x = i % width;
 
-            *v = self.get_block(x as i32 + mx, y as i16, z as i32 + mz) as u8;
+            // TODO: this is REALLY messy, this needs to be focused on during code cleanup I fear.
+            *v = usize::try_from(get_version_block_id(version, &self.get_block(x as i32 + mx, y as i16, z as i32 + mz))).unwrap_or(0) as u8;
         });
 
         mclvl.insert("BlockArray".to_string(), blocks);

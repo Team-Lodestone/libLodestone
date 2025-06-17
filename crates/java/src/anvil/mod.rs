@@ -633,9 +633,9 @@ impl AnvilChunk for Chunk {
             chunk_section_tag.insert(
                 "Blocks",
                 chunk_section
-                    .blocks
+                    .get_all_blocks_converted(McVersion::Release1_2_1)
                     .iter()
-                    .map(|v| *v as u8)
+                    .map(|v| usize::try_from(v.clone()).unwrap_or(0) as u8)
                     .collect::<Vec<u8>>(),
             );
             chunk_section_tag.insert(metadata::DATA, vec![0u8; 2048]);

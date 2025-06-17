@@ -21,6 +21,8 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 
 byteorder.workspace = true
+strum.workspace = true
+strum_macros.workspace = true
 
 #console_error_panic_hook = { workspace = true, optional = true }
 serde = { version = "1.0.219", features = ["derive"] }

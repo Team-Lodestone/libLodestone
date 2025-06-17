@@ -1,3 +1,6 @@
+use strum::IntoEnumIterator;
+use strum_macros::EnumIter;
+
 const BASE36: &[u8] = b"0123456789abcdefghijklmnopqrstuvwxyz";
 
 pub fn base36(mut n: i32) -> String {
@@ -26,7 +29,7 @@ pub fn base36(mut n: i32) -> String {
 }
 
 /// Versions that need to be handled during conversion
-#[derive(Debug, PartialEq, Eq, Hash, Ord, PartialOrd, Copy, Clone)]
+#[derive(Debug, PartialEq, Eq, Hash, Ord, PartialOrd, Copy, Clone, EnumIter)]
 pub enum McVersion {
     PreClassic132211,
     PreClassic132328,

@@ -1,14 +1,15 @@
 pub mod conversion;
 pub mod palette;
-mod registry;
+pub mod registry;
 
 use crate::add_block_conv;
-use crate::block::BlockId::{Numeric, NumericAndFlattened};
+use crate::block::BlockId::{Flattened, Numeric, NumericAndFlattened, NumericWithData};
 use lodestone_common::util::McVersion;
 use once_cell::sync::Lazy;
 use std::collections::{BTreeMap, HashMap};
 
 #[derive(Debug, Eq, PartialEq, Clone)]
+#[derive(Hash)]
 pub enum BlockId {
     /// Numeric id only
     Numeric(u16),
@@ -20,8 +21,31 @@ pub enum BlockId {
     NumericAndFlattened(u16, &'static str),
 }
 
+impl Default for BlockId {
+    fn default() -> Self {
+        BlockId::NumericAndFlattened(0, "minecraft:air")
+    }
+}
+
+impl TryFrom<BlockId> for usize {
+    type Error = &'static str;
+
+    fn try_from(v: BlockId) -> Result<Self, Self::Error> {
+        match v {
+            Numeric(b) => Ok(b as usize),
+            NumericWithData(b, _) => Ok(b as usize),
+            NumericAndFlattened(b, _) => Ok(b as usize),
+            Flattened(_) => Err("Can't convert flattened block id to number"),
+        }
+    }
+}
+
+
 pub struct BlockRegistry {
+    /// List of blocks and every id of that block per version
     pub blocks: HashMap<Block, BTreeMap<McVersion, BlockId>>,
+    /// List of versions and every block inside each version
+    pub versions: HashMap<McVersion, HashMap<BlockId, Block>>,
 }
 
 /// Internal Block IDs

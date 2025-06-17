@@ -1,10 +1,13 @@
-use crate::block::Block;
+use crate::block::{Block, BlockId};
 use crate::entity::block_entity::BlockEntity;
 use crate::level::chunk_section::ChunkSection;
 use lodestone_common::types::hashmap_ext::Value;
 use lodestone_common::types::vec3i::Vec3i;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap};
+use lodestone_common::util::McVersion;
+use crate::block::BlockId::NumericAndFlattened;
+use crate::block::conversion::convert_blocks_from_internal_format;
 
 pub const CHUNK_WIDTH: i8 = 16;
 pub const CHUNK_LENGTH: i8 = 16;
@@ -300,6 +303,20 @@ impl Chunk {
             .collect();
 
         blocks
+    }
+
+    pub fn get_all_blocks_converted(&self, version: McVersion) -> Vec<BlockId> {
+        let blocks: Vec<Block> = self
+            .chunk_sections
+            .iter()
+            .flat_map(|s| s.blocks.iter().cloned()) // TODO: is cloned a good/bad thing
+            .collect();
+
+        let conv = convert_blocks_from_internal_format(version, blocks);
+
+        conv.into_iter()
+            .map(|b| b)
+            .collect()
     }
 
     // pub fn get_all_data(&self) -> Vec<u8> {

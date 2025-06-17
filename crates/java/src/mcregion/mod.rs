@@ -295,10 +295,10 @@ impl MCRChunk for Chunk {
         c.insert("zPos".to_string(), coords.z);
         c.insert(
             "Blocks".to_string(),
-            self.get_all_blocks()
+            self.get_all_blocks_converted(version)
                 .clone()
                 .iter()
-                .map(|&x| x as u8)
+                .map(|x| usize::try_from(x.clone()).unwrap_or(0) as u8)
                 .collect::<Vec<u8>>(),
         );
         // c.insert(

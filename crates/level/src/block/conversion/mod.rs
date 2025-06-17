@@ -25,23 +25,45 @@ macro_rules! add_block_conv {
 }
 
 // TODO: Match Numeric or Flattened with values that are NumericAndFlattened and NumericWithData
+#[inline(always)]
 pub fn get_internal_block_id(v: McVersion, id: &BlockId) -> Option<Block> {
-    for (block, ids) in &BLOCK_REGISTRY.blocks {
-        let m = ids.range(..=v).rev().find(|(_, blk_id)| *blk_id == id);
-
-        if m.is_some() {
-            return Some(*block);
-        }
-    }
-
-    None
+    BLOCK_REGISTRY
+        .versions
+        .get(&v)
+        .and_then(|blocks| blocks.get(id))
+        .copied()
 }
 
-pub fn get_version_block_id(v: McVersion, id: &Block) -> Option<BlockId> {
-    BLOCK_REGISTRY.blocks.get(&id).and_then(|ids| {
-        ids.range(..=v)
-            .rev()
-            .next()
-            .map(|(_, blk_id)| blk_id.clone())
-    })
+#[inline(always)]
+pub fn get_version_block_id(v: McVersion, id: &Block) -> BlockId {
+    BLOCK_REGISTRY
+        .blocks
+        .get(id)
+        .and_then(|ids| {
+            ids.range(..=v)
+                .rev()
+                .next()
+                .map(|(_, blk_id)| blk_id.clone())
+        })
+        .unwrap_or(BlockId::default())
+}
+
+#[inline(always)]
+pub fn convert_blocks_to_internal_format(
+    version: McVersion,
+    arr: Vec<BlockId>,
+) -> Vec<Option<Block>> {
+    arr.iter()
+        .map(|v| get_internal_block_id(version, v))
+        .collect()
+}
+
+#[inline(always)]
+pub fn convert_blocks_from_internal_format(
+    version: McVersion,
+    arr: Vec<Block>,
+) -> Vec<BlockId> {
+    arr.iter()
+        .map(|v| get_version_block_id(version, v))
+        .collect()
 }
