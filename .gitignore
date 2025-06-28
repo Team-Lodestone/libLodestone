@@ -8,3 +8,4 @@ wasm-pack.log
 /heightmaps
 /internal_tests
 /crates/java/tests/internal_tests.rs
+.vscode/launch.json
