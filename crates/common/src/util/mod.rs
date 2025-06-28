@@ -49,6 +49,7 @@ pub enum McVersion {
     Release1_1,
     Release1_2_1,
     Release1_13,
+    MCPEAlpha0_8_1,
 }
 
 /// Gets the 1D array index for a given 3D array index in YZX order

@@ -5,6 +5,7 @@ members = [
     "crates/java",
     "crates/level",
     "crates/core",
+    "crates/pocket",
 
     "examples/*"
 ]
@@ -30,6 +31,7 @@ opt-level = "s"
 lodestone_common = { version = "=0.6.6", path = "crates/common" }
 lodestone_java   = { version = "=0.6.6", path = "crates/java" }
 lodestone_level  = { version = "=0.6.6", path = "crates/level"}
+lodestone_pocket = { version = "=0.6.6", path = "crates/pocket" }
 
 byteorder            = "1.5.0"
 flate2               = "1.1.1"
