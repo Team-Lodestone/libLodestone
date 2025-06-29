@@ -16,7 +16,7 @@ mod alpha_081_tests {
                 return;
             }
         };
-        let lvl = Level::read_alpha081(McVersion::MCPEAlpha0_8_1, data).expect("Roadrunner thy art a harsh mistress");
+        let lvl = Level::read_alpha081_chunks_dat(McVersion::MCPEAlpha0_8_1, data).expect("Roadrunner thy art a harsh mistress");
         let done = timer.elapsed();
         println!("Done in {:?}", done);
         
