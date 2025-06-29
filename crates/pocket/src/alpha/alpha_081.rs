@@ -31,7 +31,11 @@ impl Alpha081Level for Level {
         for l in locations.iter_mut().enumerate() {
             let size = c.read_u8().expect("Size in location");
             let offset = c.read_u24::<LittleEndian>().expect("Offset in location");
-            
+
+            if size == 0 {
+                continue;
+            }
+
             if size != 0x15 {
                 /* TODO: Error recovery not possible with panics? */
                 return Err("Unsupported chunk size specified in index!".to_string());
@@ -40,7 +44,7 @@ impl Alpha081Level for Level {
             *l.1 = (ChunkLocation { offset, size }, Coords {x: (l.0 % 32) as i32, z: (l.0 / 32) as i32} );
         }
 
-        let chunks: Vec<(&Coords, Chunk)> = locations
+        let chunks: Vec<(Coords, Chunk)> = locations
             .par_iter()
             .filter_map(|l| {
                 if l.0.size == 0 {
@@ -48,19 +52,21 @@ impl Alpha081Level for Level {
                 }
                 let mut c = c.clone();
                 c.set_position((l.0.offset as u64) * 0x1000 + 4);
-                let chunk_size = c.read_u32::<LittleEndian>().expect("Can't read chunk length in chunk structure");
-                if chunk_size != 82180 {
-                    panic!("Unsupported chunk size specified in chunk structure");
-                }
-
-                let mut chunk_data: Vec<u8> = vec![0; chunk_size as usize];
+                
+                // Third-party tools (some PocketMine converter?) doesn't seem to write the minimum bytes required. Minecraft appears to ignore this.
+                // So allocate the minimum needed by the data
+                let mut chunk_data: Vec<u8> = vec![0; 82180 - 4];
                 c.read_exact(&mut chunk_data).expect("Failed to read chunk data");
 
                 let ch = Chunk::read_alpha081(version, &chunk_data).expect("Failed to read chunk");
-                Some((&l.1, ch))
+                Some((l.1.clone(), ch))
             })
             .collect();
 
+
+        for (coords, chunk) in chunks {
+            level.add_chunk(coords, chunk);
+        }
         Ok(level)
     }
     fn write_alpha081(&mut self, version: McVersion) -> Vec<u8> {
