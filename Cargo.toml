@@ -1,49 +1,55 @@
-[package]
-name = "libLodestone"
-version = "0.4.0" # usually I've been incrementing minor ver everytime I add a new supported level format...
-authors = ["Team Lodestone"]
-description = "Provides reading, writing, and format conversion for most editions and versions of Minecraft."
-edition = "2024"
-license = "LGPL-2.1"
-readme = "README.md"
-repository = "https://github.com/team-lodestone/libLodestone"
-homepage = "https://team-lodestone.github.io"
-
 [workspace]
+resolver = "3"
 members = [
-    "src/java",
-    "src/common"
+    "crates/common",
+    "crates/java",
+    "crates/level",
+    "crates/core",
+
+    "examples/*"
 ]
 
-[lib]
-crate-type = ["cdylib", "rlib"]
+[workspace.package]
+edition    = "2024"
+# usually I've been incrementing minor ver everytime I add a new supported level format...
+version    = "0.6.6"
+# TODO: specify MSRV (minimum supported rust version)
+license    = "LGPL-2.1"
+readme     = "README.md"
+repository = "https://github.com/team-lodestone/libLodestone"
+homepage   = "https://team-lodestone.github.io"
 
-[features]
-default = ["console_error_panic_hook"]
-
-[dependencies]
-wasm-bindgen = "0.2.100"
-
-lodestone_common = { path = "src/common" }
-lodestone_java = { path = "src/java" }
-
-# The `console_error_panic_hook` crate provides better debugging of panics by
-# logging them with `console.error`. This is great for development, but requires
-# all the `std::fmt` and `std::panicking` infrastructure, so isn't great for
-# code size when deploying.
-console_error_panic_hook = { version = "0.1.7", optional = true }
-
-# `wee_alloc` is a tiny allocator for wasm that is only ~1K in code size
-# compared to the default allocator's ~10K. It is slower than the default
-# allocator, however.
-#
-# Unfortunately, `wee_alloc` requires nightly Rust when targeting wasm for now.
-wee_alloc = { version = "0.4.5", optional = true }
-log = "0.4.27"
-flate2 = "1.1.1"
-
-[dev-dependencies]
-wasm-bindgen-test = "0.3.50"
 
 [profile.release]
 opt-level = "s"
+
+
+[workspace.dependencies]
+# NOTE: for now we keep all version numbers in lockstep, as the version specified
+# in [workspace.package] above
+lodestone_common = { version = "=0.6.6", path = "crates/common" }
+lodestone_java   = { version = "=0.6.6", path = "crates/java" }
+lodestone_level  = { version = "=0.6.6", path = "crates/level"}
+
+byteorder            = "1.5.0"
+flate2               = "1.1.1"
+phf                  = "0.11.3"
+quartz_nbt           = "0.2.9"
+log                  = "0.4.27"
+palettevec           = "0.4.0"
+strum                = "0.27.1"
+strum_macros         = "0.27.1"
+#wasm-bindgen         = "0.2.100"
+#wasm-logger          = "0.2.0"
+#serde_with           = "3.12.0"
+#
+#
+## The `console_error_panic_hook` crate provides better debugging of panics by
+## logging them with `console.error`. This is great for development, but requires
+## all the `std::fmt` and `std::panicking` infrastructure, so isn't great for
+## code size when deploying.
+## Should be optional in each package.
+#console_error_panic_hook = "0.1.7"
+#
+## Should be only used in [dev-dependencies] sections of each package.
+#wasm-bindgen-test = "0.3.50"

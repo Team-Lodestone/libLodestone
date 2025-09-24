@@ -1,0 +1,185 @@
+[
+    {
+        "name": "Air",
+        "id": 0,
+        "material": "None",
+        "platforms": {
+            "Java": {
+                "PreClassic132211": {
+                    "numeric": {
+                        "id": 0
+                    }
+                },
+                "Release 1.13": {
+                    "str": "minecraft:air"
+                }
+            }
+        }
+    },
+    {
+        "name": "Stone",
+        "id": 1,
+        "material": "Stone",
+        "platforms": {
+            "Java": {
+                "PreClassic132211": {
+                    "numeric": {
+                        "id": 1
+                    }
+                },
+                "Release1_13": {
+                    "str": "minecraft:stone"
+                }
+            }
+        }
+    },
+    {
+        "name": "Granite",
+        "id": 101,
+        "material": "Dirt",
+        "platforms": {
+            "Java": {
+                "Snapshot14w02a": {
+                    "numeric": {
+                        "id": 1,
+                        "variant": 1
+                    }
+                },
+                "Release1_13": {
+                    "str": "minecraft:granite"
+                }
+            }
+        }
+    },
+    {
+        "name": "Grass",
+        "id": 2,
+        "material": "Grass",
+        "platforms": {
+            "Java": {
+                "PreClassic132211": {
+                    "numeric": {
+                        "id": 2
+                    }
+                },
+                "Release1_13": {
+                    "str": "minecraft:grass_block"
+                }
+            }
+        }
+    },
+    {
+        "name": "Dirt",
+        "id": 3,
+        "material": "Dirt",
+        "platforms": {
+            "Java": {
+                "PreClassic20090515": {
+                    "numeric": {
+                        "id": 3
+                    }
+                },
+                "Release1_13": {
+                    "str": "minecraft:dirt"
+                }
+            }
+        }
+    },
+    {
+        "name": "Cobblestone",
+        "id": 4,
+        "material": "Stone",
+        "platforms": {
+            "Java": {
+                "PreClassic20090515": {
+                    "numeric": {
+                        "id": 4
+                    }
+                },
+                "Release1_13": {
+                    "str": "minecraft:cobblestone"
+                }
+            }
+        }
+    },
+    {
+        "name": "OakPlanks",
+        "id": 5,
+        "material": "Wood",
+        "platforms": {
+            "Java": {
+                "PreClassic20090515": {
+                    "numeric": {
+                        "id": 5
+                    }
+                },
+                "Release1_2_4": {
+                    "numeric": {
+                        "id": 5,
+                        "variant": 0
+                    }
+                },
+                "Release1_13": {
+                    "str": "minecraft:oak_planks"
+                }
+            }
+        }
+    },
+    {
+        "name": "OakSapling",
+        "id": 6,
+        "material": "Plant",
+        "platforms": {
+            "Java": {
+                "PreClassic161348": {
+                    "numeric": {
+                        "id": 6
+                    }
+                },
+                "Release1_5": {
+                    "numeric": {
+                        "id": 6,
+                        "variant": 0
+                    }
+                },
+                "Release1_13": {
+                    "str": "minecraft:oak_sapling"
+                }
+            }
+        }
+    },
+    {
+        "name": "Bedrock",
+        "id": 7,
+        "material": "Stone",
+        "platforms": {
+            "Java": {
+                "Classic0_0_12a": {
+                    "numeric": {
+                        "id": 7
+                    }
+                },
+                "Release1_13": {
+                    "str": "minecraft:bedrock"
+                }
+            }
+        }
+    },
+    {
+        "name": "FlowingWater",
+        "id": 8,
+        "material": "Water",
+        "platforms": {
+            "Java": {
+                "Classic0_0_12a": {
+                    "numeric": {
+                        "id": 8
+                    }
+                },
+                "Release1_13": {
+                    "str": "minecraft:flowing_water"
+                }
+            }
+        }
+    }
+]

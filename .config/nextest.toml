@@ -1,0 +1,13 @@
+[store]
+dir = "target/nextest"
+
+[profile.default]
+default-filter = "all()"
+
+test-threads = "num-cpus"
+
+status-level = "pass"
+
+final-status-level = "flaky"
+
+fail-fast = false

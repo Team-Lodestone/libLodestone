@@ -44,8 +44,8 @@ matrix:
       - cargo check --target wasm32-unknown-unknown --no-default-features
       - cargo check                                 --no-default-features --features console_error_panic_hook
       - cargo check --target wasm32-unknown-unknown --no-default-features --features console_error_panic_hook
-      - cargo check                                 --no-default-features --features "console_error_panic_hook wee_alloc"
-      - cargo check --target wasm32-unknown-unknown --no-default-features --features "console_error_panic_hook wee_alloc"
+      - cargo check                                 --no-default-features --features console_error_panic_hook
+      - cargo check --target wasm32-unknown-unknown --no-default-features --features console_error_panic_hook
 
   # Builds on beta.
   - rust: beta
@@ -65,5 +65,3 @@ matrix:
       - cargo check --target wasm32-unknown-unknown --no-default-features
       - cargo check                                 --no-default-features --features console_error_panic_hook
       - cargo check --target wasm32-unknown-unknown --no-default-features --features console_error_panic_hook
-      # Note: no enabling the `wee_alloc` feature here because it requires
-      # nightly for now.
