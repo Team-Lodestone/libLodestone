@@ -18,7 +18,7 @@ mod alpha_tests {
 
     #[test]
     fn test_alpha_world() {
-        let path = Path::new("../../internal_tests/alpha/src/World2/");
+        let path = Path::new("../../internal_tests/alpha/src/pmc/");
         let timer = Instant::now();
         let lvl = Level::read_alpha_dir(McVersion::Alpha1_2_6, path).expect("WTF");
         let done = timer.elapsed();
@@ -29,7 +29,7 @@ mod alpha_tests {
         println!("Writing");
         let mut of = File::create(format!(
             "../../internal_tests/map/{}-{}_{}.raw",
-            "World2",
+            "pmc",
             lvl.get_block_width(),
             lvl.get_block_length()
         ))

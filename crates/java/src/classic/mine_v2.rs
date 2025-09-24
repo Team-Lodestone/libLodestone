@@ -3,13 +3,12 @@ use lodestone_common::io::{read_prefixed_2_byte_string, write_prefixed_2_byte_st
 use lodestone_common::types::hashmap_ext::HashMapExt;
 use lodestone_common::util::McVersion;
 use lodestone_level::block::conversion::{get_internal_block_id, get_version_block_id};
-use lodestone_level::block::BlockId;
+use lodestone_level::block::{BlockInfo};
 use lodestone_level::level::chunk::{CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_level::level::{metadata, Level};
 use rayon::prelude::*;
 use std::io::{Cursor, Read, Write};
 use std::time::SystemTime;
-use lodestone_level::block::BlockId::NumericAndFlattened;
 
 pub trait MineV2Level {
     fn new_minev2(width: i16, height: i16, length: i16, name: String, author: String) -> Level;
@@ -103,7 +102,7 @@ impl MineV2Level for Level {
                             + (lx as usize);
 
                         let blk =
-                            get_internal_block_id(version, &BlockId::Numeric(blocks[i] as u16));
+                            get_internal_block_id(version, &BlockInfo {id: Some(blocks[i] as u32), variant: None, str: None });
 
                         match blk {
                             Some(blk) => {
@@ -160,7 +159,7 @@ impl MineV2Level for Level {
             let z = (i / width) % depth;
             let x = i % width;
 
-            *v = usize::try_from(get_version_block_id(version, &self.get_block(x as i32, y as i16, z as i32))).unwrap_or(0) as u8;
+            *v = get_version_block_id(version, &self.get_block(x as i32, y as i16, z as i32)).id.unwrap_or(0) as u8;
         });
 
         c.write_all(blocks.as_slice()).expect("Block array");

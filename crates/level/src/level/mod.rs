@@ -3,7 +3,6 @@ pub mod chunk_section;
 pub mod metadata;
 pub mod region;
 
-use crate::block::Block;
 use crate::level::chunk::{Chunk, Light, CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_common::types::hashmap_ext::Value;
 use rayon::iter::IntoParallelRefIterator;
@@ -11,6 +10,8 @@ use rayon::iter::ParallelIterator;
 use serde::{Deserialize, Serialize};
 use std::cmp::min;
 use std::collections::{BTreeMap, HashMap};
+use lodestone_common::types::color::Color;
+use crate::block::internal_blocks::Block;
 
 #[derive(Clone, Default, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 pub struct Coords {
@@ -354,27 +355,31 @@ impl Level {
         for y in 0..length {
             for x in 0..width {
                 // TODO: use block map from id to internal block struct which contains Material
-                let mut rgb: [f32; 3] = crate::block::palette::CLASSIC_PALETTE
-                    [min(50, block_map[x + y * width] as u16) as usize];
+                let rgb: Color = crate::block::material::Material::get_material_from_block(&block_map[x + y * width]).get_color();
 
+                let mut r = rgb.r as f32;
+                let mut g = rgb.g as f32;
+                let mut b = rgb.b as f32;
+                let a = rgb.a;
+                
                 if height_map[x + y * width]
                     < height_map[x + (y as i64 - 1).max(0) as usize * width]
                 {
-                    rgb[0] *= 0.75;
-                    rgb[1] *= 0.75;
-                    rgb[2] *= 0.75;
+                    r *= 0.75;
+                    g *= 0.75;
+                    b *= 0.75;
                 } else if height_map[x + y * width]
                     > height_map[x + (y as i64 - 1).max(0) as usize * width]
                 {
-                    rgb[0] *= 1.25;
-                    rgb[1] *= 1.25;
-                    rgb[2] *= 1.25;
+                    r *= 1.25;
+                    g *= 1.25;
+                    b *= 1.25;
                 }
 
-                img[(x + y * width) * 4 + 0] = rgb[0].floor() as u8;
-                img[(x + y * width) * 4 + 1] = rgb[1].floor() as u8;
-                img[(x + y * width) * 4 + 2] = rgb[2].floor() as u8;
-                img[(x + y * width) * 4 + 3] = 0xff;
+                img[(x + y * width) * 4 + 0] = r.floor() as u8;
+                img[(x + y * width) * 4 + 1] = g.floor() as u8;
+                img[(x + y * width) * 4 + 2] = b.floor() as u8;
+                img[(x + y * width) * 4 + 3] = a;
             }
         }
 

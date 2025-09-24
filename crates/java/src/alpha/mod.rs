@@ -6,7 +6,7 @@ use lodestone_common::types::hashmap_ext::Value::{Bool, Int64};
 use lodestone_common::types::vec3i::Vec3i;
 use lodestone_common::util::{base36, McVersion};
 use lodestone_level::block::conversion::get_internal_block_id;
-use lodestone_level::block::BlockId;
+use lodestone_level::block::{BlockInfo};
 use lodestone_level::entity::block_entity::BlockEntity;
 use lodestone_level::level::chunk::{Chunk, CHUNK_LENGTH};
 use lodestone_level::level::{metadata, Coords, Level};
@@ -91,7 +91,7 @@ impl AlphaChunk for Chunk {
 
                     let blk = blocks[idx];
                     if blk != 0 {
-                        let blk = get_internal_block_id(version, &BlockId::Numeric(blk as u16));
+                        let blk = get_internal_block_id(version, &BlockInfo { id: Some(blk as u32), variant: None, str: None });
 
                         match blk {
                             Some(blk) => {
@@ -182,7 +182,7 @@ impl AlphaChunk for Chunk {
         // TODO: This is jank. Please fix.
         let blocks = chunk_level.insert::<_, Vec<u8>>(
             metadata::BLOCKS.to_string(),
-            self.get_all_blocks_converted(version).iter().map(|x| usize::try_from(x.clone()).unwrap_or(0) as u8).collect(),
+            self.get_all_blocks_converted(version).iter().map(|x| x.id.unwrap_or(0) as u8).collect(),
         );
 
         let data = chunk_level.insert::<_, Vec<u8>>(metadata::DATA.to_string(), vec![0u8; 16384]);

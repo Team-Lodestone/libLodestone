@@ -3,7 +3,7 @@ use byteorder::{BigEndian, ReadBytesExt};
 use lodestone_common::types::hashmap_ext::HashMapExt;
 use lodestone_common::util::McVersion;
 use lodestone_level::block::conversion::get_internal_block_id;
-use lodestone_level::block::BlockId;
+use lodestone_level::block::{BlockInfo};
 use lodestone_level::level::chunk::{Chunk, CHUNK_LENGTH, CHUNK_WIDTH};
 use lodestone_level::level::{metadata, Coords, Level};
 use std::fs;
@@ -150,7 +150,7 @@ impl Infdev624Level for Level {
                         if block_id != 0 {
                             let blk = get_internal_block_id(
                                 McVersion::Infdev20100624,
-                                &BlockId::Numeric(blocks[i] as u16),
+                                &BlockInfo { id: Some(blocks[i] as u32), variant: None, str: None },
                             );
 
                             match blk {

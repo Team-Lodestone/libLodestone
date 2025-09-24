@@ -48,6 +48,9 @@ pub enum McVersion {
     Infdev20100630,
     Release1_1,
     Release1_2_1,
+    Release1_2_4,
+    Release1_5,
+    Snapshot14w02a,
     Release1_13,
 }
 

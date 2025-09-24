@@ -3,7 +3,6 @@ use flate2::read::{GzDecoder, ZlibDecoder};
 use lodestone_common::types::hashmap_ext::HashMapExt;
 use lodestone_common::util::McVersion;
 use lodestone_level::block::conversion::get_internal_block_id;
-use lodestone_level::block::BlockId;
 use lodestone_level::level::chunk::Chunk;
 use lodestone_level::level::region::ChunkLocation;
 use lodestone_level::level::region::Compression;
@@ -13,6 +12,7 @@ use quartz_nbt::{io, NbtCompound, NbtList};
 use rayon::iter::ParallelIterator;
 use rayon::prelude::IntoParallelRefIterator;
 use std::io::{Cursor, Read, Seek, SeekFrom, Write};
+use lodestone_level::block::BlockInfo;
 
 /// TODO: we need to make write_mcr use coords
 /// also need to read/write region directories.
@@ -260,11 +260,11 @@ impl MCRChunk for Chunk {
                 for x in 0..16 {
                     let i = y + (z * 128 + (x * 128 * 16));
 
-                    let block_id = blocks[i] as u16;
+                    let block_id = blocks[i] as u32;
                     if block_id != 0 {
                         c.get_or_create_chunk_section_mut(y as i16);
 
-                        let blk = get_internal_block_id(version, &BlockId::Numeric(block_id));
+                        let blk = get_internal_block_id(version, &BlockInfo { id: Some(block_id), variant: None, str: None });
                         match blk {
                             Some(blk) => {
                                 c.set_block(x as i8, y as i16, z as i8, blk);
@@ -298,7 +298,7 @@ impl MCRChunk for Chunk {
             self.get_all_blocks_converted(version)
                 .clone()
                 .iter()
-                .map(|x| usize::try_from(x.clone()).unwrap_or(0) as u8)
+                .map(|x| x.id.unwrap_or(0) as u8)
                 .collect::<Vec<u8>>(),
         );
         // c.insert(

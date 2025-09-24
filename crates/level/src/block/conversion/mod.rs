@@ -1,4 +1,4 @@
-use crate::block::{Block, BlockId};
+use crate::block::{Block, BlockInfo};
 use lodestone_common::util::McVersion;
 use crate::block::registry::BLOCK_REGISTRY;
 
@@ -24,18 +24,17 @@ macro_rules! add_block_conv {
     }};
 }
 
-// TODO: Match Numeric or Flattened with values that are NumericAndFlattened and NumericWithData
 #[inline(always)]
-pub fn get_internal_block_id(v: McVersion, id: &BlockId) -> Option<Block> {
+pub fn get_internal_block_id(v: McVersion, id: &BlockInfo) -> Option<Block> {
     BLOCK_REGISTRY
         .versions
-        .get(&v)
-        .and_then(|blocks| blocks.get(id))
-        .copied()
+        .range(..=v)
+        .rev()
+        .find_map(|(_ver, blocks)| blocks.get(id).copied())
 }
 
 #[inline(always)]
-pub fn get_version_block_id(v: McVersion, id: &Block) -> BlockId {
+pub fn get_version_block_id(v: McVersion, id: &Block) -> BlockInfo {
     BLOCK_REGISTRY
         .blocks
         .get(id)
@@ -45,13 +44,13 @@ pub fn get_version_block_id(v: McVersion, id: &Block) -> BlockId {
                 .next()
                 .map(|(_, blk_id)| blk_id.clone())
         })
-        .unwrap_or(BlockId::default())
+        .unwrap_or(BlockInfo::default())
 }
 
 #[inline(always)]
 pub fn convert_blocks_to_internal_format(
     version: McVersion,
-    arr: Vec<BlockId>,
+    arr: Vec<BlockInfo>,
 ) -> Vec<Option<Block>> {
     arr.iter()
         .map(|v| get_internal_block_id(version, v))
@@ -62,7 +61,7 @@ pub fn convert_blocks_to_internal_format(
 pub fn convert_blocks_from_internal_format(
     version: McVersion,
     arr: Vec<Block>,
-) -> Vec<BlockId> {
+) -> Vec<BlockInfo> {
     arr.iter()
         .map(|v| get_version_block_id(version, v))
         .collect()

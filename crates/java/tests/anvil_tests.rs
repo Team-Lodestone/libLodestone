@@ -15,8 +15,8 @@ mod anvil_tests {
     #[test]
     fn anvil_to_minev2_test() {
         log::set_max_level(log::LevelFilter::Debug);
-        let fname = "NewWorld2";
-        let file_dir = Path::new("../../internal_tests/anvil/src/NewWorld2/");
+        let fname = "Newpmc";
+        let file_dir = Path::new("../../internal_tests/anvil/src/Newpmc/");
 
         println!("Reading level");
         let mut level = Level::read_anvil_dir(file_dir).unwrap();
@@ -63,7 +63,7 @@ mod anvil_tests {
         log::set_max_level(log::LevelFilter::Debug);
         let fname = "13a_03-level_greffen";
 
-        // let file_dir = Path::new("../../internal_tests/alpha/src/World2/");
+        // let file_dir = Path::new("../../internal_tests/alpha/src/pmc/");
         println!("Reading file");
         let data = match fs::read(format!("../../internal_tests/minev2/src/{}.mine", fname)) {
             Ok(d) => d,
@@ -106,7 +106,7 @@ mod anvil_tests {
         log::set_max_level(log::LevelFilter::Debug);
         let fname = "13a_03-level_greffen";
 
-        // let file_dir = Path::new("../../internal_tests/alpha/src/World2/");
+        // let file_dir = Path::new("../../internal_tests/alpha/src/pmc/");
         println!("Reading file");
         let data = match fs::read(format!("../../internal_tests/cw/src/{}.cw", fname)) {
             Ok(d) => d,
@@ -147,9 +147,9 @@ mod anvil_tests {
     #[test]
     fn alpha_to_anvil_test() {
         log::set_max_level(log::LevelFilter::Debug);
-        // let fname = "World2";
+        // let fname = "pmc";
 
-        let file_dir = Path::new("../../internal_tests/alpha/src/World2/");
+        let file_dir = Path::new("../../internal_tests/alpha/src/pmc/");
         // println!("Reading file");
         // let data = match fs::read("../../internal_tests/cw/src/large_world.cw") {
         //     Ok(d) => d,
@@ -176,7 +176,7 @@ mod anvil_tests {
         println!("Writing");
         let mut of = File::create(format!(
             "../../internal_tests/map/{}-{}_{}.raw",
-            "World2",
+            "pmc",
             level.get_block_width(),
             level.get_block_length()
         ))
@@ -184,7 +184,7 @@ mod anvil_tests {
         of.write_all(&map).unwrap();
         of.flush().unwrap();
 
-        let output_dir = Path::new("../../internal_tests/anvil/dst/World2/");
+        let output_dir = Path::new("../../internal_tests/anvil/dst/pmc/");
         level.write_anvil_dir(output_dir);
     }
 }

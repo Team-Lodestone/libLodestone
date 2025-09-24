@@ -1,4 +1,4 @@
-use crate::block::{Block, BlockId};
+use crate::block::{BlockInfo};
 use crate::entity::block_entity::BlockEntity;
 use crate::level::chunk_section::ChunkSection;
 use lodestone_common::types::hashmap_ext::Value;
@@ -6,8 +6,8 @@ use lodestone_common::types::vec3i::Vec3i;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap};
 use lodestone_common::util::McVersion;
-use crate::block::BlockId::NumericAndFlattened;
 use crate::block::conversion::convert_blocks_from_internal_format;
+use crate::block::internal_blocks::Block;
 
 pub const CHUNK_WIDTH: i8 = 16;
 pub const CHUNK_LENGTH: i8 = 16;
@@ -179,7 +179,7 @@ impl Chunk {
             }
         }
 
-        // if our block isn't 0
+        // if our block isn't air
         if block != Block::Air {
             if y >= self.get_height(x, z) {
                 *self.get_height_mut(x, z) = (y + 1).min(self.height - 1);
@@ -305,7 +305,7 @@ impl Chunk {
         blocks
     }
 
-    pub fn get_all_blocks_converted(&self, version: McVersion) -> Vec<BlockId> {
+    pub fn get_all_blocks_converted(&self, version: McVersion) -> Vec<BlockInfo> {
         let blocks: Vec<Block> = self
             .chunk_sections
             .iter()

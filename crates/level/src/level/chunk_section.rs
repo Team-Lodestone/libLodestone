@@ -1,12 +1,12 @@
 use crate::block::conversion::{convert_blocks_from_internal_format, get_internal_block_id, get_version_block_id};
-use crate::block::{Block, BlockId};
+use crate::block::{BlockInfo};
 use crate::level::chunk::{Light, CHUNK_LENGTH, CHUNK_SECTION_HEIGHT, CHUNK_WIDTH};
 use lodestone_common::util::McVersion;
 use palettevec::{
     index_buffer::aligned::AlignedIndexBuffer, palette::hybrid::HybridPalette, PaletteVec,
 };
 use std::collections::BTreeMap;
-use crate::block::BlockId::NumericAndFlattened;
+use crate::block::internal_blocks::Block;
 
 pub type BlockPaletteVec = PaletteVec<Block, HybridPalette<64, Block>, AlignedIndexBuffer>;
 pub type StatePaletteVec = PaletteVec<
@@ -18,7 +18,6 @@ pub type StatePaletteVec = PaletteVec<
 #[derive(Clone)]
 pub struct ChunkSection {
     // YZX ordering
-    // TODO: we could also do palette of block states where we do say 3 bits for block id index and 3 for blockstate index (dynamic)
     pub blocks: BlockPaletteVec,
     pub data: StatePaletteVec,
     pub block_light: Vec<u8>,
@@ -163,7 +162,7 @@ impl ChunkSection {
         }
     }
 
-    pub fn get_all_blocks_converted(&self, version: McVersion) -> Vec<BlockId> {
+    pub fn get_all_blocks_converted(&self, version: McVersion) -> Vec<BlockInfo> {
         let blocks: Vec<Block> = self
             .blocks
             .iter()
