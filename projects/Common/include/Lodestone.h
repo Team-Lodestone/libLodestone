@@ -1,0 +1,26 @@
+//
+// Created by DexrnZacAttack on 10/14/25 using zPc-i2.
+//
+#ifndef LODESTONE_LODESTONE_H
+#define LODESTONE_LODESTONE_H
+#include "Defines.h"
+
+constexpr const char *const LIBRARY_STRING =
+    "libLodestone v" LODESTONE_VERSION " (" COMPILER_NAME " / " BUILD_TYPE
+    " | " PLATFORM_NAME " " PLATFORM_ARCH
+    ") | https://github.com/Team-Lodestone/libLodestone";
+
+namespace lodestone {
+    // clang-format off
+    extern "C" {
+        LODESTONE_API NO_DISCARD constexpr const char *lodestone_get_build_type(); // NOLINT
+        LODESTONE_API NO_DISCARD constexpr const char *lodestone_get_compiler_name(); // NOLINT
+        LODESTONE_API NO_DISCARD constexpr const char *lodestone_get_platform_arch(); // NOLINT
+        LODESTONE_API NO_DISCARD constexpr const char *lodestone_get_platform(); // NOLINT
+        LODESTONE_API NO_DISCARD constexpr const char *lodestone_get_version(); // NOLINT
+        LODESTONE_API NO_DISCARD constexpr const char *lodestone_get_library_string(); // NOLINT
+    }
+    // clang-format on
+} // lodestone
+
+#endif //LODESTONE_LODESTONE_H
