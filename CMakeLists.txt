@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 4.0)
 project(Lodestone VERSION 1.0.0)
 
-set(VERSION_SUFFIX "-dev.0") # used for non-stable versions, otherwise blank
+set(VERSION_SUFFIX "-dev.1") # used for non-stable versions, otherwise blank
 set(CMAKE_CXX_STANDARD 17)
 
 # DEFINITIONS
@@ -33,5 +33,7 @@ target_compile_definitions(Lodestone.Common PRIVATE
         LODESTONE_VERSION="${PROJECT_VERSION}${VERSION_SUFFIX}"
         LODESTONE_RC_VERSION=${PROJECT_VERSION_MAJOR},${PROJECT_VERSION_MINOR},${PROJECT_VERSION_PATCH}
 )
+
+add_custom_target(Lodestone.All ALL DEPENDS Lodestone.Common Lodestone.Level)
 
 
