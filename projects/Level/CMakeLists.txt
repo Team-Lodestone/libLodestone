@@ -31,6 +31,11 @@ set(FILES
         include/Chunk/Section/LevelSection.h
         src/Chunk/Section/LevelSection.cpp
         include/Chunk/Section/LevelSection.h
+        include/Chunk/LevelChunk.h
+        src/Chunk/LevelChunk.cpp
+        include/Chunk/LevelChunk.h
+        src/Chunk/EmptyChunk.cpp
+        include/Chunk/EmptyChunk.h
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")

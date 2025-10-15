@@ -14,37 +14,18 @@
 #include "Section/EmptySection.h"
 
 namespace lodestone::level::chunk {
-    class Chunk {
+    class LODESTONE_API Chunk {
     public:
+        virtual ~Chunk() = default;
+
         /** Creates a new Chunk with chunk sections for the given height */
-        Chunk(int height);
+        virtual const int16_t *calculateHeightmap() = 0;
+        virtual int getHeight() const = 0;
 
-        const int16_t *generateHeightmap();
+        virtual section::Section *getSection(int y) const = 0;
 
-        int getHeight() const {
-            return mSections.size() % 16;
-        };
-
-        section::Section *getSection(const int y) const {
-            // if non-existent, return fake one
-            if (mSections.size() >= (y/16))
-                return section::EmptySection::sInstance;
-
-            return mSections[y/16];
-        }
-
-        // todo: shouldn't we return ref????
-        block::state::BlockState *getBlock(const int x, const int y, const int z) const {
-            return getSection(y)->getBlock(x % 16, y % 16, z % 16);
-        }
+        virtual block::state::BlockState *getBlock(int x, int y, int z) const = 0;
     protected:
-        /** Chunk Sections
-         *
-         * Each chunk is made up of x amount of Sections, with each section storing 16x16x16 blocks.
-         * This dictates the height of the chunk as each section is 16 blocks in height.
-         */
-        std::vector<section::Section*> mSections;
-
         /** Heightmap
          *
          * Each x and z coord corresponds to the topmost block's height
