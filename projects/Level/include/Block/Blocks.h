@@ -8,14 +8,29 @@
 
 namespace lodestone::level::block {
     class LODESTONE_API Blocks {
+    protected:
+        Blocks();
     public:
-        static const Block AIR;
-        static const Block STONE;
-        static const Block GRASS;
-        static const Block DIRT;
-    };
+        static Blocks *sInstance;
 
-    extern const Block *gBlocks;
+        void registerBlock(const std::string &id, const Block* block) {
+            if (mBlocks.count(id))
+                throw std::runtime_error("Block already exists");
+
+            mBlocks[id] = std::move(block);
+        }
+
+        const Block *getBlock(const std::string &id) const {
+            if (!mBlocks.count(id))
+                return nullptr;
+
+            return mBlocks.at(id);
+        };
+    private:
+        std::unordered_map<std::string, const Block*> mBlocks = {
+            {"lodestone:air", new Block("lodestone:air", material::Material({0, 0, 0, 0}))}
+        };
+    };
 }
 
 #endif //LODESTONE_BLOCKS_H

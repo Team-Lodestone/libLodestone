@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 4.0)
 project(Lodestone VERSION 1.0.0)
 
-set(VERSION_SUFFIX "-dev.1") # used for non-stable versions, otherwise blank
+set(VERSION_SUFFIX "-dev.2") # used for non-stable versions, otherwise blank
 set(CMAKE_CXX_STANDARD 17)
 
 # DEFINITIONS
@@ -25,6 +25,7 @@ FetchContent_MakeAvailable(BIO)
 include_directories(${BIO_SOURCE_DIR})
 
 # PROJECTS
+add_subdirectory(projects/Tests)
 add_subdirectory(projects/Common)
 add_subdirectory(projects/Level)
 
@@ -33,6 +34,13 @@ target_compile_definitions(Lodestone.Common PRIVATE
         LODESTONE_VERSION="${PROJECT_VERSION}${VERSION_SUFFIX}"
         LODESTONE_RC_VERSION=${PROJECT_VERSION_MAJOR},${PROJECT_VERSION_MINOR},${PROJECT_VERSION_PATCH}
 )
+
+# because otherwise jetbrains implodes
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_compile_options(
+            "-D_GLIBCXX_DEBUG"
+    )
+endif ()
 
 add_custom_target(Lodestone.All ALL DEPENDS Lodestone.Common Lodestone.Level)
 

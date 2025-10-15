@@ -22,7 +22,15 @@ set(FILES
         src/Block/Blocks.cpp
         src/Material/Materials.cpp
         include/Material/Materials.h
+        src/Block/BlockState.cpp
+        include/Block/BlockState.h
 )
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_compile_options(
+            "-D_GLIBCXX_DEBUG"
+    )
+endif ()
 
 add_library(Lodestone.Level SHARED ${FILES})
 target_include_directories(Lodestone.Level PUBLIC include src)

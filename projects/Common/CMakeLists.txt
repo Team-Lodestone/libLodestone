@@ -8,6 +8,7 @@ set(FILES
         src/Lodestone.cpp
 
         include/Defines.h
+        include/OperatorStringBuilder.h
 )
 
 # hm I wonder if there will be problems if I link against 2 libs that both compile this

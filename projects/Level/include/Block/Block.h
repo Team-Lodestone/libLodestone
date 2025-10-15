@@ -3,30 +3,47 @@
 //
 #ifndef LODESTONE_BLOCK_H
 #define LODESTONE_BLOCK_H
+#include <string>
+#include <unordered_map>
+
+#include "OperatorStringBuilder.h"
 #include "Material/Material.h"
 
 namespace lodestone::level::block {
+    class BlockState;
+
     class Block {
     public:
-        constexpr Block(const int id, const material::Material material) : mId(id), mMaterial(material) {};
+        Block(const std::string &id, const material::Material material) : mId(id), mMaterial(material) {};
 
-        constexpr operator int() const {
-            return getID();
+        operator std::string() const {
+            return this->toString();
         }
 
-        constexpr operator material::Material() const {
-            return getMaterial();
+        friend std::ostream& operator<<(std::ostream& os, const Block& block) {
+            os << block.toString();
+            return os;
+        };
+
+        std::string toString() const {
+            return (new OperatorStringBuilder(typeid(*this)))
+            ->ADD_FIELD(mId)
+            ->ADD_FIELD(mMaterial)
+            ->toString();
         }
 
-        constexpr int getID() const {
+        constexpr const std::string &getID() const {
             return mId;
         };
 
         constexpr material::Material getMaterial() const {
             return mMaterial;
         }
+
+        // could maybe move these to a wrapper? unsure.
+
     private:
-        const int mId;
+        std::string mId;
         const material::Material mMaterial;
     };
 }

@@ -1,10 +1,10 @@
-#include "Block/Blocks.h"
 //
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
-namespace lodestone::level::block {
-    Blocks *Blocks::sInstance = new Blocks();
+#include "../../include/Block/BlockState.h"
 
-    Blocks::Blocks() {
+namespace lodestone::level::block {
+    BlockState::~BlockState() {
+
     }
 }

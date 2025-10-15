@@ -8,6 +8,8 @@
 #include <array>
 #include <Block/Blocks.h>
 
+#include "Block/BlockState.h"
+
 namespace lodestone::level::chunk {
     class Chunk {
     public:
@@ -18,7 +20,7 @@ namespace lodestone::level::chunk {
         public:
             static constexpr int SECTION_HEIGHT = 16;
 
-            const uint16_t *getBlocks() const {
+            const block::BlockState *getBlocks() const {
                 return mBlocks;
             }
 
@@ -30,7 +32,7 @@ namespace lodestone::level::chunk {
                 return mBlockLight;
             }
         private:
-            uint16_t *mBlocks = new uint16_t[CHUNK_WIDTH * SECTION_HEIGHT * CHUNK_LENGTH];
+            block::BlockState *mBlocks = new block::BlockState[CHUNK_WIDTH * SECTION_HEIGHT * CHUNK_LENGTH];
 
             uint8_t *mBlockLight = new uint8_t[CHUNK_WIDTH * SECTION_HEIGHT * CHUNK_LENGTH];
             uint8_t *mSkyLight = new uint8_t[CHUNK_WIDTH * SECTION_HEIGHT * CHUNK_LENGTH];
