@@ -4,6 +4,7 @@
 //
 namespace lodestone::level::block {
     Blocks *Blocks::sInstance = new Blocks();
+    const Block *Blocks::sDefaultBlock = Blocks::sInstance->getBlock("lodestone:air");
 
     Blocks::Blocks() {
     }

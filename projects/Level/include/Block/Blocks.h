@@ -11,6 +11,7 @@ namespace lodestone::level::block {
     protected:
         Blocks();
     public:
+        static const Block *sDefaultBlock;
         static Blocks *sInstance;
 
         void registerBlock(const std::string &id, const Block* block) {

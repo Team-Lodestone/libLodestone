@@ -9,6 +9,7 @@ set(FILES
 
         include/Defines.h
         include/OperatorStringBuilder.h
+        include/Constants.h
 )
 
 # hm I wonder if there will be problems if I link against 2 libs that both compile this

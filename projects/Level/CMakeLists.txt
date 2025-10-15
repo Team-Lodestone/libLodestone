@@ -22,8 +22,15 @@ set(FILES
         src/Block/Blocks.cpp
         src/Material/Materials.cpp
         include/Material/Materials.h
-        src/Block/BlockState.cpp
-        include/Block/BlockState.h
+        src/Block/State/BlockState.cpp
+        include/Block/State/BlockState.h
+        src/Chunk/Section/EmptySection.cpp
+        include/Chunk/Section/EmptySection.h
+        src/Chunk/Section/Section.cpp
+        include/Chunk/Section/Section.h
+        include/Chunk/Section/LevelSection.h
+        src/Chunk/Section/LevelSection.cpp
+        include/Chunk/Section/LevelSection.h
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")

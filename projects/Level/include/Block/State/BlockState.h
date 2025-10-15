@@ -7,16 +7,18 @@
 #include <string>
 #include <unordered_map>
 
-#include "Blocks.h"
+#include "../Blocks.h"
 
 namespace lodestone::level::block {
     class Block;
+}
 
+namespace lodestone::level::block::state {
     class BlockState {
     public:
         BlockState(const Block *block) : mBlock(block) {};
         BlockState(const char *id) : mBlock(Blocks::sInstance->getBlock(id)) {};
-        BlockState() : mBlock(Blocks::sInstance->getBlock("lodestone:air")) {}
+        BlockState() : mBlock(Blocks::sDefaultBlock) {}
         ~BlockState();
 
         const Block *getBlock() const { return mBlock; }
