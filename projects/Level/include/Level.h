@@ -9,7 +9,38 @@
 
 namespace lodestone::level {
     class Level {
-        std::unordered_map<chunk::ChunkCoords, chunk::Chunk> mChunks; // or should it be ordered?
+    public:
+        bool hasChunk(const chunk::ChunkCoords &coords) const;
+        bool hasChunk(const int x, const int z) const {
+            return hasChunk({x, z});
+        };
+
+        chunk::Chunk *createChunk(const chunk::ChunkCoords &coords, int height = 256);
+        chunk::Chunk *createChunk(const int x, const int z, const int height = 256) {
+            return createChunk({x, z}, height);
+        };
+
+        chunk::Chunk *getChunk(const chunk::ChunkCoords &coords);
+        chunk::Chunk *getChunk(const int x, const int z) {
+            return getChunk({x, z});
+        };
+
+        void removeChunk(const chunk::ChunkCoords &coords);
+        void removeChunk(const int x, const int z) {
+            removeChunk({x, z});
+        };
+
+        std::unordered_map<chunk::ChunkCoords, chunk::Chunk*> &getChunks() {
+            return mChunks;
+        }
+
+        const std::unordered_map<chunk::ChunkCoords, chunk::Chunk*> &getChunks() const {
+            return mChunks;
+        }
+
+        block::state::BlockState *getBlock(size_t x, size_t y, size_t z);
+    private:
+        std::unordered_map<chunk::ChunkCoords, chunk::Chunk*> mChunks; // or should it be ordered?
     };
 }
 

@@ -40,8 +40,6 @@ namespace lodestone::level::block {
             return mMaterial;
         }
 
-        // could maybe move these to a wrapper? unsure.
-
     private:
         std::string mId;
         const material::Material mMaterial;

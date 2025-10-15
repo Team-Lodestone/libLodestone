@@ -14,6 +14,7 @@ namespace lodestone::level::block {
 }
 
 namespace lodestone::level::block::state {
+    /** Wraps a block with runtime-modifiable "properties" */
     class BlockState {
     public:
         BlockState(const Block *block) : mBlock(block) {};
@@ -24,40 +25,41 @@ namespace lodestone::level::block::state {
         const Block *getBlock() const { return mBlock; }
 
         const std::unordered_map<std::string, std::string> &getStates() {
-            return mStates;
+            return mProperties;
         }
 
-        bool hasState(const std::string &id) const {
-            return mStates.count(id);
+        bool hasProperty(const std::string &id) const {
+            return mProperties.count(id);
         }
 
-        const std::string &getState(const std::string &id) const {
-            if (!mStates.count(id))
-                throw std::runtime_error("State does not exist");
+        const std::string &getProperty(const std::string &id) const {
+            if (!mProperties.count(id))
+                throw std::runtime_error("Property does not exist");
 
-            return mStates.at(id);
+            return mProperties.at(id);
         }
 
-        std::string &getState(const std::string &id) {
-            return mStates[id];
+        std::string &getProperty(const std::string &id) {
+            return mProperties[id];
         }
 
         void setState(const std::string &id, const std::string &state) {
-            mStates[id] = state;
+            mProperties[id] = state;
         }
 
         const std::string &operator[](const std::string &id) const {
-            return getState(id);
+            return getProperty(id);
         }
 
         std::string &operator[](const std::string &id) {
-            return getState(id);
+            return getProperty(id);
         }
 
     private:
         const Block *mBlock;
         // TODO: it's almost definitely a good idea to figure out how to initialize this only when needed.
-        std::unordered_map<std::string, std::string> mStates;
+        // TODO: also we should be able to store more than strings
+        std::unordered_map<std::string, std::string> mProperties;
     };
 }
 
