@@ -7,25 +7,17 @@
 #include <unordered_map>
 
 #include "OperatorStringBuilder.h"
+#include "StringSerializable.h"
 #include "Material/Material.h"
 
 namespace lodestone::level::block {
     class BlockState;
 
-    class Block {
+    class Block : public StringSerializable {
     public:
         Block(const std::string &id, const material::Material material) : mId(id), mMaterial(material) {};
 
-        operator std::string() const {
-            return this->toString();
-        }
-
-        friend std::ostream& operator<<(std::ostream& os, const Block& block) {
-            os << block.toString();
-            return os;
-        };
-
-        std::string toString() const {
+        std::string toString() const override {
             return (new OperatorStringBuilder(typeid(*this)))
             ->ADD_FIELD(mId)
             ->ADD_FIELD(mMaterial)

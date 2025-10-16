@@ -5,10 +5,7 @@
 #define LODESTONE_LODESTONE_H
 #include "Defines.h"
 
-constexpr const char *const LIBRARY_STRING =
-    "libLodestone v" LODESTONE_VERSION " (" COMPILER_NAME " / " BUILD_TYPE
-    " | " PLATFORM_NAME " " PLATFORM_ARCH
-    ") | https://github.com/Team-Lodestone/libLodestone";
+constexpr const char *const LIBRARY_STRING = "libLodestone v" LODESTONE_VERSION " (" COMPILER_NAME " / " BUILD_TYPE " | " PLATFORM_NAME " " PLATFORM_ARCH ") | https://github.com/Team-Lodestone/libLodestone";
 
 namespace lodestone {
     // clang-format off

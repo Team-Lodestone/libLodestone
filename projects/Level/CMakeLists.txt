@@ -46,6 +46,8 @@ set(FILES
         include/Conversion/Level/LevelIO.h
         src/Conversion/Block/BlockIo.cpp
         include/Conversion/Block/BlockIo.h
+        src/World/World.cpp
+        include/World/World.h
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")

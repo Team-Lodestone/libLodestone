@@ -8,6 +8,7 @@
 #include <cxxabi.h>
 #include <memory>
 
+// we have Apache ToStringBuilder at home.
 class OperatorStringBuilder {
 public:
     OperatorStringBuilder(const std::type_info &type) : mType(type) {

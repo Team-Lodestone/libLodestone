@@ -2,6 +2,7 @@
 #include <iostream>
 #include <ostream>
 
+#include "Lodestone.h"
 #include "Main.h"
 #include "Block/Blocks.h"
 #include "Chunk/Chunk.h"
@@ -14,6 +15,8 @@
 
 // TODO: proper test framework, probably based off of libLCE's (I made libLCE)
 int main() {
+    std::cout << lodestone::lodestone_get_library_string() << std::endl;
+
     lodestone_java_init();
 
     std::ifstream i("minev1.mine", std::ios::binary);

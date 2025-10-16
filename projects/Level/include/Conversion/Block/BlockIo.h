@@ -10,6 +10,13 @@
 #include "Defines.h"
 #include "Block/State/BlockState.h"
 
+struct PairHash {
+    template <class F, class S>
+    std::size_t operator()(const std::pair<F, S>& p) const {
+        return std::hash<F>{}(p.first) ^ (std::hash<S>{}(p.second) << 1);
+    }
+};
+
 namespace lodestone::level::conversion::block {
     template <typename B, typename D = std::monostate> class LODESTONE_API BlockIO {
     protected:
@@ -28,14 +35,18 @@ namespace lodestone::level::conversion::block {
         virtual ~BlockIO() = default;
 
         /** Returns a map that maps internal block IDs to a Blk  */
-        virtual std::unordered_map<std::string, Blk> &getConversionMap() = 0;
+        virtual std::unordered_map<std::string, Blk> &getFromInternalConversionMap() = 0;
+        /** Returns a map that maps Blks to an internal block ID  */
+        virtual std::unordered_map<Blk, std::string, PairHash> &getToInternalConversionMap() = 0;
         /** Returns a map that maps block IDs to their default data value */
         virtual std::unordered_map<B, D> &getDefaultDataMap() = 0;
 
         void registerBlock(const std::string &internal, Blk blk, const bool isDefault = false) {
-            std::unordered_map<std::string, Blk> &c = getConversionMap();
+            std::unordered_map<std::string, Blk> &c = getFromInternalConversionMap();
+            std::unordered_map<Blk, std::string, PairHash> &i = getToInternalConversionMap();
 
             c[internal] = blk;
+            i[blk] = internal;
             if (isDefault) {
                 std::unordered_map<B, D> &d = getDefaultDataMap();
                 d[blk.first] = blk.second;
@@ -46,7 +57,7 @@ namespace lodestone::level::conversion::block {
 
         /** Converts an internal block to the BlockIO's format */
         virtual Blk convertBlockFromInternal(lodestone::level::block::state::BlockState *b) {
-            const std::unordered_map<std::string, std::pair<B, D>> &m = getConversionMap();
+            const std::unordered_map<std::string, Blk> &m = getFromInternalConversionMap();
             const std::string id = b->getBlock()->getID();
 
             if (m.count(id)) return m.at(id);
@@ -56,21 +67,18 @@ namespace lodestone::level::conversion::block {
 
         /** Converts a block from BlockIO to the internal format */
         virtual lodestone::level::block::state::BlockState convertBlockToInternal(B id, D data) {
-            const std::unordered_map<std::string, std::pair<B, D>> &m = getConversionMap();
+            const std::unordered_map<Blk, std::string, PairHash> &m = getToInternalConversionMap();
 
-            for (const auto& [bid, blk] : m) {
+            if (auto it = m.find({id, data}); it != m.end()) {
                 // if we have block ID with state in conversion map, return it
-                if (blk.first == id && blk.second == data)
-                    return lodestone::level::block::state::BlockState(bid);
+                return lodestone::level::block::state::BlockState(it->second);
             }
 
             // otherwise, if we have block id with default value, return that
-            std::unordered_map<B, D> &d = getDefaultDataMap();
-            if (d.count(id)) {
-                D dd = d.at(id);
-                for (const auto& [i, blk] : m) {
-                    if (blk.first == id && blk.second == dd)
-                        return lodestone::level::block::state::BlockState(i);
+            const auto& d = getDefaultDataMap();
+            if (auto it = d.find(id); it != d.end()) {
+                if (auto itr = m.find({id, it->second}); itr != m.end()) {
+                    return lodestone::level::block::state::BlockState(itr->second);
                 }
             }
 

@@ -12,8 +12,6 @@ namespace lodestone::java::classic {
         public:
             static ClassicBlockIO *sInstance;
 
-            std::unordered_map<std::string, Blk> &getConversionMap() override;
-
             std::unordered_map<unsigned char, std::monostate> &getDefaultDataMap() override;
 
             level::block::state::BlockState readBlock(uint8_t *data) override {
@@ -21,8 +19,15 @@ namespace lodestone::java::classic {
             };
 
             void writeBlock(level::block::state::BlockState *b, uint8_t *arr) override;
+
+            std::unordered_map<std::string, Blk> & getFromInternalConversionMap() override;
+
+            std::unordered_map<std::pair<unsigned char, std::monostate>, std::string, PairHash> &
+            getToInternalConversionMap() override;
+
         private:
-            std::unordered_map<std::string, Blk> mConversionMap = {};
+            std::unordered_map<std::pair<unsigned char, std::monostate>, std::string, PairHash> mToInternalConversionMap = {};
+            std::unordered_map<std::string, Blk> mFromInternalConversionMap = {};
             std::unordered_map<uint8_t, std::monostate> mDefaultDataMap = {};
     };
 }
