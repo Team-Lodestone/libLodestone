@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 4.0)
 project(Lodestone VERSION 1.0.0)
 
-set(VERSION_SUFFIX "-dev.4") # used for non-stable versions, otherwise blank
+set(VERSION_SUFFIX "-dev.5") # used for non-stable versions, otherwise blank
 set(CMAKE_CXX_STANDARD 17)
 
 # DEFINITIONS
@@ -28,6 +28,7 @@ include_directories(${BIO_SOURCE_DIR})
 add_subdirectory(projects/Tests)
 add_subdirectory(projects/Common)
 add_subdirectory(projects/Level)
+add_subdirectory(projects/Java)
 
 # VERSION
 target_compile_definitions(Lodestone.Common PRIVATE
@@ -42,6 +43,6 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     )
 endif ()
 
-add_custom_target(Lodestone.All ALL DEPENDS Lodestone.Common Lodestone.Level)
+add_custom_target(Lodestone.All ALL DEPENDS Lodestone.Common Lodestone.Level Lodestone.Tests Lodestone.Java)
 
 

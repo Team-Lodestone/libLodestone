@@ -26,4 +26,6 @@ namespace lodestone::level::chunk::section {
     block::state::BlockState *EmptySection::getBlock(const int x, const int y, const int z) const {
         return new block::state::BlockState();
     }
+
+    void EmptySection::setBlock(block::state::BlockState &blk, int x, int y, int z) {}
 }

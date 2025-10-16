@@ -23,8 +23,10 @@ namespace lodestone::level::chunk {
         virtual int getHeight() const = 0;
 
         virtual section::Section *getSection(int y) const = 0;
+        virtual section::Section *getSectionCreate(int y) = 0;
 
         virtual block::state::BlockState *getBlock(int x, int y, int z) const = 0;
+        virtual void setBlock(block::state::BlockState &blk, int x, int y, int z) = 0;
     protected:
         /** Heightmap
          *

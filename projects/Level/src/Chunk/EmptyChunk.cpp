@@ -19,4 +19,11 @@ namespace lodestone::level::chunk {
     block::state::BlockState * EmptyChunk::getBlock(const int x, const int y, const int z) const {
         return section::EmptySection::sInstance->getBlock(x, y, z);
     }
+
+    section::Section * EmptyChunk::getSectionCreate(int y) {
+        return section::EmptySection::sInstance;
+    }
+
+    void EmptyChunk::setBlock(block::state::BlockState &blk, int x, int y, int z) {
+    }
 }

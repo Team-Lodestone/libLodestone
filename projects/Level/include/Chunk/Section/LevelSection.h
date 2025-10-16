@@ -20,15 +20,15 @@ namespace lodestone::level::chunk::section {
             return mBlockLight;
         }
 
-        block::state::BlockState *getBlock(const int x, const int y, const int z) const override {
-            return &mBlocks[INDEX_YZX(x, y, z, constants::CHUNK_WIDTH, constants::CHUNK_LENGTH)];
-        }
+        block::state::BlockState *getBlock(const int x, const int y, const int z) const override;
 
         const block::state::BlockState *getBlocks() override {
             return mBlocks;
         };
 
         SectionType getType() override;
+
+        void setBlock(block::state::BlockState &blk, int x, int y, int z) override;
 
     private:
         block::state::BlockState *mBlocks = new block::state::BlockState[constants::CHUNK_WIDTH * constants::SECTION_HEIGHT * constants::CHUNK_LENGTH];

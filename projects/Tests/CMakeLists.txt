@@ -17,4 +17,5 @@ add_executable(Lodestone.Tests ${FILES})
 target_include_directories(Lodestone.Tests PUBLIC include src)
 
 target_link_libraries(Lodestone.Tests PRIVATE Lodestone.Level)
+target_link_libraries(Lodestone.Tests PRIVATE Lodestone.Java)
 target_link_libraries(Lodestone.Tests PRIVATE Lodestone.Common)

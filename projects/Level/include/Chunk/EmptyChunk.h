@@ -15,6 +15,10 @@ namespace lodestone::level::chunk {
         section::Section * getSection(int y) const override;
 
         block::state::BlockState * getBlock(int x, int y, int z) const override;
+
+        section::Section * getSectionCreate(int y) override;
+
+        void setBlock(block::state::BlockState &blk, int x, int y, int z) override;
     };
 }
 

@@ -4,6 +4,7 @@
 #ifndef LODESTONE_LEVELCHUNK_H
 #define LODESTONE_LEVELCHUNK_H
 #include "Chunk.h"
+#include "Section/LevelSection.h"
 
 namespace lodestone::level::chunk {
     class LODESTONE_API LevelChunk : public Chunk {
@@ -14,10 +15,21 @@ namespace lodestone::level::chunk {
             return mSections.size() % 16;
         };
 
+        bool hasSection(const int y) const {
+            return (mSections.size() >= (y / 16)) && (mSections[(y / 16)] != nullptr);
+        }
+
         section::Section *getSection(const int y) const override {
             // if non-existent, return fake one
-            if (mSections.size() >= (y/16))
+            if (!hasSection(y))
                 return section::EmptySection::sInstance;
+
+            return mSections[y/16];
+        }
+
+        // todo: just overload w/o const?
+        section::Section *getSectionCreate(const int y) override {
+            if (!hasSection(y)) mSections[y/16] = new section::LevelSection();
 
             return mSections[y/16];
         }
@@ -27,6 +39,9 @@ namespace lodestone::level::chunk {
         }
 
         const int16_t *calculateHeightmap() override;
+
+        void setBlock(block::state::BlockState &blk, int x, int y, int z) override;
+
     protected:
         /** Chunk Sections
          *

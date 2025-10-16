@@ -39,6 +39,7 @@ namespace lodestone::level {
         }
 
         block::state::BlockState *getBlock(size_t x, size_t y, size_t z);
+        void setBlock(block::state::BlockState &blk, size_t x, size_t y, size_t z);
     private:
         std::unordered_map<chunk::ChunkCoords, chunk::Chunk*> mChunks; // or should it be ordered?
     };

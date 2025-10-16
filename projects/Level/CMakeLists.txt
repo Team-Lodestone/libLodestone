@@ -36,6 +36,16 @@ set(FILES
         include/Chunk/LevelChunk.h
         src/Chunk/EmptyChunk.cpp
         include/Chunk/EmptyChunk.h
+        src/Conversion/Chunk/ChunkIORegistry.cpp
+        include/Conversion/Chunk/ChunkIORegistry.h
+        src/Conversion/Chunk/ChunkIO.cpp
+        include/Conversion/Chunk/ChunkIO.h
+        src/Conversion/Level/LevelIORegistry.cpp
+        include/Conversion/Level/LevelIORegistry.h
+        src/Conversion/Level/LevelIO.cpp
+        include/Conversion/Level/LevelIO.h
+        src/Conversion/Block/BlockIo.cpp
+        include/Conversion/Block/BlockIo.h
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")

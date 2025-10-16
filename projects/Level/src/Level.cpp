@@ -34,4 +34,11 @@ namespace lodestone::level {
 
         return getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_LENGTH)->getBlock(x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_LENGTH);
     }
+
+    void Level::setBlock(block::state::BlockState &blk, const size_t x, const size_t y, const size_t z) {
+        if (!hasChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_LENGTH)) return;
+
+        getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_LENGTH)
+            ->setBlock(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_LENGTH);
+    }
 }

@@ -19,6 +19,7 @@ namespace lodestone::level::block::state {
     public:
         BlockState(const Block *block) : mBlock(block) {};
         BlockState(const char *id) : mBlock(Blocks::sInstance->getBlock(id)) {};
+        BlockState(const std::string &id) : mBlock(Blocks::sInstance->getBlock(id)) {};
         BlockState() : mBlock(Blocks::sDefaultBlock) {}
         ~BlockState();
 

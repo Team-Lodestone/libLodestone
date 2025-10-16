@@ -20,6 +20,8 @@ namespace lodestone::level::chunk::section {
         const uint8_t * getSkyLight() const override;
 
         block::state::BlockState *getBlock(const int x, const int y, const int z) const override;
+
+        void setBlock(block::state::BlockState &blk, int x, int y, int z) override;
     };
 }
 
