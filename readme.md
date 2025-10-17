@@ -12,7 +12,7 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
 | [Lodestone.Tests](/projects/Tests)   | Tests for our converters                     |
 
 
-## Roadmap
+# Roadmap
 ### Goals
 - [X] Internal Format
     - [X] Chunked
@@ -45,5 +45,10 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
     - [ ] V13
 - [ ] 3DS
 - [ ] PE/Bedrock
+
+# Credits
+- [BinaryIO](https://github.com/DexrnZacAttack/libBIO)
+- [libNBT++ 2](https://github.com/PrismLauncher/libnbtplusplus)
+
 # Disclaimer
 This project is not an official Microsoft, Minecraft, nor Mojang Studios product.

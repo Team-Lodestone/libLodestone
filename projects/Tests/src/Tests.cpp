@@ -3,14 +3,14 @@
 #include <iostream>
 #include <ostream>
 
-#include "Lodestone.h"
-#include "Main.h"
-#include "Block/Blocks.h"
-#include "Chunk/Chunk.h"
-#include "Chunk/LevelChunk.h"
-#include "Conversion/Level/LevelIORegistry.h"
-#include "Classic/ClassicBlockIo.h"
-#include "fmt/xchar.h"
+#include <Lodestone.Common/Lodestone.h>
+#include <Lodestone.Java/LodestoneJava.h>
+#include <Lodestone.Level/Block/Blocks.h>
+#include <Lodestone.Level/Chunk/Chunk.h>
+#include <Lodestone.Level/Chunk/LevelChunk.h>
+#include <Lodestone.Level/Conversion/Level/LevelIORegistry.h>
+#include <Lodestone.Java/Classic/ClassicBlockIo.h>
+#include <fmt/xchar.h>
 //
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
@@ -63,7 +63,7 @@ int main() {
 
     for (auto [coords, chunk] : level->getChunks()) {
         std::ofstream o(fmt::format("heightmaps/{}.{}.out", coords.x, coords.z), std::ios::binary);
-        o.write(reinterpret_cast<const char*>(chunk->getHeightmap()), (lodestone::constants::CHUNK_WIDTH * lodestone::constants::CHUNK_LENGTH) * 2);
+        o.write(reinterpret_cast<const char*>(chunk->getHeightmap()), (lodestone::constants::CHUNK_WIDTH * lodestone::constants::CHUNK_DEPTH) * 2);
         o.close();
     }
 

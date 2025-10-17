@@ -32,37 +32,37 @@ namespace lodestone::level {
     }
 
     block::state::BlockState * Level::getBlock(const size_t x, const size_t y, const size_t z) {
-        if (!hasChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_LENGTH)) return new block::state::BlockState();
+        if (!hasChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH)) return new block::state::BlockState();
 
-        return getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_LENGTH)->getBlock(x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_LENGTH);
+        return getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH)->getBlock(x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
     }
 
     void Level::setBlock(block::state::BlockState &blk, const size_t x, const size_t y, const size_t z) {
-        if (!hasChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_LENGTH)) return;
+        if (!hasChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH)) return;
 
-        getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_LENGTH)
-            ->setBlock(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_LENGTH);
+        getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH)
+            ->setBlock(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
     }
 
     void Level::setBlockCreate(block::state::BlockState &blk, const size_t x, const size_t y, const size_t z, const int height) {
-        if (!hasChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_LENGTH)) createChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_LENGTH, height);
+        if (!hasChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH)) createChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH, height);
 
-        getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_LENGTH)
-            ->setBlock(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_LENGTH);
+        getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH)
+            ->setBlock(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
     }
 
     void Level::setBlockRaw(block::state::BlockState &blk, const size_t x, const size_t y, const size_t z) {
-        if (!hasChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_LENGTH)) return;
+        if (!hasChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH)) return;
 
-        getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_LENGTH)
-            ->setBlockRaw(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_LENGTH);
+        getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH)
+            ->setBlockRaw(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
     }
 
     void Level::setBlockCreateRaw(block::state::BlockState &blk, size_t x, size_t y, size_t z, int height) {
-        if (!hasChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_LENGTH)) createChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_LENGTH, height);
+        if (!hasChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH)) createChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH, height);
 
-        getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_LENGTH)
-            ->setBlockRaw(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_LENGTH);
+        getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH)
+            ->setBlockRaw(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
     }
 
     void Level::getChunkBounds(int &minX, int &minY, int &minZ, int &maxX, int &maxY, int &maxZ) {
@@ -93,14 +93,14 @@ namespace lodestone::level {
 
         for (const auto& [coord, chonk] : mChunks) {
             int mX = coord.x * constants::CHUNK_WIDTH;
-            int mZ = coord.z * constants::CHUNK_LENGTH;
+            int mZ = coord.z * constants::CHUNK_DEPTH;
 
             minX = std::min(minX, mX);
             maxX = std::max(maxX, mX + constants::CHUNK_WIDTH - 1);
             minY = std::min(minY, 0); // TODO: minimum block height
             maxY = std::max(maxY, chonk->getChunkBlockHeight());
             minZ = std::min(minZ, mZ);
-            maxZ = std::max(maxZ, mZ + constants::CHUNK_LENGTH - 1);
+            maxZ = std::max(maxZ, mZ + constants::CHUNK_DEPTH - 1);
         }
     }
 

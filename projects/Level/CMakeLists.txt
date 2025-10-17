@@ -4,55 +4,55 @@ project(Lodestone.Level)
 set(CMAKE_CXX_STANDARD 17)
 
 set(FILES
-        include/Level.h
+        include/Lodestone.Level/Level.h
         src/Level.cpp
 
-        include/Types/Vec2i.h
+        include/Lodestone.Level/Types/Vec2i.h
         src/Chunk/Chunk.cpp
-        include/Chunk/Chunk.h
-        include/Types/Vec3i.h
-        include/Indexing.h
+        include/Lodestone.Level/Chunk/Chunk.h
+        include/Lodestone.Level/Types/Vec3i.h
+        include/Lodestone.Level/Indexing.h
         src/Block/Block.cpp
 
-        include/Block/Block.h
-        include/Block/Blocks.h
+        include/Lodestone.Level/Block/Block.h
+        include/Lodestone.Level/Block/Blocks.h
         src/Material/Material.cpp
-        include/Material/Material.h
-        include/Types/Color.h
+        include/Lodestone.Level/Material/Material.h
+        include/Lodestone.Level/Types/Color.h
         src/Block/Blocks.cpp
         src/Material/Materials.cpp
-        include/Material/Materials.h
+        include/Lodestone.Level/Material/Materials.h
         src/Block/State/BlockState.cpp
-        include/Block/State/BlockState.h
+        include/Lodestone.Level/Block/State/BlockState.h
         src/Chunk/Section/EmptySection.cpp
-        include/Chunk/Section/EmptySection.h
+        include/Lodestone.Level/Chunk/Section/EmptySection.h
         src/Chunk/Section/Section.cpp
-        include/Chunk/Section/Section.h
-        include/Chunk/Section/LevelSection.h
+        include/Lodestone.Level/Chunk/Section/Section.h
+        include/Lodestone.Level/Chunk/Section/LevelSection.h
         src/Chunk/Section/LevelSection.cpp
-        include/Chunk/Section/LevelSection.h
-        include/Chunk/LevelChunk.h
+        include/Lodestone.Level/Chunk/Section/LevelSection.h
+        include/Lodestone.Level/Chunk/LevelChunk.h
         src/Chunk/LevelChunk.cpp
-        include/Chunk/LevelChunk.h
+        include/Lodestone.Level/Chunk/LevelChunk.h
         src/Chunk/EmptyChunk.cpp
-        include/Chunk/EmptyChunk.h
+        include/Lodestone.Level/Chunk/EmptyChunk.h
         src/Conversion/Chunk/ChunkIORegistry.cpp
-        include/Conversion/Chunk/ChunkIORegistry.h
+        include/Lodestone.Level/Conversion/Chunk/ChunkIORegistry.h
         src/Conversion/Chunk/ChunkIO.cpp
-        include/Conversion/Chunk/ChunkIO.h
+        include/Lodestone.Level/Conversion/Chunk/ChunkIO.h
         src/Conversion/Level/LevelIORegistry.cpp
-        include/Conversion/Level/LevelIORegistry.h
+        include/Lodestone.Level/Conversion/Level/LevelIORegistry.h
         src/Conversion/Level/LevelIO.cpp
-        include/Conversion/Level/LevelIO.h
+        include/Lodestone.Level/Conversion/Level/LevelIO.h
         src/Conversion/Block/BlockIo.cpp
-        include/Conversion/Block/BlockIo.h
+        include/Lodestone.Level/Conversion/Block/BlockIo.h
         src/World/World.cpp
-        include/World/World.h
+        include/Lodestone.Level/World/World.h
         src/Conversion/World/WorldIo.cpp
-        include/Conversion/World/WorldIo.h
+        include/Lodestone.Level/Conversion/World/WorldIo.h
         src/Conversion/World/WorldIoRegistry.cpp
-        include/Conversion/World/WorldIoRegistry.h
-        include/Types/Bounds.h
+        include/Lodestone.Level/Conversion/World/WorldIoRegistry.h
+        include/Lodestone.Level/Types/Bounds.h
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -62,6 +62,11 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif ()
 
 add_library(Lodestone.Level SHARED ${FILES})
-target_include_directories(Lodestone.Level PUBLIC include)
+target_include_directories(Lodestone.Level
+        PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/Lodestone.Level
+)
 
-target_link_libraries(Lodestone.Level PRIVATE Lodestone.Common)
+target_link_libraries(Lodestone.Level PUBLIC Lodestone.Common)

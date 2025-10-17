@@ -3,7 +3,7 @@
 //
 #include "Classic/MineV2/MineV2World.h"
 
-#include "Lodestone.h"
+#include <Lodestone.Common/Lodestone.h>
 
 namespace lodestone::java::classic::minev2 {
     MineV2World::MineV2World(const std::string &name, const std::string &author) : World(name), mAuthor(author), mCreationTime(getCurrentTimeMillis()) {}

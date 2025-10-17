@@ -4,16 +4,21 @@ project(Lodestone.Common)
 set(CMAKE_CXX_STANDARD 17)
 
 set(FILES
-        include/Lodestone.h
+        include/Lodestone.Common/Lodestone.h
         src/Lodestone.cpp
 
-        include/Defines.h
-        include/String/OperatorStringBuilder.h
-        include/Constants.h
-        include/String/StringSerializable.h
+        include/Lodestone.Common/Defines.h
+        include/Lodestone.Common/String/OperatorStringBuilder.h
+        include/Lodestone.Common/Constants.h
+        include/Lodestone.Common/String/StringSerializable.h
         src/String/OperatorStringBuilder.cpp
 )
 
 # hm I wonder if there will be problems if I link against 2 libs that both compile this
 add_library(Lodestone.Common OBJECT ${FILES})
-target_include_directories(Lodestone.Common PUBLIC include)
+target_include_directories(Lodestone.Common
+        PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/Lodestone.Common
+)

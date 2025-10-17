@@ -10,7 +10,7 @@ namespace lodestone::java::classic::minev1 {
         level::Level *l = new level::Level();
 
         for (int y = 0; y < HEIGHT; y++) {
-            for (int z = 0; z < LENGTH; z++) {
+            for (int z = 0; z < DEPTH; z++) {
                 for (int x = 0; x < WIDTH; x++) {
                     level::block::state::BlockState b = ClassicBlockIO::sInstance->readBlock(data);
                     if (b.getBlock()->getID() != "lodestone:air")
@@ -33,7 +33,7 @@ namespace lodestone::java::classic::minev1 {
 
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {
-                for (int z = 0; z < LENGTH; z++) {
+                for (int z = 0; z < DEPTH; z++) {
                     level::block::state::BlockState *b = l->getBlock(x, y, z);
                     if (b->getBlock()->getID() != "lodestone:air")
                         ClassicBlockIO::sInstance->writeBlock(b, dp);
@@ -47,6 +47,6 @@ namespace lodestone::java::classic::minev1 {
     }
 
     size_t MineV1LevelIO::getSize(level::Level *l) const {
-        return WIDTH * HEIGHT * LENGTH;
+        return WIDTH * HEIGHT * DEPTH;
     }
 }

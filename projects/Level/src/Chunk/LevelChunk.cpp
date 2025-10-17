@@ -39,7 +39,7 @@ namespace lodestone::level::chunk {
     void LevelChunk::calculateHeightmap() {
         const int height = getChunkBlockHeight();
 
-        for (int z = 0; z < constants::CHUNK_LENGTH; z++) {
+        for (int z = 0; z < constants::CHUNK_DEPTH; z++) {
             for (int x = 0; x < constants::CHUNK_WIDTH; x++) {
                 for (int y = height; y >= 0; y--) {
                     if (getBlock(x, y, z)->getBlock()->getID() != "lodestone:air") {

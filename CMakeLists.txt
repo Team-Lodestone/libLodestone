@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 4.0)
 project(Lodestone VERSION 1.0.0)
 
-set(VERSION_SUFFIX "-dev.10") # used for non-stable versions, otherwise blank
+set(VERSION_SUFFIX "-dev.11") # used for non-stable versions, otherwise blank
 set(CMAKE_CXX_STANDARD 17)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -25,6 +25,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(BIO)
 
+# FMT
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 FetchContent_Declare(
         fmt
@@ -34,6 +35,15 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(fmt)
 
+# NBT
+set(NBT_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+FetchContent_Declare(
+        nbt++
+        GIT_REPOSITORY https://github.com/PrismLauncher/libnbtplusplus.git
+        GIT_TAG master
+)
+FetchContent_MakeAvailable(nbt++)
+
 include_directories(${BIO_SOURCE_DIR})
 
 # PROJECTS
@@ -42,10 +52,11 @@ add_subdirectory(projects/Common)
 add_subdirectory(projects/Level)
 add_subdirectory(projects/Java)
 
+# TODO: this is probably a bad idea incase one wants to only include certain licenses
 target_link_libraries(Lodestone.Tests PRIVATE fmt BIO)
 target_link_libraries(Lodestone.Common PRIVATE fmt BIO)
 target_link_libraries(Lodestone.Level PRIVATE fmt BIO)
-target_link_libraries(Lodestone.Java PRIVATE fmt BIO)
+target_link_libraries(Lodestone.Java PRIVATE fmt BIO nbt++)
 
 # DEFINITIONS
 target_compile_definitions(Lodestone.Common PUBLIC

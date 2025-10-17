@@ -14,8 +14,12 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif ()
 
 add_executable(Lodestone.Tests ${FILES})
-target_include_directories(Lodestone.Tests PUBLIC include)
+target_include_directories(Lodestone.Tests
+        PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/Lodestone.Tests
+)
 
 target_link_libraries(Lodestone.Tests PRIVATE Lodestone.Level)
 target_link_libraries(Lodestone.Tests PRIVATE Lodestone.Java)
-target_link_libraries(Lodestone.Tests PRIVATE Lodestone.Common)

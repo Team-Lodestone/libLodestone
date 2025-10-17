@@ -7,7 +7,7 @@ namespace lodestone::java::classic {
     ClassicBlockIO *ClassicBlockIO::sInstance = new ClassicBlockIO();
 
     ClassicBlockIO::ClassicBlockIO() {
-        registerBlock("lodestone:air", {0, std::monostate{}}, true);
+            registerBlock("lodestone:air", {0, std::monostate{}}, true);
             registerBlock("lodestone:stone", {1, std::monostate{}}, true);
             registerBlock("lodestone:grass_block", {2, std::monostate{}}, true);
             registerBlock("lodestone:dirt", {3, std::monostate{}}, true);
