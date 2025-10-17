@@ -7,7 +7,7 @@
 #include "Lodestone.Level/Material/Material.h"
 
 namespace lodestone::level::material {
-    class LODESTONE_API Materials {
+    class LODESTONE_API MaterialRegistry {
     public:
         // todo: later
         static const Material AIR;

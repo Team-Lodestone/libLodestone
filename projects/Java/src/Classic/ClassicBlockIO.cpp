@@ -1,7 +1,7 @@
 //
 // Created by DexrnZacAttack on 10/15/25 using zPc-i2.
 //
-#include "Classic/ClassicBlockIo.h"
+#include "Classic/ClassicBlockIO.h"
 
 namespace lodestone::java::classic {
     ClassicBlockIO *ClassicBlockIO::sInstance = new ClassicBlockIO();

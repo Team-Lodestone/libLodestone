@@ -7,9 +7,9 @@
 #include <nbt_tags.h>
 
 namespace lodestone::java::indev {
-    class McLevelLevelIo : public level::conversion::level::LevelIO {
+    class McLevelLevelIO : public level::conversion::level::LevelIO {
     public:
-        level::Level * read(uint8_t *data) const override;
+        level::Level *read(uint8_t *data) const override;
         /** Creates a Level from a mclevel Map compound tag */
         level::Level * read(nbt::tag_compound *map) const;
 

@@ -6,9 +6,9 @@
 #include "Lodestone.Level/World/World.h"
 
 namespace lodestone::level::conversion::world {
-    class LODESTONE_API WorldIo {
+    class LODESTONE_API WorldIO {
     public:
-        virtual ~WorldIo() = default;
+        virtual ~WorldIO() = default;
 
         /** Reads data into a new World */
         virtual level::world::World *read(uint8_t *data) const = 0; // TODO: this should read from VFS

@@ -10,14 +10,42 @@
 #include "Lodestone.Level/Types/Bounds.h"
 
 namespace lodestone::level {
+    /** A level, holds Chunks.
+     *
+     * @see Chunk
+     */
     class Level {
     public:
+        /** Returns true if chunk at coords exist
+         *
+         * @param coords The coordinates you want to check for a chunk
+         * @returns @c true if a chunk at given coords exist
+         */
         bool hasChunk(const types::Vec2i &coords) const;
+        /** Returns true if chunk at coords exist
+         *
+         * @param x The X coordinate you want to check for a chunk
+         * @param z The Z coordinate you want to check for a chunk
+         * @returns @c true if a chunk at given coords exist
+         */
         bool hasChunk(const int x, const int z) const {
             return hasChunk({x, z});
         };
 
+        /** Creates a chunk at the given coordinates with the given height
+         *
+         * @param coords The coordinates you want to create a chunk at
+         * @param height The height you'd like to make the new chunk
+         * @returns The new chunk
+         */
         chunk::Chunk *createChunk(const types::Vec2i &coords, int height = 256);
+        /** Creates a chunk at the given coordinates with the given height
+         *
+         * @param x The x coordinate you want to create a chunk at
+         * @param z The z coordinate you want to create a chunk at
+         * @param height The height you'd like to make the new chunk
+         * @returns The new chunk
+         */
         chunk::Chunk *createChunk(const int x, const int z, const int height = 256) {
             return createChunk({x, z}, height);
         };
@@ -32,6 +60,11 @@ namespace lodestone::level {
             removeChunk({x, z});
         };
 
+        void deleteChunk(const types::Vec2i &coords);
+        void deleteChunk(const int x, const int z) {
+            deleteChunk({x, z});
+        };
+
         std::unordered_map<types::Vec2i, chunk::Chunk*> &getChunks() {
             return mChunks;
         }
@@ -44,6 +77,10 @@ namespace lodestone::level {
         void setBlock(block::state::BlockState &blk, size_t x, size_t y, size_t z);
         void setBlockCreate(block::state::BlockState &blk, size_t x, size_t y, size_t z, int height = 256);
 
+        block::state::BlockState *getHeightAt(size_t x, size_t y, size_t z);
+        void setHeightAt(int16_t h, size_t x, size_t y, size_t z);
+        void setHeightAtCreate(int16_t h, size_t x, size_t y, size_t z, int height = 256);
+
         void setBlockRaw(block::state::BlockState &blk, size_t x, size_t y, size_t z);
         void setBlockCreateRaw(block::state::BlockState &blk, size_t x, size_t y, size_t z, int height = 256);
 
@@ -51,12 +88,11 @@ namespace lodestone::level {
         void getBlockBounds(int &minX, int &minY, int &minZ, int &maxX, int &maxY, int &maxZ);
 
         types::Bounds getChunkBounds();
-
         types::Bounds getBlockBounds();
 
         size_t getBlockCount();
     private:
-        std::unordered_map<types::Vec2i, chunk::Chunk*> mChunks; // or should it be ordered?
+        std::unordered_map<types::Vec2i, chunk::Chunk*> mChunks;
     };
 }
 

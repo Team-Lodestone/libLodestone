@@ -5,7 +5,6 @@
 #define LODESTONE_LEVELIO_H
 
 #include "Lodestone.Level/Level.h"
-#include "Lodestone.Level/Chunk/Chunk.h"
 
 namespace lodestone::level::conversion::level {
     class LODESTONE_API LevelIO {

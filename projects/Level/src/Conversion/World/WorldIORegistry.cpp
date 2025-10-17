@@ -1,19 +1,19 @@
 //
 // Created by DexrnZacAttack on 10/16/25 using zPc-i2.
 //
-#include "Conversion/World/WorldIoRegistry.h"
+#include "Conversion/World/WorldIORegistry.h"
 
 namespace lodestone::level::conversion::world {
-    WorldIoRegistry *WorldIoRegistry::sInstance = new WorldIoRegistry();
+    WorldIORegistry *WorldIORegistry::sInstance = new WorldIORegistry();
 
-    void WorldIoRegistry::registerWorldIO(const std::string &id, const WorldIo* io) {
+    void WorldIORegistry::registerWorldIO(const std::string &id, const WorldIO* io) {
         if (mRegisteredWorldIOs.count(id))
             throw std::runtime_error("WorldIO already exists");
 
         mRegisteredWorldIOs[id] = std::move(io);
     }
 
-    const WorldIo * WorldIoRegistry::getWorldIO(const std::string &id) const {
+    const WorldIO * WorldIORegistry::getWorldIO(const std::string &id) const {
         if (!mRegisteredWorldIOs.count(id))
             return nullptr;
 

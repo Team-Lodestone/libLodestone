@@ -4,8 +4,8 @@
 #include "Classic/MineV2/MineV2LevelIO.h"
 
 #include "BinaryIO.h"
-#include "Classic/ClassicBlockIo.h"
-#include "Classic/MineV1/MineV1LevelIo.h"
+#include "Classic/ClassicBlockIO.h"
+#include "Classic/MineV1/MineV1LevelIO.h"
 
 namespace lodestone::java::classic::minev2 {
     level::Level * MineV2LevelIO::read(uint8_t *data) const {

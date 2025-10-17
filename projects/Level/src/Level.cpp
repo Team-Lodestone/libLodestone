@@ -31,6 +31,15 @@ namespace lodestone::level {
         mChunks.erase(coords);
     }
 
+    void Level::deleteChunk(const types::Vec2i &coords) {
+        if (!hasChunk(coords)) return; // todo: throw exception?
+
+        const chunk::Chunk *chunk = mChunks.at(coords);
+
+        mChunks.erase(coords);
+        delete chunk;
+    }
+
     block::state::BlockState * Level::getBlock(const size_t x, const size_t y, const size_t z) {
         if (!hasChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH)) return new block::state::BlockState();
 

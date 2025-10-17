@@ -4,18 +4,18 @@ project(Lodestone.Java)
 set(CMAKE_CXX_STANDARD 17)
 
 set(FILES
-        include/Lodestone.Java/Classic/MineV1/MineV1LevelIo.h
-        src/Classic/MineV1/MineV1LevelIo.cpp
+        include/Lodestone.Java/Classic/MineV1/MineV1LevelIO.h
+        src/Classic/MineV1/MineV1LevelIO.cpp
         src/LodestoneJava.cpp
-        src/Classic/ClassicBlockIo.cpp
-        include/Lodestone.Java/Classic/ClassicBlockIo.h
+        src/Classic/ClassicBlockIO.cpp
+        include/Lodestone.Java/Classic/ClassicBlockIO.h
         include/Lodestone.Java/LodestoneJava.h
         src/Classic/MineV2/MineV2LevelIO.cpp
         include/Lodestone.Java/Classic/MineV2/MineV2LevelIO.h
         src/Classic/MineV2/MineV2World.cpp
         include/Lodestone.Java/Classic/MineV2/MineV2World.h
-        src/Classic/Indev/McLevelLevelIo.cpp
-        include/Lodestone.Java/Indev/McLevelLevelIo.h
+        src/Indev/McLevelLevelIO.cpp
+        include/Lodestone.Java/Indev/McLevelLevelIO.h
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")

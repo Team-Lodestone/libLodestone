@@ -1,9 +1,9 @@
 //
 // Created by DexrnZacAttack on 10/15/25 using zPc-i2.
 //
-#include "Classic/MineV1/MineV1LevelIo.h"
+#include "Classic/MineV1/MineV1LevelIO.h"
 
-#include "Classic/ClassicBlockIo.h"
+#include "Classic/ClassicBlockIO.h"
 
 namespace lodestone::java::classic::minev1 {
     level::Level * MineV1LevelIO::read(uint8_t *data) const {

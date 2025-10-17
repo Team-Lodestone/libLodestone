@@ -15,13 +15,13 @@ set(FILES
         src/Block/Block.cpp
 
         include/Lodestone.Level/Block/Block.h
-        include/Lodestone.Level/Block/Blocks.h
+        include/Lodestone.Level/Block/BlockRegistry.h
         src/Material/Material.cpp
         include/Lodestone.Level/Material/Material.h
         include/Lodestone.Level/Types/Color.h
-        src/Block/Blocks.cpp
-        src/Material/Materials.cpp
-        include/Lodestone.Level/Material/Materials.h
+        src/Block/BlockRegistry.cpp
+        src/Material/MaterialRegistry.cpp
+        include/Lodestone.Level/Material/MaterialRegistry.h
         src/Block/State/BlockState.cpp
         include/Lodestone.Level/Block/State/BlockState.h
         src/Chunk/Section/EmptySection.cpp
@@ -44,14 +44,14 @@ set(FILES
         include/Lodestone.Level/Conversion/Level/LevelIORegistry.h
         src/Conversion/Level/LevelIO.cpp
         include/Lodestone.Level/Conversion/Level/LevelIO.h
-        src/Conversion/Block/BlockIo.cpp
-        include/Lodestone.Level/Conversion/Block/BlockIo.h
+        src/Conversion/Block/BlockIO.cpp
+        include/Lodestone.Level/Conversion/Block/BlockIO.h
         src/World/World.cpp
         include/Lodestone.Level/World/World.h
-        src/Conversion/World/WorldIo.cpp
-        include/Lodestone.Level/Conversion/World/WorldIo.h
-        src/Conversion/World/WorldIoRegistry.cpp
-        include/Lodestone.Level/Conversion/World/WorldIoRegistry.h
+        src/Conversion/World/WorldIO.cpp
+        include/Lodestone.Level/Conversion/World/WorldIO.h
+        src/Conversion/World/WorldIORegistry.cpp
+        include/Lodestone.Level/Conversion/World/WorldIORegistry.h
         include/Lodestone.Level/Types/Bounds.h
 )
 

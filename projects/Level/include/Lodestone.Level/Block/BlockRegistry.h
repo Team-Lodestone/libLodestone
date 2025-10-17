@@ -10,14 +10,14 @@
 #include "Lodestone.Level/Block/Block.h"
 
 namespace lodestone::level::block {
-    class LODESTONE_API Blocks {
+    class LODESTONE_API BlockRegistry {
     protected:
-        Blocks();
+        BlockRegistry() = default;
     public:
 #define REGISTER(n, m) {n, new Block(n, material::Material({0, 0, 0, 0}))}
 
         static const Block *sDefaultBlock;
-        static Blocks *sInstance;
+        static BlockRegistry *sInstance;
 
         void registerBlock(const std::string &id, const Block* block);
         const Block *getBlock(const std::string &id) const;

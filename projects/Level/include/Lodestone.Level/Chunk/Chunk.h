@@ -7,7 +7,7 @@
 #include <Lodestone.Common/Constants.h>
 
 #include "Lodestone.Level/Block/State/BlockState.h"
-#include "Lodestone.Level/Block/Blocks.h"
+#include "Lodestone.Level/Block/BlockRegistry.h"
 #include "Lodestone.Level/Chunk/Section/EmptySection.h"
 
 namespace lodestone::level::chunk {

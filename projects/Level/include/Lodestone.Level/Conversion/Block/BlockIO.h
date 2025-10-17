@@ -18,6 +18,10 @@ struct PairHash {
 };
 
 namespace lodestone::level::conversion::block {
+    /**
+     * @tparam B Block ID type
+     * @tparam D Block data type (e.g variant)
+     */
     template <typename B, typename D = std::monostate> class LODESTONE_API BlockIO {
     protected:
         BlockIO() {}
@@ -26,9 +30,8 @@ namespace lodestone::level::conversion::block {
         // via a separate conversion map
         // TODO: this file is messy!
         /**
-         * B: Block ID type
-         *
-         * D: Block data type (e.g variant)
+         * @tparam B Block ID type
+         * @tparam D Block data type (e.g variant)
          */
         using Blk = std::pair<B, D>;
 
@@ -80,7 +83,7 @@ namespace lodestone::level::conversion::block {
                 }
             }
 
-            throw std::runtime_error("Could not find block with ID: " + id);
+            throw std::runtime_error("Could not find block");
         };
 
         /** Reads data into a new Block */

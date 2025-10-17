@@ -1,5 +1,5 @@
 # libLodestone
-Provides reading, writing, and format conversion for most editions and versions of Minecraft.
+Provides file type reading, file type writing, and world & format conversion for most editions and versions of Minecraft.
 
 LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE).
 
@@ -14,16 +14,20 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
 
 # Roadmap
 ### Goals
-- [X] Internal Format
-    - [X] Chunked
-    - [X] Sections
-    - [ ] Palettes (for memory usage)
-- [X] Internal Block IDs
-    - [X] Block ID conversion map between versions
-    - [ ] Properly convert block states and other data
-- [ ] Entities
-    - [ ] Tile Entities
-- [ ] Block Material Map (for the world map image generation)
+- [X] World Engine
+    - [X] Chunked Level
+      - [X] Chunk Sections
+      - [ ] Palettes (for memory usage)
+      - [ ] Lighting calculation (maybe?)
+    - [ ] Dynamic Block & Material registration
+      - `DynamicBlock`
+      - `DynamicMaterial`
+    - [X] Internal Block IDs
+        - [X] Block ID conversion map between versions
+        - [ ] Properly convert block states and other data
+    - [ ] Entities
+        - [ ] Tile Entities
+    - [ ] Block Material Map (for the world map image generation)
 ### Formats
 - [ ] Java
     - [ ] Classic

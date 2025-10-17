@@ -3,7 +3,7 @@
 //
 #ifndef LODESTONE_CLASSICBLOCKIO_H
 #define LODESTONE_CLASSICBLOCKIO_H
-#include <Lodestone.Level/Conversion/Block/BlockIo.h>
+#include <Lodestone.Level/Conversion/Block/BlockIO.h>
 
 namespace lodestone::java::classic {
     class ClassicBlockIO : public level::conversion::block::BlockIO<uint8_t> {

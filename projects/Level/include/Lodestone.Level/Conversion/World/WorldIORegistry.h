@@ -3,23 +3,23 @@
 //
 #ifndef LODESTONE_WORLDIOREGISTRY_H
 #define LODESTONE_WORLDIOREGISTRY_H
-#include "Lodestone.Level/Conversion/World/WorldIo.h"
+#include "Lodestone.Level/Conversion/World/WorldIO.h"
 
 namespace lodestone {
     namespace level {
         namespace conversion::world {
             /** Creates worlds based on registered world IO classes */
-            class LODESTONE_API WorldIoRegistry {
+            class LODESTONE_API WorldIORegistry {
             protected:
-                WorldIoRegistry() = default;
+                WorldIORegistry() = default;
             public:
-                static WorldIoRegistry *sInstance;
+                static WorldIORegistry *sInstance;
 
-                void registerWorldIO(const std::string &id, const WorldIo* io);
+                void registerWorldIO(const std::string &id, const WorldIO* io);
 
-                const WorldIo *getWorldIO(const std::string &id) const;
+                const WorldIO *getWorldIO(const std::string &id) const;
             private:
-                std::unordered_map<std::string, const WorldIo*> mRegisteredWorldIOs = {};
+                std::unordered_map<std::string, const WorldIO*> mRegisteredWorldIOs = {};
             };
         }
     } // level

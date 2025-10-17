@@ -7,7 +7,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "../Blocks.h"
+#include "Lodestone.Level/Block/BlockRegistry.h"
 
 namespace lodestone::level::block {
     class Block;
@@ -18,9 +18,9 @@ namespace lodestone::level::block::state {
     class BlockState {
     public:
         BlockState(const Block *block) : mBlock(block) {};
-        BlockState(const char *id) : mBlock(Blocks::sInstance->getBlock(id)) {};
-        BlockState(const std::string &id) : mBlock(Blocks::sInstance->getBlock(id)) {};
-        BlockState() : mBlock(Blocks::sDefaultBlock) {}
+        BlockState(const char *id) : mBlock(BlockRegistry::sInstance->getBlock(id)) {};
+        BlockState(const std::string &id) : mBlock(BlockRegistry::sInstance->getBlock(id)) {};
+        BlockState() : mBlock(BlockRegistry::sDefaultBlock) {}
         ~BlockState();
 
         const std::unordered_map<std::string, std::string> &getStates();

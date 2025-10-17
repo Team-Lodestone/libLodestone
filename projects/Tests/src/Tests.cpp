@@ -5,11 +5,11 @@
 
 #include <Lodestone.Common/Lodestone.h>
 #include <Lodestone.Java/LodestoneJava.h>
-#include <Lodestone.Level/Block/Blocks.h>
+#include <Lodestone.Level/Block/BlockRegistry.h>
 #include <Lodestone.Level/Chunk/Chunk.h>
 #include <Lodestone.Level/Chunk/LevelChunk.h>
 #include <Lodestone.Level/Conversion/Level/LevelIORegistry.h>
-#include <Lodestone.Java/Classic/ClassicBlockIo.h>
+#include <Lodestone.Java/Classic/ClassicBlockIO.h>
 #include <fmt/xchar.h>
 //
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
