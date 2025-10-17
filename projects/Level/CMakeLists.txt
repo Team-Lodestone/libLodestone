@@ -52,7 +52,7 @@ set(FILES
         include/Conversion/World/WorldIo.h
         src/Conversion/World/WorldIoRegistry.cpp
         include/Conversion/World/WorldIoRegistry.h
-        src/Types/Colors.cpp
+        include/Types/Bounds.h
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
