@@ -12,39 +12,19 @@ namespace lodestone::level::chunk {
         /** Creates a new LevelChunk with chunk sections for the given height */
         LevelChunk(int height);
 
-        int getChunkHeight() const override {
-            return mSections.size();
-        };
+        int getChunkHeight() const override;
 
         /** Checks if a section at the given section relative y level exists (NOT BLOCK Y) */
-        bool hasSection(const int y) const {
-            if (mSections.size() > y)
-                return (mSections[y] != nullptr);
-            return false;
-        }
+        bool hasSection(const int y) const;
 
-        /** Creates a section at the given section relative y level (NOT BLOCK Y) */
-        section::Section *getSection(const int y) const override {
-            // if non-existent, return fake one
-            if (!hasSection(y))
-                return section::EmptySection::sInstance;
-
-            return mSections[y];
-        }
-
-        // todo: just overload w/o const?
         /** Gets/Creates a section at the given section relative y level (NOT BLOCK Y) */
-        section::Section *getSectionCreate(const int y) override {
-            if (!hasSection(y)) mSections[y] = new section::LevelSection();
-
-            return mSections[y];
-        }
-
-        block::state::BlockState *getBlock(const int x, const int y, const int z) const override {
-            return getSection(y / 16)->getBlock(x, y % 16, z);
-        }
+        section::Section *getSectionCreate(const int y) override;
+        /** Creates a section at the given section relative y level (NOT BLOCK Y) */
+        section::Section *getSection(const int y) const override;
 
         void calculateHeightmap() override;
+
+        block::state::BlockState *getBlock(const int x, const int y, const int z) const override;
 
         void setBlock(block::state::BlockState &blk, int x, int y, int z) override;
         void setBlockRaw(block::state::BlockState &blk, int x, int y, int z) override;

@@ -7,7 +7,7 @@ set(FILES
         include/Level.h
         src/Level.cpp
 
-        include/Chunk/ChunkCoords.h
+        include/Types/Vec2i.h
         src/Chunk/Chunk.cpp
         include/Chunk/Chunk.h
         include/Types/Vec3i.h
@@ -52,6 +52,7 @@ set(FILES
         include/Conversion/World/WorldIo.h
         src/Conversion/World/WorldIoRegistry.cpp
         include/Conversion/World/WorldIoRegistry.h
+        src/Types/Colors.cpp
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -61,6 +62,6 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif ()
 
 add_library(Lodestone.Level SHARED ${FILES})
-target_include_directories(Lodestone.Level PUBLIC include src)
+target_include_directories(Lodestone.Level PUBLIC include)
 
 target_link_libraries(Lodestone.Level PRIVATE Lodestone.Common)

@@ -8,4 +8,18 @@ namespace lodestone::level::block {
 
     Blocks::Blocks() {
     }
+
+    void Blocks::registerBlock(const std::string &id, const Block *block) {
+        if (mBlocks.count(id))
+            throw std::runtime_error("Block already exists");
+
+        mBlocks[id] = std::move(block);
+    }
+
+    const Block * Blocks::getBlock(const std::string &id) const {
+        if (mBlocks.count(id))
+            return mBlocks.at(id);
+
+        return nullptr;
+    }
 }

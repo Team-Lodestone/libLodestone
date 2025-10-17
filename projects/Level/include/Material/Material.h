@@ -5,29 +5,15 @@
 #define LODESTONE_MATERIAL_H
 #include <string>
 
+#include "String/StringSerializable.h"
 #include "Types/Color.h"
 
 namespace lodestone::level::material {
-    class Material {
+    class Material final {
     public:
-        constexpr Material(const Color color) : mColor(color) {};
-
-        operator std::string() const {
-            return toString();
-        }
-
-        std::string toString() const {
-            return (new OperatorStringBuilder(typeid(*this)))
-            ->ADD_FIELD(mColor)
-            ->toString();
-        }
-
-        friend std::ostream& operator<<(std::ostream& os, const Material& material) {
-            os << material.toString();
-            return os;
-        };
+        constexpr Material(const types::Color color) : mColor(color) {};
     private:
-        const Color mColor;
+        const types::Color mColor;
     };
 }
 

@@ -4,10 +4,9 @@
 #ifndef LODESTONE_BLOCK_H
 #define LODESTONE_BLOCK_H
 #include <string>
-#include <unordered_map>
 
-#include "OperatorStringBuilder.h"
-#include "StringSerializable.h"
+#include "String/OperatorStringBuilder.h"
+#include "String/StringSerializable.h"
 #include "Material/Material.h"
 
 namespace lodestone::level::block {
@@ -17,20 +16,15 @@ namespace lodestone::level::block {
     public:
         Block(const std::string &id, const material::Material material) : mId(id), mMaterial(material) {};
 
-        std::string toString() const override {
-            return (new OperatorStringBuilder(typeid(*this)))
-            ->ADD_FIELD(mId)
-            ->ADD_FIELD(mMaterial)
-            ->toString();
-        }
-
         constexpr const std::string &getID() const {
             return mId;
         };
 
         constexpr material::Material getMaterial() const {
             return mMaterial;
-        }
+        };
+
+        std::string toString() const override;
 
     private:
         std::string mId;

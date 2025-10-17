@@ -17,12 +17,7 @@ namespace lodestone::level::conversion::chunk {
 
         void registerChunkIO(const std::string &id, const ChunkIO* io);
 
-        const ChunkIO *getChunkIO(const std::string &id) const {
-            if (!mRegisteredChunkIOs.count(id))
-                return nullptr;
-
-            return mRegisteredChunkIOs.at(id);
-        };
+        const ChunkIO *getChunkIO(const std::string &id) const;
     private:
         std::unordered_map<std::string, const ChunkIO*> mRegisteredChunkIOs = {};
     };

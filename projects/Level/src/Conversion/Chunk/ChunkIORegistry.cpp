@@ -10,4 +10,11 @@ namespace lodestone::level::conversion::chunk {
 
         mRegisteredChunkIOs[id] = std::move(io);
     }
+
+    const ChunkIO * ChunkIORegistry::getChunkIO(const std::string &id) const {
+        if (!mRegisteredChunkIOs.count(id))
+            return nullptr;
+
+        return mRegisteredChunkIOs.at(id);
+    }
 }

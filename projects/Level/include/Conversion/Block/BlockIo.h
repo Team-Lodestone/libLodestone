@@ -51,8 +51,6 @@ namespace lodestone::level::conversion::block {
                 std::unordered_map<B, D> &d = getDefaultDataMap();
                 d[blk.first] = blk.second;
             }
-
-            std::cout << "Registered block " << internal << " as " << blk.first << std::endl;
         }
 
         /** Converts an internal block to the BlockIO's format */

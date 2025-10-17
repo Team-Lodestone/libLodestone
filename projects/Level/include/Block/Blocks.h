@@ -3,6 +3,8 @@
 //
 #ifndef LODESTONE_BLOCKS_H
 #define LODESTONE_BLOCKS_H
+#include <unordered_map>
+
 #include "Block.h"
 #include "Defines.h"
 
@@ -16,19 +18,9 @@ namespace lodestone::level::block {
         static const Block *sDefaultBlock;
         static Blocks *sInstance;
 
-        void registerBlock(const std::string &id, const Block* block) {
-            if (mBlocks.count(id))
-                throw std::runtime_error("Block already exists");
+        void registerBlock(const std::string &id, const Block* block);
+        const Block *getBlock(const std::string &id) const;
 
-            mBlocks[id] = std::move(block);
-        }
-
-        const Block *getBlock(const std::string &id) const {
-            if (!mBlocks.count(id))
-                return nullptr;
-
-            return mBlocks.at(id);
-        };
     private:
         std::unordered_map<std::string, const Block*> mBlocks = {
             REGISTER("lodestone:air", material::Material({0, 0, 0, 0})),

@@ -12,4 +12,11 @@ namespace lodestone::level::conversion::world {
 
         mRegisteredWorldIOs[id] = std::move(io);
     }
+
+    const WorldIo * WorldIoRegistry::getWorldIO(const std::string &id) const {
+        if (!mRegisteredWorldIOs.count(id))
+            return nullptr;
+
+        return mRegisteredWorldIOs.at(id);
+    }
 }

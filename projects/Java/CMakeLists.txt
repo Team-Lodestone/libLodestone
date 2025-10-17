@@ -23,7 +23,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif ()
 
 add_library(Lodestone.Java SHARED ${FILES})
-target_include_directories(Lodestone.Java PUBLIC include src)
+target_include_directories(Lodestone.Java PUBLIC include)
 
 target_link_libraries(Lodestone.Java PRIVATE Lodestone.Level)
 target_link_libraries(Lodestone.Java PRIVATE Lodestone.Common)

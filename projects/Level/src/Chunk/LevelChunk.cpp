@@ -8,6 +8,34 @@ namespace lodestone::level::chunk {
         this->mSections = std::vector<section::Section*>(height / 16);
     }
 
+    int LevelChunk::getChunkHeight() const {
+        return mSections.size();
+    }
+
+    bool LevelChunk::hasSection(const int y) const {
+        if (mSections.size() > y)
+            return (mSections[y] != nullptr);
+        return false;
+    }
+
+    section::Section * LevelChunk::getSection(const int y) const {
+        // if non-existent, return fake one
+        if (!hasSection(y))
+            return section::EmptySection::sInstance;
+
+        return mSections[y];
+    }
+
+    section::Section * LevelChunk::getSectionCreate(const int y) {
+        if (!hasSection(y)) mSections[y] = new section::LevelSection();
+
+        return mSections[y];
+    }
+
+    block::state::BlockState * LevelChunk::getBlock(const int x, const int y, const int z) const {
+        return getSection(y / 16)->getBlock(x, y % 16, z);
+    }
+
     void LevelChunk::calculateHeightmap() {
         const int height = getChunkBlockHeight();
 

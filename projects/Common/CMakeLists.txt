@@ -8,13 +8,12 @@ set(FILES
         src/Lodestone.cpp
 
         include/Defines.h
-        include/OperatorStringBuilder.h
+        include/String/OperatorStringBuilder.h
         include/Constants.h
-        include/StringSerializable.h
-        include/Vector3.h
-        include/Bounds.h
+        include/String/StringSerializable.h
+        src/String/OperatorStringBuilder.cpp
 )
 
 # hm I wonder if there will be problems if I link against 2 libs that both compile this
 add_library(Lodestone.Common OBJECT ${FILES})
-target_include_directories(Lodestone.Common PUBLIC include src)
+target_include_directories(Lodestone.Common PUBLIC include)

@@ -5,8 +5,6 @@
 #define LODESTONE_STRINGSERIALIZABLE_H
 #include <string>
 
-#include "OperatorStringBuilder.h"
-
 class StringSerializable {
 public:
     virtual ~StringSerializable() = default;

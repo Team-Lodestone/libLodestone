@@ -12,24 +12,15 @@
 namespace lodestone::level::chunk::section {
     class LevelSection : public Section {
     public:
-        const uint8_t *getBlockLight() const override {
-            return mBlockLight;
-        }
+        const uint8_t *getBlockLight() const override;
+        const uint8_t *getSkyLight() const override;
 
-        const uint8_t *getSkyLight() const override {
-            return mBlockLight;
-        }
-
-        block::state::BlockState *getBlock(const int x, const int y, const int z) const override;
-
-        const block::state::BlockState *getBlocks() override {
-            return mBlocks;
-        };
-
-        SectionType getType() override;
-
+        block::state::BlockState *getBlock(int x, int y, int z) const override;
         void setBlock(block::state::BlockState &blk, int x, int y, int z) override;
 
+        const block::state::BlockState *getBlocks() override;
+
+        SectionType getType() override;
     private:
         block::state::BlockState *mBlocks = new block::state::BlockState[constants::CHUNK_WIDTH * constants::SECTION_HEIGHT * constants::CHUNK_LENGTH];
 

@@ -1,14 +1,14 @@
 //
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
-#include "../../include/Chunk/Chunk.h"
+#include "Chunk/Chunk.h"
 
 namespace lodestone::level::chunk {
     int Chunk::getChunkBlockHeight() const {
         return getChunkHeight() * constants::SECTION_HEIGHT;
     }
 
-    const int16_t * Chunk::getHeightmap() const {
+    const int16_t *Chunk::getHeightmap() const {
         return mHeightmap;
     }
 

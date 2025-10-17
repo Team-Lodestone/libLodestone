@@ -23,38 +23,19 @@ namespace lodestone::level::block::state {
         BlockState() : mBlock(Blocks::sDefaultBlock) {}
         ~BlockState();
 
+        const std::unordered_map<std::string, std::string> &getStates();
+
+        bool hasProperty(const std::string &id) const;
+
+        const std::string &getProperty(const std::string &id) const;
+        std::string &getProperty(const std::string &id);
+
         const Block *getBlock() const { return mBlock; }
 
-        const std::unordered_map<std::string, std::string> &getStates() {
-            return mProperties;
-        }
+        void setProperty(const std::string &id, const std::string &state);
 
-        bool hasProperty(const std::string &id) const {
-            return mProperties.count(id);
-        }
-
-        const std::string &getProperty(const std::string &id) const {
-            if (!mProperties.count(id))
-                throw std::runtime_error("Property does not exist");
-
-            return mProperties.at(id);
-        }
-
-        std::string &getProperty(const std::string &id) {
-            return mProperties[id];
-        }
-
-        void setState(const std::string &id, const std::string &state) {
-            mProperties[id] = state;
-        }
-
-        const std::string &operator[](const std::string &id) const {
-            return getProperty(id);
-        }
-
-        std::string &operator[](const std::string &id) {
-            return getProperty(id);
-        }
+        const std::string &operator[](const std::string &id) const;
+        std::string &operator[](const std::string &id);
 
     private:
         const Block *mBlock;

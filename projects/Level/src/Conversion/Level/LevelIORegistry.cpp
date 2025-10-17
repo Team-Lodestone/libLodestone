@@ -12,4 +12,11 @@ namespace lodestone::level::conversion::level {
 
         mRegisteredLevelIOs[id] = std::move(io);
     }
+
+    const LevelIO * LevelIORegistry::getLevelIO(const std::string &id) const {
+        if (!mRegisteredLevelIOs.count(id))
+            return nullptr;
+
+        return mRegisteredLevelIOs.at(id);
+    }
 }

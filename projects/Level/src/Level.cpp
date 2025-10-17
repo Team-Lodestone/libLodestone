@@ -1,18 +1,18 @@
 //
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
-#include "../include/Level.h"
+#include "Level.h"
 
 #include <limits.h>
 
 #include "Chunk/LevelChunk.h"
 
 namespace lodestone::level {
-    bool Level::hasChunk(const chunk::ChunkCoords &coords) const {
+    bool Level::hasChunk(const types::Vec2i &coords) const {
         return (mChunks.count(coords) > 0);
     }
 
-    chunk::Chunk *Level::createChunk(const chunk::ChunkCoords &coords, const int height) {
+    chunk::Chunk *Level::createChunk(const types::Vec2i &coords, const int height) {
         if (hasChunk(coords)) throw new std::runtime_error("Attempted to place a chunk where there already was one");
 
         chunk::Chunk *c = new chunk::LevelChunk(height);
@@ -21,13 +21,13 @@ namespace lodestone::level {
         return c;
     }
 
-    chunk::Chunk * Level::getChunk(const chunk::ChunkCoords &coords) {
+    chunk::Chunk * Level::getChunk(const types::Vec2i &coords) {
         if (hasChunk(coords)) return mChunks[coords];
 
         return nullptr;
     }
 
-    void Level::removeChunk(const chunk::ChunkCoords &coords) {
+    void Level::removeChunk(const types::Vec2i &coords) {
         mChunks.erase(coords);
     }
 
@@ -104,7 +104,7 @@ namespace lodestone::level {
         }
     }
 
-    Bounds Level::getChunkBounds() {
+    types::Bounds Level::getChunkBounds() {
         int minX = INT_MAX;
         int minY = INT_MAX;
         int minZ = INT_MAX;
@@ -117,7 +117,7 @@ namespace lodestone::level {
         return {minX, minY, minZ, maxX, maxY, maxZ};
     }
 
-    Bounds Level::getBlockBounds() {
+    types::Bounds Level::getBlockBounds() {
         int minX = INT_MAX;
         int minY = INT_MAX;
         int minZ = INT_MAX;

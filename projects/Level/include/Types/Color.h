@@ -1,31 +1,105 @@
 //
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
-#pragma once
+#ifndef LODESTONE_COLOR_H
+#define  LODESTONE_COLOR_H
 
-#include "OperatorStringBuilder.h"
+#include <functional>
 
-struct Color {
-    unsigned char r;
-    unsigned char g;
-    unsigned char b;
-    unsigned char a;
+namespace lodestone::level::types {
+    struct Color final {
+        unsigned char r, g, b, a;
 
-    operator std::string() const {
-        return this->toString();
-    }
+        bool operator==(const Color &rhs) const {
+            return r == rhs.r
+                && g == rhs.g
+                && b == rhs.b
+                && a == rhs.a;
+        }
 
-    std::string toString() const {
-        return (new OperatorStringBuilder(typeid(*this)))
-        ->addField("r", static_cast<int>(r))
-        ->addField("g", static_cast<int>(g))
-        ->addField("b", static_cast<int>(b))
-        ->addField("a", static_cast<int>(a))
-        ->toString();
-    }
+        Color operator+(const int v) const {
+            return {
+                static_cast<unsigned char>(r + v),
+                static_cast<unsigned char>(g + v),
+                static_cast<unsigned char>(b + v),
+                static_cast<unsigned char>(a + v)
+            };
+        }
 
-    friend std::ostream& operator<<(std::ostream& os, const Color& color) {
-        os << color.toString();
-        return os;
+        Color operator-(const int v) const {
+            return {
+                static_cast<unsigned char>(r - v),
+                static_cast<unsigned char>(g - v),
+                static_cast<unsigned char>(b - v),
+                static_cast<unsigned char>(a - v)
+            };
+        }
+
+        Color operator*(const int v) const {
+            return {
+                static_cast<unsigned char>(r * v),
+                static_cast<unsigned char>(g * v),
+                static_cast<unsigned char>(b * v),
+                static_cast<unsigned char>(a * v)
+            };
+        }
+
+        Color operator/(const int v) const {
+            return {
+                static_cast<unsigned char>(r / v),
+                static_cast<unsigned char>(g / v),
+                static_cast<unsigned char>(b / v),
+                static_cast<unsigned char>(a / v)
+            };
+        }
+
+        Color operator+(const Color &rhs) const {
+            return {
+                static_cast<unsigned char>(r + rhs.r),
+                static_cast<unsigned char>(g + rhs.g),
+                static_cast<unsigned char>(b + rhs.b),
+                static_cast<unsigned char>(a + rhs.a)
+            };
+        }
+
+        Color operator-(const Color &rhs) const {
+            return {
+                static_cast<unsigned char>(r - rhs.r),
+                static_cast<unsigned char>(g - rhs.g),
+                static_cast<unsigned char>(b - rhs.b),
+                static_cast<unsigned char>(a - rhs.a)
+            };
+        }
+
+        Color operator*(const Color &rhs) const {
+            return {
+                static_cast<unsigned char>(r * rhs.r),
+                static_cast<unsigned char>(g * rhs.g),
+                static_cast<unsigned char>(b * rhs.b),
+                static_cast<unsigned char>(a * rhs.a)
+            };
+        }
+
+        Color operator/(const Color &rhs) const {
+            return {
+                static_cast<unsigned char>(r / rhs.r),
+                static_cast<unsigned char>(g / rhs.g),
+                static_cast<unsigned char>(b / rhs.b),
+                static_cast<unsigned char>(a / rhs.a)
+            };
+        }
     };
+}
+
+template <>
+struct std::hash<lodestone::level::types::Color> {
+    size_t operator()(const lodestone::level::types::Color& v) const noexcept {
+        // we can just combine it into an int lol
+        return (v.r << 24)
+             | (v.g << 16)
+             | (v.b << 8)
+             | (v.a);
+    }
 };
+
+#endif

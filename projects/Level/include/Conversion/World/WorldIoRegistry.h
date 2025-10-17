@@ -17,12 +17,7 @@ namespace lodestone {
 
                 void registerWorldIO(const std::string &id, const WorldIo* io);
 
-                const WorldIo *getWorldIO(const std::string &id) const {
-                    if (!mRegisteredWorldIOs.count(id))
-                        return nullptr;
-
-                    return mRegisteredWorldIOs.at(id);
-                };
+                const WorldIo *getWorldIO(const std::string &id) const;
             private:
                 std::unordered_map<std::string, const WorldIo*> mRegisteredWorldIOs = {};
             };
