@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <ostream>
@@ -9,6 +10,7 @@
 #include "Chunk/LevelChunk.h"
 #include "Conversion/Level/LevelIORegistry.h"
 #include "Classic/ClassicBlockIo.h"
+#include "fmt/xchar.h"
 //
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
@@ -52,10 +54,18 @@ int main() {
     // o.write(reinterpret_cast<const char*>(l->write(level)), l->getSize());
     // o.close();
 
-    const lodestone::level::conversion::level::LevelIO *l2 = lodestone::level::conversion::level::LevelIORegistry::sInstance->getLevelIO("lodestone:minev2");
-    std::ofstream o("minev2.mine.out", std::ios::binary);
-    o.write(reinterpret_cast<const char*>(l2->write(level)), l2->getSize(level));
-    o.close();
+    // const lodestone::level::conversion::level::LevelIO *l2 = lodestone::level::conversion::level::LevelIORegistry::sInstance->getLevelIO("lodestone:minev2");
+    // std::ofstream o("minev2.mine.out", std::ios::binary);
+    // o.write(reinterpret_cast<const char*>(l2->write(level)), l2->getSize(level));
+    // o.close();
+
+    std::filesystem::create_directories("heightmaps");
+
+    for (auto [coords, chunk] : level->getChunks()) {
+        std::ofstream o(fmt::format("heightmaps/{}.{}.out", coords.x, coords.z), std::ios::binary);
+        o.write(reinterpret_cast<const char*>(chunk->getHeightmap()), (lodestone::constants::CHUNK_WIDTH * lodestone::constants::CHUNK_LENGTH) * 2);
+        o.close();
+    }
 
     return 0;
 }

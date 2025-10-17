@@ -18,18 +18,31 @@ namespace lodestone::level::chunk {
     public:
         virtual ~Chunk() = default;
 
-        /** Creates a new Chunk with chunk sections for the given height */
-        virtual const int16_t *calculateHeightmap() = 0;
+        virtual void calculateHeightmap() = 0;
         /** Gets the height of the chunk in Sections, can be used for getting section count */
-        virtual int getHeight() const = 0;
+        virtual int getChunkHeight() const = 0;
         /** Gets the height of the chunk in Blocks */
-        int getBlockHeight() const;
+        int getChunkBlockHeight() const;
 
         virtual section::Section *getSection(int y) const = 0;
         virtual section::Section *getSectionCreate(int y) = 0;
 
+        virtual const int16_t *getHeightmap() const;
+
         virtual block::state::BlockState *getBlock(int x, int y, int z) const = 0;
+        /** Sets a block at the given X, Y, and Z coordinates.
+         *
+         * Also updates the blockmap and heightmap
+         */
         virtual void setBlock(block::state::BlockState &blk, int x, int y, int z) = 0;
+        /** Sets a block at the given X, Y, and Z coordinates.
+         *
+         * Does not update blockmap nor heightmap
+         */
+        virtual void setBlockRaw(block::state::BlockState &blk, int x, int y, int z) = 0;
+
+        virtual int16_t getHeightAt(int x, int z) const;
+        virtual void setHeightAt(int x, int z, int16_t h);
     protected:
         /** Heightmap
          *

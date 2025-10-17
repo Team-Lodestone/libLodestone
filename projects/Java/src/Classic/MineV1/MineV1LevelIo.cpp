@@ -12,12 +12,17 @@ namespace lodestone::java::classic::minev1 {
         for (int y = 0; y < HEIGHT; y++) {
             for (int z = 0; z < LENGTH; z++) {
                 for (int x = 0; x < WIDTH; x++) {
-                    level::block::state::BlockState b = ClassicBlockIO::sInstance->readBlock(data + INDEX_YZX(x, y, z, WIDTH, LENGTH));
+                    level::block::state::BlockState b = ClassicBlockIO::sInstance->readBlock(data);
                     if (b.getBlock()->getID() != "lodestone:air")
-                        l->setBlockCreate(b, x, y, z, HEIGHT);
+                        l->setBlockCreateRaw(b, x, y, z, HEIGHT);
+
+                    data++;
                 }
             }
         }
+
+        for (auto [coords, chunk] : l->getChunks())
+            chunk->calculateHeightmap();
 
         return l;
     }

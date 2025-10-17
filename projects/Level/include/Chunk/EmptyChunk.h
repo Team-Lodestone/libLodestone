@@ -8,9 +8,9 @@
 namespace lodestone::level::chunk {
     class EmptyChunk : public Chunk {
     public:
-        const int16_t * calculateHeightmap() override;
+        void calculateHeightmap() override;
 
-        int getHeight() const override;
+        int getChunkHeight() const override;
 
         section::Section * getSection(int y) const override;
 
@@ -19,6 +19,10 @@ namespace lodestone::level::chunk {
         section::Section * getSectionCreate(int y) override;
 
         void setBlock(block::state::BlockState &blk, int x, int y, int z) override;
+
+        void setBlockRaw(block::state::BlockState &blk, int x, int y, int z) override;
+
+        void setHeightAt(int x, int z, int16_t h) override;
     };
 }
 

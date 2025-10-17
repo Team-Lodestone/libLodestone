@@ -9,9 +9,10 @@
 namespace lodestone::level::chunk {
     class LODESTONE_API LevelChunk : public Chunk {
     public:
+        /** Creates a new LevelChunk with chunk sections for the given height */
         LevelChunk(int height);
 
-        int getHeight() const override {
+        int getChunkHeight() const override {
             return mSections.size();
         };
 
@@ -43,9 +44,10 @@ namespace lodestone::level::chunk {
             return getSection(y / 16)->getBlock(x, y % 16, z);
         }
 
-        const int16_t *calculateHeightmap() override;
+        void calculateHeightmap() override;
 
         void setBlock(block::state::BlockState &blk, int x, int y, int z) override;
+        void setBlockRaw(block::state::BlockState &blk, int x, int y, int z) override;
 
     protected:
         /** Chunk Sections

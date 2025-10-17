@@ -45,6 +45,9 @@ namespace lodestone::level {
         void setBlock(block::state::BlockState &blk, size_t x, size_t y, size_t z);
         void setBlockCreate(block::state::BlockState &blk, size_t x, size_t y, size_t z, int height = 256);
 
+        void setBlockRaw(block::state::BlockState &blk, size_t x, size_t y, size_t z);
+        void setBlockCreateRaw(block::state::BlockState &blk, size_t x, size_t y, size_t z, int height = 256);
+
         void getChunkBounds(int &minX, int &minY, int &minZ, int &maxX, int &maxY, int &maxZ);
         void getBlockBounds(int &minX, int &minY, int &minZ, int &maxX, int &maxY, int &maxZ);
 

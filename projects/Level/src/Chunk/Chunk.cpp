@@ -4,7 +4,19 @@
 #include "../../include/Chunk/Chunk.h"
 
 namespace lodestone::level::chunk {
-    int Chunk::getBlockHeight() const {
-        return getHeight() * constants::SECTION_HEIGHT;
+    int Chunk::getChunkBlockHeight() const {
+        return getChunkHeight() * constants::SECTION_HEIGHT;
+    }
+
+    const int16_t * Chunk::getHeightmap() const {
+        return mHeightmap;
+    }
+
+    int16_t Chunk::getHeightAt(const int x, const int z) const {
+        return mHeightmap[z * constants::CHUNK_WIDTH + x];
+    }
+
+    void Chunk::setHeightAt(const int x, const int z, const int16_t h) {
+        mHeightmap[z * constants::CHUNK_WIDTH + x] = h;
     }
 }

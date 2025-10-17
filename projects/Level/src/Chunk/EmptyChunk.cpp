@@ -4,11 +4,9 @@
 #include "Chunk/EmptyChunk.h"
 
 namespace lodestone::level::chunk {
-    const int16_t * EmptyChunk::calculateHeightmap() {
-        return mHeightmap;
-    }
+    void EmptyChunk::calculateHeightmap() {}
 
-    int EmptyChunk::getHeight() const {
+    int EmptyChunk::getChunkHeight() const {
         return 0;
     }
 
@@ -26,4 +24,9 @@ namespace lodestone::level::chunk {
 
     void EmptyChunk::setBlock(block::state::BlockState &blk, int x, int y, int z) {
     }
+
+    void EmptyChunk::setBlockRaw(block::state::BlockState &blk, int x, int y, int z) {
+    }
+
+    void EmptyChunk::setHeightAt(int x, int z, int16_t h) {}
 }

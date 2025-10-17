@@ -51,6 +51,20 @@ namespace lodestone::level {
             ->setBlock(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_LENGTH);
     }
 
+    void Level::setBlockRaw(block::state::BlockState &blk, const size_t x, const size_t y, const size_t z) {
+        if (!hasChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_LENGTH)) return;
+
+        getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_LENGTH)
+            ->setBlockRaw(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_LENGTH);
+    }
+
+    void Level::setBlockCreateRaw(block::state::BlockState &blk, size_t x, size_t y, size_t z, int height) {
+        if (!hasChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_LENGTH)) createChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_LENGTH, height);
+
+        getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_LENGTH)
+            ->setBlockRaw(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_LENGTH);
+    }
+
     void Level::getChunkBounds(int &minX, int &minY, int &minZ, int &maxX, int &maxY, int &maxZ) {
         minX = INT_MAX;
         minY = INT_MAX;
@@ -63,7 +77,7 @@ namespace lodestone::level {
             minX = std::min(minX, coord.x);
             maxX = std::max(maxX, coord.x);
             minY = std::min(minY, 0);
-            maxY = std::max(maxY, chonk->getHeight());
+            maxY = std::max(maxY, chonk->getChunkHeight());
             minZ = std::min(minZ, coord.z);
             maxZ = std::max(maxZ, coord.z);
         }
@@ -84,7 +98,7 @@ namespace lodestone::level {
             minX = std::min(minX, mX);
             maxX = std::max(maxX, mX + constants::CHUNK_WIDTH - 1);
             minY = std::min(minY, 0); // TODO: minimum block height
-            maxY = std::max(maxY, chonk->getBlockHeight());
+            maxY = std::max(maxY, chonk->getChunkBlockHeight());
             minZ = std::min(minZ, mZ);
             maxZ = std::max(maxZ, mZ + constants::CHUNK_LENGTH - 1);
         }

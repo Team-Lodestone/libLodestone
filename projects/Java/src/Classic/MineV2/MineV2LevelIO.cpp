@@ -24,17 +24,21 @@ namespace lodestone::java::classic::minev2 {
         const int depth = io.readBE<uint16_t>();
         const int height = io.readBE<uint16_t>();
 
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                for (int z = 0; z < depth; z++) {
-                    level::block::state::BlockState b = ClassicBlockIO::sInstance->readBlock(data);
-                    if (b.getBlock()->getID() != "lodestone:air") // entire chunk is already filled with air, if we're lucky we can avoid creating chunks that contain nothing
-                        l->setBlockCreate(b, x, y, z);
+        uint8_t *rd = io.getDataRelative();
+        for (int y = 0; y < height; y++) {
+            for (int z = 0; z < depth; z++) {
+                for (int x = 0; x < width; x++) {
+                    level::block::state::BlockState b = ClassicBlockIO::sInstance->readBlock(rd);
+                    if (b.getBlock()->getID() != "lodestone:air")
+                        l->setBlockCreateRaw(b, x, y, z, height);
 
-                    data++;
+                    rd++;
                 }
             }
         }
+
+        for (auto [coords, chunk] : l->getChunks())
+            chunk->calculateHeightmap();
 
         return l;
     }
