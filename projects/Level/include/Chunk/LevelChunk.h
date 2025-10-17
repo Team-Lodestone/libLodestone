@@ -12,30 +12,35 @@ namespace lodestone::level::chunk {
         LevelChunk(int height);
 
         int getHeight() const override {
-            return mSections.size() % 16;
+            return mSections.size();
         };
 
+        /** Checks if a section at the given section relative y level exists (NOT BLOCK Y) */
         bool hasSection(const int y) const {
-            return (mSections.size() >= (y / 16)) && (mSections[(y / 16)] != nullptr);
+            if (mSections.size() > y)
+                return (mSections[y] != nullptr);
+            return false;
         }
 
+        /** Creates a section at the given section relative y level (NOT BLOCK Y) */
         section::Section *getSection(const int y) const override {
             // if non-existent, return fake one
             if (!hasSection(y))
                 return section::EmptySection::sInstance;
 
-            return mSections[y/16];
+            return mSections[y];
         }
 
         // todo: just overload w/o const?
+        /** Gets/Creates a section at the given section relative y level (NOT BLOCK Y) */
         section::Section *getSectionCreate(const int y) override {
-            if (!hasSection(y)) mSections[y/16] = new section::LevelSection();
+            if (!hasSection(y)) mSections[y] = new section::LevelSection();
 
-            return mSections[y/16];
+            return mSections[y];
         }
 
         block::state::BlockState *getBlock(const int x, const int y, const int z) const override {
-            return getSection(y)->getBlock(x % 16, y % 16, z % 16);
+            return getSection(y / 16)->getBlock(x, y % 16, z);
         }
 
         const int16_t *calculateHeightmap() override;

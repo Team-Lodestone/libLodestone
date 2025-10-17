@@ -32,8 +32,29 @@ int main() {
     const lodestone::level::conversion::level::LevelIO *l = lodestone::level::conversion::level::LevelIORegistry::sInstance->getLevelIO("lodestone:minev1");
     lodestone::level::Level *level = l->read(b.data());
 
-    std::ofstream o("minev1.mine.out", std::ios::binary);
-    o.write(reinterpret_cast<const char*>(l->write(level)), l->getSize());
+    // lodestone::level::Level *level = new lodestone::level::Level();
+    // for (int x = 0; x < 256; x++) {
+    //     auto b = lodestone::level::block::state::BlockState("lodestone:dirt");
+    //     level->setBlockCreate(b, x, 0, 0);
+    // }
+    //
+    // for (int y = 0; y < 256; y++) {
+    //     auto b = lodestone::level::block::state::BlockState("lodestone:stone");
+    //     level->setBlockCreate(b, 0, y, 0);
+    // }
+    //
+    // for (int z = 0; z < 256; z++) {
+    //     auto b = lodestone::level::block::state::BlockState("lodestone:cobblestone");
+    //     level->setBlockCreate(b, 0, 0, z);
+    // }
+
+    // std::ofstream o("minev1.mine.out", std::ios::binary);
+    // o.write(reinterpret_cast<const char*>(l->write(level)), l->getSize());
+    // o.close();
+
+    const lodestone::level::conversion::level::LevelIO *l2 = lodestone::level::conversion::level::LevelIORegistry::sInstance->getLevelIO("lodestone:minev2");
+    std::ofstream o("minev2.mine.out", std::ios::binary);
+    o.write(reinterpret_cast<const char*>(l2->write(level)), l2->getSize(level));
     o.close();
 
     return 0;

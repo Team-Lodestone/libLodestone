@@ -3,11 +3,15 @@
 //
 #ifndef LODESTONE_LODESTONE_H
 #define LODESTONE_LODESTONE_H
+#include <chrono>
+
 #include "Defines.h"
 
 constexpr const char *const LIBRARY_STRING = "libLodestone v" LODESTONE_VERSION " (" COMPILER_NAME " / " BUILD_TYPE " | " PLATFORM_NAME " " PLATFORM_ARCH ") | https://github.com/Team-Lodestone/libLodestone";
 
 namespace lodestone {
+    LODESTONE_API unsigned long long getCurrentTimeMillis();
+
     // clang-format off
     extern "C" {
         LODESTONE_API NO_DISCARD constexpr const char *lodestone_get_build_type(); // NOLINT

@@ -4,9 +4,6 @@
 #include "Conversion/Chunk/ChunkIORegistry.h"
 
 namespace lodestone::level::conversion::chunk {
-    ChunkIORegistry::ChunkIORegistry() {
-    }
-
     void ChunkIORegistry::registerChunkIO(const std::string &id, const ChunkIO* io) {
         if (mRegisteredChunkIOs.count(id))
             throw std::runtime_error("ChunkIO already exists");

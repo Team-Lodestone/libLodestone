@@ -5,7 +5,7 @@
 #define LODESTONE_MINEV1CHUNKIO_H
 #include "Conversion/Level/LevelIO.h"
 
-namespace lodestone::java::classic {
+namespace lodestone::java::classic::minev1 {
     class MineV1LevelIO : public level::conversion::level::LevelIO {
     public:
         static constexpr int WIDTH = 256;
@@ -16,7 +16,7 @@ namespace lodestone::java::classic {
 
         uint8_t * write(level::Level *l) const override;
 
-        size_t getSize() const override;
+        size_t getSize(level::Level *l) const override;
     };
 }
 

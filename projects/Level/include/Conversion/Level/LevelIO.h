@@ -16,7 +16,7 @@ namespace lodestone::level::conversion::level {
         /** Writes a level to data */
         virtual uint8_t *write(Level *l) const = 0;
         /** Gets the size of the level in bytes */
-        virtual size_t getSize() const = 0;
+        virtual size_t getSize(Level *l) const = 0;
     };
 }
 

@@ -20,7 +20,10 @@ namespace lodestone::level::chunk {
 
         /** Creates a new Chunk with chunk sections for the given height */
         virtual const int16_t *calculateHeightmap() = 0;
+        /** Gets the height of the chunk in Sections, can be used for getting section count */
         virtual int getHeight() const = 0;
+        /** Gets the height of the chunk in Blocks */
+        int getBlockHeight() const;
 
         virtual section::Section *getSection(int y) const = 0;
         virtual section::Section *getSectionCreate(int y) = 0;

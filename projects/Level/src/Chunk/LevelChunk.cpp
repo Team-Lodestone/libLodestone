@@ -29,6 +29,6 @@ namespace lodestone::level::chunk {
     }
 
     void LevelChunk::setBlock(block::state::BlockState &blk, const int x, const int y, const int z) {
-        getSectionCreate(y)->setBlock(blk, x, y % 16, z);
+        getSectionCreate(y / 16)->setBlock(blk, x, y % 16, z);
     }
 }

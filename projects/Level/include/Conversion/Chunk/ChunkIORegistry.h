@@ -11,7 +11,7 @@ namespace lodestone::level::conversion::chunk {
     /** Creates chunks based on registered chunk IO classes */
     class LODESTONE_API ChunkIORegistry {
     protected:
-        ChunkIORegistry();
+        ChunkIORegistry() = default;
     public:
         static ChunkIORegistry *sInstance;
 

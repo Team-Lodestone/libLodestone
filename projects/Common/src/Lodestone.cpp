@@ -14,4 +14,10 @@ namespace lodestone {
         constexpr const char *lodestone_get_library_string() { return LIBRARY_STRING; } // NOLINT
         // clang-format on
     }
+
+    unsigned long long getCurrentTimeMillis() {
+        return std::chrono::duration_cast<std::chrono::milliseconds>(
+          std::chrono::system_clock::now().time_since_epoch())
+          .count();
+    }
 } // lodestone

@@ -6,9 +6,6 @@
 namespace lodestone::level::conversion::level {
     LevelIORegistry *LevelIORegistry::sInstance = new LevelIORegistry();
 
-    LevelIORegistry::LevelIORegistry() {
-    }
-
     void LevelIORegistry::registerLevelIO(const std::string &id, const LevelIO* io) {
         if (mRegisteredLevelIOs.count(id))
             throw std::runtime_error("LevelIO already exists");

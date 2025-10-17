@@ -48,6 +48,10 @@ set(FILES
         include/Conversion/Block/BlockIo.h
         src/World/World.cpp
         include/World/World.h
+        src/Conversion/World/WorldIo.cpp
+        include/Conversion/World/WorldIo.h
+        src/Conversion/World/WorldIoRegistry.cpp
+        include/Conversion/World/WorldIoRegistry.h
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")

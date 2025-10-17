@@ -4,4 +4,7 @@
 #include "../../include/Chunk/Chunk.h"
 
 namespace lodestone::level::chunk {
+    int Chunk::getBlockHeight() const {
+        return getHeight() * constants::SECTION_HEIGHT;
+    }
 }

@@ -11,6 +11,8 @@ set(FILES
         include/OperatorStringBuilder.h
         include/Constants.h
         include/StringSerializable.h
+        include/Vector3.h
+        include/Bounds.h
 )
 
 # hm I wonder if there will be problems if I link against 2 libs that both compile this

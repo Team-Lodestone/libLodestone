@@ -7,6 +7,9 @@
 #include <Chunk/Chunk.h>
 #include <Chunk/ChunkCoords.h>
 
+#include "Bounds.h"
+#include "Vector3.h"
+
 namespace lodestone::level {
     class Level {
     public:
@@ -40,6 +43,15 @@ namespace lodestone::level {
 
         block::state::BlockState *getBlock(size_t x, size_t y, size_t z);
         void setBlock(block::state::BlockState &blk, size_t x, size_t y, size_t z);
+        void setBlockCreate(block::state::BlockState &blk, size_t x, size_t y, size_t z, int height = 256);
+
+        void getChunkBounds(int &minX, int &minY, int &minZ, int &maxX, int &maxY, int &maxZ);
+        void getBlockBounds(int &minX, int &minY, int &minZ, int &maxX, int &maxY, int &maxZ);
+
+        Bounds getChunkBounds();
+        Bounds getBlockBounds();
+
+        size_t getBlockCount();
     private:
         std::unordered_map<chunk::ChunkCoords, chunk::Chunk*> mChunks; // or should it be ordered?
     };
