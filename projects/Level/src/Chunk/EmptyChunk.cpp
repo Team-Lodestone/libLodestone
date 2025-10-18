@@ -34,4 +34,16 @@ namespace lodestone::level::chunk {
     }
 
     void EmptyChunk::setBlockmapBlockAt(block::state::BlockState *h, int x, int z) {}
+
+    void EmptyChunk::calculateMaps() {
+    }
+
+    void EmptyChunk::calculateBlockmapAtColumn(int x, int z, int height) {
+    }
+
+    void EmptyChunk::calculateHeightmapAtColumn(int x, int z, int height) {
+    }
+
+    void EmptyChunk::calculateMapsAtColumn(int x, int z, int height) {
+    }
 }

@@ -19,11 +19,14 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
       - [X] Chunk Sections
       - [ ] Palettes (for memory usage)
       - [ ] Lighting calculation (maybe?)
+    - [ ] Biomes
     - [ ] Dynamic Block & Material registration
       - `DynamicBlock`
       - `DynamicMaterial`
     - [X] Internal Block IDs
-        - [X] Block ID conversion map between versions
+        - [ ] Block ID conversion map between versions
+          - [X] Dynamic block map
+          - [ ] Versioned block map
         - [ ] Properly convert block states and other data
     - [ ] Entities
         - [ ] Tile Entities

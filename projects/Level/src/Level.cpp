@@ -34,6 +34,12 @@ namespace lodestone::level {
         return nullptr;
     }
 
+    chunk::Chunk * Level::getChunkCreate(const types::Vec2i &coords, const int height) {
+        if (const auto it = mChunks.find(coords); it != mChunks.end()) return it->second.get();
+
+        return createChunk(coords, height);
+    }
+
     const chunk::Chunk * Level::getChunk(const types::Vec2i &coords) const {
         if (const auto it = mChunks.find(coords); it != mChunks.end()) return it->second.get();
 

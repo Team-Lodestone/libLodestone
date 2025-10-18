@@ -56,6 +56,11 @@ namespace lodestone::level {
             return getChunk({x, z});
         };
 
+        chunk::Chunk *getChunkCreate(const types::Vec2i &coords, int height = 256);
+        chunk::Chunk *getChunkCreate(const int x, const int z, int height = 256) {
+            return getChunkCreate({x, z});
+        };
+
         const chunk::Chunk *getChunk(const types::Vec2i &coords) const;
         const chunk::Chunk *getChunk(const int x, const int z) const {
             return getChunk({x, z});
@@ -88,7 +93,6 @@ namespace lodestone::level {
         const block::state::BlockState *getBlockmapBlockAt(int x, int z) const;
         void setBlockmapBlockAt(block::state::BlockState *b, int x, int z);
         void setBlockmapBlockAtCreate(block::state::BlockState *b, int x, int z, int height = 256);
-
 
         types::Bounds getChunkBounds();
         types::Bounds getBlockBounds();

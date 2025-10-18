@@ -20,6 +20,10 @@ namespace lodestone::level::chunk {
         virtual void calculateHeightmap() = 0;
         virtual void calculateMaps() = 0;
 
+        virtual void calculateBlockmapAtColumn(int x, int z, int height) = 0;
+        virtual void calculateHeightmapAtColumn(int x, int z, int height) = 0;
+        virtual void calculateMapsAtColumn(int x, int z, int height) = 0;
+
         /** Gets the height of the chunk in Sections, can be used for getting section count */
         virtual int getChunkHeight() const = 0;
         /** Gets the height of the chunk in Blocks */

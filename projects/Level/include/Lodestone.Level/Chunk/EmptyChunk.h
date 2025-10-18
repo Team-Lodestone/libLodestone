@@ -27,6 +27,14 @@ namespace lodestone::level::chunk {
         void calculateBlockmap() override;
 
         void setBlockmapBlockAt(block::state::BlockState *h, int x, int z) override;
+
+        void calculateMaps() override;
+
+        void calculateBlockmapAtColumn(int x, int z, int height) override;
+
+        void calculateHeightmapAtColumn(int x, int z, int height) override;
+
+        void calculateMapsAtColumn(int x, int z, int height) override;
     };
 }
 

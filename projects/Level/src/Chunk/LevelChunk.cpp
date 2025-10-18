@@ -15,6 +15,7 @@ namespace lodestone::level::chunk {
     bool LevelChunk::hasSection(const int y) const {
         if (mSections.size() > y)
             return (mSections[y] != nullptr);
+
         return false;
     }
 
@@ -41,12 +42,7 @@ namespace lodestone::level::chunk {
 
         for (int z = 0; z < constants::CHUNK_DEPTH; z++) {
             for (int x = 0; x < constants::CHUNK_WIDTH; x++) {
-                for (int y = height; y >= 0; y--) {
-                    if (getBlock(x, y, z)->getBlock() != block::BlockRegistry::sDefaultBlock) {
-                        setHeightAt(std::min(y + 1,  height - 1), x, z);
-                        break;
-                    }
-                }
+                calculateHeightmapAtColumn(x, z, height);
             }
         }
     }
@@ -71,15 +67,37 @@ namespace lodestone::level::chunk {
 
         for (int z = 0; z < constants::CHUNK_DEPTH; z++) {
             for (int x = 0; x < constants::CHUNK_WIDTH; x++) {
-                for (int y = height; y >= 0; y--) {
-                    if (block::state::BlockState *s = getBlock(x, y, z); *s != block::BlockRegistry::sDefaultBlock) {
-                        setHeightAt(std::min(y + 1,  height - 1), x, z);
+                calculateMapsAtColumn(x, z, height);
+            }
+        }
+    }
 
-                        if (s != getBlockmapBlockAt(x, z))
-                            setBlockmapBlockAt(s, x, z);
-                        break;
-                    }
-                }
+    void LevelChunk::calculateHeightmapAtColumn(const int x, const int z, const int height) {
+        for (int y = height; y >= 0; y--) {
+            if (getBlock(x, y, z)->getBlock() != block::BlockRegistry::sDefaultBlock) {
+                setHeightAt(std::min(y + 1,  height - 1), x, z);
+                break;
+            }
+        }
+    }
+
+    void LevelChunk::calculateBlockmapAtColumn(const int x, const int z, const int height) {
+        for (int y = height; y >= 0; y--) {
+            if (block::state::BlockState *s = getBlock(x, y, z); s != getBlockmapBlockAt(x, z) && *s != block::BlockRegistry::sDefaultBlock) {
+                setBlockmapBlockAt(s, x, z);
+                break;
+            }
+        }
+    }
+
+    void LevelChunk::calculateMapsAtColumn(const int x, const int z, const int height) {
+        for (int y = height; y >= 0; y--) {
+            if (block::state::BlockState *s = getBlock(x, y, z); *s != block::BlockRegistry::sDefaultBlock) {
+                setHeightAt(std::min(y + 1,  height - 1), x, z);
+
+                if (s != getBlockmapBlockAt(x, z))
+                    setBlockmapBlockAt(s, x, z);
+                break;
             }
         }
     }

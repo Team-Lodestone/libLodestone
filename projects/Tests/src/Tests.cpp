@@ -17,6 +17,47 @@
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
 
+// Minecraft-style map image generator made by a friend who does not wish to be named
+uint8_t *generateMap(lodestone::level::Level *l) {
+    auto [min, max] = l->getBlockBounds();
+
+    const int w = max.x - min.x + 1;
+    const int d = max.z - min.z + 1;
+    uint8_t *arr = new uint8_t[(w * d) * sizeof(lodestone::level::types::Color)];
+
+    for (int y = 0; y < d; ++y) {
+        for (int x = 0; x < w; ++x) {
+            const int16_t h = l->getHeightAt(x, y);
+            const lodestone::level::material::Material &m = l->getBlockmapBlockAt(x, y)->getBlock()->getMaterial();
+            const lodestone::level::types::Color &col = m.getColor();
+
+            float r = col.r;
+            float g = col.g;
+            float b = col.b;
+
+            if (y > 0) { // this might break the top row of pixels, but it prevents us from going OOB until I fix
+                const int16_t nh = l->getHeightAt(x, y - 1);
+                if (h < nh) {
+                    r *= 0.75;
+                    g *= 0.75;
+                    b *= 0.75;
+                } else if (h > nh) {
+                    r *= 1.25;
+                    g *= 1.25;
+                    b *= 1.25;
+                }
+            }
+
+            arr[(x+y*w)*4 + 0] = std::floor(r);
+            arr[(x+y*w)*4 + 1] = std::floor(g);
+            arr[(x+y*w)*4 + 2] = std::floor(b);
+            arr[(x+y*w)*4 + 3] = 0xff;
+        }
+    }
+
+    return arr;
+}
+
 // TODO: proper test framework, probably based off of libLCE's (I made libLCE)
 int main() {
     std::cout << lodestone::lodestone_get_library_string() << std::endl;
@@ -38,7 +79,13 @@ int main() {
     i.read(reinterpret_cast<char*>(b.data()), s);
 
     const lodestone::level::conversion::level::LevelIO *l = lodestone::level::conversion::level::LevelIORegistry::sInstance.getLevelIO("lodestone:minev1");
+    auto startTime = std::chrono::high_resolution_clock::now();
     lodestone::level::Level *level = l->read(b.data());
+    const std::chrono::duration<double, std::milli> duration =
+                std::chrono::high_resolution_clock::now() - startTime;
+
+    std::cout << "finished after "
+              << duration.count() << "ms" << std::endl;
 
     // lodestone::level::Level *level = new lodestone::level::Level();
     // for (int x = 0; x < 256; x++) {
