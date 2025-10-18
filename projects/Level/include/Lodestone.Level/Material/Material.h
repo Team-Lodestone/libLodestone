@@ -10,6 +10,8 @@ namespace lodestone::level::material {
     class Material final {
     public:
         constexpr Material(const types::Color color) : mColor(color) {};
+
+        constexpr const types::Color &getColor() const { return mColor; }
     private:
         const types::Color mColor;
     };

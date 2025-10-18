@@ -15,7 +15,7 @@ namespace lodestone::level::block {
     protected:
         BlockRegistry() = default;
     public:
-#define REGISTER(n, m) {n, new Block(n, material::Material({0, 0, 0, 0}))}
+#define REGISTER(n, m) {n, new Block(n, m)}
 
         static const Block *sDefaultBlock;
         static BlockRegistry sInstance;
@@ -37,7 +37,7 @@ namespace lodestone::level::block {
         std::unordered_map<std::string, const Block*> mBlocks = {
             REGISTER(Blocks::AIR, material::Material({0, 0, 0, 0})),
             REGISTER(Blocks::STONE, material::Material({0, 0, 0, 0})),
-            REGISTER(Blocks::GRASS_BLOCK, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::GRASS_BLOCK, material::Material({127, 178, 56, 255})),
             REGISTER(Blocks::DIRT, material::Material({0, 0, 0, 0})),
             REGISTER(Blocks::COBBLESTONE, material::Material({0, 0, 0, 0})),
             REGISTER(Blocks::OAK_PLANKS, material::Material({0, 0, 0, 0})),

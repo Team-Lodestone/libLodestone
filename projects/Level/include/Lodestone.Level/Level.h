@@ -56,6 +56,11 @@ namespace lodestone::level {
             return getChunk({x, z});
         };
 
+        const chunk::Chunk *getChunk(const types::Vec2i &coords) const;
+        const chunk::Chunk *getChunk(const int x, const int z) const {
+            return getChunk({x, z});
+        };
+
         void removeChunk(const types::Vec2i &coords);
         void removeChunk(const int x, const int z) {
             removeChunk({x, z});
@@ -73,12 +78,17 @@ namespace lodestone::level {
         void setBlock(block::state::BlockState &blk, size_t x, size_t y, size_t z);
         void setBlockCreate(block::state::BlockState &blk, size_t x, size_t y, size_t z, int height = 256);
 
-        block::state::BlockState *getHeightAt(size_t x, size_t y, size_t z);
-        void setHeightAt(int16_t h, size_t x, size_t y, size_t z);
-        void setHeightAtCreate(int16_t h, size_t x, size_t y, size_t z, int height = 256);
-
         void setBlockRaw(block::state::BlockState &blk, size_t x, size_t y, size_t z);
         void setBlockCreateRaw(block::state::BlockState &blk, size_t x, size_t y, size_t z, int height = 256);
+
+        int16_t getHeightAt(int x, int z) const;
+        void setHeightAt(int16_t h, int x, int z);
+        void setHeightAtCreate(int16_t h, size_t x, size_t z, int height = 256);
+
+        const block::state::BlockState *getBlockmapBlockAt(int x, int z) const;
+        void setBlockmapBlockAt(block::state::BlockState *b, int x, int z);
+        void setBlockmapBlockAtCreate(block::state::BlockState *b, int x, int z, int height = 256);
+
 
         types::Bounds getChunkBounds();
         types::Bounds getBlockBounds();

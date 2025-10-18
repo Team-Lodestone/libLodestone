@@ -4,6 +4,7 @@
 #ifndef LODESTONE_CHUNK_H
 #define LODESTONE_CHUNK_H
 
+#include "Lodestone.Level/Block/State/BlockState.h"
 #include <Lodestone.Common/Constants.h>
 
 #include "Lodestone.Level/Block/State/BlockState.h"
@@ -15,7 +16,10 @@ namespace lodestone::level::chunk {
     public:
         virtual ~Chunk() = default;
 
+        virtual void calculateBlockmap() = 0;
         virtual void calculateHeightmap() = 0;
+        virtual void calculateMaps() = 0;
+
         /** Gets the height of the chunk in Sections, can be used for getting section count */
         virtual int getChunkHeight() const = 0;
         /** Gets the height of the chunk in Blocks */
@@ -25,6 +29,7 @@ namespace lodestone::level::chunk {
         virtual section::Section *getSectionCreate(int y) = 0;
 
         virtual const int16_t *getHeightmap() const;
+        virtual const block::state::BlockState **getBlockmap() const;
 
         virtual block::state::BlockState *getBlock(int x, int y, int z) const = 0;
         /** Sets a block at the given X, Y, and Z coordinates.
@@ -39,7 +44,10 @@ namespace lodestone::level::chunk {
         virtual void setBlockRaw(block::state::BlockState &blk, int x, int y, int z) = 0;
 
         virtual int16_t getHeightAt(int x, int z) const;
-        virtual void setHeightAt(int x, int z, int16_t h);
+        virtual void setHeightAt(int16_t h, int x, int z);
+
+        virtual const block::state::BlockState *getBlockmapBlockAt(int x, int z) const;
+        virtual void setBlockmapBlockAt(block::state::BlockState *b, int x, int z);
         // todo: section iterator
     protected:
         /** Heightmap
@@ -49,9 +57,9 @@ namespace lodestone::level::chunk {
         int16_t *mHeightmap = new int16_t[constants::CHUNK_WIDTH* constants::CHUNK_DEPTH];
         /** Blockmap
          *
-         * Each x and z coord corresponds to the topmost block's id
+         * Each x and z coord corresponds to the topmost block's state
          */
-        uint16_t *mBlockmap = new uint16_t[constants::CHUNK_WIDTH* constants::CHUNK_DEPTH];
+        block::state::BlockState **mBlockmap = new block::state::BlockState*[constants::CHUNK_WIDTH* constants::CHUNK_DEPTH];
 
         // std::unordered_map<Vec3i, TileEntity> mTileEntities;
         // std::unordered_map<Vec3i, Entity> mEntities;

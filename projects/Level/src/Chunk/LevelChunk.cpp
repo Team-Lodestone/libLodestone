@@ -43,7 +43,40 @@ namespace lodestone::level::chunk {
             for (int x = 0; x < constants::CHUNK_WIDTH; x++) {
                 for (int y = height; y >= 0; y--) {
                     if (getBlock(x, y, z)->getBlock() != block::BlockRegistry::sDefaultBlock) {
-                        setHeightAt(x, z, std::min(y + 1,  height - 1));
+                        setHeightAt(std::min(y + 1,  height - 1), x, z);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    void LevelChunk::calculateBlockmap() {
+        const int height = getChunkBlockHeight();
+
+        for (int z = 0; z < constants::CHUNK_DEPTH; z++) {
+            for (int x = 0; x < constants::CHUNK_WIDTH; x++) {
+                for (int y = height; y >= 0; y--) {
+                    if (block::state::BlockState *s = getBlock(x, y, z); s != getBlockmapBlockAt(x, z) && *s != block::BlockRegistry::sDefaultBlock) {
+                        setBlockmapBlockAt(s, x, z);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    void LevelChunk::calculateMaps() {
+        const int height = getChunkBlockHeight();
+
+        for (int z = 0; z < constants::CHUNK_DEPTH; z++) {
+            for (int x = 0; x < constants::CHUNK_WIDTH; x++) {
+                for (int y = height; y >= 0; y--) {
+                    if (block::state::BlockState *s = getBlock(x, y, z); *s != block::BlockRegistry::sDefaultBlock) {
+                        setHeightAt(std::min(y + 1,  height - 1), x, z);
+
+                        if (s != getBlockmapBlockAt(x, z))
+                            setBlockmapBlockAt(s, x, z);
                         break;
                     }
                 }
@@ -56,21 +89,31 @@ namespace lodestone::level::chunk {
 
         const int height = getChunkBlockHeight();
         if (blk.getBlock() != block::BlockRegistry::sDefaultBlock) {
-            // if our block is heigher than the current height, and isn't air, then it's obviously higher up.
+            // if our block is higher than the current height, and isn't air, then it's obviously higher up.
             // so we set the new height
-            if (y >= getHeightAt(x, z)) setHeightAt(x, z, std::min(y + 1, height - 1));
+            if (y >= getHeightAt(x, z)) {
+                setHeightAt(std::min(y + 1, height - 1), x, z);
+
+                if (&blk != getBlockmapBlockAt(x, z))
+                    setBlockmapBlockAt(&blk, x, z);
+            };
         } else {
             // if our air block's position is the topmost block of any column
             if (y + 1 == getHeightAt(x, z)) {
                 // then we get the new topmost block
                 for (int i = y; i >= 0; i--) {
-                    if (getBlock(x, i, z)->getBlock() != block::BlockRegistry::sDefaultBlock)  {
-                        setHeightAt(x, z, std::min(i + 1, height - 1)); // new highest block
+                    if (block::state::BlockState *s = getBlock(x, i, z); s->getBlock() != block::BlockRegistry::sDefaultBlock)  {
+                        setHeightAt(std::min(i + 1, height - 1), x, z); // new highest block
+
+                        if (s != getBlockmapBlockAt(x, z))
+                            setBlockmapBlockAt(s, x, z);
+
                         return;
                     }
                 }
 
                 // there were no blocks
+                setBlockmapBlockAt(new block::state::BlockState(), x, z); // should be good?
                 setHeightAt(x, z, 0);
             }
         }

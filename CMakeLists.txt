@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 4.0)
 project(Lodestone VERSION 1.0.0)
 
-set(VERSION_SUFFIX "-dev.14") # used for non-stable versions, otherwise blank
+set(VERSION_SUFFIX "-dev.15") # used for non-stable versions, otherwise blank
 set(CMAKE_CXX_STANDARD 20)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")

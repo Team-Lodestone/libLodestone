@@ -22,7 +22,11 @@ namespace lodestone::level::chunk {
 
         void setBlockRaw(block::state::BlockState &blk, int x, int y, int z) override;
 
-        void setHeightAt(int x, int z, int16_t h) override;
+        void setHeightAt(int16_t h, int x, int z) override;
+
+        void calculateBlockmap() override;
+
+        void setBlockmapBlockAt(block::state::BlockState *h, int x, int z) override;
     };
 }
 

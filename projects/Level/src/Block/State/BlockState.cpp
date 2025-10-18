@@ -13,7 +13,7 @@ namespace lodestone::level::block::state {
     }
 
     bool BlockState::hasProperty(const std::string &id) const {
-        return mProperties.count(id);
+        return mProperties.contains(id);
     }
 
     const std::string & BlockState::getProperty(const std::string &id) const {

@@ -1,3 +1,4 @@
+#include <cmath>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -11,6 +12,7 @@
 #include <Lodestone.Level/Chunk/LevelChunk.h>
 #include <Lodestone.Level/Conversion/Level/LevelIORegistry.h>
 #include <Lodestone.Java/Classic/ClassicBlockIO.h>
+#include <Lodestone.Level/Indexing.h>
 //
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
@@ -63,13 +65,23 @@ int main() {
     // o.write(reinterpret_cast<const char*>(l2->write(level)), l2->getSize(level));
     // o.close();
 
-    std::filesystem::create_directories("heightmaps");
+    std::filesystem::create_directories("heightmaps/bitmaps");
 
     for (auto &[coords, chunk] : level->getChunks()) {
         std::ofstream o(std::format("heightmaps/{}.{}.out", coords.x, coords.z), std::ios::binary);
         o.write(reinterpret_cast<const char*>(chunk->getHeightmap()), (lodestone::constants::CHUNK_WIDTH * lodestone::constants::CHUNK_DEPTH) * 2);
         o.close();
     }
+
+    auto [min, max] = level->getBlockBounds();
+
+    const int w = max.x - min.x + 1;
+    const int d = max.z - min.z + 1;
+
+    // Oxygen... *bwoomp bwoomp* Oxygen...
+    std::ofstream o2(std::format("heightmaps/bitmaps/level.raw"), std::ios::binary);
+    o2.write(reinterpret_cast<const char*>(generateMap(level)), (w * d) * 4);
+    o2.close();
 
     return 0;
 }

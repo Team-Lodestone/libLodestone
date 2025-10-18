@@ -29,7 +29,13 @@ namespace lodestone::level {
     }
 
     chunk::Chunk * Level::getChunk(const types::Vec2i &coords) {
-        if (hasChunk(coords)) return mChunks[coords].get();
+        if (const auto it = mChunks.find(coords); it != mChunks.end()) return it->second.get();
+
+        return nullptr;
+    }
+
+    const chunk::Chunk * Level::getChunk(const types::Vec2i &coords) const {
+        if (const auto it = mChunks.find(coords); it != mChunks.end()) return it->second.get();
 
         return nullptr;
     }
@@ -38,39 +44,85 @@ namespace lodestone::level {
         mChunks.erase(coords);
     }
 
+#pragma region Blocks
     block::state::BlockState * Level::getBlock(const size_t x, const size_t y, const size_t z) {
-        if (!hasChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH)) return new block::state::BlockState();
+        if (const chunk::Chunk *c = getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH))
+            return c->getBlock(x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
 
-        return getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH)->getBlock(x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
+        return new block::state::BlockState();
     }
 
     void Level::setBlock(block::state::BlockState &blk, const size_t x, const size_t y, const size_t z) {
-        if (!hasChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH)) return;
-
-        getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH)
-            ->setBlock(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
+        if (chunk::Chunk *c = getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH))
+            c->setBlock(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
     }
 
     void Level::setBlockCreate(block::state::BlockState &blk, const size_t x, const size_t y, const size_t z, const int height) {
-        if (!hasChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH)) createChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH, height);
+        chunk::Chunk *c = getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH);
 
-        getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH)
-            ->setBlock(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
+        if (!c) c = createChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH, height);
+
+        c->setBlock(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
     }
 
     void Level::setBlockRaw(block::state::BlockState &blk, const size_t x, const size_t y, const size_t z) {
-        if (!hasChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH)) return;
-
-        getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH)
-            ->setBlockRaw(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
+        if (chunk::Chunk *c = getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH))
+            c->setBlockRaw(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
     }
 
-    void Level::setBlockCreateRaw(block::state::BlockState &blk, size_t x, size_t y, size_t z, int height) {
-        if (!hasChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH)) createChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH, height);
+    void Level::setBlockCreateRaw(block::state::BlockState &blk, const size_t x, const size_t y, const size_t z, const int height) {
+        chunk::Chunk *c = getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH);
 
-        getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH)
-            ->setBlockRaw(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
+        if (!c) c = createChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH, height);
+
+        c->setBlockRaw(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
     }
+#pragma endregion
+
+#pragma region Heightmap
+    int16_t Level::getHeightAt(const int x, const int z) const {
+        if (const chunk::Chunk *c = getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH))
+            return c->getHeightAt(x % constants::CHUNK_WIDTH, z % constants::CHUNK_DEPTH);
+
+        return 0;
+    }
+
+    void Level::setHeightAt(const int16_t h, const int x, const int z) {
+        if (chunk::Chunk *c = getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH))
+            c->setHeightAt(h, x % constants::CHUNK_WIDTH, z % constants::CHUNK_DEPTH);
+    }
+
+    void Level::setHeightAtCreate(const int16_t h, const size_t x, const size_t z, const int height) {
+        chunk::Chunk *c = getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH);
+
+        if (!c) c = createChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH, height);
+
+        c->setHeightAt(h, x % constants::CHUNK_WIDTH, z % constants::CHUNK_DEPTH);
+    }
+#pragma endregion
+
+#pragma region Blockmap
+    const block::state::BlockState * Level::getBlockmapBlockAt(const int x, const int z) const {
+        if (const chunk::Chunk *c = getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH))
+            return c->getBlockmapBlockAt(x % constants::CHUNK_WIDTH, z % constants::CHUNK_DEPTH);
+
+        return new block::state::BlockState();
+    }
+
+    void Level::setBlockmapBlockAt(block::state::BlockState *b, const int x, const int z) {
+        if (chunk::Chunk *c = getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH))
+            c->setBlockmapBlockAt(b, x % constants::CHUNK_WIDTH, z % constants::CHUNK_DEPTH);
+    }
+
+    void Level::setBlockmapBlockAtCreate(block::state::BlockState *b, const int x, const int z, const int height) {
+        chunk::Chunk *c = getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH);
+
+        if (!c) c = createChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH, height);
+
+        c->setBlockmapBlockAt(b, x % constants::CHUNK_WIDTH, z % constants::CHUNK_DEPTH);
+    }
+#pragma endregion
+
 
     types::Bounds Level::getChunkBounds() {
         int minX = INT_MAX;

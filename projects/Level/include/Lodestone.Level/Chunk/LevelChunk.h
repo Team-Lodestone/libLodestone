@@ -24,6 +24,8 @@ namespace lodestone::level::chunk {
         section::Section *getSection(const int y) const override;
 
         void calculateHeightmap() override;
+        void calculateBlockmap() override;
+        void calculateMaps() override;
 
         block::state::BlockState *getBlock(const int x, const int y, const int z) const override;
 

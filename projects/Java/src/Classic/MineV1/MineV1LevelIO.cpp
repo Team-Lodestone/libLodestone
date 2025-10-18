@@ -3,6 +3,8 @@
 //
 #include "Classic/MineV1/MineV1LevelIO.h"
 
+#include <ranges>
+
 #include "Classic/ClassicBlockIO.h"
 
 namespace lodestone::java::classic::minev1 {
@@ -21,8 +23,9 @@ namespace lodestone::java::classic::minev1 {
             }
         }
 
-        for (auto &[coords, chunk] : l->getChunks())
-            chunk->calculateHeightmap();
+        for (const auto &chunk: l->getChunks() | std::views::values) {
+            chunk->calculateMaps();
+        }
 
         return l;
     }

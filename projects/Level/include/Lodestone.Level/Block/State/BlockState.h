@@ -37,6 +37,10 @@ namespace lodestone::level::block::state {
         const std::string &operator[](const std::string &id) const;
         std::string &operator[](const std::string &id);
 
+        bool operator==(const BlockState &b) const {
+            return mBlock == b.mBlock && mProperties == b.mProperties;
+        }
+
     private:
         const Block *mBlock;
         // TODO: it's almost definitely a good idea to figure out how to initialize this only when needed.
