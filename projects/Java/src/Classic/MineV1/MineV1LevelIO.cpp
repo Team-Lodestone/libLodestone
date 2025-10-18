@@ -13,7 +13,7 @@ namespace lodestone::java::classic::minev1 {
             for (int z = 0; z < DEPTH; z++) {
                 for (int x = 0; x < WIDTH; x++) {
                     level::block::state::BlockState b = ClassicBlockIO::sInstance->readBlock(data);
-                    if (b.getBlock()->getID() != "lodestone:air")
+                    if (b.getBlock() != level::block::BlockRegistry::sDefaultBlock)
                         l->setBlockCreateRaw(b, x, y, z, HEIGHT);
 
                     data++;
@@ -21,7 +21,7 @@ namespace lodestone::java::classic::minev1 {
             }
         }
 
-        for (auto [coords, chunk] : l->getChunks())
+        for (auto &[coords, chunk] : l->getChunks())
             chunk->calculateHeightmap();
 
         return l;
@@ -35,7 +35,7 @@ namespace lodestone::java::classic::minev1 {
             for (int y = 0; y < HEIGHT; y++) {
                 for (int z = 0; z < DEPTH; z++) {
                     level::block::state::BlockState *b = l->getBlock(x, y, z);
-                    if (b->getBlock()->getID() != "lodestone:air")
+                    if (b->getBlock() != level::block::BlockRegistry::sDefaultBlock)
                         ClassicBlockIO::sInstance->writeBlock(b, dp);
 
                     dp++;

@@ -5,8 +5,6 @@
 #include <iosfwd>
 #include <sstream>
 #include <typeinfo>
-#include <cxxabi.h>
-#include <memory>
 
 // we have Apache ToStringBuilder at home.
 class OperatorStringBuilder {

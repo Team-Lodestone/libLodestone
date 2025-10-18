@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 4.0)
 project(Lodestone.Level)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
+
+OPTION(USE_FALLBACK_BLOCK "Use fallback block when conversion of a block fails" ON)
 
 set(FILES
         include/Lodestone.Level/Level.h
@@ -53,6 +55,8 @@ set(FILES
         src/Conversion/World/WorldIORegistry.cpp
         include/Lodestone.Level/Conversion/World/WorldIORegistry.h
         include/Lodestone.Level/Types/Bounds.h
+        include/Lodestone.Level/Block/Blocks.h
+        include/Lodestone.Level/Registry/NamespacedString.h
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -60,6 +64,10 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
             "-D_GLIBCXX_DEBUG"
     )
 endif ()
+
+if (USE_FALLBACK_BLOCK)
+    add_compile_definitions(USE_FALLBACK_BLOCK)
+endif()
 
 add_library(Lodestone.Level SHARED ${FILES})
 target_include_directories(Lodestone.Level

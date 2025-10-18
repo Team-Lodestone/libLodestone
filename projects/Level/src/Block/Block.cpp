@@ -4,9 +4,5 @@
 #include "Block/Block.h"
 
 namespace lodestone::level::block {
-    std::string Block::toString() const {
-        return (new OperatorStringBuilder(typeid(*this)))
-            ->ADD_FIELD(mId)
-            ->toString();
-    }
+
 }

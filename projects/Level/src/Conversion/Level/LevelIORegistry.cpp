@@ -3,20 +3,26 @@
 //
 #include "Conversion/Level/LevelIORegistry.h"
 
-namespace lodestone::level::conversion::level {
-    LevelIORegistry *LevelIORegistry::sInstance = new LevelIORegistry();
+#include <iostream>
 
-    void LevelIORegistry::registerLevelIO(const std::string &id, const LevelIO* io) {
-        if (mRegisteredLevelIOs.count(id))
-            throw std::runtime_error("LevelIO already exists");
+namespace lodestone::level::conversion::level {
+    LevelIORegistry LevelIORegistry::sInstance = LevelIORegistry();
+
+    void LevelIORegistry::registerLevelIO(const std::string &id, std::unique_ptr<const LevelIO> io) {
+        if (mRegisteredLevelIOs.contains(id))
+            throw std::runtime_error(std::format("LevelIO '{}' is already registered", id));
 
         mRegisteredLevelIOs[id] = std::move(io);
+
+#if CMAKE_BUILD_DEBUG
+        std::cout << "Registered LevelIO '" << id << "'" << std::endl;
+#endif
     }
 
     const LevelIO * LevelIORegistry::getLevelIO(const std::string &id) const {
-        if (!mRegisteredLevelIOs.count(id))
-            return nullptr;
+        if (const auto it = mRegisteredLevelIOs.find(id); it != mRegisteredLevelIOs.end())
+            return it->second.get();
 
-        return mRegisteredLevelIOs.at(id);
+        return nullptr;
     }
 }

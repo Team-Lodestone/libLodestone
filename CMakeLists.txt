@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 4.0)
 project(Lodestone VERSION 1.0.0)
 
-set(VERSION_SUFFIX "-dev.12") # used for non-stable versions, otherwise blank
-set(CMAKE_CXX_STANDARD 17)
+set(VERSION_SUFFIX "-dev.13") # used for non-stable versions, otherwise blank
+set(CMAKE_CXX_STANDARD 20)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DCMAKE_BUILD_DEBUG)
@@ -16,6 +16,8 @@ if (ENABLE_OPTIMIZATIONS STREQUAL "ON")
 endif ()
 unset(ENABLE_OPTIMIZATIONS CACHE)
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 # BIO
 include(FetchContent)
 FetchContent_Declare(
@@ -24,16 +26,6 @@ FetchContent_Declare(
         GIT_TAG main
 )
 FetchContent_MakeAvailable(BIO)
-
-# FMT
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-FetchContent_Declare(
-        fmt
-        GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-        GIT_TAG 12.0.0
-)
-
-FetchContent_MakeAvailable(fmt)
 
 # NBT
 set(NBT_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -53,10 +45,10 @@ add_subdirectory(projects/Level)
 add_subdirectory(projects/Java)
 
 # TODO: this is probably a bad idea incase one wants to only include certain licenses
-target_link_libraries(Lodestone.Tests PRIVATE fmt BIO)
-target_link_libraries(Lodestone.Common PRIVATE fmt BIO)
-target_link_libraries(Lodestone.Level PRIVATE fmt BIO)
-target_link_libraries(Lodestone.Java PRIVATE fmt BIO nbt++)
+target_link_libraries(Lodestone.Tests PRIVATE BIO)
+target_link_libraries(Lodestone.Common PRIVATE BIO)
+target_link_libraries(Lodestone.Level PRIVATE BIO)
+target_link_libraries(Lodestone.Java PRIVATE BIO nbt++)
 
 # DEFINITIONS
 target_compile_definitions(Lodestone.Common PUBLIC

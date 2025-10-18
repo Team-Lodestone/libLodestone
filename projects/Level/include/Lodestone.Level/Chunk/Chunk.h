@@ -40,6 +40,7 @@ namespace lodestone::level::chunk {
 
         virtual int16_t getHeightAt(int x, int z) const;
         virtual void setHeightAt(int x, int z, int16_t h);
+        // todo: section iterator
     protected:
         /** Heightmap
          *

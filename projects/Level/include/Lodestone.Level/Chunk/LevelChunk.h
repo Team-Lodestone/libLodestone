@@ -3,6 +3,7 @@
 //
 #ifndef LODESTONE_LEVELCHUNK_H
 #define LODESTONE_LEVELCHUNK_H
+#include <memory>
 #include "Lodestone.Level/Chunk/Chunk.h"
 #include "Lodestone.Level/Chunk/Section/LevelSection.h"
 
@@ -35,7 +36,7 @@ namespace lodestone::level::chunk {
          * Each chunk is made up of x amount of Sections, with each section storing 16x16x16 blocks.
          * This dictates the height of the chunk as each section is 16 blocks in height.
          */
-        std::vector<section::Section*> mSections;
+        std::vector<std::unique_ptr<section::Section>> mSections;
     };
 }
 

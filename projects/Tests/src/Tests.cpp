@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <ostream>
+#include <format>
 
 #include <Lodestone.Common/Lodestone.h>
 #include <Lodestone.Java/LodestoneJava.h>
@@ -10,7 +11,6 @@
 #include <Lodestone.Level/Chunk/LevelChunk.h>
 #include <Lodestone.Level/Conversion/Level/LevelIORegistry.h>
 #include <Lodestone.Java/Classic/ClassicBlockIO.h>
-#include <fmt/xchar.h>
 //
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
@@ -20,6 +20,10 @@ int main() {
     std::cout << lodestone::lodestone_get_library_string() << std::endl;
 
     lodestone_java_init();
+
+    for (auto &[i,b] : lodestone::level::block::BlockRegistry::sInstance) {
+        std::cout << i << std::endl;
+    }
 
     std::ifstream i("minev1.mine", std::ios::binary);
     if (!i) throw std::runtime_error("no exist!!!!!!!");
@@ -31,7 +35,7 @@ int main() {
     std::vector<uint8_t> b(s);
     i.read(reinterpret_cast<char*>(b.data()), s);
 
-    const lodestone::level::conversion::level::LevelIO *l = lodestone::level::conversion::level::LevelIORegistry::sInstance->getLevelIO("lodestone:minev1");
+    const lodestone::level::conversion::level::LevelIO *l = lodestone::level::conversion::level::LevelIORegistry::sInstance.getLevelIO("lodestone:minev1");
     lodestone::level::Level *level = l->read(b.data());
 
     // lodestone::level::Level *level = new lodestone::level::Level();
@@ -61,8 +65,8 @@ int main() {
 
     std::filesystem::create_directories("heightmaps");
 
-    for (auto [coords, chunk] : level->getChunks()) {
-        std::ofstream o(fmt::format("heightmaps/{}.{}.out", coords.x, coords.z), std::ios::binary);
+    for (auto &[coords, chunk] : level->getChunks()) {
+        std::ofstream o(std::format("heightmaps/{}.{}.out", coords.x, coords.z), std::ios::binary);
         o.write(reinterpret_cast<const char*>(chunk->getHeightmap()), (lodestone::constants::CHUNK_WIDTH * lodestone::constants::CHUNK_DEPTH) * 2);
         o.close();
     }

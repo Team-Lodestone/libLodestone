@@ -1,13 +1,14 @@
 //
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
-#ifndef LODESTONE_BLOCKS_H
-#define LODESTONE_BLOCKS_H
+#ifndef LODESTONE_BLOCKREGISTRY_H
+#define LODESTONE_BLOCKREGISTRY_H
 #include <unordered_map>
 
 #include <Lodestone.Common/Defines.h>
 
 #include "Lodestone.Level/Block/Block.h"
+#include "Lodestone.Level/Block/Blocks.h"
 
 namespace lodestone::level::block {
     class LODESTONE_API BlockRegistry {
@@ -17,66 +18,75 @@ namespace lodestone::level::block {
 #define REGISTER(n, m) {n, new Block(n, material::Material({0, 0, 0, 0}))}
 
         static const Block *sDefaultBlock;
-        static BlockRegistry *sInstance;
+        static BlockRegistry sInstance;
 
         void registerBlock(const std::string &id, const Block* block);
         const Block *getBlock(const std::string &id) const;
 
+        const Block *operator[](const std::string &) const;
+
+        std::unordered_map<std::string, const Block*>::iterator begin() {
+            return mBlocks.begin();
+        }
+
+        std::unordered_map<std::string, const Block*>::iterator end() {
+            return mBlocks.end();
+        }
+
     private:
         std::unordered_map<std::string, const Block*> mBlocks = {
-            REGISTER("lodestone:air", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:stone", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:grass_block", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:dirt", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:cobblestone", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:oak_planks", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:oak_sapling", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:bedrock", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:flowing_water", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:water", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:flowing_lava", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:lava", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:sand", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:gravel", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:gold_ore", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:iron_ore", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:coal_ore", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:oak_log", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:oak_leaves", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:sponge", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:glass", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:red_wool", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:orange_wool", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:yellow_wool", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:chartreuse_wool", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:green_wool", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:spring_green_wool", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:cyan_wool", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:capri_wool", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:ultramarine_wool", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:purple_wool", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:violet_wool", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:magenta_wool", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:pink_wool", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:gray_wool", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:light_gray_wool", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:white_wool", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:dandelion", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:poppy", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:brown_mushroom", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:red_mushroom", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:gold_block", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:iron_block", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:double_smooth_stone_slab", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:smooth_stone_slab", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:bricks", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:tnt", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:dandelion", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:bookshelf", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:mossy_cobblestone", material::Material({0, 0, 0, 0})),
-            REGISTER("lodestone:obsidian", material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::AIR, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::STONE, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::GRASS_BLOCK, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::DIRT, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::COBBLESTONE, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::OAK_PLANKS, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::OAK_SAPLING, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::BEDROCK, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::FLOWING_WATER, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::WATER, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::FLOWING_LAVA, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::LAVA, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::SAND, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::GRAVEL, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::GOLD_ORE, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::IRON_ORE, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::COAL_ORE, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::OAK_LOG, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::OAK_LEAVES, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::SPONGE, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::GLASS, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::RED_WOOL, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::ORANGE_WOOL, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::YELLOW_WOOL, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::CHARTREUSE_WOOL, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::GREEN_WOOL, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::SPRING_GREEN_WOOL, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::CYAN_WOOL, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::CAPRI_WOOL, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::ULTRAMARINE_WOOL, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::PURPLE_WOOL, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::VIOLET_WOOL, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::MAGENTA_WOOL, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::PINK_WOOL, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::GRAY_WOOL, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::LIGHT_GRAY_WOOL, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::WHITE_WOOL, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::DANDELION, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::POPPY, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::BROWN_MUSHROOM, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::RED_MUSHROOM, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::GOLD_BLOCK, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::IRON_BLOCK, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::DOUBLE_SMOOTH_STONE_SLAB, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::SMOOTH_STONE_SLAB, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::BRICKS, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::TNT, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::BOOKSHELF, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::MOSSY_COBBLESTONE, material::Material({0, 0, 0, 0})),
+            REGISTER(Blocks::OBSIDIAN, material::Material({0, 0, 0, 0})),
         };
     };
 }
 
-#endif //LODESTONE_BLOCKS_H
+#endif //LODESTONE_BLOCKREGISTRY_H

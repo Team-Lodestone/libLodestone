@@ -61,7 +61,7 @@ namespace lodestone::level::conversion::block {
             const std::unordered_map<std::string, Blk> &m = getFromInternalConversionMap();
             const std::string id = b->getBlock()->getID();
 
-            if (m.count(id)) return m.at(id);
+            if (auto it = m.find(id); it != m.end()) return it->second;
 
             return Blk();
         };
@@ -83,7 +83,11 @@ namespace lodestone::level::conversion::block {
                 }
             }
 
+#ifdef USE_FALLBACK_BLOCK
+            return lodestone::level::block::state::BlockState();
+#else
             throw std::runtime_error("Could not find block");
+#endif
         };
 
         /** Reads data into a new Block */

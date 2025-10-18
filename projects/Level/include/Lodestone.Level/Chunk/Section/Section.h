@@ -14,6 +14,8 @@ namespace lodestone::level::block {
 namespace lodestone::level::chunk::section {
     class Section {
     public:
+        virtual ~Section() = default;
+
         enum class SectionType {
             LevelSection,
             EmptySection

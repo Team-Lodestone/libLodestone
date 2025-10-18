@@ -13,13 +13,13 @@ namespace lodestone {
             protected:
                 WorldIORegistry() = default;
             public:
-                static WorldIORegistry *sInstance;
+                static WorldIORegistry sInstance;
 
-                void registerWorldIO(const std::string &id, const WorldIO* io);
+                void registerWorldIO(const std::string &id, std::unique_ptr<const WorldIO> io);
 
                 const WorldIO *getWorldIO(const std::string &id) const;
             private:
-                std::unordered_map<std::string, const WorldIO*> mRegisteredWorldIOs = {};
+                std::unordered_map<std::string, std::unique_ptr<const WorldIO>> mRegisteredWorldIOs = {};
             };
         }
     } // level

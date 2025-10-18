@@ -4,6 +4,7 @@
 #ifndef LODESTONE_CHUNKIOFACTORY_H
 #define LODESTONE_CHUNKIOFACTORY_H
 #include <string>
+#include <memory>
 
 #include "Lodestone.Level/Conversion/Chunk/ChunkIO.h"
 
@@ -13,13 +14,13 @@ namespace lodestone::level::conversion::chunk {
     protected:
         ChunkIORegistry() = default;
     public:
-        static ChunkIORegistry *sInstance;
+        static ChunkIORegistry sInstance;
 
-        void registerChunkIO(const std::string &id, const ChunkIO* io);
+        void registerChunkIO(const std::string &id, std::unique_ptr<const ChunkIO> io);
 
         const ChunkIO *getChunkIO(const std::string &id) const;
     private:
-        std::unordered_map<std::string, const ChunkIO*> mRegisteredChunkIOs = {};
+        std::unordered_map<std::string, std::unique_ptr<const ChunkIO>> mRegisteredChunkIOs = {};
     };
 }
 

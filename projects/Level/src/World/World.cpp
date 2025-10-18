@@ -3,12 +3,10 @@
 //
 #include "World/World.h"
 
-#include "fmt/args.h"
-
 namespace lodestone::level::world {
     void World::addDimension(const std::string &id, Level *level) {
 
-        if (hasDimension(id)) throw std::runtime_error(fmt::format("Dimension '{}' already exists in world '{}'", id, mName));
+        if (hasDimension(id)) throw std::runtime_error(std::format("Dimension '{}' already exists in world '{}'", id, mName));
 
         mDimensions[id] = std::move(level);
     }
@@ -20,7 +18,7 @@ namespace lodestone::level::world {
     }
 
     void World::removeDimension(const std::string &id) {
-        if (!hasDimension(id)) throw std::runtime_error(fmt::format("Cannot remove nonexistent dimension '{}' in world '{}'", id, mName));
+        if (!hasDimension(id)) throw std::runtime_error(std::format("Cannot remove nonexistent dimension '{}' in world '{}'", id, mName));
 
         mDimensions.erase(id);
     }

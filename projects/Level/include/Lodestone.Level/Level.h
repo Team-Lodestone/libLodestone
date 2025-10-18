@@ -4,6 +4,7 @@
 #ifndef LODESTONE_LEVEL_H
 #define LODESTONE_LEVEL_H
 #include <unordered_map>
+#include <memory>
 
 #include "Lodestone.Level/Chunk/Chunk.h"
 #include "Lodestone.Level/Types/Vec2i.h"
@@ -60,16 +61,11 @@ namespace lodestone::level {
             removeChunk({x, z});
         };
 
-        void deleteChunk(const types::Vec2i &coords);
-        void deleteChunk(const int x, const int z) {
-            deleteChunk({x, z});
-        };
-
-        std::unordered_map<types::Vec2i, chunk::Chunk*> &getChunks() {
+        std::unordered_map<types::Vec2i, std::unique_ptr<chunk::Chunk>> &getChunks() {
             return mChunks;
         }
 
-        const std::unordered_map<types::Vec2i, chunk::Chunk*> &getChunks() const {
+        const std::unordered_map<types::Vec2i, std::unique_ptr<chunk::Chunk>> &getChunks() const {
             return mChunks;
         }
 
@@ -84,15 +80,20 @@ namespace lodestone::level {
         void setBlockRaw(block::state::BlockState &blk, size_t x, size_t y, size_t z);
         void setBlockCreateRaw(block::state::BlockState &blk, size_t x, size_t y, size_t z, int height = 256);
 
-        void getChunkBounds(int &minX, int &minY, int &minZ, int &maxX, int &maxY, int &maxZ);
-        void getBlockBounds(int &minX, int &minY, int &minZ, int &maxX, int &maxY, int &maxZ);
-
         types::Bounds getChunkBounds();
         types::Bounds getBlockBounds();
 
         size_t getBlockCount();
+
+        std::unordered_map<types::Vec2i, std::unique_ptr<chunk::Chunk>>::iterator begin() {
+            return mChunks.begin();
+        }
+
+        std::unordered_map<types::Vec2i, std::unique_ptr<chunk::Chunk>>::iterator end() {
+            return mChunks.end();
+        }
     private:
-        std::unordered_map<types::Vec2i, chunk::Chunk*> mChunks;
+        std::unordered_map<types::Vec2i, std::unique_ptr<chunk::Chunk>> mChunks;
     };
 }
 

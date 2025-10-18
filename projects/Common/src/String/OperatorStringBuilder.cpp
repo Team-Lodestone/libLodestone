@@ -2,6 +2,9 @@
 // Created by DexrnZacAttack on 10/16/25 using zPc-i2.
 //
 #include "String/OperatorStringBuilder.h"
+#if defined(__GNUC__) || defined(__clang__)
+#include <cxxabi.h>
+#endif
 
 constexpr const char *OperatorStringBuilder::demangle(const char *name) {
 #if defined(__GNUC__) || defined(__clang__)
@@ -28,5 +31,5 @@ std::string OperatorStringBuilder::toString() {
     mStream.str("");
     mStream << s << "]";
 
-    return mStream.str().c_str();
+    return mStream.str();
 }

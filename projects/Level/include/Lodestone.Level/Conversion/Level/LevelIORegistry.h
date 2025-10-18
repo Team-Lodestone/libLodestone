@@ -13,13 +13,13 @@ namespace lodestone::level::conversion::level {
     protected:
         LevelIORegistry() = default;
     public:
-        static LevelIORegistry *sInstance;
+        static LevelIORegistry sInstance;
 
-        void registerLevelIO(const std::string &id, const LevelIO* io);
+        void registerLevelIO(const std::string &id, std::unique_ptr<const LevelIO> io);
 
         const LevelIO *getLevelIO(const std::string &id) const;
     private:
-        std::unordered_map<std::string, const LevelIO*> mRegisteredLevelIOs = {};
+        std::unordered_map<std::string, std::unique_ptr<const LevelIO>> mRegisteredLevelIOs;
     };
 }
 

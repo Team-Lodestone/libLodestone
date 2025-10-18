@@ -5,7 +5,7 @@
 
 namespace lodestone::level::chunk {
     LevelChunk::LevelChunk(const int height) {
-        this->mSections = std::vector<section::Section*>(height / 16);
+        this->mSections = std::vector<std::unique_ptr<section::Section>>(height / 16);
     }
 
     int LevelChunk::getChunkHeight() const {
@@ -23,17 +23,17 @@ namespace lodestone::level::chunk {
         if (!hasSection(y))
             return section::EmptySection::sInstance;
 
-        return mSections[y];
+        return mSections[y].get();
     }
 
     section::Section * LevelChunk::getSectionCreate(const int y) {
-        if (!hasSection(y)) mSections[y] = new section::LevelSection();
+        if (!hasSection(y)) mSections[y] = std::make_unique<section::LevelSection>();
 
-        return mSections[y];
+        return mSections[y].get();
     }
 
     block::state::BlockState * LevelChunk::getBlock(const int x, const int y, const int z) const {
-        return getSection(y / 16)->getBlock(x, y % 16, z);
+        return getSection(y >> 4)->getBlock(x, y & 15, z);
     }
 
     void LevelChunk::calculateHeightmap() {
@@ -42,7 +42,7 @@ namespace lodestone::level::chunk {
         for (int z = 0; z < constants::CHUNK_DEPTH; z++) {
             for (int x = 0; x < constants::CHUNK_WIDTH; x++) {
                 for (int y = height; y >= 0; y--) {
-                    if (getBlock(x, y, z)->getBlock()->getID() != "lodestone:air") {
+                    if (getBlock(x, y, z)->getBlock() != block::BlockRegistry::sDefaultBlock) {
                         setHeightAt(x, z, std::min(y + 1,  height - 1));
                         break;
                     }
@@ -55,7 +55,7 @@ namespace lodestone::level::chunk {
         setBlockRaw(blk, x, y, z);
 
         const int height = getChunkBlockHeight();
-        if (blk.getBlock()->getID() != "lodestone:air") {
+        if (blk.getBlock() != block::BlockRegistry::sDefaultBlock) {
             // if our block is heigher than the current height, and isn't air, then it's obviously higher up.
             // so we set the new height
             if (y >= getHeightAt(x, z)) setHeightAt(x, z, std::min(y + 1, height - 1));
@@ -64,7 +64,7 @@ namespace lodestone::level::chunk {
             if (y + 1 == getHeightAt(x, z)) {
                 // then we get the new topmost block
                 for (int i = y; i >= 0; i--) {
-                    if (getBlock(x, i, z)->getBlock()->getID() != "lodestone:air")  {
+                    if (getBlock(x, i, z)->getBlock() != block::BlockRegistry::sDefaultBlock)  {
                         setHeightAt(x, z, std::min(i + 1, height - 1)); // new highest block
                         return;
                     }
@@ -76,7 +76,7 @@ namespace lodestone::level::chunk {
         }
     }
 
-    void LevelChunk::setBlockRaw(block::state::BlockState &blk, int x, int y, int z) {
-        getSectionCreate(y / 16)->setBlock(blk, x, y % 16, z);
+    void LevelChunk::setBlockRaw(block::state::BlockState &blk, const int x, const int y, const int z) {
+        getSectionCreate(y >> 4)->setBlock(blk, x, y & 15, z);
     }
 }

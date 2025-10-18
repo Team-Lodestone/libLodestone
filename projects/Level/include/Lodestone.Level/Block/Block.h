@@ -12,9 +12,9 @@
 namespace lodestone::level::block {
     class BlockState;
 
-    class Block : public StringSerializable {
+    class Block {
     public:
-        Block(const std::string &id, const material::Material material) : mId(id), mMaterial(material) {};
+        constexpr Block(const std::string &id, const material::Material material) : mId(id), mMaterial(material) {};
 
         constexpr const std::string &getID() const {
             return mId;
@@ -24,10 +24,8 @@ namespace lodestone::level::block {
             return mMaterial;
         };
 
-        std::string toString() const override;
-
     private:
-        std::string mId;
+        const std::string mId;
         const material::Material mMaterial;
     };
 }

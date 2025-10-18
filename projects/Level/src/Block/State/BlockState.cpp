@@ -17,10 +17,10 @@ namespace lodestone::level::block::state {
     }
 
     const std::string & BlockState::getProperty(const std::string &id) const {
-        if (!mProperties.count(id))
-            throw std::runtime_error("Property does not exist");
+        if (const auto it = mProperties.find(id); it != mProperties.end())
+            return it->second;
 
-        return mProperties.at(id);
+        throw std::runtime_error("Property does not exist");
     }
 
     std::string & BlockState::getProperty(const std::string &id) {

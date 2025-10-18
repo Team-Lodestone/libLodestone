@@ -29,7 +29,7 @@ namespace lodestone::java::classic::minev2 {
             for (int z = 0; z < depth; z++) {
                 for (int x = 0; x < width; x++) {
                     level::block::state::BlockState b = ClassicBlockIO::sInstance->readBlock(rd);
-                    if (b.getBlock()->getID() != "lodestone:air")
+                    if (b.getBlock() != level::block::BlockRegistry::sDefaultBlock)
                         l->setBlockCreateRaw(b, x, y, z, height);
 
                     rd++;
@@ -37,7 +37,7 @@ namespace lodestone::java::classic::minev2 {
             }
         }
 
-        for (auto [coords, chunk] : l->getChunks())
+        for (auto &[coords, chunk] : l->getChunks())
             chunk->calculateHeightmap();
 
         return l;
@@ -60,7 +60,7 @@ namespace lodestone::java::classic::minev2 {
             for (int z = 0; z < d; z++) {
                 for (int x = 0; x < w; x++) {
                     level::block::state::BlockState *b = l->getBlock(x, y, z);
-                    if (b->getBlock()->getID() != "lodestone:air")
+                    if (b->getBlock() != level::block::BlockRegistry::sDefaultBlock)
                         ClassicBlockIO::sInstance->writeBlock(b, io.getDataRelative());
 
                     io.seekRelative(1); // TODO: I can make this operator++

@@ -3,20 +3,26 @@
 //
 #include "Conversion/World/WorldIORegistry.h"
 
-namespace lodestone::level::conversion::world {
-    WorldIORegistry *WorldIORegistry::sInstance = new WorldIORegistry();
+#include <iostream>
 
-    void WorldIORegistry::registerWorldIO(const std::string &id, const WorldIO* io) {
-        if (mRegisteredWorldIOs.count(id))
-            throw std::runtime_error("WorldIO already exists");
+namespace lodestone::level::conversion::world {
+    WorldIORegistry WorldIORegistry::sInstance = WorldIORegistry();
+
+    void WorldIORegistry::registerWorldIO(const std::string &id, std::unique_ptr<const WorldIO> io) {
+        if (mRegisteredWorldIOs.contains(id))
+            throw std::runtime_error(std::format("WorldIO '{}' is already registered", id));
 
         mRegisteredWorldIOs[id] = std::move(io);
+
+#if CMAKE_BUILD_DEBUG
+        std::cout << "Registered WorldIO '" << id << "'" << std::endl;
+#endif
     }
 
     const WorldIO * WorldIORegistry::getWorldIO(const std::string &id) const {
-        if (!mRegisteredWorldIOs.count(id))
-            return nullptr;
+        if (const auto it = mRegisteredWorldIOs.find(id); it != mRegisteredWorldIOs.end())
+            return it->second.get();
 
-        return mRegisteredWorldIOs.at(id);
+        return nullptr;
     }
 }
