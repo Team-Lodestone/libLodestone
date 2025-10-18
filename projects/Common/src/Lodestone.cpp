@@ -8,12 +8,12 @@
 namespace lodestone {
     extern "C" {
         // clang-format off
-        constexpr const char *lodestone_get_build_type() { return BUILD_TYPE; } // NOLINT
-        constexpr const char *lodestone_get_compiler_name() { return COMPILER_NAME; } // NOLINT
-        constexpr const char *lodestone_get_platform_arch() { return PLATFORM_ARCH; } // NOLINT
-        constexpr const char *lodestone_get_platform() { return PLATFORM_NAME; } // NOLINT
+        constexpr const char *lodestone_get_build_type() { return LODESTONE_BUILD_TYPE; } // NOLINT
+        constexpr const char *lodestone_get_compiler_name() { return LODESTONE_COMPILER_NAME; } // NOLINT
+        constexpr const char *lodestone_get_platform_arch() { return LODESTONE_PLATFORM_ARCH; } // NOLINT
+        constexpr const char *lodestone_get_platform() { return LODESTONE_PLATFORM_NAME; } // NOLINT
         constexpr const char *lodestone_get_version() { return LODESTONE_VERSION; } // NOLINT
-        constexpr const char *lodestone_get_library_string() { return LIBRARY_STRING; } // NOLINT
+        constexpr const char *lodestone_get_library_string() { return lodestone::LIBRARY_STRING; } // NOLINT
         // clang-format on
     }
 

@@ -31,7 +31,7 @@
 #endif
 
 #if CMAKE_BUILD_DEBUG
-#define BUILD_TYPE "Debug"
+#define LODESTONE_BUILD_TYPE "Debug"
 #else
-#define BUILD_TYPE "Release"
+#define LODESTONE_BUILD_TYPE "Release"
 #endif

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 4.0)
 project(Lodestone VERSION 1.0.0)
 
-set(VERSION_SUFFIX "-dev.13") # used for non-stable versions, otherwise blank
+set(VERSION_SUFFIX "-dev.14") # used for non-stable versions, otherwise blank
 set(CMAKE_CXX_STANDARD 20)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -36,7 +36,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(nbt++)
 
-include_directories(${BIO_SOURCE_DIR})
+#include_directories(${BIO_SOURCE_DIR})
 
 # PROJECTS
 add_subdirectory(projects/Tests)
@@ -52,9 +52,9 @@ target_link_libraries(Lodestone.Java PRIVATE BIO nbt++)
 
 # DEFINITIONS
 target_compile_definitions(Lodestone.Common PUBLIC
-        COMPILER_NAME="${CMAKE_CXX_COMPILER_ID}"
-        PLATFORM_NAME="${CMAKE_SYSTEM_NAME}"
-        PLATFORM_ARCH="${CMAKE_SYSTEM_PROCESSOR}"
+        LODESTONE_COMPILER_NAME="${CMAKE_CXX_COMPILER_ID}"
+        LODESTONE_PLATFORM_NAME="${CMAKE_SYSTEM_NAME}"
+        LODESTONE_PLATFORM_ARCH="${CMAKE_SYSTEM_PROCESSOR}"
         LODESTONE_VERSION="${PROJECT_VERSION}${VERSION_SUFFIX}"
         LODESTONE_RC_VERSION=${PROJECT_VERSION_MAJOR},${PROJECT_VERSION_MINOR},${PROJECT_VERSION_PATCH}
 )

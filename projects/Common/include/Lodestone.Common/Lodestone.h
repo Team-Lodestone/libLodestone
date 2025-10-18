@@ -6,9 +6,9 @@
 
 #include "Defines.h"
 
-constexpr const char *const LIBRARY_STRING = "libLodestone v" LODESTONE_VERSION " (" COMPILER_NAME " / " BUILD_TYPE " | " PLATFORM_NAME " " PLATFORM_ARCH ") | https://github.com/Team-Lodestone/libLodestone";
-
 namespace lodestone {
+    constexpr const char *const LIBRARY_STRING = "libLodestone v" LODESTONE_VERSION " (" LODESTONE_COMPILER_NAME " / " LODESTONE_BUILD_TYPE " | " LODESTONE_PLATFORM_NAME " " LODESTONE_PLATFORM_ARCH ") | https://github.com/Team-Lodestone/libLodestone";
+
     LODESTONE_API unsigned long long getCurrentTimeMillis();
 
     // clang-format off

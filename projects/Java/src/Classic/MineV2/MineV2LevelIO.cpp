@@ -3,7 +3,7 @@
 //
 #include "Classic/MineV2/MineV2LevelIO.h"
 
-#include "BinaryIO.h"
+#include <BinaryIO/BinaryIO.h>
 #include "Classic/ClassicBlockIO.h"
 #include "Classic/MineV1/MineV1LevelIO.h"
 
