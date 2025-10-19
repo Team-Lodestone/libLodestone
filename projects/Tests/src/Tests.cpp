@@ -4,6 +4,7 @@
 #include <iostream>
 #include <ostream>
 #include <format>
+#include <ranges>
 
 #include <Lodestone.Common/Lodestone.h>
 #include <Lodestone.Java/LodestoneJava.h>
@@ -23,7 +24,7 @@ uint8_t *generateMap(lodestone::level::Level *l) {
 
     const int w = max.x - min.x + 1;
     const int d = max.z - min.z + 1;
-    uint8_t *arr = new uint8_t[(w * d) * sizeof(lodestone::level::types::Color)];
+    uint8_t *arr = new uint8_t[(w * d) * 3];
 
     for (int y = 0; y < d; ++y) {
         for (int x = 0; x < w; ++x) {
@@ -48,15 +49,33 @@ uint8_t *generateMap(lodestone::level::Level *l) {
                 }
             }
 
-            arr[(x+y*w)*4 + 0] = std::floor(r);
-            arr[(x+y*w)*4 + 1] = std::floor(g);
-            arr[(x+y*w)*4 + 2] = std::floor(b);
-            arr[(x+y*w)*4 + 3] = 0xff;
+            arr[(x+y*w)*3 + 2] = std::floor(r);
+            arr[(x+y*w)*3 + 1] = std::floor(g);
+            arr[(x+y*w)*3 + 0] = std::floor(b);
+            // arr[(x+y*w)*4 + 3] = 0xff;
         }
     }
 
     return arr;
 }
+
+// http://www.paulbourke.net/dataformats/tga/ temp for writing map tga
+#pragma pack(push, 1)
+typedef struct {
+    char  idlength;
+    char  colourmaptype;
+    char  datatypecode;
+    short int colourmaporigin;
+    short int colourmaplength;
+    char  colourmapdepth;
+    short int x_origin;
+    short int y_origin;
+    const short width;
+    const short height;
+    char  bitsperpixel;
+    char  imagedescriptor;
+} HEADER __attribute__((packed));
+#pragma pack(pop)
 
 // TODO: proper test framework, probably based off of libLCE's (I made libLCE)
 int main() {
@@ -64,7 +83,7 @@ int main() {
 
     lodestone_java_init();
 
-    for (auto &[i,b] : lodestone::level::block::BlockRegistry::sInstance) {
+    for (const auto &i: lodestone::level::block::BlockRegistry::sInstance | std::views::keys) {
         std::cout << i << std::endl;
     }
 
@@ -126,8 +145,23 @@ int main() {
     const int d = max.z - min.z + 1;
 
     // Oxygen... *bwoomp bwoomp* Oxygen...
-    std::ofstream o2(std::format("heightmaps/bitmaps/level.raw"), std::ios::binary);
-    o2.write(reinterpret_cast<const char*>(generateMap(level)), (w * d) * 4);
+    std::ofstream o2(std::format("heightmaps/bitmaps/level.tga"), std::ios::binary);
+    HEADER h = {
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        static_cast<short>(w),
+        static_cast<short>(d),
+        24,
+        0
+    };
+    o2.write(reinterpret_cast<const char*>(&h), sizeof(HEADER));
+    o2.write(reinterpret_cast<const char*>(generateMap(level)), (w * d) * 3);
     o2.close();
 
     return 0;
