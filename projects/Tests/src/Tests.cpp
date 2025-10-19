@@ -59,6 +59,44 @@ uint8_t *generateMap(lodestone::level::Level *l) {
     return arr;
 }
 
+// Minecraft-style map image generator made by a friend who does not wish to be named
+uint8_t *generateMap(lodestone::level::chunk::Chunk *c) {
+    uint8_t *arr = new uint8_t[(lodestone::constants::CHUNK_WIDTH * lodestone::constants::CHUNK_DEPTH) * 3];
+
+    for (int y = 0; y < lodestone::constants::CHUNK_DEPTH; ++y) {
+        for (int x = 0; x < lodestone::constants::CHUNK_WIDTH; ++x) {
+            const int16_t h = c->getHeightAt(x, y);
+            const lodestone::level::material::Material &m = c->getBlockmapBlockAt(x, y)->getBlock()->getMaterial();
+            const lodestone::level::types::Color &col = m.getColor();
+
+            float r = col.r;
+            float g = col.g;
+            float b = col.b;
+
+            if (y > 0) { // this might break the top row of pixels, but it prevents us from going OOB until I fix
+                const int16_t nh = c->getHeightAt(x, y - 1);
+                if (h < nh) {
+                    r *= 0.75;
+                    g *= 0.75;
+                    b *= 0.75;
+                } else if (h > nh) {
+                    r *= 1.25;
+                    g *= 1.25;
+                    b *= 1.25;
+                }
+            }
+
+            arr[(x+y*lodestone::constants::CHUNK_WIDTH)*3 + 2] = std::floor(r);
+            arr[(x+y*lodestone::constants::CHUNK_WIDTH)*3 + 1] = std::floor(g);
+            arr[(x+y*lodestone::constants::CHUNK_WIDTH)*3 + 0] = std::floor(b);
+            // arr[(x+y*lodestone::constants::CHUNK_WIDTH)*4 + 3] = 0xff;
+        }
+    }
+
+    return arr;
+}
+
+
 // http://www.paulbourke.net/dataformats/tga/ temp for writing map tga
 #pragma pack(push, 1)
 typedef struct {
@@ -137,6 +175,27 @@ int main() {
         std::ofstream o(std::format("heightmaps/{}.{}.out", coords.x, coords.z), std::ios::binary);
         o.write(reinterpret_cast<const char*>(chunk->getHeightmap()), (lodestone::constants::CHUNK_WIDTH * lodestone::constants::CHUNK_DEPTH) * 2);
         o.close();
+    }
+
+    for (auto &[coords, chunk] : level->getChunks()) {
+        std::ofstream o3(std::format("heightmaps/bitmaps/{}.{}.tga", coords.x, coords.z), std::ios::binary);
+        HEADER h = {
+            0,
+            0,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            static_cast<short>(lodestone::constants::CHUNK_WIDTH),
+            static_cast<short>(lodestone::constants::CHUNK_DEPTH),
+            24,
+            0
+        };
+        o3.write(reinterpret_cast<const char*>(&h), sizeof(HEADER));
+        o3.write(reinterpret_cast<const char*>(generateMap(chunk.get())), (lodestone::constants::CHUNK_WIDTH * lodestone::constants::CHUNK_DEPTH) * 3);
+        o3.close();
     }
 
     auto [min, max] = level->getBlockBounds();
