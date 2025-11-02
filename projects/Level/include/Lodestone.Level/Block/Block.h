@@ -8,13 +8,14 @@
 #include <Lodestone.Common/String/OperatorStringBuilder.h>
 #include <Lodestone.Common/String/StringSerializable.h>
 #include "Lodestone.Level/Material/Material.h"
+#include "Lodestone.Level/Registry/NamespacedString.h"
 
 namespace lodestone::level::block {
     class BlockState;
 
     class Block {
     public:
-        constexpr Block(const std::string &id, const material::Material material) : mId(id), mMaterial(material) {};
+        constexpr Block(const registry::NamespacedString &id, const material::Material material) : mId(id), mMaterial(material) {};
 
         constexpr const std::string &getID() const {
             return mId;

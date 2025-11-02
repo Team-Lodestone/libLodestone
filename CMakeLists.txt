@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 4.0)
 project(Lodestone VERSION 1.0.0)
 
-set(VERSION_SUFFIX "-dev.15") # used for non-stable versions, otherwise blank
+set(VERSION_SUFFIX "-dev.16") # used for non-stable versions, otherwise blank
 set(CMAKE_CXX_STANDARD 20)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DCMAKE_BUILD_DEBUG)
 endif ()
 
-option(ENABLE_OPTIMIZATIONS "Enable compiler optimizations" OFF)
+option(ENABLE_OPTIMIZATIONS "Enable compiler optimizations" ON)
 if (ENABLE_OPTIMIZATIONS STREQUAL "ON")
     add_compile_options(
             "$<$<COMPILE_LANGUAGE:CXX>:-O3;-ffast-math;-march=native;-fpic;-ftree-vectorize>"

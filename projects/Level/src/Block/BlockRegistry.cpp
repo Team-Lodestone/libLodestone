@@ -8,9 +8,9 @@
 //
 namespace lodestone::level::block {
     BlockRegistry BlockRegistry::sInstance = BlockRegistry();
-    const Block *BlockRegistry::sDefaultBlock = sInstance.getBlock("lodestone:air");
+    const Block *BlockRegistry::sDefaultBlock = sInstance.getBlock({ "lodestone", "air" });
 
-    void BlockRegistry::registerBlock(const std::string &id, const Block *block) {
+    void BlockRegistry::registerBlock(const registry::NamespacedString &id, const Block *block) {
         if (mBlocks.contains(id))
             throw std::runtime_error(std::format("Block '{}' is already registered", id));
 
@@ -18,6 +18,18 @@ namespace lodestone::level::block {
 #if CMAKE_BUILD_DEBUG
         std::cout << "Registered block '" << id << "'" << std::endl;
 #endif
+    }
+
+    bool BlockRegistry::registerBlockIfNonExistent(const registry::NamespacedString &id, const Block *block) noexcept {
+        if (mBlocks.contains(id))
+            return false;
+
+        mBlocks[id] = std::move(block);
+#if CMAKE_BUILD_DEBUG
+        std::cout << "Registered block '" << id << "'" << std::endl;
+#endif
+
+        return true;
     }
 
     const Block * BlockRegistry::getBlock(const std::string &id) const {

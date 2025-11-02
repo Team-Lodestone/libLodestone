@@ -8,6 +8,8 @@
 namespace lodestone::level::chunk {
     class EmptyChunk : public Chunk {
     public:
+        EmptyChunk() : Chunk() { }
+
         void calculateHeightmap() override;
 
         int getChunkHeight() const override;

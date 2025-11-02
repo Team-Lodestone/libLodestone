@@ -15,9 +15,9 @@ namespace lodestone::level::conversion::level {
     public:
         static LevelIORegistry sInstance;
 
-        void registerLevelIO(const std::string &id, std::unique_ptr<const LevelIO> io);
+        void registerLevelIO(const registry::NamespacedString &id, std::unique_ptr<const LevelIO> io);
 
-        const LevelIO *getLevelIO(const std::string &id) const;
+        const LevelIO *getLevelIO(const registry::NamespacedString &id) const;
     private:
         std::unordered_map<std::string, std::unique_ptr<const LevelIO>> mRegisteredLevelIOs;
     };

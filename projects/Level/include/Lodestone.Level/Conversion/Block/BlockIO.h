@@ -10,92 +10,44 @@
 #include <Lodestone.Common/Defines.h>
 #include <Lodestone.Level/Block/State/BlockState.h>
 
-struct PairHash {
-    template <class F, class S>
-    std::size_t operator()(const std::pair<F, S>& p) const {
-        return std::hash<F>{}(p.first) ^ (std::hash<S>{}(p.second) << 1);
-    }
-};
+#include "data/AbstractBlockData.h"
+// #include "data/BlockData.h"
 
-namespace lodestone::level::conversion::block {
-    /**
-     * @tparam B Block ID type
-     * @tparam D Block data type (e.g variant)
-     */
-    template <typename B, typename D = std::monostate> class LODESTONE_API BlockIO {
-    protected:
-        BlockIO() {}
+namespace lodestone::level::conversion::block::version {
+    /** Aids with block conversion between versions */
+    class LODESTONE_API BlockIO {
     public:
         // TODO: handle converting block states!!!
         // via a separate conversion map
         // TODO: this file is messy!
-        /**
-         * @tparam B Block ID type
-         * @tparam D Block data type (e.g variant)
-         */
-        using Blk = std::pair<B, D>;
 
         virtual ~BlockIO() = default;
 
         /** Returns a map that maps internal block IDs to a Blk  */
-        virtual std::unordered_map<std::string, Blk> &getFromInternalConversionMap() = 0;
+        virtual std::unordered_map<std::string, data::AbstractBlockData*> &getFromInternalConversionMap();
         /** Returns a map that maps Blks to an internal block ID  */
-        virtual std::unordered_map<Blk, std::string, PairHash> &getToInternalConversionMap() = 0;
+        virtual std::unordered_map<data::AbstractBlockData*, std::string> &getToInternalConversionMap();
         /** Returns a map that maps block IDs to their default data value */
-        virtual std::unordered_map<B, D> &getDefaultDataMap() = 0;
+        virtual std::unordered_map<const void *, data::AbstractBlockData*> &getDefaultDataMap();
 
-        void registerBlock(const std::string &internal, Blk blk, const bool isDefault = false) {
-            std::unordered_map<std::string, Blk> &c = getFromInternalConversionMap();
-            std::unordered_map<Blk, std::string, PairHash> &i = getToInternalConversionMap();
+        void registerBlock(const std::string &internal, data::AbstractBlockData* blk, const bool isDefault = false);
 
-            c[internal] = blk;
-            i[blk] = internal;
-            if (isDefault) {
-                std::unordered_map<B, D> &d = getDefaultDataMap();
-                d[blk.first] = blk.second;
-            }
-        }
+        void registerBlockIfNotExist(const std::string &internal, data::AbstractBlockData* blk, const bool isDefault = false);
 
         /** Converts an internal block to the BlockIO's format */
-        virtual Blk convertBlockFromInternal(lodestone::level::block::state::BlockState *b) {
-            const std::unordered_map<std::string, Blk> &m = getFromInternalConversionMap();
-            const std::string id = b->getBlock()->getID();
-
-            if (auto it = m.find(id); it != m.end()) return it->second;
-
-            return Blk();
-        };
+        virtual data::AbstractBlockData* convertBlockFromInternal(lodestone::level::block::state::BlockState *b);
 
         /** Converts a block from BlockIO to the internal format */
-        virtual lodestone::level::block::state::BlockState convertBlockToInternal(B id, D data) {
-            const std::unordered_map<Blk, std::string, PairHash> &m = getToInternalConversionMap();
+        virtual lodestone::level::block::state::BlockState convertBlockToInternal(data::AbstractBlockData *b);
 
-            if (auto it = m.find({id, data}); it != m.end()) {
-                // if we have block ID with state in conversion map, return it
-                return lodestone::level::block::state::BlockState(it->second);
-            }
-
-            // otherwise, if we have block id with default value, return that
-            const auto& d = getDefaultDataMap();
-            if (auto it = d.find(id); it != d.end()) {
-                if (auto itr = m.find({id, it->second}); itr != m.end()) {
-                    return lodestone::level::block::state::BlockState(itr->second);
-                }
-            }
-
-#ifdef USE_FALLBACK_BLOCK
-            return lodestone::level::block::state::BlockState();
-#else
-            throw std::runtime_error("Could not find block");
-#endif
-        };
-
-        /** Reads data into a new Block */
-        virtual lodestone::level::block::state::BlockState readBlock(uint8_t *data) = 0;
-        /** Writes a block to data */
-        virtual void writeBlock(lodestone::level::block::state::BlockState *b, uint8_t *arr) = 0;
-    protected:
-        D mDef;
+        // /** Reads data into a new Block */
+        // virtual lodestone::level::block::state::BlockState readBlock(uint8_t *data) = 0;
+        // /** Writes a block to data */
+        // virtual void writeBlock(lodestone::level::block::state::BlockState *b, uint8_t *arr) = 0;
+    private:
+        std::unordered_map<std::string, data::AbstractBlockData*> mFromInternalConversionMap;
+        std::unordered_map<data::AbstractBlockData*, std::string> mToInternalConversionMap;
+        std::unordered_map<const void *, data::AbstractBlockData*> mDefaultDataMap;
     };
 }
 

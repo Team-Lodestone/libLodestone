@@ -29,10 +29,22 @@ namespace lodestone::level::registry {
             return getString();
         }
 
+        constexpr friend std::ostream& operator<<(std::ostream& os, const NamespacedString& s) {
+            os << s.getString();
+            return os;
+        }
+
     private:
         const char *const mNamespace;
         const char *const mName;
     };
 }
+
+template <>
+struct std::formatter<lodestone::level::registry::NamespacedString> : formatter<string> {
+    std::format_context::iterator format(const lodestone::level::registry::NamespacedString &s, format_context &c) const {
+        return formatter<string>::format(s.getString(), c);
+    }
+};
 
 #endif //LODESTONE_NAMESPACEDSTRING_H

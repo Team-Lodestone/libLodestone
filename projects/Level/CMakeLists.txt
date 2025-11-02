@@ -46,8 +46,6 @@ set(FILES
         include/Lodestone.Level/Conversion/Level/LevelIORegistry.h
         src/Conversion/Level/LevelIO.cpp
         include/Lodestone.Level/Conversion/Level/LevelIO.h
-        src/Conversion/Block/BlockIO.cpp
-        include/Lodestone.Level/Conversion/Block/BlockIO.h
         src/World/World.cpp
         include/Lodestone.Level/World/World.h
         src/Conversion/World/WorldIO.cpp
@@ -57,6 +55,15 @@ set(FILES
         include/Lodestone.Level/Types/Bounds.h
         include/Lodestone.Level/Block/Blocks.h
         include/Lodestone.Level/Registry/NamespacedString.h
+        include/Lodestone.Level/Conversion/Block/VersionedBlockIO.h
+        include/Lodestone.Level/Conversion/Block/BlockIO.h
+        src/Conversion/Block/BlockIO.cpp
+        include/Lodestone.Level/Conversion/Block/data/NumericBlockData.h
+        include/Lodestone.Level/Conversion/Block/data/ClassicBlockData.h
+        include/Lodestone.Level/Conversion/Block/data/AbstractBlockData.h
+        src/Conversion/Block/data/NumericBlockData.cpp
+        src/Conversion/Block/data/ClassicBlockData.cpp
+        src/Conversion/Block/VersionedBlockIO.cpp
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -64,10 +71,6 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
             "-D_GLIBCXX_DEBUG"
     )
 endif ()
-
-if (USE_FALLBACK_BLOCK)
-    add_compile_definitions(USE_FALLBACK_BLOCK)
-endif()
 
 add_library(Lodestone.Level SHARED ${FILES})
 target_include_directories(Lodestone.Level
@@ -78,3 +81,7 @@ target_include_directories(Lodestone.Level
 )
 
 target_link_libraries(Lodestone.Level PUBLIC Lodestone.Common)
+
+if (USE_FALLBACK_BLOCK)
+    target_compile_definitions(Lodestone.Level PRIVATE USE_FALLBACK_BLOCK)
+endif()

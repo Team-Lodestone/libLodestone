@@ -4,6 +4,12 @@
 #include "Chunk/Chunk.h"
 
 namespace lodestone::level::chunk {
+    Chunk::Chunk() {
+        for (int x = 0; x < lodestone::constants::CHUNK_WIDTH * constants::CHUNK_DEPTH; ++x) {
+            mBlockmap[x] = new block::state::BlockState();
+        }
+    }
+
     int Chunk::getChunkBlockHeight() const {
         return getChunkHeight() * constants::SECTION_HEIGHT;
     }

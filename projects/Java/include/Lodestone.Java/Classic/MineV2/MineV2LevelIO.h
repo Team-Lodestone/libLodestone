@@ -8,6 +8,8 @@
 namespace lodestone::java::classic::minev2 {
     class MineV2LevelIO : public level::conversion::level::LevelIO {
     public:
+        static constexpr level::registry::NamespacedString NAME = {"lodestone", "minev2"};
+
         level::Level * read(uint8_t *data) const override;
 
         uint8_t * write(level::Level *l) const override;

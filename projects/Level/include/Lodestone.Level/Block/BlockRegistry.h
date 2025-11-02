@@ -20,7 +20,9 @@ namespace lodestone::level::block {
         static const Block *sDefaultBlock;
         static BlockRegistry sInstance;
 
-        void registerBlock(const std::string &id, const Block* block);
+        void registerBlock(const registry::NamespacedString &id, const Block* block);
+        // couldn't come up with a better name
+        bool registerBlockIfNonExistent(const registry::NamespacedString &id, const Block* block) noexcept;
         const Block *getBlock(const std::string &id) const;
 
         const Block *operator[](const std::string &) const;

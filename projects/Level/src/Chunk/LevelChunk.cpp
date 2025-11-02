@@ -4,7 +4,7 @@
 #include "Chunk/LevelChunk.h"
 
 namespace lodestone::level::chunk {
-    LevelChunk::LevelChunk(const int height) {
+    LevelChunk::LevelChunk(const int height) : Chunk() {
         this->mSections = std::vector<std::unique_ptr<section::Section>>(height / 16);
     }
 
@@ -105,6 +105,9 @@ namespace lodestone::level::chunk {
     void LevelChunk::setBlock(block::state::BlockState &blk, const int x, const int y, const int z) {
         setBlockRaw(blk, x, y, z);
 
+        if (!blk.getBlock())
+            throw std::runtime_error("attempted to set blockstate with null block");
+
         const int height = getChunkBlockHeight();
         if (blk.getBlock() != block::BlockRegistry::sDefaultBlock) {
             // if our block is higher than the current height, and isn't air, then it's obviously higher up.
@@ -120,7 +123,7 @@ namespace lodestone::level::chunk {
             if (y + 1 == getHeightAt(x, z)) {
                 // then we get the new topmost block
                 for (int i = y; i >= 0; i--) {
-                    if (block::state::BlockState *s = getBlock(x, i, z); s->getBlock() != block::BlockRegistry::sDefaultBlock)  {
+                    if (block::state::BlockState *s = getBlock(x, i, z); s->getBlock() != block::BlockRegistry::sDefaultBlock && s->getBlock())  {
                         setHeightAt(std::min(i + 1, height - 1), x, z); // new highest block
 
                         if (s != getBlockmapBlockAt(x, z))
@@ -133,6 +136,8 @@ namespace lodestone::level::chunk {
                 // there were no blocks
                 setBlockmapBlockAt(new block::state::BlockState(), x, z); // should be good?
                 setHeightAt(x, z, 0);
+            } else if (!getBlockmapBlockAt(x, z)->getBlock()) {
+                setBlockmapBlockAt(new block::state::BlockState(), x, z); // should be good?
             }
         }
     }

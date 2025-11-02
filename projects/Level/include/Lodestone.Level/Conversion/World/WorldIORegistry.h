@@ -15,9 +15,9 @@ namespace lodestone {
             public:
                 static WorldIORegistry sInstance;
 
-                void registerWorldIO(const std::string &id, std::unique_ptr<const WorldIO> io);
+                void registerWorldIO(const registry::NamespacedString &id, std::unique_ptr<const WorldIO> io);
 
-                const WorldIO *getWorldIO(const std::string &id) const;
+                const WorldIO *getWorldIO(const registry::NamespacedString &id) const;
             private:
                 std::unordered_map<std::string, std::unique_ptr<const WorldIO>> mRegisteredWorldIOs = {};
             };

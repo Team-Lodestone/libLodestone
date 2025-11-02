@@ -5,8 +5,23 @@
 #define LODESTONE_MAIN_H
 #include <Lodestone.Common/Defines.h>
 
-extern "C" {
-    LODESTONE_API void lodestone_java_init(); // NOLINT
+#include "Lodestone.Level/Conversion/Block/BlockIO.h"
+#include "Lodestone.Level/Conversion/Block/VersionedBlockIO.h"
+
+namespace lodestone::java {
+    class LODESTONE_API LodestoneJava {
+    private:
+        LodestoneJava();
+
+        static LodestoneJava *sInstance;
+    public:
+        static LodestoneJava *getInstance();
+
+        static void LODESTONE_API init();
+        void initBlocks();
+
+        level::conversion::block::version::VersionedBlockIO io;
+    };
 }
 
 #endif //LODESTONE_MAIN_H

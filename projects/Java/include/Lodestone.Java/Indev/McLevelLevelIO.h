@@ -9,6 +9,8 @@
 namespace lodestone::java::indev {
     class McLevelLevelIO : public level::conversion::level::LevelIO {
     public:
+        static constexpr level::registry::NamespacedString NAME = {"lodestone", "mclevel"};
+
         level::Level *read(uint8_t *data) const override;
         /** Creates a Level from a mclevel Map compound tag */
         level::Level * read(nbt::tag_compound *map) const;

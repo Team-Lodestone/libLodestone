@@ -14,6 +14,8 @@
 namespace lodestone::level::chunk {
     class LODESTONE_API Chunk {
     public:
+        Chunk();
+        
         virtual ~Chunk() = default;
 
         virtual void calculateBlockmap() = 0;

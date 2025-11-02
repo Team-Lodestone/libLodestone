@@ -8,6 +8,8 @@
 namespace lodestone::java::classic::minev1 {
     class MineV1LevelIO : public level::conversion::level::LevelIO {
     public:
+        static constexpr level::registry::NamespacedString NAME = {"lodestone", "minev1"};
+
         static constexpr int WIDTH = 256;
         static constexpr int HEIGHT = 64;
         static constexpr int DEPTH = 256;

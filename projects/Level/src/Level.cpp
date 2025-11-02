@@ -63,12 +63,12 @@ namespace lodestone::level {
             c->setBlock(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
     }
 
-    void Level::setBlockCreate(block::state::BlockState &blk, const size_t x, const size_t y, const size_t z, const int height) {
+    void Level::setBlockCreate(block::state::BlockState *blk, const size_t x, const size_t y, const size_t z, const int height) {
         chunk::Chunk *c = getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH);
 
         if (!c) c = createChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH, height);
 
-        c->setBlock(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
+        c->setBlock(*blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
     }
 
     void Level::setBlockRaw(block::state::BlockState &blk, const size_t x, const size_t y, const size_t z) {

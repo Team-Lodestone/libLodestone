@@ -5,7 +5,6 @@
 
 #include <ranges>
 #include <BinaryIO/BinaryIO.h>
-#include "Classic/ClassicBlockIO.h"
 #include "Classic/MineV1/MineV1LevelIO.h"
 
 namespace lodestone::java::classic::minev2 {
@@ -29,9 +28,9 @@ namespace lodestone::java::classic::minev2 {
         for (int y = 0; y < height; y++) {
             for (int z = 0; z < depth; z++) {
                 for (int x = 0; x < width; x++) {
-                    level::block::state::BlockState b = ClassicBlockIO::sInstance->readBlock(rd);
-                    if (b.getBlock() != level::block::BlockRegistry::sDefaultBlock)
-                        l->setBlockCreateRaw(b, x, y, z, height);
+                    // level::block::state::BlockState b = ClassicBlockIO::sInstance->readBlock(rd);
+                    // if (b.getBlock() != level::block::BlockRegistry::sDefaultBlock)
+                        // l->setBlockCreateRaw(b, x, y, z, height);
 
                     rd++;
                 }
@@ -61,8 +60,8 @@ namespace lodestone::java::classic::minev2 {
             for (int z = 0; z < d; z++) {
                 for (int x = 0; x < w; x++) {
                     level::block::state::BlockState *b = l->getBlock(x, y, z);
-                    if (b->getBlock() != level::block::BlockRegistry::sDefaultBlock)
-                        ClassicBlockIO::sInstance->writeBlock(b, io.getDataRelative());
+                    // if (b->getBlock() != level::block::BlockRegistry::sDefaultBlock)
+                        // ClassicBlockIO::sInstance->writeBlock(b, io.getDataRelative());
 
                     io.seekRelative(1); // TODO: I can make this operator++
                 }

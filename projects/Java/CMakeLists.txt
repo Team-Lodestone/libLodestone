@@ -7,8 +7,6 @@ set(FILES
         include/Lodestone.Java/Classic/MineV1/MineV1LevelIO.h
         src/Classic/MineV1/MineV1LevelIO.cpp
         src/LodestoneJava.cpp
-        src/Classic/ClassicBlockIO.cpp
-        include/Lodestone.Java/Classic/ClassicBlockIO.h
         include/Lodestone.Java/LodestoneJava.h
         src/Classic/MineV2/MineV2LevelIO.cpp
         include/Lodestone.Java/Classic/MineV2/MineV2LevelIO.h
@@ -16,6 +14,7 @@ set(FILES
         include/Lodestone.Java/Classic/MineV2/MineV2World.h
         src/Indev/McLevelLevelIO.cpp
         include/Lodestone.Java/Indev/McLevelLevelIO.h
+        include/Lodestone.Java/Version.h
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")

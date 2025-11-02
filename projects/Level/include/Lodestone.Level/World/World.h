@@ -12,18 +12,18 @@ namespace lodestone::level::world {
     class World : public StringSerializable {
     public:
         class Dimension { // just a class full of constants for now
-            static constexpr const char *OVERWORLD = "lodestone:overworld";
-            static constexpr const char *NETHER = "lodestone:nether";
-            static constexpr const char *END = "lodestone:end";
+            static constexpr const registry::NamespacedString OVERWORLD = { "lodestone", "overworld" };
+            static constexpr const registry::NamespacedString NETHER = { "lodestone", "nether" };
+            static constexpr const registry::NamespacedString END = { "lodestone", "end" };
         };
 
         World(const std::string &name = "New World") : mName(name) {}
         World(const std::unordered_map<std::string, Level*> &levels, const std::string &name = "New World") : mName(name), mDimensions(levels) {}
 
-        void addDimension(const std::string &id, Level *level);
-        Level *getDimension(const std::string &id) const;
-        void removeDimension(const std::string &id);
-        bool hasDimension(const std::string &id) const;
+        void addDimension(const registry::NamespacedString &id, Level *level);
+        Level *getDimension(const registry::NamespacedString &id) const;
+        void removeDimension(const registry::NamespacedString &id);
+        bool hasDimension(const registry::NamespacedString &id) const;
 
         std::string toString() const override {
             return (new OperatorStringBuilder(typeid(*this)))
