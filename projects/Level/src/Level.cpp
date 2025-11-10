@@ -6,51 +6,14 @@
 #include <iostream>
 #include <limits.h>
 
-#include "Chunk/LevelChunk.h"
+#include "chunk/LevelChunk.h"
 
 namespace lodestone::level {
-    bool Level::hasChunk(const types::Vec2i &coords) const {
-        return mChunks.contains(coords);
-    }
-
-    chunk::Chunk *Level::createChunk(const types::Vec2i &coords, const int height) {
-        if (hasChunk(coords)) throw new std::runtime_error("Attempted to place a chunk where there already was one");
-
-        std::unique_ptr<chunk::LevelChunk> ch = std::make_unique<chunk::LevelChunk>(height);
-
-        chunk::Chunk *c = ch.get();
-        mChunks[coords] = std::move(ch);
-
-#if CMAKE_BUILD_DEBUG
-        std::cout << "Created chunk at X: " << coords.x << ", Z: " << coords.z << std::endl;
-#endif
-
-        return c;
-    }
-
-    chunk::Chunk * Level::getChunk(const types::Vec2i &coords) {
-        if (const auto it = mChunks.find(coords); it != mChunks.end()) return it->second.get();
-
-        return nullptr;
-    }
-
-    chunk::Chunk * Level::getChunkCreate(const types::Vec2i &coords, const int height) {
-        if (const auto it = mChunks.find(coords); it != mChunks.end()) return it->second.get();
-
-        return createChunk(coords, height);
-    }
-
-    const chunk::Chunk * Level::getChunk(const types::Vec2i &coords) const {
-        if (const auto it = mChunks.find(coords); it != mChunks.end()) return it->second.get();
-
-        return nullptr;
-    }
-
-    void Level::removeChunk(const types::Vec2i &coords) {
-        mChunks.erase(coords);
-    }
-
 #pragma region Blocks
+    bool Level::isChunkInBounds(const types::Vec2i &coords) {
+        return true;
+    }
+
     block::state::BlockState * Level::getBlock(const size_t x, const size_t y, const size_t z) {
         if (const chunk::Chunk *c = getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH))
             return c->getBlock(x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
@@ -129,28 +92,13 @@ namespace lodestone::level {
     }
 #pragma endregion
 
+    size_t Level::getBlockCount() const {
+        auto [min, max] = getBlockBounds();
 
-    types::Bounds Level::getChunkBounds() {
-        int minX = INT_MAX;
-        int minY = INT_MAX;
-        int minZ = INT_MAX;
-        int maxX = INT_MIN;
-        int maxY = INT_MIN;
-        int maxZ = INT_MIN;
-
-        for (const auto& [coord, chonk] : mChunks) {
-            minX = std::min(minX, coord.x);
-            maxX = std::max(maxX, coord.x);
-            minY = std::min(minY, 0);
-            maxY = std::max(maxY, chonk->getChunkHeight());
-            minZ = std::min(minZ, coord.z);
-            maxZ = std::max(maxZ, coord.z);
-        }
-
-        return {minX, minY, minZ, maxX, maxY, maxZ};
+        return (max.x - min.x + 1) * (max.y - min.y) * (max.z - min.z + 1);
     }
 
-    types::Bounds Level::getBlockBounds() {
+    types::Bounds3i Level::getBlockBounds() const {
         int minX = INT_MAX;
         int minY = INT_MAX;
         int minZ = INT_MAX;
@@ -171,11 +119,5 @@ namespace lodestone::level {
         }
 
         return {minX, minY, minZ, maxX, maxY, maxZ};
-    }
-
-    size_t Level::getBlockCount() {
-        auto [min, max] = getBlockBounds();
-
-        return (max.x - min.x + 1) * (max.y - min.y) * (max.z - min.z + 1);
     }
 }

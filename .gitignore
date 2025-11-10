@@ -39,3 +39,9 @@
 
 # debug information files
 *.dwo
+/build
+.idea
+# remove when it's complete
+/projects/Viewer
+/projects/Tests/input
+/projects/Tests/output

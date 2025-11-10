@@ -5,17 +5,19 @@
 #define LODESTONE_STRINGSERIALIZABLE_H
 #include <string>
 
+/** Java toString clone */
 class StringSerializable {
 public:
-    virtual ~StringSerializable() = default;
+    constexpr StringSerializable() = default;
+    constexpr virtual ~StringSerializable() = default;
 
-    operator std::string() const {
+    constexpr operator std::string() const {
         return toString();
     }
 
-    virtual std::string toString() const = 0;
+    constexpr virtual std::string toString() const = 0;
 
-    friend std::ostream& operator<<(std::ostream& os, const StringSerializable& s) {
+    constexpr friend std::ostream& operator<<(std::ostream& os, const StringSerializable& s) {
         os << s.toString();
         return os;
     };

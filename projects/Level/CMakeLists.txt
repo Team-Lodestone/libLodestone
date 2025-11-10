@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.0)
+cmake_minimum_required(VERSION VERSION 3.30)
 project(Lodestone.Level)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -9,68 +9,85 @@ set(FILES
         include/Lodestone.Level/Level.h
         src/Level.cpp
 
-        include/Lodestone.Level/Types/Vec2i.h
-        src/Chunk/Chunk.cpp
-        include/Lodestone.Level/Chunk/Chunk.h
-        include/Lodestone.Level/Types/Vec3i.h
+        include/Lodestone.Level/types/Vec2i.h
+        src/chunk/Chunk.cpp
+        include/Lodestone.Level/chunk/Chunk.h
+        include/Lodestone.Level/types/Vec3i.h
         include/Lodestone.Level/Indexing.h
-        src/Block/Block.cpp
+        src/block/Block.cpp
 
-        include/Lodestone.Level/Block/Block.h
-        include/Lodestone.Level/Block/BlockRegistry.h
-        src/Material/Material.cpp
-        include/Lodestone.Level/Material/Material.h
-        include/Lodestone.Level/Types/Color.h
-        src/Block/BlockRegistry.cpp
-        src/Material/MaterialRegistry.cpp
-        include/Lodestone.Level/Material/MaterialRegistry.h
-        src/Block/State/BlockState.cpp
-        include/Lodestone.Level/Block/State/BlockState.h
-        src/Chunk/Section/EmptySection.cpp
-        include/Lodestone.Level/Chunk/Section/EmptySection.h
-        src/Chunk/Section/Section.cpp
-        include/Lodestone.Level/Chunk/Section/Section.h
-        include/Lodestone.Level/Chunk/Section/LevelSection.h
-        src/Chunk/Section/LevelSection.cpp
-        include/Lodestone.Level/Chunk/Section/LevelSection.h
-        include/Lodestone.Level/Chunk/LevelChunk.h
-        src/Chunk/LevelChunk.cpp
-        include/Lodestone.Level/Chunk/LevelChunk.h
-        src/Chunk/EmptyChunk.cpp
-        include/Lodestone.Level/Chunk/EmptyChunk.h
-        src/Conversion/Chunk/ChunkIORegistry.cpp
-        include/Lodestone.Level/Conversion/Chunk/ChunkIORegistry.h
-        src/Conversion/Chunk/ChunkIO.cpp
-        include/Lodestone.Level/Conversion/Chunk/ChunkIO.h
-        src/Conversion/Level/LevelIORegistry.cpp
-        include/Lodestone.Level/Conversion/Level/LevelIORegistry.h
-        src/Conversion/Level/LevelIO.cpp
-        include/Lodestone.Level/Conversion/Level/LevelIO.h
-        src/World/World.cpp
-        include/Lodestone.Level/World/World.h
-        src/Conversion/World/WorldIO.cpp
-        include/Lodestone.Level/Conversion/World/WorldIO.h
-        src/Conversion/World/WorldIORegistry.cpp
-        include/Lodestone.Level/Conversion/World/WorldIORegistry.h
-        include/Lodestone.Level/Types/Bounds.h
-        include/Lodestone.Level/Block/Blocks.h
-        include/Lodestone.Level/Registry/NamespacedString.h
-        include/Lodestone.Level/Conversion/Block/VersionedBlockIO.h
-        include/Lodestone.Level/Conversion/Block/BlockIO.h
-        src/Conversion/Block/BlockIO.cpp
-        include/Lodestone.Level/Conversion/Block/data/NumericBlockData.h
-        include/Lodestone.Level/Conversion/Block/data/ClassicBlockData.h
-        include/Lodestone.Level/Conversion/Block/data/AbstractBlockData.h
-        src/Conversion/Block/data/NumericBlockData.cpp
-        src/Conversion/Block/data/ClassicBlockData.cpp
-        src/Conversion/Block/VersionedBlockIO.cpp
+        include/Lodestone.Level/block/Block.h
+        include/Lodestone.Level/block/BlockRegistry.h
+        src/material/Material.cpp
+        include/Lodestone.Level/material/Material.h
+        include/Lodestone.Level/types/Color.h
+        src/block/BlockRegistry.cpp
+        src/material/MaterialRegistry.cpp
+        include/Lodestone.Level/material/MaterialRegistry.h
+        src/block/state/BlockState.cpp
+        include/Lodestone.Level/block/state/BlockState.h
+        src/chunk/section/EmptySection.cpp
+        include/Lodestone.Level/chunk/section/EmptySection.h
+        src/chunk/section/Section.cpp
+        include/Lodestone.Level/chunk/section/Section.h
+        include/Lodestone.Level/chunk/section/LevelSection.h
+        src/chunk/section/LevelSection.cpp
+        include/Lodestone.Level/chunk/section/LevelSection.h
+        include/Lodestone.Level/chunk/LevelChunk.h
+        src/chunk/LevelChunk.cpp
+        include/Lodestone.Level/chunk/LevelChunk.h
+        src/chunk/EmptyChunk.cpp
+        include/Lodestone.Level/chunk/EmptyChunk.h
+        src/conversion/chunk/ChunkIORegistry.cpp
+        include/Lodestone.Level/conversion/chunk/ChunkIORegistry.h
+        src/conversion/chunk/ChunkIO.cpp
+        include/Lodestone.Level/conversion/chunk/ChunkIO.h
+        src/conversion/level/LevelIORegistry.cpp
+        include/Lodestone.Level/conversion/level/LevelIORegistry.h
+        src/conversion/level/LevelIO.cpp
+        include/Lodestone.Level/conversion/level/LevelIO.h
+        src/world/World.cpp
+        include/Lodestone.Level/world/World.h
+        src/conversion/world/WorldIO.cpp
+        include/Lodestone.Level/conversion/world/WorldIO.h
+        src/conversion/world/WorldIORegistry.cpp
+        include/Lodestone.Level/conversion/world/WorldIORegistry.h
+        include/Lodestone.Level/conversion/region/RegionIO.h
+        src/conversion/region/RegionIORegistry.cpp
+        include/Lodestone.Level/conversion/region/RegionIORegistry.h
+        include/Lodestone.Level/types/Bounds3i.h
+        include/Lodestone.Level/types/Bounds2i.h
+        include/Lodestone.Level/block/Blocks.h
+        include/Lodestone.Level/registry/NamespacedString.h
+        include/Lodestone.Level/conversion/block/VersionedBlockIO.h
+        include/Lodestone.Level/conversion/block/BlockIO.h
+        src/conversion/block/BlockIO.cpp
+        include/Lodestone.Level/conversion/block/data/NumericBlockData.h
+        include/Lodestone.Level/conversion/block/data/ClassicBlockData.h
+        src/conversion/block/data/ClassicBlockData.cpp
+        include/Lodestone.Level/conversion/block/data/FlattenedBlockData.h
+        src/conversion/block/data/FlattenedBlockData.cpp
+        include/Lodestone.Level/conversion/block/data/AbstractBlockData.h
+        src/conversion/block/data/NumericBlockData.cpp
+        src/conversion/block/VersionedBlockIO.cpp
+        include/Lodestone.Level/types/hash/BlockDataHash.h
+        include/Lodestone.Level/conversion/world/FileWorldIo.h
+        include/Lodestone.Level/conversion/world/DirectoryWorldIo.h
+        src/region/Region.cpp
+        include/Lodestone.Level/region/Region.h
+        src/chunk/ChunkContainer.cpp
+        include/Lodestone.Level/chunk/ChunkContainer.h
+        src/FiniteLevel.cpp
+        include/Lodestone.Level/FiniteLevel.h
+        include/Lodestone.Level/Identifiers.h
 )
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_compile_options(
-            "-D_GLIBCXX_DEBUG"
-    )
-endif ()
+# if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+#     add_compile_options(
+#             "-D_GLIBCXX_DEBUG"
+#             "-D_LIBCPP_DEBUG"
+#     )
+# endif ()
 
 add_library(Lodestone.Level SHARED ${FILES})
 target_include_directories(Lodestone.Level

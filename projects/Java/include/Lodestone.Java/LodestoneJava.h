@@ -5,8 +5,7 @@
 #define LODESTONE_MAIN_H
 #include <Lodestone.Common/Defines.h>
 
-#include "Lodestone.Level/Conversion/Block/BlockIO.h"
-#include "Lodestone.Level/Conversion/Block/VersionedBlockIO.h"
+#include "Lodestone.Level/conversion/block/VersionedBlockIO.h"
 
 namespace lodestone::java {
     class LODESTONE_API LodestoneJava {

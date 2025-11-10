@@ -2,38 +2,65 @@
 // Created by DexrnZacAttack on 10/15/25 using zPc-i2.
 //
 
-#include <Lodestone.Level/Conversion/Level/LevelIORegistry.h>
+#include <Lodestone.Level/conversion/level/LevelIORegistry.h>
 
-#include "Classic/MineV1/MineV1LevelIO.h"
-#include "Classic/MineV2/MineV2LevelIO.h"
-#include "Indev/McLevelLevelIO.h"
+#include "classic/minev1/MineV1LevelIO.h"
+#include "classic/minev2/MineV2LevelIO.h"
+#include "indev/McLevelLevelIO.h"
 #include "LodestoneJava.h"
 
+#include "Identifiers.h"
 #include "Version.h"
-#include "Lodestone.Level/Conversion/Block/BlockIO.h"
-#include "Lodestone.Level/Conversion/Block/VersionedBlockIO.h"
-#include "Lodestone.Level/Conversion/Block/data/ClassicBlockData.h"
+#include "classic/minev2/MineV2WorldIo.h"
+#include "Lodestone.Level/conversion/block/BlockIO.h"
+#include "Lodestone.Level/conversion/block/VersionedBlockIO.h"
+#include "Lodestone.Level/conversion/block/data/ClassicBlockData.h"
+#include "Lodestone.Level/conversion/block/data/NumericBlockData.h"
+#include "Lodestone.Level/conversion/chunk/ChunkIORegistry.h"
+#include "Lodestone.Level/conversion/region/RegionIORegistry.h"
+#include "Lodestone.Level/conversion/world/WorldIORegistry.h"
+#include "../include/Lodestone.Java/mcr/chunk/McRegionChunkIo.h"
+#include "../include/Lodestone.Java/mcr/region/McRegionRegionIo.h"
 
 namespace lodestone::java {
     LodestoneJava *LodestoneJava::sInstance = nullptr;
 
     LodestoneJava::LodestoneJava() {
-        this->io = lodestone::level::conversion::block::version::VersionedBlockIO();
+        this->io = level::conversion::block::version::VersionedBlockIO();
         initBlocks();
 
+        // mine v1
         level::conversion::level::LevelIORegistry::sInstance.registerLevelIO(
-            classic::minev1::MineV1LevelIO::NAME,
+            identifiers::MINEV1,
             std::make_unique<classic::minev1::MineV1LevelIO>()
         );
 
+        // minev2
         level::conversion::level::LevelIORegistry::sInstance.registerLevelIO(
-            classic::minev2::MineV2LevelIO::NAME,
+            identifiers::MINEV2,
             std::make_unique<classic::minev2::MineV2LevelIO>()
         );
 
+        level::conversion::world::WorldIORegistry::sInstance.registerWorldIO(
+        identifiers::MINEV2,
+            std::make_unique<classic::minev2::MineV2WorldIO>()
+        );
+
+        // indev
         level::conversion::level::LevelIORegistry::sInstance.registerLevelIO(
-            indev::McLevelLevelIO::NAME,
+        identifiers::MCLEVEL,
             std::make_unique<indev::McLevelLevelIO>()
+        );
+
+        // mcr
+        level::conversion::chunk::ChunkIORegistry::sInstance.registerChunkIO(
+        identifiers::MCREGION,
+        std::make_unique<mcr::chunk::McRegionChunkIO>()
+        );
+
+        level::conversion::region::RegionIORegistry::sInstance.registerRegionIO(
+        identifiers::MCREGION,
+        std::make_unique<mcr::region::McRegionRegionIO>()
         );
     }
 
@@ -48,13 +75,22 @@ namespace lodestone::java {
     }
 
     void LodestoneJava::initBlocks() {
-        io.registerBlock(Version::caveGame,{"lodestone", "air"}, new level::conversion::block::data::ClassicBlockData(0));
-        io.registerBlock(Version::caveGame,{"lodestone", "stone"}, new level::conversion::block::data::ClassicBlockData(1));
-        io.registerBlock(Version::caveGame,{"lodestone", "grass_block"}, new level::conversion::block::data::ClassicBlockData(2));
-        io.registerBlock(Version::rd20090515,{"lodestone", "dirt"}, new level::conversion::block::data::ClassicBlockData(3));
-        io.registerBlock(Version::rd20090515,{"lodestone", "cobblestone"}, new level::conversion::block::data::ClassicBlockData(4));
-        io.registerBlock(Version::rd20090515,{"lodestone", "oak_planks"}, new level::conversion::block::data::ClassicBlockData(5));
-        io.registerBlock(Version::rd161348,{"lodestone", "oak_sapling"}, new level::conversion::block::data::ClassicBlockData(6));
-        io.registerBlock(Version::c0_0_12a,{"lodestone", "bedrock"}, new level::conversion::block::data::ClassicBlockData(7));
+        io.registerBlock(Version::caveGame,&level::block::Blocks::AIR, new level::conversion::block::data::ClassicBlockData(0));
+        io.registerBlock(Version::caveGame,&level::block::Blocks::STONE, new level::conversion::block::data::ClassicBlockData(1));
+        io.registerBlock(Version::caveGame,&level::block::Blocks::GRASS_BLOCK, new level::conversion::block::data::ClassicBlockData(2));
+        io.registerBlock(Version::rd20090515,&level::block::Blocks::DIRT, new level::conversion::block::data::ClassicBlockData(3));
+        io.registerBlock(Version::rd20090515,&level::block::Blocks::COBBLESTONE, new level::conversion::block::data::ClassicBlockData(4));
+        io.registerBlock(Version::rd20090515,&level::block::Blocks::OAK_PLANKS, new level::conversion::block::data::ClassicBlockData(5));
+        io.registerBlock(Version::rd161348,&level::block::Blocks::OAK_SAPLING, new level::conversion::block::data::ClassicBlockData(6));
+        io.registerBlock(Version::c0_0_12a,&level::block::Blocks::BEDROCK, new level::conversion::block::data::ClassicBlockData(7));
+
+        io.registerBlock(Version::b1_3,&level::block::Blocks::AIR, new level::conversion::block::data::NumericBlockData(0, 0));
+        io.registerBlock(Version::b1_3,&level::block::Blocks::STONE, new level::conversion::block::data::NumericBlockData(1, 0));
+        io.registerBlock(Version::b1_3,&level::block::Blocks::GRASS_BLOCK, new level::conversion::block::data::NumericBlockData(2, 0));
+        io.registerBlock(Version::b1_3,&level::block::Blocks::DIRT, new level::conversion::block::data::NumericBlockData(3, 0));
+        io.registerBlock(Version::b1_3,&level::block::Blocks::COBBLESTONE, new level::conversion::block::data::NumericBlockData(4, 0));
+        io.registerBlock(Version::b1_3,&level::block::Blocks::OAK_PLANKS, new level::conversion::block::data::NumericBlockData(5, 0));
+        io.registerBlock(Version::b1_3,&level::block::Blocks::OAK_SAPLING, new level::conversion::block::data::NumericBlockData(6, 0));
+        io.registerBlock(Version::b1_3,&level::block::Blocks::BEDROCK, new level::conversion::block::data::NumericBlockData(7, 0));
     }
 }

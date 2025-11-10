@@ -2,6 +2,10 @@
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
 #pragma once
+#if defined(__GNUC__) || defined(__clang__)
+#include <cxxabi.h>
+#endif
+
 #include <iosfwd>
 #include <sstream>
 #include <typeinfo>
@@ -9,22 +13,44 @@
 // we have Apache ToStringBuilder at home.
 class OperatorStringBuilder {
 public:
-    OperatorStringBuilder(const std::type_info &type);
+    OperatorStringBuilder(const std::type_info &type) : mType(type) {
+        mStream << demangle(type.name()) << "[";
+    };
 
     template<typename T>
-    OperatorStringBuilder *addField(const std::string name, const T& v) {
+    constexpr OperatorStringBuilder *addField(const std::string &name, const T& v) {
         mStream << name << "=" << v << ",";
         return this;
     }
 
-    std::string toString();
+    constexpr std::string toString() {
+        std::string s = mStream.str();
+        if (!s.empty() && s.back() == ',')
+            s.pop_back();
+
+        mStream.str("");
+        mStream << s << "]";
+
+        return mStream.str();
+    };
 
     #define ADD_FIELD(name) addField(#name, name)
 
     // TODO: breaks on windows
-    static constexpr const char *demangle(const char* name);
+    static constexpr const char *demangle(const char *name) {
+#if defined(__GNUC__) || defined(__clang__)
+        int err = 0;
+        char* demangled = abi::__cxa_demangle(name, nullptr, nullptr, &err);
 
-    operator std::string() {
+        const char *r = (!err) ? demangled : name;
+        std::free(demangled);
+        return r;
+#else
+        return name;
+#endif
+    }
+
+    constexpr operator std::string() {
         return toString();
     }
 

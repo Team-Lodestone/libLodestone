@@ -1,14 +1,14 @@
-cmake_minimum_required(VERSION 4.0)
+cmake_minimum_required(VERSION 3.30)
 project(Lodestone VERSION 1.0.0)
 
-set(VERSION_SUFFIX "-dev.16") # used for non-stable versions, otherwise blank
+set(VERSION_SUFFIX "-dev.17") # used for non-stable versions, otherwise blank
 set(CMAKE_CXX_STANDARD 20)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DCMAKE_BUILD_DEBUG)
 endif ()
 
-option(ENABLE_OPTIMIZATIONS "Enable compiler optimizations" ON)
+option(ENABLE_OPTIMIZATIONS "Enable compiler optimizations" OFF)
 if (ENABLE_OPTIMIZATIONS STREQUAL "ON")
     add_compile_options(
             "$<$<COMPILE_LANGUAGE:CXX>:-O3;-ffast-math;-march=native;-fpic;-ftree-vectorize>"
@@ -36,6 +36,17 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(nbt++)
 
+# GTL
+include(FetchContent)
+FetchContent_Declare(
+        gtl
+        GIT_REPOSITORY https://github.com/greg7mdp/gtl.git
+        GIT_TAG        main
+)
+FetchContent_MakeAvailable(gtl)
+
+find_package(ZLIB)
+
 #include_directories(${BIO_SOURCE_DIR})
 
 # PROJECTS
@@ -45,10 +56,10 @@ add_subdirectory(projects/Level)
 add_subdirectory(projects/Java)
 
 # TODO: this is probably a bad idea incase one wants to only include certain licenses
-target_link_libraries(Lodestone.Tests PRIVATE BIO)
-target_link_libraries(Lodestone.Common PRIVATE BIO)
-target_link_libraries(Lodestone.Level PRIVATE BIO)
-target_link_libraries(Lodestone.Java PRIVATE BIO nbt++)
+target_link_libraries(Lodestone.Tests PRIVATE BIO nbt++ gtl)
+target_link_libraries(Lodestone.Common PRIVATE BIO gtl)
+target_link_libraries(Lodestone.Level PRIVATE BIO gtl)
+target_link_libraries(Lodestone.Java PRIVATE BIO nbt++ ZLIB::ZLIB gtl)
 
 # DEFINITIONS
 target_compile_definitions(Lodestone.Common PUBLIC
@@ -60,12 +71,18 @@ target_compile_definitions(Lodestone.Common PUBLIC
 )
 
 # because otherwise jetbrains implodes
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_compile_options(
-            "-D_GLIBCXX_DEBUG"
-    )
-endif ()
+# if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+#     add_compile_options(
+#             "-D_GLIBCXX_DEBUG"
+#             "-D_LIBCPP_DEBUG"
+#     )
+# endif ()
 
-add_custom_target(Lodestone.All ALL DEPENDS Lodestone.Common Lodestone.Level Lodestone.Tests Lodestone.Java)
+add_custom_target(Lodestone.All ALL DEPENDS
+        Lodestone.Common
+        Lodestone.Level
+        Lodestone.Tests
+        Lodestone.Java
+)
 
 

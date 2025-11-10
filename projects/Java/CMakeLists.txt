@@ -1,27 +1,39 @@
-cmake_minimum_required(VERSION 4.0)
+cmake_minimum_required(VERSION VERSION 3.30)
 project(Lodestone.Java)
 
 set(CMAKE_CXX_STANDARD 20)
 
 set(FILES
-        include/Lodestone.Java/Classic/MineV1/MineV1LevelIO.h
-        src/Classic/MineV1/MineV1LevelIO.cpp
+        include/Lodestone.Java/classic/minev1/MineV1LevelIO.h
+        src/classic/minev1/MineV1LevelIO.cpp
         src/LodestoneJava.cpp
         include/Lodestone.Java/LodestoneJava.h
-        src/Classic/MineV2/MineV2LevelIO.cpp
-        include/Lodestone.Java/Classic/MineV2/MineV2LevelIO.h
-        src/Classic/MineV2/MineV2World.cpp
-        include/Lodestone.Java/Classic/MineV2/MineV2World.h
-        src/Indev/McLevelLevelIO.cpp
-        include/Lodestone.Java/Indev/McLevelLevelIO.h
+        src/classic/minev2/MineV2LevelIO.cpp
+        include/Lodestone.Java/classic/minev2/MineV2LevelIO.h
+        src/classic/minev2/MineV2World.cpp
+        include/Lodestone.Java/classic/minev2/MineV2World.h
+        src/indev/McLevelLevelIO.cpp
+        include/Lodestone.Java/indev/McLevelLevelIO.h
         include/Lodestone.Java/Version.h
+        src/classic/minev2/MineV2WorldIo.cpp
+        include/Lodestone.Java/classic/minev2/MineV2WorldIo.h
+        src/mcr/chunk/McRegionChunkIo.cpp
+        include/Lodestone.Java/mcr/chunk/McRegionChunkIo.h
+        src/mcr/chunk/McRegionChunk.cpp
+        include/Lodestone.Java/mcr/chunk/McRegionChunk.h
+        src/mcr/region/McRegionRegionIo.cpp
+        include/Lodestone.Java/mcr/region/McRegionRegionIo.h
+        include/Lodestone.Java/mcr/RegionChunkIndice.h
+        include/Lodestone.Java/mcr/RegionCompression.h
+        include/Lodestone.Java/Identifiers.h
 )
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_compile_options(
-            "-D_GLIBCXX_DEBUG"
-    )
-endif ()
+# if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+#     add_compile_options(
+#             "-D_GLIBCXX_DEBUG"
+#             "-D_LIBCPP_DEBUG"
+#     )
+# endif ()
 
 add_library(Lodestone.Java SHARED ${FILES})
 target_include_directories(Lodestone.Java

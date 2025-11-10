@@ -11,7 +11,8 @@ namespace lodestone::java {
         caveGame,
         rd20090515,
         rd161348,
-        c0_0_12a
+        c0_0_12a,
+        b1_3 // todo this should be first version with numeric + metadata block type
     };
 }
 
