@@ -8,11 +8,13 @@ set(FILES
         src/Lodestone.cpp
 
         include/Lodestone.Common/Defines.h
-        include/Lodestone.Common/String/OperatorStringBuilder.h
+        include/Lodestone.Common/string/OperatorStringBuilder.h
+        include/Lodestone.Common/registry/NamespacedString.h
+        include/Lodestone.Common/Indexing.h
         include/Lodestone.Common/Constants.h
-        include/Lodestone.Common/String/StringSerializable.h
-        src/String/OperatorStringBuilder.cpp
-        include/Lodestone.Common/io/DataBuffer.cpp
+        include/Lodestone.Common/string/StringSerializable.h
+        src/string/OperatorStringBuilder.cpp
+        src/io/DataBuffer.cpp
         include/Lodestone.Common/io/DataBuffer.h
 )
 

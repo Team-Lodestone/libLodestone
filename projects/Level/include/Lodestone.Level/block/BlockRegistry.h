@@ -7,7 +7,7 @@
 
 #include <Lodestone.Common/Defines.h>
 
-#include "gtl/phmap.hpp"
+#include <gtl/phmap.hpp>
 #include "Lodestone.Level/block/Block.h"
 #include "Lodestone.Level/block/Blocks.h"
 
@@ -15,30 +15,33 @@ namespace lodestone::level::block {
     class LODESTONE_API BlockRegistry {
     protected:
         BlockRegistry() = default;
+
     public:
 #define REGISTER(n, m) {n, new Block(n, m)}
 
         static const Block *sDefaultBlock;
         static BlockRegistry sInstance;
 
-        void registerBlock(const registry::NamespacedString *id, const Block* block);
+        void registerBlock(const lodestone::common::registry::NamespacedString *id, const Block *block);
+
         // couldn't come up with a better name
-        bool registerBlockIfNonExistent(const registry::NamespacedString *id, const Block* block) noexcept;
-        const Block *getBlock(const registry::NamespacedString *id) const;
+        bool registerBlockIfNonExistent(const lodestone::common::registry::NamespacedString *id,
+                                        const Block *block) noexcept;
 
-        const Block *operator[](const registry::NamespacedString *id) const;
+        const Block *getBlock(const lodestone::common::registry::NamespacedString *id) const;
 
-        gtl::flat_hash_map<const registry::NamespacedString *, const Block*>::iterator begin() {
+        const Block *operator[](const lodestone::common::registry::NamespacedString *id) const;
+
+        gtl::flat_hash_map<const lodestone::common::registry::NamespacedString *, const Block *>::iterator begin() {
             return mBlocks.begin();
         }
 
-        gtl::flat_hash_map<const registry::NamespacedString *, const Block*>::iterator end() {
+        gtl::flat_hash_map<const lodestone::common::registry::NamespacedString *, const Block *>::iterator end() {
             return mBlocks.end();
         }
 
     private:
-
-        gtl::flat_hash_map<const registry::NamespacedString *, const Block*> mBlocks = {
+        gtl::flat_hash_map<const lodestone::common::registry::NamespacedString *, const Block *> mBlocks = {
             REGISTER(&Blocks::AIR, material::Material({0, 0, 0, 0})),
             REGISTER(&Blocks::STONE, material::Material({0, 0, 0, 0})),
             REGISTER(&Blocks::GRASS_BLOCK, material::Material({127, 178, 56, 255})),

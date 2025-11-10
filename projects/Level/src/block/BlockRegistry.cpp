@@ -1,7 +1,7 @@
-#include "block/BlockRegistry.h"
+#include "Lodestone.Level/block/BlockRegistry.h"
 
 #if CMAKE_BUILD_DEBUG
-    #include <iostream>
+#include <iostream>
 #endif
 //
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
@@ -10,7 +10,7 @@ namespace lodestone::level::block {
     BlockRegistry BlockRegistry::sInstance = BlockRegistry();
     const Block *BlockRegistry::sDefaultBlock = sInstance.getBlock(&Blocks::AIR);
 
-    void BlockRegistry::registerBlock(const registry::NamespacedString *id, const Block *block) {
+    void BlockRegistry::registerBlock(const lodestone::common::registry::NamespacedString *id, const Block *block) {
         if (mBlocks.contains(id))
             throw std::runtime_error(std::format("Block '{}' is already registered", *id));
 
@@ -20,7 +20,8 @@ namespace lodestone::level::block {
 #endif
     }
 
-    bool BlockRegistry::registerBlockIfNonExistent(const registry::NamespacedString *id, const Block *block) noexcept {
+    bool BlockRegistry::registerBlockIfNonExistent(const lodestone::common::registry::NamespacedString *id,
+                                                   const Block *block) noexcept {
         if (mBlocks.contains(id))
             return false;
 
@@ -32,14 +33,14 @@ namespace lodestone::level::block {
         return true;
     }
 
-    const Block * BlockRegistry::getBlock(const registry::NamespacedString *id) const {
+    const Block *BlockRegistry::getBlock(const lodestone::common::registry::NamespacedString *id) const {
         if (const auto it = mBlocks.find(id); it != mBlocks.end())
             return it->second;
 
         return nullptr;
     }
 
-    const Block * BlockRegistry::operator[](const registry::NamespacedString *id) const {
+    const Block *BlockRegistry::operator[](const lodestone::common::registry::NamespacedString *id) const {
         return getBlock(id);
     }
 }

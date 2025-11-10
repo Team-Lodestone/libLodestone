@@ -4,6 +4,14 @@ project(Lodestone VERSION 1.0.0)
 set(VERSION_SUFFIX "-dev.17") # used for non-stable versions, otherwise blank
 set(CMAKE_CXX_STANDARD 20)
 
+option(ENABLE_LINTERS "Enable source linters" ON)
+
+if (ENABLE_LINTERS STREQUAL "ON")
+    add_custom_target(LodestoneScripts.CheckIncludePaths
+            COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/script/checkIncludePaths.py
+    )
+endif ()
+
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DCMAKE_BUILD_DEBUG)
 endif ()
@@ -27,15 +35,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(BIO)
 
-# NBT
-set(NBT_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-FetchContent_Declare(
-        nbt++
-        GIT_REPOSITORY https://github.com/PrismLauncher/libnbtplusplus.git
-        GIT_TAG master
-)
-FetchContent_MakeAvailable(nbt++)
-
 # GTL
 include(FetchContent)
 FetchContent_Declare(
@@ -56,10 +55,15 @@ add_subdirectory(projects/Level)
 add_subdirectory(projects/Java)
 
 # TODO: this is probably a bad idea incase one wants to only include certain licenses
-target_link_libraries(Lodestone.Tests PRIVATE BIO nbt++ gtl)
+target_link_libraries(Lodestone.Tests PRIVATE BIO gtl)
 target_link_libraries(Lodestone.Common PRIVATE BIO gtl)
 target_link_libraries(Lodestone.Level PRIVATE BIO gtl)
-target_link_libraries(Lodestone.Java PRIVATE BIO nbt++ ZLIB::ZLIB gtl)
+target_link_libraries(Lodestone.Java PRIVATE BIO ZLIB::ZLIB gtl)
+
+add_dependencies(Lodestone.Tests LodestoneScripts.CheckIncludePaths)
+add_dependencies(Lodestone.Common LodestoneScripts.CheckIncludePaths)
+add_dependencies(Lodestone.Level LodestoneScripts.CheckIncludePaths)
+add_dependencies(Lodestone.Java LodestoneScripts.CheckIncludePaths)
 
 # DEFINITIONS
 target_compile_definitions(Lodestone.Common PUBLIC
@@ -79,6 +83,7 @@ target_compile_definitions(Lodestone.Common PUBLIC
 # endif ()
 
 add_custom_target(Lodestone.All ALL DEPENDS
+        LodestoneScripts.CheckIncludePaths
         Lodestone.Common
         Lodestone.Level
         Lodestone.Tests

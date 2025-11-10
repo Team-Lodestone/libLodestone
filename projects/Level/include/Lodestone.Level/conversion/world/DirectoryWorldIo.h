@@ -5,15 +5,19 @@
 #define LODESTONE_DIRECTORYWORLDIO_H
 #include <filesystem>
 
-#include "WorldIO.h"
+#include "Lodestone.Level/conversion/world/WorldIO.h"
 
 namespace lodestone::level::conversion::world {
     class LODESTONE_API DirectoryWorldIO : public WorldIO {
     public:
         /** Reads data into a new World */
-        virtual lodestone::level::world::World *read(const std::filesystem::path &path, int version) const = 0; // TODO: this should allow for reading from VFS
+        virtual lodestone::level::world::World *read(const std::filesystem::path &path, int version) const = 0;
+
+        // TODO: this should allow for reading from VFS
         /** Writes a world to data */
-        virtual void write(const std::filesystem::path &path, lodestone::level::world::World *w, int version) const = 0; // TODO: this *should* allow for writing to a VFS
+        virtual void write(const std::filesystem::path &path, lodestone::level::world::World *w, int version) const = 0;
+
+        // TODO: this *should* allow for writing to a VFS
     };
 }
 

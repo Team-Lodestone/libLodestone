@@ -7,7 +7,7 @@
 #include <Lodestone.Common/Defines.h>
 
 namespace lodestone::java {
-    enum LODESTONE_API Version {
+    enum LODESTONE_API Version{
         caveGame,
         rd20090515,
         rd161348,

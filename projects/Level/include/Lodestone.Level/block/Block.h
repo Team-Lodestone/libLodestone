@@ -5,20 +5,23 @@
 #define LODESTONE_BLOCK_H
 #include <string>
 
-#include <Lodestone.Common/String/OperatorStringBuilder.h>
-#include <Lodestone.Common/String/StringSerializable.h>
+#include <Lodestone.Common/string/OperatorStringBuilder.h>
+#include <Lodestone.Common/string/StringSerializable.h>
 #include "Lodestone.Level/material/Material.h"
-#include "Lodestone.Level/registry/NamespacedString.h"
+#include <Lodestone.Common/registry/NamespacedString.h>
 
 namespace lodestone::level::block {
     class BlockState;
 
     class Block : public StringSerializable {
     public:
-        constexpr Block(const registry::NamespacedString *id, const material::Material &material) : mId(id), mMaterial(material) {};
+        constexpr Block(const lodestone::common::registry::NamespacedString *id,
+                        const material::Material &material) : mId(id), mMaterial(material) {
+        };
+
         constexpr ~Block() override = default;
 
-        constexpr const registry::NamespacedString *getID() const {
+        constexpr const lodestone::common::registry::NamespacedString *getID() const {
             return mId;
         };
 
@@ -35,7 +38,7 @@ namespace lodestone::level::block {
         };
 
     private:
-        const registry::NamespacedString *mId;
+        const lodestone::common::registry::NamespacedString *mId;
         const material::Material mMaterial;
     };
 }

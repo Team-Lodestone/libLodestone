@@ -1,7 +1,7 @@
 //
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
-#include "chunk/Chunk.h"
+#include "Lodestone.Level/chunk/Chunk.h"
 
 namespace lodestone::level::chunk {
     Chunk::Chunk() {
@@ -84,7 +84,7 @@ namespace lodestone::level::chunk {
         return mContainer != nullptr;
     }
 
-    ChunkContainer * Chunk::getContainer() const {
+    ChunkContainer *Chunk::getContainer() const {
         return mContainer;
     }
 }

@@ -17,9 +17,16 @@ namespace lodestone::level::block::state {
     /** Wraps a block with runtime-modifiable "properties" */
     class BlockState : public StringSerializable {
     public:
-        BlockState(const Block *block) : mBlock(block) {};
-        BlockState(const registry::NamespacedString *id) : mBlock(BlockRegistry::sInstance.getBlock(id)) {};
-        BlockState() : mBlock(BlockRegistry::sDefaultBlock) {}
+        BlockState(const Block *block) : mBlock(block) {
+        };
+
+        BlockState(const lodestone::common::registry::NamespacedString *id) : mBlock(
+            BlockRegistry::sInstance.getBlock(id)) {
+        };
+
+        BlockState() : mBlock(BlockRegistry::sDefaultBlock) {
+        }
+
         ~BlockState() override;
 
         const gtl::flat_hash_map<std::string, std::string> &getStates();
@@ -27,6 +34,7 @@ namespace lodestone::level::block::state {
         bool hasProperty(const std::string &id) const;
 
         const std::string &getProperty(const std::string &id) const;
+
         std::string &getProperty(const std::string &id);
 
         const Block *getBlock() const { return mBlock; }
@@ -34,6 +42,7 @@ namespace lodestone::level::block::state {
         void setProperty(const std::string &id, const std::string &state);
 
         const std::string &operator[](const std::string &id) const;
+
         std::string &operator[](const std::string &id);
 
         bool operator==(const BlockState &b) const {

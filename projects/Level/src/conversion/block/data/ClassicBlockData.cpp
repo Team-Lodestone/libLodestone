@@ -4,32 +4,32 @@
 #include "Lodestone.Level/conversion/block/data/ClassicBlockData.h"
 
 namespace lodestone::level::conversion::block::data {
-    const void * ClassicBlockData::getIdPtr() const {
+    const void *ClassicBlockData::getIdPtr() const {
         return &mId;
     }
 
-    const void * ClassicBlockData::getDataPtr() const {
+    const void *ClassicBlockData::getDataPtr() const {
         return &mData;
     }
 
-    const std::type_info & ClassicBlockData::getIdType() const {
+    const std::type_info &ClassicBlockData::getIdType() const {
         return typeid(uint8_t);
     }
 
-    const std::type_info & ClassicBlockData::getDataType() const {
+    const std::type_info &ClassicBlockData::getDataType() const {
         return typeid(std::monostate);
     }
 
-    const lodestone::level::registry::NamespacedString *ClassicBlockData::getTypeName() const {
+    const lodestone::common::registry::NamespacedString *ClassicBlockData::getTypeName() const {
         return &identifiers::CLASSIC_BLOCK_DATA;
     }
 
-    const std::type_info & ClassicBlockData::getType() const {
+    const std::type_info &ClassicBlockData::getType() const {
         return typeid(ClassicBlockData);
     }
 
     bool ClassicBlockData::equals(const AbstractBlockData *rhs) const {
-        if (const auto c = dynamic_cast<const ClassicBlockData*>(rhs))
+        if (const auto c = dynamic_cast<const ClassicBlockData *>(rhs))
             return c->mId == mId && c->getTypeName() == getTypeName();
 
         return false;

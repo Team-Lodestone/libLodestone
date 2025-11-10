@@ -5,12 +5,13 @@
 
 #include <iostream>
 
-#include "Lodestone.Level/registry/NamespacedString.h"
+#include <Lodestone.Common/registry/NamespacedString.h>
 
 namespace lodestone::level::conversion::region {
     RegionIORegistry RegionIORegistry::sInstance = RegionIORegistry();
 
-    void RegionIORegistry::registerRegionIO(const registry::NamespacedString &id, std::unique_ptr<const RegionIO> io) {
+    void RegionIORegistry::registerRegionIO(const lodestone::common::registry::NamespacedString &id,
+                                            std::unique_ptr<const RegionIO> io) {
         if (mRegisteredRegionIOs.contains(id))
             throw std::runtime_error(std::format("RegionIO '{}' is already registered", id));
 
@@ -21,7 +22,7 @@ namespace lodestone::level::conversion::region {
 #endif
     }
 
-    const RegionIO * RegionIORegistry::getRegionIO(const registry::NamespacedString &id) const {
+    const RegionIO *RegionIORegistry::getRegionIO(const lodestone::common::registry::NamespacedString &id) const {
         if (const auto it = mRegisteredRegionIOs.find(id); it != mRegisteredRegionIOs.end())
             return it->second.get();
 

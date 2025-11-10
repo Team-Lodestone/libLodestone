@@ -4,10 +4,19 @@
 #ifndef LODESTONE_LODESTONE_H
 #define LODESTONE_LODESTONE_H
 
-#include "Defines.h"
+#include "Lodestone.Common/Defines.h"
 
 namespace lodestone {
-    constexpr const char *const LIBRARY_STRING = "libLodestone v" LODESTONE_VERSION " (" LODESTONE_COMPILER_NAME " / " LODESTONE_BUILD_TYPE " | " LODESTONE_PLATFORM_NAME " " LODESTONE_PLATFORM_ARCH ") | https://github.com/Team-Lodestone/libLodestone";
+    constexpr const char *const LIBRARY_STRING = "libLodestone v" LODESTONE_VERSION
+    " ("
+    LODESTONE_COMPILER_NAME
+    " / "
+    LODESTONE_BUILD_TYPE
+    " | "
+    LODESTONE_PLATFORM_NAME
+    " "
+    LODESTONE_PLATFORM_ARCH
+    ") | https://github.com/Team-Lodestone/libLodestone";
 
     LODESTONE_API unsigned long long getCurrentTimeMillis();
 

@@ -3,9 +3,9 @@
 //
 #ifndef LODESTONE_MINEV2WORLDIO_H
 #define LODESTONE_MINEV2WORLDIO_H
-#include "Lodestone.Level/conversion/level/LevelIO.h"
-#include "Lodestone.Level/conversion/world/FileWorldIo.h"
-#include "Lodestone.Level/conversion/world/WorldIO.h"
+#include <Lodestone.Level/conversion/level/LevelIO.h>
+#include <Lodestone.Level/conversion/world/FileWorldIo.h>
+#include <Lodestone.Level/conversion/world/WorldIO.h>
 
 namespace lodestone::java::classic::minev2 {
     class MineV2WorldIO : public level::conversion::world::FileWorldIO {

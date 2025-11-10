@@ -8,9 +8,14 @@
 namespace lodestone::level::chunk {
     class EmptyChunk : public Chunk {
     public:
-        EmptyChunk() : Chunk() { }
-        explicit EmptyChunk(const types::Vec2i &coords) : Chunk(coords) {}
-        EmptyChunk(ChunkContainer *container, const types::Vec2i &coords) : Chunk(container, coords) {}
+        EmptyChunk() : Chunk() {
+        }
+
+        explicit EmptyChunk(const types::Vec2i &coords) : Chunk(coords) {
+        }
+
+        EmptyChunk(ChunkContainer *container, const types::Vec2i &coords) : Chunk(container, coords) {
+        }
 
         constexpr std::string toString() const override {
             if (this->mCoords.has_value())
@@ -23,11 +28,11 @@ namespace lodestone::level::chunk {
 
         int getChunkHeight() const override;
 
-        section::Section * getSection(int y) const override;
+        section::Section *getSection(int y) const override;
 
-        block::state::BlockState * getBlock(int x, int y, int z) const override;
+        block::state::BlockState *getBlock(int x, int y, int z) const override;
 
-        section::Section * getSectionCreate(int y) override;
+        section::Section *getSectionCreate(int y) override;
 
         void setBlock(block::state::BlockState &blk, int x, int y, int z) override;
 

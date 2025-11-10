@@ -1,12 +1,12 @@
 //
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
-#include "Level.h"
+#include "Lodestone.Level/Level.h"
 
 #include <iostream>
 #include <limits.h>
 
-#include "chunk/LevelChunk.h"
+#include "Lodestone.Level/chunk/LevelChunk.h"
 
 namespace lodestone::level {
 #pragma region Blocks
@@ -14,7 +14,7 @@ namespace lodestone::level {
         return true;
     }
 
-    block::state::BlockState * Level::getBlock(const size_t x, const size_t y, const size_t z) {
+    block::state::BlockState *Level::getBlock(const size_t x, const size_t y, const size_t z) {
         if (const chunk::Chunk *c = getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH))
             return c->getBlock(x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
 
@@ -26,7 +26,8 @@ namespace lodestone::level {
             c->setBlock(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
     }
 
-    void Level::setBlockCreate(block::state::BlockState *blk, const size_t x, const size_t y, const size_t z, const int height) {
+    void Level::setBlockCreate(block::state::BlockState *blk, const size_t x, const size_t y, const size_t z,
+                               const int height) {
         chunk::Chunk *c = getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH);
 
         if (!c) c = createChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH, height);
@@ -39,7 +40,8 @@ namespace lodestone::level {
             c->setBlockRaw(blk, x % constants::CHUNK_WIDTH, y, z % constants::CHUNK_DEPTH);
     }
 
-    void Level::setBlockCreateRaw(block::state::BlockState &blk, const size_t x, const size_t y, const size_t z, const int height) {
+    void Level::setBlockCreateRaw(block::state::BlockState &blk, const size_t x, const size_t y, const size_t z,
+                                  const int height) {
         chunk::Chunk *c = getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH);
 
         if (!c) c = createChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH, height);
@@ -71,7 +73,7 @@ namespace lodestone::level {
 #pragma endregion
 
 #pragma region Blockmap
-    const block::state::BlockState * Level::getBlockmapBlockAt(const int x, const int z) const {
+    const block::state::BlockState *Level::getBlockmapBlockAt(const int x, const int z) const {
         if (const chunk::Chunk *c = getChunk(x / constants::CHUNK_WIDTH, z / constants::CHUNK_DEPTH))
             return c->getBlockmapBlockAt(x % constants::CHUNK_WIDTH, z % constants::CHUNK_DEPTH);
 
@@ -106,7 +108,7 @@ namespace lodestone::level {
         int maxY = INT_MIN;
         int maxZ = INT_MIN;
 
-        for (const auto& [coord, chonk] : mChunks) {
+        for (const auto &[coord, chonk]: mChunks) {
             int mX = coord.x * constants::CHUNK_WIDTH;
             int mZ = coord.z * constants::CHUNK_DEPTH;
 

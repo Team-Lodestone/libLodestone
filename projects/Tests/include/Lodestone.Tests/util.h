@@ -9,8 +9,13 @@
 
 namespace lodestone::tests::util {
     template<class... Args>
-    constexpr void runTest(void (*test)(Args...), const char *const type,
-                 const std::string &name, Args... args) {
+    constexpr void runTest(void(*test)(Args...), const char *const type,
+                 
+    const std::string &name, Args
+    ...
+    args
+    )
+ {
         // TODO: this counts ifstream r/w time as well, which isn't a good thing
         std::cout << "[" << type << "] Running test \"" << name << "\""
                 << std::endl;

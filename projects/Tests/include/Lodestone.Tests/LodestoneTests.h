@@ -5,7 +5,6 @@
 #define LODESTONE_LODESTONETESTS_H
 
 namespace lodestone::tests {
-
 }
 
 #endif //LODESTONE_LODESTONETESTS_H

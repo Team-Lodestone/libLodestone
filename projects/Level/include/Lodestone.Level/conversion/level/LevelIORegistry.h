@@ -12,14 +12,18 @@ namespace lodestone::level::conversion::level {
     class LODESTONE_API LevelIORegistry {
     protected:
         LevelIORegistry() = default;
+
     public:
         static LevelIORegistry sInstance;
 
-        void registerLevelIO(const registry::NamespacedString &id, std::unique_ptr<const LevelIO> io);
+        void registerLevelIO(const lodestone::common::registry::NamespacedString &id,
+                             std::unique_ptr<const LevelIO> io);
 
-        const LevelIO *getLevelIO(const registry::NamespacedString &id) const;
+        const LevelIO *getLevelIO(const lodestone::common::registry::NamespacedString &id) const;
+
     private:
-        gtl::flat_hash_map<registry::NamespacedString, std::unique_ptr<const LevelIO>, NamespacedStringHasher, NamespacedStringComparator> mRegisteredLevelIOs;
+        gtl::flat_hash_map<lodestone::common::registry::NamespacedString, std::unique_ptr<const LevelIO>,
+            NamespacedStringHasher, NamespacedStringComparator> mRegisteredLevelIOs;
     };
 }
 

@@ -11,11 +11,16 @@ namespace lodestone::level::types {
     struct Color : public StringSerializable {
         unsigned char r, g, b, a;
 
-        constexpr Color(const unsigned char r, const unsigned char g, const unsigned char b, const unsigned char a) : r(r), g(g), b(b), a(a) {}
-        constexpr Color(const unsigned char r, const unsigned char g, const unsigned char b) : r(r), g(g), b(b), a(0xFF) {}
+        constexpr Color(const unsigned char r, const unsigned char g, const unsigned char b,
+                        const unsigned char a) : r(r), g(g), b(b), a(a) {
+        }
 
-        constexpr operator unsigned char*() { return &r; }
-        constexpr operator const unsigned char*() const { return &r; }
+        constexpr Color(const unsigned char r, const unsigned char g,
+                        const unsigned char b) : r(r), g(g), b(b), a(0xFF) {
+        }
+
+        constexpr operator unsigned char *() { return &r; }
+        constexpr operator const unsigned char *() const { return &r; }
 
         constexpr std::string toString() const override {
             return std::format("Color[r={},g={},b={},a={}]", r, g, b, a);
@@ -23,9 +28,9 @@ namespace lodestone::level::types {
 
         constexpr bool operator==(const Color &rhs) const {
             return r == rhs.r
-                && g == rhs.g
-                && b == rhs.b
-                && a == rhs.a;
+                   && g == rhs.g
+                   && b == rhs.b
+                   && a == rhs.a;
         }
 
         constexpr Color operator+(const int v) const {
@@ -102,14 +107,14 @@ namespace lodestone::level::types {
     };
 }
 
-template <>
+template<>
 struct std::hash<lodestone::level::types::Color> {
-    size_t operator()(const lodestone::level::types::Color& v) const noexcept {
+    size_t operator()(const lodestone::level::types::Color &v) const noexcept {
         // we can just combine it into an int lol
         return (v.r << 24)
-             | (v.g << 16)
-             | (v.b << 8)
-             | (v.a);
+               | (v.g << 16)
+               | (v.b << 8)
+               | (v.a);
     }
 };
 

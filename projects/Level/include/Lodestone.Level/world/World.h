@@ -5,7 +5,7 @@
 #define LODESTONE_WORLD_H
 #include <unordered_map>
 
-#include <Lodestone.Common/String/StringSerializable.h>
+#include <Lodestone.Common/string/StringSerializable.h>
 
 #include "Lodestone.Level/Level.h"
 
@@ -16,28 +16,39 @@ namespace lodestone::level::conversion::world {
 namespace lodestone::level::world {
     class World : public StringSerializable {
     public:
-        class Dimension { // just a class full of constants for now
+        class Dimension {
+            // just a class full of constants for now
         public:
-            static constexpr const registry::NamespacedString OVERWORLD = { "lodestone", "overworld" };
-            static constexpr const registry::NamespacedString NETHER = { "lodestone", "nether" };
-            static constexpr const registry::NamespacedString END = { "lodestone", "end" };
+            static constexpr const lodestone::common::registry::NamespacedString OVERWORLD = {"lodestone", "overworld"};
+            static constexpr const lodestone::common::registry::NamespacedString NETHER = {"lodestone", "nether"};
+            static constexpr const lodestone::common::registry::NamespacedString END = {"lodestone", "end"};
         };
 
-        explicit World(const std::string &name = "New World") : mName(name) {}
+        explicit World(const std::string &name = "New World") : mName(name) {
+        }
+
         World(std::unique_ptr<Level> overworldLevel, const std::string &name = "New World") : mName(name) {
             this->mDimensions.emplace(Dimension::OVERWORLD, std::move(overworldLevel));
         }
-        World(const std::string &name, gtl::flat_hash_map<registry::NamespacedString, std::unique_ptr<Level>, NamespacedStringHasher, NamespacedStringComparator> &&levels) : mName(std::move(name)), mDimensions(std::move(levels)) {}
 
-        void addDimension(const registry::NamespacedString &id, std::unique_ptr<Level> level);
-        Level *getDimension(const registry::NamespacedString &id) const;
-        void removeDimension(const registry::NamespacedString &id);
-        bool hasDimension(const registry::NamespacedString &id) const;
+        World(const std::string &name,
+              gtl::flat_hash_map<lodestone::common::registry::NamespacedString, std::unique_ptr<Level>,
+                  NamespacedStringHasher, NamespacedStringComparator> &&levels) : mName(std::move(name)),
+            mDimensions(std::move(levels)) {
+        }
+
+        void addDimension(const lodestone::common::registry::NamespacedString &id, std::unique_ptr<Level> level);
+
+        Level *getDimension(const lodestone::common::registry::NamespacedString &id) const;
+
+        void removeDimension(const lodestone::common::registry::NamespacedString &id);
+
+        bool hasDimension(const lodestone::common::registry::NamespacedString &id) const;
 
         std::string toString() const override {
             return (new OperatorStringBuilder(typeid(*this)))
-                ->ADD_FIELD(mName)
-                ->toString();
+                    ->ADD_FIELD(mName)
+                    ->toString();
         };
 
         std::string getName() const { return mName; }
@@ -51,7 +62,8 @@ namespace lodestone::level::world {
          * @tparam ID The dimension ID
          * @tparam Level The level
          */
-        gtl::flat_hash_map<registry::NamespacedString, std::unique_ptr<Level>, NamespacedStringHasher, NamespacedStringComparator> mDimensions;
+        gtl::flat_hash_map<lodestone::common::registry::NamespacedString, std::unique_ptr<Level>, NamespacedStringHasher
+            , NamespacedStringComparator> mDimensions;
     };
 }
 

@@ -8,10 +8,10 @@
 #include <variant>
 
 #include <Lodestone.Common/Defines.h>
-#include <Lodestone.Level/block/state/BlockState.h>
+#include "Lodestone.Level/block/state/BlockState.h"
 
-#include "data/AbstractBlockData.h"
-#include "gtl/phmap.hpp"
+#include "Lodestone.Level/conversion/block/data/AbstractBlockData.h"
+#include <gtl/phmap.hpp>
 #include "Lodestone.Level/types/hash/BlockDataHash.h"
 
 namespace lodestone::level::conversion::block::version {
@@ -25,18 +25,24 @@ namespace lodestone::level::conversion::block::version {
         virtual ~BlockIO() = default;
 
         /** Returns a map that maps internal block IDs to a Blk  */
-        virtual gtl::flat_hash_map<const registry::NamespacedString *, data::AbstractBlockData*> &getFromInternalConversionMap();
+        virtual gtl::flat_hash_map<const common::registry::NamespacedString *, data::AbstractBlockData *> &
+        getFromInternalConversionMap();
+
         /** Returns a map that maps Blks to an internal block ID  */
-        virtual gtl::flat_hash_map<data::AbstractBlockData*, const registry::NamespacedString *, types::hash::BlockDataHash, types::hash::BlockDataComparator> &getToInternalConversionMap();
+        virtual gtl::flat_hash_map<data::AbstractBlockData *, const common::registry::NamespacedString *,
+            types::hash::BlockDataHash, types::hash::BlockDataComparator> &getToInternalConversionMap();
+
         /** Returns a map that maps block IDs to their default data value */
-        virtual gtl::flat_hash_map<const void *, data::AbstractBlockData*> &getDefaultDataMap();
+        virtual gtl::flat_hash_map<const void *, data::AbstractBlockData *> &getDefaultDataMap();
 
-        void registerBlock(const registry::NamespacedString *internal, data::AbstractBlockData* blk, const bool isDefault = false);
+        void registerBlock(const common::registry::NamespacedString *internal, data::AbstractBlockData *blk,
+                           const bool isDefault = false);
 
-        void registerBlockIfNotExist(const registry::NamespacedString *internal, data::AbstractBlockData* blk, const bool isDefault = false);
+        void registerBlockIfNotExist(const common::registry::NamespacedString *internal, data::AbstractBlockData *blk,
+                                     const bool isDefault = false);
 
         /** Converts an internal block to the BlockIO's format */
-        virtual data::AbstractBlockData* convertBlockFromInternal(const lodestone::level::block::state::BlockState *b);
+        virtual data::AbstractBlockData *convertBlockFromInternal(const lodestone::level::block::state::BlockState *b);
 
         /** Converts a block from BlockIO to the internal format */
         virtual lodestone::level::block::state::BlockState convertBlockToInternal(data::AbstractBlockData *b);
@@ -46,9 +52,11 @@ namespace lodestone::level::conversion::block::version {
         // /** Writes a block to data */
         // virtual void writeBlock(lodestone::level::block::state::BlockState *b, uint8_t *arr) = 0;
     private:
-        gtl::flat_hash_map<const registry::NamespacedString *, data::AbstractBlockData*> mFromInternalConversionMap;
-        gtl::flat_hash_map<data::AbstractBlockData*, const registry::NamespacedString *, types::hash::BlockDataHash, types::hash::BlockDataComparator> mToInternalConversionMap;
-        gtl::flat_hash_map<const void *, data::AbstractBlockData*> mDefaultDataMap;
+        gtl::flat_hash_map<const common::registry::NamespacedString *, data::AbstractBlockData *>
+        mFromInternalConversionMap;
+        gtl::flat_hash_map<data::AbstractBlockData *, const common::registry::NamespacedString *,
+            types::hash::BlockDataHash, types::hash::BlockDataComparator> mToInternalConversionMap;
+        gtl::flat_hash_map<const void *, data::AbstractBlockData *> mDefaultDataMap;
     };
 }
 

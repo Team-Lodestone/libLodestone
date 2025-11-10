@@ -25,6 +25,7 @@ namespace lodestone::level::chunk {
          * @returns @c true if a chunk at given coords exist
          */
         bool hasChunk(const types::Vec2i &coords) const;
+
         /** Returns true if chunk at coords exist
          *
          * @param x The X coordinate you want to check for a chunk
@@ -42,6 +43,7 @@ namespace lodestone::level::chunk {
          * @returns The new chunk
          */
         Chunk *createChunk(const types::Vec2i &coords, int height = 256);
+
         /** Creates a chunk at the given coordinates with the given height
          *
          * @param x The x coordinate you want to create a chunk at
@@ -56,49 +58,56 @@ namespace lodestone::level::chunk {
         void addChunk(std::unique_ptr<Chunk> chunk);
 
         void addChunk(const types::Vec2i &coords, std::unique_ptr<Chunk> chunk);
+
         void addChunk(const int x, const int z, std::unique_ptr<Chunk> chunk) {
             addChunk({x, z}, std::move(chunk));
         }
 
         Chunk *getChunk(const types::Vec2i &coords);
+
         Chunk *getChunk(const int x, const int z) {
             return getChunk({x, z});
         };
 
         Chunk *getChunkCreate(const types::Vec2i &coords, int height = 256);
+
         Chunk *getChunkCreate(const int x, const int z, int height = 256) {
             return getChunkCreate({x, z});
         };
 
         const Chunk *getChunk(const types::Vec2i &coords) const;
+
         const Chunk *getChunk(const int x, const int z) const {
             return getChunk({x, z});
         };
 
         std::unique_ptr<Chunk> detachChunk(const types::Vec2i &coords, bool shouldInvalidateCoords = true);
+
         std::unique_ptr<Chunk> detachChunk(const int x, const int z, const bool shouldInvalidateCoords = true) {
             return detachChunk({x, z}, shouldInvalidateCoords);
         };
 
         void removeChunk(const types::Vec2i &coords);
+
         void removeChunk(const int x, const int z) {
             removeChunk({x, z});
         };
 
         void merge(ChunkContainer &rhs);
 
-        gtl::flat_hash_map<types::Vec2i, std::unique_ptr<Chunk>> &getChunks() {
+        gtl::flat_hash_map<types::Vec2i, std::unique_ptr<Chunk> > &getChunks() {
             return mChunks;
         }
 
-        const gtl::flat_hash_map<types::Vec2i, std::unique_ptr<Chunk>> &getChunks() const {
+        const gtl::flat_hash_map<types::Vec2i, std::unique_ptr<Chunk> > &getChunks() const {
             return mChunks;
         }
 
         // todo replace with inbuilt bounds that gets updated
         types::Bounds3i getChunkBounds() const;
+
     protected:
-        gtl::flat_hash_map<types::Vec2i, std::unique_ptr<Chunk>> mChunks;
+        gtl::flat_hash_map<types::Vec2i, std::unique_ptr<Chunk> > mChunks;
     };
 }
 

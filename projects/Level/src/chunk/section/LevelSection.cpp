@@ -1,23 +1,23 @@
 //
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
-#include "chunk/section/LevelSection.h"
-#include "Indexing.h"
+#include "Lodestone.Level/chunk/section/LevelSection.h"
+#include <Lodestone.Common/Indexing.h>
 
 namespace lodestone::level::chunk::section {
-    const uint8_t * LevelSection::getBlockLight() const {
+    const uint8_t *LevelSection::getBlockLight() const {
         return mBlockLight;
     }
 
-    const uint8_t * LevelSection::getSkyLight() const {
+    const uint8_t *LevelSection::getSkyLight() const {
         return mBlockLight;
     }
 
-    block::state::BlockState * LevelSection::getBlock(const int x, const int y, const int z) const {
+    block::state::BlockState *LevelSection::getBlock(const int x, const int y, const int z) const {
         return &mBlocks[INDEX_YZX(x, y, z, constants::CHUNK_WIDTH, constants::CHUNK_DEPTH)];
     }
 
-    const block::state::BlockState * LevelSection::getBlocks() {
+    const block::state::BlockState *LevelSection::getBlocks() {
         return mBlocks;
     }
 

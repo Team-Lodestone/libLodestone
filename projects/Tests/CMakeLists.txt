@@ -12,6 +12,15 @@ set(FILES
         include/Lodestone.Tests/tests/MainTests.h
 )
 
+# NBT
+set(NBT_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+FetchContent_Declare(
+        nbt++
+        GIT_REPOSITORY https://github.com/Team-Lodestone/libnbtplusplus.git
+        GIT_TAG master
+)
+FetchContent_MakeAvailable(nbt++)
+
 # if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 #     add_compile_options(
 #             "-D_GLIBCXX_DEBUG"
@@ -22,12 +31,12 @@ set(FILES
 add_executable(Lodestone.Tests ${FILES})
 target_include_directories(Lodestone.Tests
         PUBLIC
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         PRIVATE
-            ${CMAKE_CURRENT_SOURCE_DIR}/include/Lodestone.Tests
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/Lodestone.Tests
 )
 
-target_link_libraries(Lodestone.Tests PRIVATE Lodestone.Level)
+target_link_libraries(Lodestone.Tests PRIVATE Lodestone.Level nbt++)
 target_link_libraries(Lodestone.Tests PRIVATE Lodestone.Java)
 
 # Should we allow for exceptions to throw for debugging

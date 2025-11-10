@@ -3,7 +3,7 @@
 //
 #ifndef LODESTONE_MINEV1CHUNKIO_H
 #define LODESTONE_MINEV1CHUNKIO_H
-#include <Lodestone.Level/conversion/level/LevelIO.h>
+#include "Lodestone.Level/conversion/level/LevelIO.h"
 
 namespace lodestone::java::classic::minev1 {
     class MineV1LevelIO : public level::conversion::level::LevelIO {
@@ -12,9 +12,9 @@ namespace lodestone::java::classic::minev1 {
         static constexpr int HEIGHT = 64;
         static constexpr int DEPTH = 256;
 
-        level::Level * read(uint8_t *data, int version) const override;
+        level::Level *read(uint8_t *data, int version) const override;
 
-        uint8_t * write(level::Level *l, int version) const override;
+        uint8_t *write(level::Level *l, int version) const override;
 
         size_t getSize(level::Level *l, int version) const override;
 

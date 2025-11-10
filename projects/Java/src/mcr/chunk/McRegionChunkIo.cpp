@@ -1,21 +1,21 @@
 //
 // Created by DexrnZacAttack on 11/8/25 using zPc-i2.
 //
-#include "mcr/chunk/McRegionChunkIo.h"
+#include "Lodestone.Java/mcr/chunk/McRegionChunkIo.h"
 
 #include <iostream>
 
-#include "LodestoneJava.h"
-#include "tag_primitive.h"
-#include "tag_array.h"
-#include "io/stream_reader.h"
-#include "Lodestone.Common/io/DataBuffer.h"
-#include "Lodestone.Level/Indexing.h"
-#include "Lodestone.Level/conversion/block/data/NumericBlockData.h"
+#include "Lodestone.Java/LodestoneJava.h"
+#include <libnbt++/tag_primitive.h>
+#include <libnbt++/tag_array.h>
+#include <libnbt++/io/stream_reader.h>
+#include <Lodestone.Common/io/DataBuffer.h>
+#include <Lodestone.Common/Indexing.h>
+#include <Lodestone.Level/conversion/block/data/NumericBlockData.h>
 #include "Lodestone.Java/mcr/chunk/McRegionChunk.h"
 
 namespace lodestone::java::mcr::chunk {
-    level::chunk::Chunk * McRegionChunkIO::read(uint8_t *data, const size_t size, const int version) const {
+    level::chunk::Chunk *McRegionChunkIO::read(uint8_t *data, const size_t size, const int version) const {
         std::istream buf(new common::io::DataBuffer(data, size));
         nbt::io::stream_reader streamReader = nbt::io::stream_reader(buf, endian::big);
 
@@ -24,7 +24,7 @@ namespace lodestone::java::mcr::chunk {
         return read(level, version);
     }
 
-    level::chunk::Chunk * McRegionChunkIO::read(nbt::tag_compound &chunk, const int version) const {
+    level::chunk::Chunk *McRegionChunkIO::read(nbt::tag_compound &chunk, const int version) const {
         int32_t x = chunk["xPos"].get().as<nbt::tag_int>().get();
         int32_t z = chunk["zPos"].get().as<nbt::tag_int>().get();
         const int64_t lastUpdate = chunk["LastUpdate"].get().as<nbt::tag_long>().get();
@@ -34,7 +34,8 @@ namespace lodestone::java::mcr::chunk {
 
         McRegionChunk *c = new McRegionChunk({x, z}, lastUpdate, isPopulated);
 
-        const std::unique_ptr<level::conversion::block::version::BlockIO> io = LodestoneJava::getInstance()->io.getIo(version);
+        const std::unique_ptr<level::conversion::block::version::BlockIO> io = LodestoneJava::getInstance()->io.
+                getIo(version);
 
         for (int cx = 0; cx < 16; cx++) {
             for (int cz = 0; cz < 16; cz++) {
@@ -58,7 +59,7 @@ namespace lodestone::java::mcr::chunk {
         return c;
     }
 
-    uint8_t * McRegionChunkIO::write(level::chunk::Chunk *c, int version) const {
+    uint8_t *McRegionChunkIO::write(level::chunk::Chunk *c, int version) const {
     }
 
     nbt::tag_compound McRegionChunkIO::write(level::chunk::Chunk &c) const {

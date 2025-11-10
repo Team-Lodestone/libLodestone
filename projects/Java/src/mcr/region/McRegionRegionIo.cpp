@@ -2,27 +2,29 @@
 // Created by DexrnZacAttack on 11/9/25 using zPc-i2.
 //
 
-#include "mcr/region/McRegionRegionIo.h"
+#include "Lodestone.Java/mcr/region/McRegionRegionIo.h"
 
 #include <format>
 #include <iostream>
 #include <BinaryIO/BinaryIO.h>
 
-#include "Identifiers.h"
+#include "Lodestone.Java/Identifiers.h"
 #include "Lodestone.Java/mcr/chunk/McRegionChunk.h"
 #include "Lodestone.Java/mcr/chunk/McRegionChunkIo.h"
 #include "Lodestone.Java/mcr/RegionChunkIndice.h"
 #include "Lodestone.Java/mcr/RegionCompression.h"
-#include "io/zlib_streambuf.h"
-#include "Lodestone.Level/conversion/chunk/ChunkIO.h"
-#include "Lodestone.Level/conversion/chunk/ChunkIORegistry.h"
-#include "Lodestone.Level/region/Region.h"
+#include <libnbt++/io/zlib_streambuf.h>
+#include <Lodestone.Level/conversion/chunk/ChunkIO.h>
+#include <Lodestone.Level/conversion/chunk/ChunkIORegistry.h>
+#include <Lodestone.Level/region/Region.h>
 
 namespace lodestone::java::mcr::region {
-    lodestone::level::region::Region * McRegionRegionIO::read(uint8_t *data, size_t size, const int version, const level::types::Vec2i &coords) {
+    lodestone::level::region::Region *McRegionRegionIO::read(uint8_t *data, size_t size, const int version,
+                                                             const level::types::Vec2i &coords) {
         bio::BinaryIO io(data);
 
-        const chunk::McRegionChunkIO *chunkIo = dynamic_cast<const chunk::McRegionChunkIO*>(level::conversion::chunk::ChunkIORegistry::sInstance.getChunkIO(identifiers::MCREGION));
+        const chunk::McRegionChunkIO *chunkIo = dynamic_cast<const chunk::McRegionChunkIO *>(
+            level::conversion::chunk::ChunkIORegistry::sInstance.getChunkIO(identifiers::MCREGION));
 
         lodestone::level::region::Region *region = new lodestone::level::region::Region(coords);
 
@@ -40,7 +42,7 @@ namespace lodestone::java::mcr::region {
 
         io.seek((CHUNK_COUNT * 4) * 2);
 
-        for (const auto loc : locations) {
+        for (const auto loc: locations) {
             io.seek(loc.offset * SECTOR_SIZE);
 
             uint32_t len = io.readBE<uint32_t>();
@@ -52,7 +54,7 @@ namespace lodestone::java::mcr::region {
             switch (compression) {
                 case Zlib: {
                     z_stream s{};
-                    s.next_in = (Bytef*)io.getDataRelative();
+                    s.next_in = (Bytef *) io.getDataRelative();
                     s.avail_in = (chunkSize) - 5;
 
                     if (inflateInit(&s) != Z_OK) {
@@ -85,7 +87,8 @@ namespace lodestone::java::mcr::region {
                     if (fail) continue;
 
                     // now we process the chunk
-                    chunk::McRegionChunk *c = static_cast<chunk::McRegionChunk *>(chunkIo->read(decompressed.data(), decompressed.size(), version));
+                    chunk::McRegionChunk *c = static_cast<chunk::McRegionChunk *>(chunkIo->read(
+                        decompressed.data(), decompressed.size(), version));
                     region->addChunk(std::unique_ptr<chunk::McRegionChunk>(c));
 
                     break;
@@ -99,7 +102,8 @@ namespace lodestone::java::mcr::region {
                     continue;
                 }
                 default:
-                    std::cerr << std::format("Unsupported compression type '{}'", static_cast<int>(compression)) << std::endl;
+                    std::cerr << std::format("Unsupported compression type '{}'", static_cast<int>(compression)) <<
+                            std::endl;
                     continue;
             }
         }
@@ -107,7 +111,8 @@ namespace lodestone::java::mcr::region {
         return region;
     }
 
-    uint8_t * McRegionRegionIO::write(lodestone::level::region::Region *c, int version, const level::types::Vec2i &coords) {
+    uint8_t *McRegionRegionIO::write(lodestone::level::region::Region *c, int version,
+                                     const level::types::Vec2i &coords) {
     }
 
     size_t McRegionRegionIO::getSize(lodestone::level::region::Region *c, int version) {

@@ -28,20 +28,22 @@ set(FILES
         include/Lodestone.Java/Identifiers.h
 )
 
-# if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-#     add_compile_options(
-#             "-D_GLIBCXX_DEBUG"
-#             "-D_LIBCPP_DEBUG"
-#     )
-# endif ()
+# NBT
+set(NBT_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+FetchContent_Declare(
+        nbt++
+        GIT_REPOSITORY https://github.com/Team-Lodestone/libnbtplusplus.git
+        GIT_TAG master
+)
+FetchContent_MakeAvailable(nbt++)
 
 add_library(Lodestone.Java SHARED ${FILES})
 target_include_directories(Lodestone.Java
         PUBLIC
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         PRIVATE
-            ${CMAKE_CURRENT_SOURCE_DIR}/include/Lodestone.Java
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/Lodestone.Java
 )
 
-target_link_libraries(Lodestone.Java PRIVATE Lodestone.Level)
+target_link_libraries(Lodestone.Java PRIVATE Lodestone.Level nbt++)
 #target_link_libraries(Lodestone.Java PRIVATE Lodestone.Common)

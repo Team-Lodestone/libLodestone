@@ -3,15 +3,15 @@
 //
 #include "Lodestone.Java/classic/minev2/MineV2WorldIo.h"
 
-#include "Identifiers.h"
-#include "Version.h"
-#include "../../../../../cmake-build-release/_deps/bio-src/include/BinaryIO/BinaryIO.h"
-#include "classic/minev2/MineV2LevelIO.h"
-#include "classic/minev2/MineV2World.h"
-#include "Lodestone.Level/conversion/level/LevelIORegistry.h"
+#include "Lodestone.Java/Identifiers.h"
+#include "Lodestone.Java/Version.h"
+#include <BinaryIO/BinaryIO.h>
+#include "Lodestone.Java/classic/minev2/MineV2LevelIO.h"
+#include "Lodestone.Java/classic/minev2/MineV2World.h"
+#include <Lodestone.Level/conversion/level/LevelIORegistry.h>
 
 namespace lodestone::java::classic::minev2 {
-    level::world::World * MineV2WorldIO::read(uint8_t *data, const int version) const {
+    level::world::World *MineV2WorldIO::read(uint8_t *data, const int version) const {
         bio::BinaryIO io(data);
 
         const uint32_t sig = io.readBE<uint32_t>();
@@ -30,7 +30,7 @@ namespace lodestone::java::classic::minev2 {
         return new MineV2World(std::move(unique), name, author);
     }
 
-    uint8_t * MineV2WorldIO::write(level::world::World *w, const int version) const {
+    uint8_t *MineV2WorldIO::write(level::world::World *w, const int version) const {
         bio::BinaryIO io(new uint8_t[getSize(w, version)]{});
 
         io.writeBE<uint32_t>(SIGNATURE);
@@ -52,17 +52,18 @@ namespace lodestone::java::classic::minev2 {
         }
 
         const MineV2LevelIO *lio = dynamic_cast<const MineV2LevelIO *>(getLevelIO(version));
-        lio->write(w->getDimension(level::world::World::Dimension::OVERWORLD), io.getDataRelative(), version); // todo: VERSION STUFF
+        lio->write(w->getDimension(level::world::World::Dimension::OVERWORLD), io.getDataRelative(), version);
+        // todo: VERSION STUFF
 
         return io.getData();
     }
 
     size_t MineV2WorldIO::getSize(level::world::World *w, int version) const {
         size_t s = sizeof(uint32_t) // signature
-        + sizeof(char)
-        + sizeof(uint16_t)
-        + w->getName().length()
-        + sizeof(uint16_t);
+                   + sizeof(char)
+                   + sizeof(uint16_t)
+                   + w->getName().length()
+                   + sizeof(uint16_t);
 
         if (MineV2World *mv2 = dynamic_cast<MineV2World *>(w))
             s += mv2->getAuthor().length();
@@ -77,7 +78,7 @@ namespace lodestone::java::classic::minev2 {
         return s;
     }
 
-    const lodestone::level::conversion::level::LevelIO * MineV2WorldIO::getLevelIO(int version) const {
+    const lodestone::level::conversion::level::LevelIO *MineV2WorldIO::getLevelIO(int version) const {
         return level::conversion::level::LevelIORegistry::sInstance.getLevelIO(identifiers::MINEV2);
     }
 }

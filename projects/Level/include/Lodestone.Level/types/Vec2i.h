@@ -8,14 +8,15 @@ namespace lodestone::level::types {
     struct Vec2i : public StringSerializable {
         int x, z;
 
-        constexpr Vec2i(const int x, const int z) : x(x), z(z) {}
+        constexpr Vec2i(const int x, const int z) : x(x), z(z) {
+        }
 
-        constexpr operator int*() { return &x; }
-        constexpr operator const int*() const { return &x; }
+        constexpr operator int *() { return &x; }
+        constexpr operator const int *() const { return &x; }
 
         constexpr bool operator==(const Vec2i &rhs) const {
             return x == rhs.x
-                && z == rhs.z;
+                   && z == rhs.z;
         }
 
         constexpr Vec2i operator+(const int v) const {
@@ -80,11 +81,11 @@ namespace lodestone::level::types {
     };
 }
 
-template <>
+template<>
 struct std::hash<lodestone::level::types::Vec2i> {
-    size_t operator()(const lodestone::level::types::Vec2i& v) const noexcept {
+    size_t operator()(const lodestone::level::types::Vec2i &v) const noexcept {
         return std::hash<int>()(v.x)
-            ^ (std::hash<int>()(v.z) << 1);
+               ^ (std::hash<int>()(v.z) << 1);
     }
 };
 

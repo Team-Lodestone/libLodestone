@@ -3,7 +3,7 @@
 //
 #ifndef LODESTONE_MAINTESTS_H
 #define LODESTONE_MAINTESTS_H
-#include "test/Test.h"
+#include "Lodestone.Tests/test/Test.h"
 
 namespace lodestone::tests::test {
     class MainTests : public Test {
@@ -11,6 +11,7 @@ namespace lodestone::tests::test {
         static void run();
 
         static void readMcrChunk();
+
         static void readMcrFile();
     };
 }

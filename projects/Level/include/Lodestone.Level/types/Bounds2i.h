@@ -7,7 +7,7 @@
 #include <format>
 #include <Lodestone.Common/Lodestone.h>
 
-#include "Lodestone.Common/String/StringSerializable.h"
+#include <Lodestone.Common/string/StringSerializable.h>
 #include "Lodestone.Level/types/Vec2i.h"
 
 namespace lodestone::level::types {
@@ -19,12 +19,15 @@ namespace lodestone::level::types {
             return std::format("Bounds2i[min={},max={}]", min.toString(), max.toString());
         };
 
-        constexpr Bounds2i(const Vec2i &min, const Vec2i &max) : min(min), max(max) {};
-        constexpr Bounds2i(const int x0, const int z0, const int x1, const int z1) : min({x0, z0}), max({x1, z1}) {};
+        constexpr Bounds2i(const Vec2i &min, const Vec2i &max) : min(min), max(max) {
+        };
+
+        constexpr Bounds2i(const int x0, const int z0, const int x1, const int z1) : min({x0, z0}), max({x1, z1}) {
+        };
 
         constexpr bool operator==(const Bounds2i &rhs) const {
             return min == rhs.min
-                && max == rhs.max;
+                   && max == rhs.max;
         }
 
         constexpr Bounds2i operator+(const int v) const {
@@ -98,10 +101,11 @@ namespace lodestone::level::types {
         }
 
         constexpr int getWidth() const noexcept { return empty() ? 0 : (max.x - min.x + 1); }
+
         constexpr int getLength() const noexcept {
             return empty()
-            ? 0
-            : (max.z - min.z + 1);
+                       ? 0
+                       : (max.z - min.z + 1);
         }
     };
 }

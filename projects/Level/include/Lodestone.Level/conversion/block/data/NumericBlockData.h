@@ -5,13 +5,14 @@
 #define LODESTONE_NUMERICBLOCKDATA_H
 #include <cstdint>
 
-#include "AbstractBlockData.h"
-#include "Lodestone.Level/registry/NamespacedString.h"
+#include "Lodestone.Level/conversion/block/data/AbstractBlockData.h"
+#include <Lodestone.Common/registry/NamespacedString.h>
 
 namespace lodestone::level::conversion::block::data {
     class NumericBlockData final : public AbstractBlockData {
     public:
-        constexpr NumericBlockData(const uint8_t id, const uint8_t data) : mId(id), mData(data) {}
+        constexpr NumericBlockData(const uint8_t id, const uint8_t data) : mId(id), mData(data) {
+        }
 
         constexpr uint8_t getId() const {
             return this->mId;
@@ -22,12 +23,15 @@ namespace lodestone::level::conversion::block::data {
         };
 
         const void *getIdPtr() const override;
+
         const void *getDataPtr() const override;
 
         const std::type_info &getIdType() const override;
+
         const std::type_info &getDataType() const override;
 
-        const registry::NamespacedString *getTypeName() const override;
+        const lodestone::common::registry::NamespacedString *getTypeName() const override;
+
         const std::type_info &getType() const override;
 
         size_t hash() const override;

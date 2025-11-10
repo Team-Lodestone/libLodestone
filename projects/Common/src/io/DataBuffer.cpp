@@ -1,10 +1,10 @@
 //
 // Created by DexrnZacAttack on 11/8/25 using zPc-i2.
 //
-#include "DataBuffer.h"
+#include "Lodestone.Common/io/DataBuffer.h"
 
 namespace lodestone::common::io {
-    DataBuffer::DataBuffer(uint8_t *data, size_t size) {
+    DataBuffer::DataBuffer(uint8_t *data, const size_t size) {
         setg(reinterpret_cast<char *>(data), reinterpret_cast<char *>(data), reinterpret_cast<char *>(data + size));
     }
 }

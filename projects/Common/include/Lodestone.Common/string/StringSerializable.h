@@ -9,6 +9,7 @@
 class StringSerializable {
 public:
     constexpr StringSerializable() = default;
+
     constexpr virtual ~StringSerializable() = default;
 
     constexpr operator std::string() const {
@@ -17,7 +18,7 @@ public:
 
     constexpr virtual std::string toString() const = 0;
 
-    constexpr friend std::ostream& operator<<(std::ostream& os, const StringSerializable& s) {
+    constexpr friend std::ostream &operator<<(std::ostream &os, const StringSerializable &s) {
         os << s.toString();
         return os;
     };

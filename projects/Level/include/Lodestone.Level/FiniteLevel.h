@@ -3,7 +3,7 @@
 //
 #ifndef LODESTONE_FINITELEVEL_H
 #define LODESTONE_FINITELEVEL_H
-#include "Level.h"
+#include "Lodestone.Level/Level.h"
 #include "Lodestone.Level/types/Bounds2i.h"
 
 namespace lodestone::level {
@@ -15,6 +15,7 @@ namespace lodestone::level {
         bool isChunkInBounds(const types::Vec2i &coords) override;
 
         const types::Bounds2i &getBounds() const;
+
     protected:
         // todo: 3d finite???
         types::Bounds2i mBounds;

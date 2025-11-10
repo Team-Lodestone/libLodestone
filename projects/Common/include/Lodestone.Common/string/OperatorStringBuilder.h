@@ -18,7 +18,7 @@ public:
     };
 
     template<typename T>
-    constexpr OperatorStringBuilder *addField(const std::string &name, const T& v) {
+    constexpr OperatorStringBuilder *addField(const std::string &name, const T &v) {
         mStream << name << "=" << v << ",";
         return this;
     }
@@ -34,13 +34,13 @@ public:
         return mStream.str();
     };
 
-    #define ADD_FIELD(name) addField(#name, name)
+#define ADD_FIELD(name) addField(#name, name)
 
     // TODO: breaks on windows
     static constexpr const char *demangle(const char *name) {
 #if defined(__GNUC__) || defined(__clang__)
         int err = 0;
-        char* demangled = abi::__cxa_demangle(name, nullptr, nullptr, &err);
+        char *demangled = abi::__cxa_demangle(name, nullptr, nullptr, &err);
 
         const char *r = (!err) ? demangled : name;
         std::free(demangled);
@@ -55,6 +55,6 @@ public:
     }
 
 private:
-    const std::type_info& mType;
+    const std::type_info &mType;
     std::ostringstream mStream;
 };

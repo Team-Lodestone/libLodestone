@@ -12,18 +12,18 @@
 #include <Lodestone.Level/chunk/Chunk.h>
 #include <Lodestone.Level/chunk/LevelChunk.h>
 #include <Lodestone.Level/conversion/level/LevelIORegistry.h>
-#include <Lodestone.Level/Indexing.h>
+#include <Lodestone.Common/Indexing.h>
 #include <Lodestone.Level/conversion/block/BlockIO.h>
 
-#include "util.h"
-#include "BinaryIO/Exports.h"
-#include "Lodestone.Common/io/DataBuffer.h"
-#include "Lodestone.Java/Version.h"
-#include "Lodestone.Java/classic/minev2/MineV2World.h"
-#include "Lodestone.Level/conversion/block/data/ClassicBlockData.h"
-#include "Lodestone.Level/conversion/world/FileWorldIo.h"
-#include "Lodestone.Level/conversion/world/WorldIORegistry.h"
-#include "tests/MainTests.h"
+#include "Lodestone.Tests/util.h"
+#include <BinaryIO/Exports.h>
+#include <Lodestone.Common/io/DataBuffer.h>
+#include <Lodestone.Java/Version.h>
+#include <Lodestone.Java/classic/minev2/MineV2World.h>
+#include <Lodestone.Level/conversion/block/data/ClassicBlockData.h>
+#include <Lodestone.Level/conversion/world/FileWorldIo.h>
+#include <Lodestone.Level/conversion/world/WorldIORegistry.h>
+#include "Lodestone.Tests/tests/MainTests.h"
 //
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
@@ -31,19 +31,21 @@
 // http://www.paulbourke.net/dataformats/tga/ temp for writing map tga
 #pragma pack(push, 1)
 typedef struct {
-    char  idlength;
-    char  colourmaptype;
-    char  datatypecode;
+    char idlength;
+    char colourmaptype;
+    char datatypecode;
     short int colourmaporigin;
     short int colourmaplength;
-    char  colourmapdepth;
+    char colourmapdepth;
     short int x_origin;
     short int y_origin;
     const short width;
     const short height;
-    char  bitsperpixel;
-    char  imagedescriptor;
-} HEADER __attribute__((packed));
+    char bitsperpixel;
+    char imagedescriptor;
+}
+
+HEADER __attribute__((packed));
 #pragma pack(pop)
 
 // Minecraft-style map image generator made by a friend who does not wish to be named
@@ -64,7 +66,8 @@ uint8_t *generateMap(lodestone::level::Level *l) {
             float g = col.g;
             float b = col.b;
 
-            if (y > 0) { // this might break the top row of pixels, but it prevents us from going OOB until I fix
+            if (y > 0) {
+                // this might break the top row of pixels, but it prevents us from going OOB until I fix
                 const int16_t nh = l->getHeightAt(x, y - 1);
                 if (h < nh) {
                     r *= 0.75;
@@ -77,9 +80,9 @@ uint8_t *generateMap(lodestone::level::Level *l) {
                 }
             }
 
-            arr[(x+y*w)*3 + 2] = std::floor(r);
-            arr[(x+y*w)*3 + 1] = std::floor(g);
-            arr[(x+y*w)*3 + 0] = std::floor(b);
+            arr[(x + y * w) * 3 + 2] = std::floor(r);
+            arr[(x + y * w) * 3 + 1] = std::floor(g);
+            arr[(x + y * w) * 3 + 0] = std::floor(b);
             // arr[(x+y*w)*4 + 3] = 0xff;
         }
     }
@@ -96,7 +99,7 @@ int16_t *getHeightmap(lodestone::level::Level *l) {
 
     for (int y = 0; y < d; ++y) {
         for (int x = 0; x < w; ++x) {
-           arr[x+y*w] = l->getHeightAt(x, y);
+            arr[x + y * w] = l->getHeightAt(x, y);
         }
     }
 
@@ -117,7 +120,8 @@ uint8_t *generateMap(lodestone::level::chunk::Chunk *c) {
             float g = col.g;
             float b = col.b;
 
-            if (y > 0) { // this might break the top row of pixels, but it prevents us from going OOB until I fix
+            if (y > 0) {
+                // this might break the top row of pixels, but it prevents us from going OOB until I fix
                 const int16_t nh = c->getHeightAt(x, y - 1);
                 if (h < nh) {
                     r *= 0.75;
@@ -130,9 +134,9 @@ uint8_t *generateMap(lodestone::level::chunk::Chunk *c) {
                 }
             }
 
-            arr[(x+y*lodestone::constants::CHUNK_WIDTH)*3 + 2] = std::floor(r);
-            arr[(x+y*lodestone::constants::CHUNK_WIDTH)*3 + 1] = std::floor(g);
-            arr[(x+y*lodestone::constants::CHUNK_WIDTH)*3 + 0] = std::floor(b);
+            arr[(x + y * lodestone::constants::CHUNK_WIDTH) * 3 + 2] = std::floor(r);
+            arr[(x + y * lodestone::constants::CHUNK_WIDTH) * 3 + 1] = std::floor(g);
+            arr[(x + y * lodestone::constants::CHUNK_WIDTH) * 3 + 0] = std::floor(b);
             // arr[(x+y*lodestone::constants::CHUNK_WIDTH)*4 + 3] = 0xff;
         }
     }
@@ -163,8 +167,8 @@ void createMap(lodestone::level::Level *lvl) {
 
     // Oxygen... *bwoomp bwoomp* Oxygen...
     std::ofstream o2(std::format("heightmaps/bitmaps/level.tga"), std::ios::binary);
-    o2.write(reinterpret_cast<const char*>(&h), sizeof(HEADER));
-    o2.write(reinterpret_cast<const char*>(generateMap(lvl)), (w * d) * 3);
+    o2.write(reinterpret_cast<const char *>(&h), sizeof(HEADER));
+    o2.write(reinterpret_cast<const char *>(generateMap(lvl)), (w * d) * 3);
     o2.close();
 }
 
@@ -175,7 +179,7 @@ void createHeightmap(lodestone::level::Level *lvl) {
     const int d = max.z - min.z + 1;
 
     std::ofstream o3(std::format("heightmaps/level.out"), std::ios::binary);
-    o3.write(reinterpret_cast<const char*>(getHeightmap(lvl)), (w * d) * 2);
+    o3.write(reinterpret_cast<const char *>(getHeightmap(lvl)), (w * d) * 2);
     o3.close();
 }
 
@@ -196,28 +200,37 @@ void createMap(lodestone::level::types::Vec2i coords, lodestone::level::chunk::C
     };
 
     std::ofstream o3(std::format("heightmaps/bitmaps/{}.{}.tga", coords.x, coords.z), std::ios::binary);
-    o3.write(reinterpret_cast<const char*>(&h), sizeof(HEADER));
-    o3.write(reinterpret_cast<const char*>(generateMap(chunk)), (lodestone::constants::CHUNK_WIDTH * lodestone::constants::CHUNK_DEPTH) * 3);
+    o3.write(reinterpret_cast<const char *>(&h), sizeof(HEADER));
+    o3.write(reinterpret_cast<const char *>(generateMap(chunk)),
+             (lodestone::constants::CHUNK_WIDTH * lodestone::constants::CHUNK_DEPTH) * 3);
     o3.close();
 }
 
 void createHeightmap(lodestone::level::types::Vec2i coords, const lodestone::level::chunk::Chunk *chunk) {
     std::ofstream o(std::format("heightmaps/{}.{}.out", coords.x, coords.z), std::ios::binary);
-    o.write(reinterpret_cast<const char*>(chunk->getHeightmap()), (lodestone::constants::CHUNK_WIDTH * lodestone::constants::CHUNK_DEPTH) * 2);
+    o.write(reinterpret_cast<const char *>(chunk->getHeightmap()),
+            (lodestone::constants::CHUNK_WIDTH * lodestone::constants::CHUNK_DEPTH) * 2);
     o.close();
 }
 
 void generateWorld(lodestone::level::Level *l, const int w, const int h, const int d) {
-    std::unique_ptr<lodestone::level::conversion::block::version::BlockIO> io = lodestone::java::LodestoneJava::getInstance()->io.getIo(lodestone::java::caveGame);
+    std::unique_ptr<lodestone::level::conversion::block::version::BlockIO> io =
+            lodestone::java::LodestoneJava::getInstance()->io.getIo(lodestone::java::caveGame);
     for (int x = 0; x < w; x++) {
         for (int y = 0; y < h; y++) {
             for (int z = 0; z < d; z++) {
                 if (x == y && z == y
-                 && x == z && y == z
-                 && y == x && z == x) {
-                    l->setBlockCreate(new lodestone::level::block::state::BlockState(io->convertBlockToInternal(new lodestone::level::conversion::block::data::ClassicBlockData(x))), x, y, z, h);
+                    && x == z && y == z
+                    && y == x && z == x) {
+                    l->setBlockCreate(new lodestone::level::block::state::BlockState(
+                                          io->convertBlockToInternal(
+                                              new lodestone::level::conversion::block::data::ClassicBlockData(x))), x,
+                                      y, z, h);
                 } else {
-                    l->setBlockCreate(new lodestone::level::block::state::BlockState(io->convertBlockToInternal(new lodestone::level::conversion::block::data::ClassicBlockData(x +y +z))), x, y, z, h);
+                    l->setBlockCreate(new lodestone::level::block::state::BlockState(
+                                          io->convertBlockToInternal(
+                                              new lodestone::level::conversion::block::data::ClassicBlockData(
+                                                  x + y + z))), x, y, z, h);
                 }
             }
         }
@@ -230,8 +243,9 @@ int mainOld() {
 
     lodestone::java::LodestoneJava::init();
 
-    std::unique_ptr<lodestone::level::conversion::block::version::BlockIO> io = lodestone::java::LodestoneJava::getInstance()->io.getIo(lodestone::java::Version::rd20090515);
-    for (auto [fst, snd] : io->getFromInternalConversionMap()) {
+    std::unique_ptr<lodestone::level::conversion::block::version::BlockIO> io =
+            lodestone::java::LodestoneJava::getInstance()->io.getIo(lodestone::java::Version::rd20090515);
+    for (auto [fst, snd]: io->getFromInternalConversionMap()) {
         std::cout << fst << " -> " << static_cast<int>(*static_cast<const uint8_t *>(snd->getIdPtr())) << std::endl;
     }
 
@@ -292,10 +306,14 @@ int mainOld() {
     //     level->setBlockCreate(&b, 0, 0, z);
     // }
 
-    const lodestone::level::conversion::world::FileWorldIO *l2 = dynamic_cast<const lodestone::level::conversion::world::FileWorldIO*>(lodestone::level::conversion::world::WorldIORegistry::sInstance.getWorldIO({ "lodestone", "minev2" }));
+    const lodestone::level::conversion::world::FileWorldIO *l2 = dynamic_cast<const
+        lodestone::level::conversion::world::FileWorldIO *>(
+        lodestone::level::conversion::world::WorldIORegistry::sInstance.getWorldIO({"lodestone", "minev2"}));
     std::ofstream o("minev2.mine.out", std::ios::binary);
-    lodestone::java::classic::minev2::MineV2World *w = new lodestone::java::classic::minev2::MineV2World(std::unique_ptr<lodestone::level::Level>(level), "New World", "h");
-    o.write(reinterpret_cast<const char*>(l2->write(w, lodestone::java::caveGame)), l2->getSize(w, lodestone::java::caveGame));
+    lodestone::java::classic::minev2::MineV2World *w = new lodestone::java::classic::minev2::MineV2World(
+        std::unique_ptr<lodestone::level::Level>(level), "New World", "h");
+    o.write(reinterpret_cast<const char *>(l2->write(w, lodestone::java::caveGame)),
+            l2->getSize(w, lodestone::java::caveGame));
     o.close();
 
     std::filesystem::create_directories("heightmaps/bitmaps");
@@ -303,7 +321,7 @@ int mainOld() {
     createHeightmap(level);
     createMap(level);
 
-    for (auto &[coords, chunk] : level->getChunks()) {
+    for (auto &[coords, chunk]: level->getChunks()) {
         createHeightmap(coords, chunk.get());
         createMap(coords, chunk.get());
     }

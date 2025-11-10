@@ -14,11 +14,11 @@ namespace lodestone::level::chunk::section {
 
         SectionType getType() override;
 
-        const block::state::BlockState * getBlocks() override;
+        const block::state::BlockState *getBlocks() override;
 
-        const uint8_t * getBlockLight() const override;
+        const uint8_t *getBlockLight() const override;
 
-        const uint8_t * getSkyLight() const override;
+        const uint8_t *getSkyLight() const override;
 
         block::state::BlockState *getBlock(const int x, const int y, const int z) const override;
 

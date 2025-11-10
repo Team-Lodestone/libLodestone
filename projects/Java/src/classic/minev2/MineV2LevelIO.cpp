@@ -1,20 +1,20 @@
 //
 // Created by DexrnZacAttack on 10/16/25 using zPc-i2.
 //
-#include "classic/minev2/MineV2LevelIO.h"
+#include "Lodestone.Java/classic/minev2/MineV2LevelIO.h"
 
 #include <ranges>
 #include <BinaryIO/BinaryIO.h>
 
-#include "LodestoneJava.h"
-#include "classic/minev1/MineV1LevelIO.h"
+#include "Lodestone.Java/LodestoneJava.h"
+#include "Lodestone.Java/classic/minev1/MineV1LevelIO.h"
 #include "Lodestone.Level/FiniteLevel.h"
-#include "Lodestone.Level/Indexing.h"
+#include <Lodestone.Common/Indexing.h>
 #include "Lodestone.Level/conversion/block/BlockIO.h"
 #include "Lodestone.Level/conversion/block/data/ClassicBlockData.h"
 
 namespace lodestone::java::classic::minev2 {
-    level::Level * MineV2LevelIO::read(uint8_t *data, int version) const {
+    level::Level *MineV2LevelIO::read(uint8_t *data, int version) const {
         bio::BinaryIO io(data);
 
         const int width = io.readBE<uint16_t>();
@@ -36,7 +36,7 @@ namespace lodestone::java::classic::minev2 {
                 for (int x = 0; x < width; x++) {
                     // level::block::state::BlockState b = ClassicBlockIO::sInstance->readBlock(rd);
                     // if (b.getBlock() != level::block::BlockRegistry::sDefaultBlock)
-                        // l->setBlockCreateRaw(b, x, y, z, height);
+                    // l->setBlockCreateRaw(b, x, y, z, height);
 
                     rd++;
                 }
@@ -49,9 +49,10 @@ namespace lodestone::java::classic::minev2 {
         return l;
     }
 
-     void MineV2LevelIO::write(level::Level *l, uint8_t *out, const int version) const {
+    void MineV2LevelIO::write(level::Level *l, uint8_t *out, const int version) const {
         bio::BinaryIO io(out);
-        const std::unique_ptr<level::conversion::block::version::BlockIO> bio = LodestoneJava::getInstance()->io.getIo(version);
+        const std::unique_ptr<level::conversion::block::version::BlockIO> bio = LodestoneJava::getInstance()->io.
+                getIo(version);
 
         auto [min, max] = l->getBlockBounds();
 
@@ -75,7 +76,8 @@ namespace lodestone::java::classic::minev2 {
                         if (!bl)
                             blocks[INDEX_YZX(x, y, z, w, d)] = 0;
                         else
-                            blocks[INDEX_YZX(x, y, z, w, d)] = bl->as<level::conversion::block::data::ClassicBlockData>()->getId();
+                            blocks[INDEX_YZX(x, y, z, w, d)] = bl->as<
+                                level::conversion::block::data::ClassicBlockData>()->getId();
                     }
 
                     // io.seekRelative(1); // TODO: I can make this operator++
@@ -84,7 +86,7 @@ namespace lodestone::java::classic::minev2 {
         }
     }
 
-    uint8_t * MineV2LevelIO::write(level::Level *l, const int version) const {
+    uint8_t *MineV2LevelIO::write(level::Level *l, const int version) const {
         uint8_t *d = new uint8_t[getSize(l, version)]{};
         write(l, d, version);
 

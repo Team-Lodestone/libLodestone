@@ -13,14 +13,18 @@ namespace lodestone::level::conversion::region {
     class LODESTONE_API RegionIORegistry {
     protected:
         RegionIORegistry() = default;
+
     public:
         static RegionIORegistry sInstance;
 
-        void registerRegionIO(const registry::NamespacedString &id, std::unique_ptr<const RegionIO> io);
+        void registerRegionIO(const lodestone::common::registry::NamespacedString &id,
+                              std::unique_ptr<const RegionIO> io);
 
-        const RegionIO *getRegionIO(const registry::NamespacedString &id) const;
+        const RegionIO *getRegionIO(const lodestone::common::registry::NamespacedString &id) const;
+
     private:
-        gtl::flat_hash_map<registry::NamespacedString, std::unique_ptr<const RegionIO>, NamespacedStringHasher, NamespacedStringComparator> mRegisteredRegionIOs = {};
+        gtl::flat_hash_map<lodestone::common::registry::NamespacedString, std::unique_ptr<const RegionIO>,
+            NamespacedStringHasher, NamespacedStringComparator> mRegisteredRegionIOs = {};
     };
 }
 

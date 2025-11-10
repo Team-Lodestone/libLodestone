@@ -12,6 +12,7 @@ namespace lodestone::level::region {
         static constexpr types::Vec2i MAX_BOUNDS = {32, 32};
 
         explicit Region(const types::Vec2i &coords);
+
     private:
         types::Vec2i mCoords;
     };

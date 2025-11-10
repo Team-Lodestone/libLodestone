@@ -16,12 +16,16 @@ namespace lodestone::level::types {
             return std::format("Bounds3i[min={},max={}]", min.toString(), max.toString());
         };
 
-        constexpr Bounds3i(const Vec3i &min, const Vec3i &max) : min(min), max(max) {};
-        constexpr Bounds3i(const int x0, const int y0, const int z0, const int x1, const int y1, const int z1) : min({x0, y0, z0}), max({x1, y1, z1}) {};
+        constexpr Bounds3i(const Vec3i &min, const Vec3i &max) : min(min), max(max) {
+        };
+
+        constexpr Bounds3i(const int x0, const int y0, const int z0, const int x1, const int y1,
+                           const int z1) : min({x0, y0, z0}), max({x1, y1, z1}) {
+        };
 
         constexpr bool operator==(const Bounds3i &rhs) const {
             return min == rhs.min
-                && max == rhs.max;
+                   && max == rhs.max;
         }
 
         constexpr Bounds3i operator+(const int v) const {
@@ -82,7 +86,8 @@ namespace lodestone::level::types {
         }
 
         constexpr bool contains(const Vec3i &vec) const noexcept {
-            return vec.x >= min.x && vec.x <= max.x && vec.y >= min.y && vec.y <= max.y && vec.z >= min.z && vec.z <= max.z;
+            return vec.x >= min.x && vec.x <= max.x && vec.y >= min.y && vec.y <= max.y && vec.z >= min.z && vec.z <=
+                   max.z;
         }
 
         constexpr bool empty() const noexcept {
@@ -92,7 +97,8 @@ namespace lodestone::level::types {
         constexpr bool intersects(const Bounds3i &rhs) const noexcept {
             if (empty() || rhs.empty()) return false;
 
-            return !(rhs.max.x < min.x || rhs.min.x > max.x || rhs.max.y < min.y || rhs.min.y > max.y || rhs.max.z < min.z || rhs.min.z > max.z);
+            return !(rhs.max.x < min.x || rhs.min.x > max.x || rhs.max.y < min.y || rhs.min.y > max.y || rhs.max.z < min
+                     .z || rhs.min.z > max.z);
         }
 
         constexpr int getWidth() const noexcept { return empty() ? 0 : (max.x - min.x + 1); }

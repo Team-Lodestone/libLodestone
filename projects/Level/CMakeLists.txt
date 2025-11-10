@@ -13,7 +13,6 @@ set(FILES
         src/chunk/Chunk.cpp
         include/Lodestone.Level/chunk/Chunk.h
         include/Lodestone.Level/types/Vec3i.h
-        include/Lodestone.Level/Indexing.h
         src/block/Block.cpp
 
         include/Lodestone.Level/block/Block.h
@@ -58,7 +57,6 @@ set(FILES
         include/Lodestone.Level/types/Bounds3i.h
         include/Lodestone.Level/types/Bounds2i.h
         include/Lodestone.Level/block/Blocks.h
-        include/Lodestone.Level/registry/NamespacedString.h
         include/Lodestone.Level/conversion/block/VersionedBlockIO.h
         include/Lodestone.Level/conversion/block/BlockIO.h
         src/conversion/block/BlockIO.cpp
@@ -92,13 +90,13 @@ set(FILES
 add_library(Lodestone.Level SHARED ${FILES})
 target_include_directories(Lodestone.Level
         PUBLIC
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         PRIVATE
-            ${CMAKE_CURRENT_SOURCE_DIR}/include/Lodestone.Level
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/Lodestone.Level
 )
 
 target_link_libraries(Lodestone.Level PUBLIC Lodestone.Common)
 
 if (USE_FALLBACK_BLOCK)
     target_compile_definitions(Lodestone.Level PRIVATE USE_FALLBACK_BLOCK)
-endif()
+endif ()

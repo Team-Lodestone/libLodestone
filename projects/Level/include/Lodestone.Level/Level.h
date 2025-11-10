@@ -21,18 +21,25 @@ namespace lodestone::level {
         bool isChunkInBounds(const types::Vec2i &coords) override;
 
         block::state::BlockState *getBlock(size_t x, size_t y, size_t z);
+
         void setBlock(block::state::BlockState &blk, size_t x, size_t y, size_t z);
+
         void setBlockRaw(block::state::BlockState &blk, size_t x, size_t y, size_t z);
 
         void setBlockCreate(block::state::BlockState *blk, size_t x, size_t y, size_t z, int height = 256);
+
         void setBlockCreateRaw(block::state::BlockState &blk, size_t x, size_t y, size_t z, int height = 256);
 
         int16_t getHeightAt(int x, int z) const;
+
         void setHeightAt(int16_t h, int x, int z);
+
         void setHeightAtCreate(int16_t h, size_t x, size_t z, int height = 256);
 
         const block::state::BlockState *getBlockmapBlockAt(int x, int z) const;
+
         void setBlockmapBlockAt(block::state::BlockState *b, int x, int z);
+
         void setBlockmapBlockAtCreate(block::state::BlockState *b, int x, int z, int height = 256);
 
         size_t getBlockCount() const;
