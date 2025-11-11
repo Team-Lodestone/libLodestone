@@ -65,17 +65,20 @@ namespace lodestone::level::world {
         void removePlayer(const std::string &id);
         bool hasPlayer(const std::string &id) const;
 
-        void movePlayerToLevel(player::Player *player, const common::registry::NamespacedString &level);
+        void movePlayerToLevel(std::unique_ptr<player::Player> player, const common::registry::NamespacedString &level);
         void movePlayerToLevel(const std::string &id, const common::registry::NamespacedString &level) {
-            player::Player *player = getPlayer(id);
-            if (!player) throw std::runtime_error(std::format("Attempted to move nonexistent player '{}' to level '{}'", id, level));
+            const auto it = mPlayers.find(id);
+            if (it == mPlayers.end()) throw std::runtime_error(std::format("Attempted to move nonexistent player '{}' to level '{}'", id, level));
 
-            movePlayerToLevel(player, level);
+            movePlayerToLevel(std::move(it->second), level);
         }
 
-        void movePlayerToWorld(player::Player *player, World *world);
+        void movePlayerToWorld(std::unique_ptr<player::Player> player, World *world);
         void movePlayerToWorld(const std::string &id, World *world) {
+            const auto it = mPlayers.find(id);
+            if (it == mPlayers.end()) throw std::runtime_error(std::format("Attempted to move nonexistent player '{}' to world '{}'", id, world->toString()));
 
+            movePlayerToWorld(std::move(it->second), world);
         }
 
 

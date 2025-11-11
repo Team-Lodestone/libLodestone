@@ -51,24 +51,45 @@ namespace lodestone::level::world {
         return p; // I think this should work??
     }
 
-    void World::movePlayerToLevel(player::Player *player, const common::registry::NamespacedString &level) {
+    player::Player * World::getPlayer(const std::string &id) const {
+        if (const auto it = mPlayers.find(id); it != mPlayers.end()) return it->second.get();
+
+        return nullptr;
+    }
+
+    void World::removePlayer(const std::string &id) {
+        const auto it = mPlayers.find(id);
+        if (it == mPlayers.end()) return;
+
+        it->second->mPosition.reset();
+        it->second->mWorld = nullptr;
+        it->second->mCurrentLevel = nullptr;
+
+        mPlayers.erase(it);
+    }
+
+    bool World::hasPlayer(const std::string &id) const {
+        return mPlayers.contains(id);
+    }
+
+    void World::movePlayerToLevel(std::unique_ptr<player::Player> player, const common::registry::NamespacedString &level) {
         Level *lvl = getLevel(level);
         if (!lvl) throw std::runtime_error(std::format("Tried to move player '{}' to nonexistent level '{}'", player->getId(), level));
 
-        player::Player *p = player;
+        player::Player *p = player.get();
         if (player->mWorld != this) {
             if (player->mWorld) player->mWorld->removePlayer(player->getId());
-            p = addPlayer(std::unique_ptr<player::Player>(player));
+            p = addPlayer(std::move(player));
         }
 
         p->setLevel(lvl);
     }
 
-    void World::movePlayerToWorld(player::Player *player, World *world) {
-        if (player->mWorld != this) return;
+    void World::movePlayerToWorld(std::unique_ptr<player::Player> player, World *world) {
+        if (player->mWorld == this) return;
 
         removePlayer(player->getId());
-        world->addPlayer(std::unique_ptr<player::Player>(player));
+        world->addPlayer(std::move(player));
     }
 
     const gtl::flat_hash_map<std::string, std::unique_ptr<player::Player>> &World::getPlayers() const {
