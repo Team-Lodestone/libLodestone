@@ -20,7 +20,7 @@
 
 namespace lodestone::java::mcr::region {
     lodestone::level::region::Region *McRegionRegionIO::read(uint8_t *data, size_t size, const int version,
-                                                             const level::types::Vec2i &coords) {
+                                                             const level::types::Vec2 &coords) {
         bio::BinaryIO io(data);
 
         const chunk::McRegionChunkIO *chunkIo = dynamic_cast<const chunk::McRegionChunkIO *>(
@@ -112,7 +112,7 @@ namespace lodestone::java::mcr::region {
     }
 
     uint8_t *McRegionRegionIO::write(lodestone::level::region::Region *c, int version,
-                                     const level::types::Vec2i &coords) {
+                                     const level::types::Vec2 &coords) {
     }
 
     size_t McRegionRegionIO::getSize(lodestone::level::region::Region *c, int version) {

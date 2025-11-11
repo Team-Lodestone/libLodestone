@@ -5,7 +5,7 @@
 #define LODESTONE_REGIONIO_H
 #include "Lodestone.Level/region/Region.h"
 #include <Lodestone.Common/Defines.h>
-#include "Lodestone.Level/types/Vec2i.h"
+#include "Lodestone.Level/types/Vec2.h"
 
 namespace lodestone::level::conversion::region {
     class LODESTONE_API RegionIO {

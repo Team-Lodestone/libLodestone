@@ -122,4 +122,16 @@ namespace lodestone::level {
 
         return {minX, minY, minZ, maxX, maxY, maxZ};
     }
+
+    world::World * Level::getWorld() const {
+        return mWorld;
+    }
+
+    bool Level::isInWorld() const {
+        return getWorld();
+    }
+
+    void Level::setWorld(world::World *world) {
+        this->mWorld = world;
+    }
 }

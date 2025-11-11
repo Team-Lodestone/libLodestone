@@ -183,7 +183,7 @@ void createHeightmap(lodestone::level::Level *lvl) {
     o3.close();
 }
 
-void createMap(lodestone::level::types::Vec2i coords, lodestone::level::chunk::Chunk *chunk) {
+void createMap(lodestone::level::types::Vec2 coords, lodestone::level::chunk::Chunk *chunk) {
     const HEADER h = {
         0,
         0,
@@ -206,7 +206,7 @@ void createMap(lodestone::level::types::Vec2i coords, lodestone::level::chunk::C
     o3.close();
 }
 
-void createHeightmap(lodestone::level::types::Vec2i coords, const lodestone::level::chunk::Chunk *chunk) {
+void createHeightmap(lodestone::level::types::Vec2 coords, const lodestone::level::chunk::Chunk *chunk) {
     std::ofstream o(std::format("heightmaps/{}.{}.out", coords.x, coords.z), std::ios::binary);
     o.write(reinterpret_cast<const char *>(chunk->getHeightmap()),
             (lodestone::constants::CHUNK_WIDTH * lodestone::constants::CHUNK_DEPTH) * 2);
@@ -215,7 +215,7 @@ void createHeightmap(lodestone::level::types::Vec2i coords, const lodestone::lev
 
 void generateWorld(lodestone::level::Level *l, const int w, const int h, const int d) {
     std::unique_ptr<lodestone::level::conversion::block::version::BlockIO> io =
-            lodestone::java::LodestoneJava::getInstance()->io.getIo(lodestone::java::caveGame);
+            lodestone::java::LodestoneJava::getInstance()->io.getIo(lodestone::java::rd131655);
     for (int x = 0; x < w; x++) {
         for (int y = 0; y < h; y++) {
             for (int z = 0; z < d; z++) {
@@ -312,8 +312,8 @@ int mainOld() {
     std::ofstream o("minev2.mine.out", std::ios::binary);
     lodestone::java::classic::minev2::MineV2World *w = new lodestone::java::classic::minev2::MineV2World(
         std::unique_ptr<lodestone::level::Level>(level), "New World", "h");
-    o.write(reinterpret_cast<const char *>(l2->write(w, lodestone::java::caveGame)),
-            l2->getSize(w, lodestone::java::caveGame));
+    o.write(reinterpret_cast<const char *>(l2->write(w, lodestone::java::rd131655)),
+            l2->getSize(w, lodestone::java::rd131655));
     o.close();
 
     std::filesystem::create_directories("heightmaps/bitmaps");

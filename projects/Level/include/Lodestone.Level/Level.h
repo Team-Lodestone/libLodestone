@@ -8,8 +8,12 @@
 
 #include "Lodestone.Level/chunk/ChunkContainer.h"
 #include "Lodestone.Level/chunk/Chunk.h"
-#include "Lodestone.Level/types/Vec2i.h"
-#include "Lodestone.Level/types/Bounds3i.h"
+#include "Lodestone.Level/types/Vec2.h"
+#include "Lodestone.Level/types/Bounds3.h"
+
+namespace lodestone::level::world {
+    class World;
+}
 
 namespace lodestone::level {
     /** A level, holds Chunks.
@@ -45,6 +49,12 @@ namespace lodestone::level {
         size_t getBlockCount() const;
 
         types::Bounds3i getBlockBounds() const;
+
+        world::World *getWorld() const;
+        bool isInWorld() const;
+        void setWorld(world::World *world);
+    private:
+        world::World *mWorld = nullptr;
     };
 }
 

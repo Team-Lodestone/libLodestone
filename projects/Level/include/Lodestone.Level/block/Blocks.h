@@ -40,10 +40,11 @@ namespace lodestone::level::block {
         ADD_BLOCK(ORANGE_WOOL, "orange_wool");
         ADD_BLOCK(YELLOW_WOOL, "yellow_wool");
         ADD_BLOCK(CHARTREUSE_WOOL, "chartreuse_wool");
-        ADD_BLOCK(GREEN_WOOL, "green_wool");
+        ADD_BLOCK(LIME_WOOL, "lime_wool");
         ADD_BLOCK(SPRING_GREEN_WOOL, "spring_green_wool");
         ADD_BLOCK(CYAN_WOOL, "cyan_wool");
         ADD_BLOCK(CAPRI_WOOL, "capri_wool");
+        ADD_BLOCK(LIGHT_BLUE_WOOL, "light_blue_wool");
         ADD_BLOCK(ULTRAMARINE_WOOL, "ultramarine_wool");
         ADD_BLOCK(PURPLE_WOOL, "purple_wool");
         ADD_BLOCK(VIOLET_WOOL, "violet_wool");

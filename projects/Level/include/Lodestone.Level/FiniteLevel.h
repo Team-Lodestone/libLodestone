@@ -4,7 +4,7 @@
 #ifndef LODESTONE_FINITELEVEL_H
 #define LODESTONE_FINITELEVEL_H
 #include "Lodestone.Level/Level.h"
-#include "Lodestone.Level/types/Bounds2i.h"
+#include "Lodestone.Level/types/Bounds2.h"
 
 namespace lodestone::level {
     class LODESTONE_API FiniteLevel : public Level {

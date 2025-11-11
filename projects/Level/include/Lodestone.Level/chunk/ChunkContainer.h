@@ -6,8 +6,8 @@
 #include <memory>
 
 #include "Lodestone.Level/chunk/Chunk.h"
-#include "Lodestone.Level/types/Bounds3i.h"
-#include "Lodestone.Level/types/Vec2i.h"
+#include "Lodestone.Level/types/Bounds3.h"
+#include "Lodestone.Level/types/Vec2.h"
 
 namespace lodestone::level::chunk {
     /** Holds chunks */

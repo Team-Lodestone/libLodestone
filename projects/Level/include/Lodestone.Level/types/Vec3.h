@@ -6,26 +6,27 @@
 #include <Lodestone.Common/Defines.h>
 
 namespace lodestone::level::types {
-    struct LODESTONE_API Vec3i : public StringSerializable {
-        int x, y, z;
+    template <typename T>
+    struct LODESTONE_API Vec3 final : public StringSerializable {
+        T x, y, z;
 
-        constexpr Vec3i(const int x, const int y, const int z) : x(x), y(y), z(z) {
+        constexpr Vec3(const T x, const T y, const T z) : x(x), y(y), z(z) {
         }
 
         constexpr std::string toString() const override {
-            return std::format("Vec3i[x={},y={},z={}]", x, y, z);
+            return std::format("Vec3[x={},y={},z={}]", x, y, z);
         };
 
-        constexpr operator int *() { return &x; }
-        constexpr operator const int *() const { return &x; }
+        constexpr operator T *() { return &x; }
+        constexpr operator const T *() const { return &x; }
 
-        constexpr bool operator==(const Vec3i &rhs) const {
+        constexpr bool operator==(const Vec3 &rhs) const {
             return x == rhs.x
                    && y == rhs.y
                    && z == rhs.z;
         }
 
-        constexpr Vec3i operator+(const int v) const {
+        constexpr Vec3 operator+(const T v) const {
             return {
                 x + v,
                 y + v,
@@ -33,7 +34,7 @@ namespace lodestone::level::types {
             };
         }
 
-        constexpr Vec3i operator-(const int v) const {
+        constexpr Vec3 operator-(const T v) const {
             return {
                 x - v,
                 y - v,
@@ -41,7 +42,7 @@ namespace lodestone::level::types {
             };
         }
 
-        constexpr Vec3i operator*(const int v) const {
+        constexpr Vec3 operator*(const T v) const {
             return {
                 x * v,
                 y * v,
@@ -49,7 +50,7 @@ namespace lodestone::level::types {
             };
         }
 
-        constexpr Vec3i operator/(const int v) const {
+        constexpr Vec3 operator/(const T v) const {
             return {
                 x / v,
                 y / v,
@@ -57,7 +58,7 @@ namespace lodestone::level::types {
             };
         }
 
-        constexpr Vec3i operator+(const Vec3i &rhs) const {
+        constexpr Vec3 operator+(const Vec3 &rhs) const {
             return {
                 x + rhs.x,
                 y + rhs.y,
@@ -65,7 +66,7 @@ namespace lodestone::level::types {
             };
         }
 
-        constexpr Vec3i operator-(const Vec3i &rhs) const {
+        constexpr Vec3 operator-(const Vec3 &rhs) const {
             return {
                 x - rhs.x,
                 x - rhs.y,
@@ -73,7 +74,7 @@ namespace lodestone::level::types {
             };
         }
 
-        constexpr Vec3i operator*(const Vec3i &rhs) const {
+        constexpr Vec3 operator*(const Vec3 &rhs) const {
             return {
                 x * rhs.x,
                 y * rhs.y,
@@ -81,7 +82,7 @@ namespace lodestone::level::types {
             };
         }
 
-        constexpr Vec3i operator/(const Vec3i &rhs) const {
+        constexpr Vec3 operator/(const Vec3 &rhs) const {
             return {
                 x / rhs.x,
                 y / rhs.y,
@@ -89,14 +90,18 @@ namespace lodestone::level::types {
             };
         }
     };
+
+    typedef Vec3<int> Vec3i;
+    typedef Vec3<float> Vec3f;
+    typedef Vec3<double> Vec3d;
 }
 
-template<>
-struct std::hash<lodestone::level::types::Vec3i> {
-    size_t operator()(const lodestone::level::types::Vec3i &v) const noexcept {
-        return std::hash<int>()(v.x)
-               ^ (std::hash<int>()(v.y) << 1)
-               ^ (std::hash<int>()(v.z) << 2);
+template<typename T>
+struct std::hash<lodestone::level::types::Vec3<T>> {
+    size_t operator()(const lodestone::level::types::Vec3<T> &v) const noexcept {
+        return std::hash<T>()(v.x)
+               ^ (std::hash<T>()(v.y) << 1)
+               ^ (std::hash<T>()(v.z) << 2);
     }
 };
 

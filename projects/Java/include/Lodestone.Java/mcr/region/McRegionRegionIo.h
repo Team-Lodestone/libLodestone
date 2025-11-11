@@ -8,7 +8,7 @@
 
 #include <Lodestone.Level/region/Region.h>
 #include <Lodestone.Level/conversion/region/RegionIO.h>
-#include <Lodestone.Level/types/Vec2i.h>
+#include <Lodestone.Level/types/Vec2.h>
 
 namespace lodestone::java::mcr::region {
     class McRegionRegionIO : public level::conversion::region::RegionIO {
@@ -18,10 +18,10 @@ namespace lodestone::java::mcr::region {
 
         /** Reads data into a new Region */
         lodestone::level::region::Region *read(uint8_t *data, size_t size, int version,
-                                               const level::types::Vec2i &coords) override;
+                                               const level::types::Vec2 &coords) override;
 
         /** Writes a region to data */
-        uint8_t *write(lodestone::level::region::Region *c, int version, const level::types::Vec2i &coords) override;
+        uint8_t *write(lodestone::level::region::Region *c, int version, const level::types::Vec2 &coords) override;
 
         size_t getSize(lodestone::level::region::Region *c, int version) override;
     };

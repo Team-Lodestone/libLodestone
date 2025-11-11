@@ -38,7 +38,7 @@ namespace lodestone::common::registry {
             return this->mName == rhs.mName && this->mNamespace == rhs.mNamespace;
         }
 
-        constexpr operator std::string() const noexcept {
+        constexpr operator std::string() const noexcept override {
             return getString();
         }
 

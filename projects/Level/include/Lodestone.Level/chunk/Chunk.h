@@ -9,7 +9,7 @@
 
 #include "Lodestone.Level/block/BlockRegistry.h"
 #include "Lodestone.Level/chunk/section/EmptySection.h"
-#include "Lodestone.Level/types/Vec2i.h"
+#include "Lodestone.Level/types/Vec2.h"
 
 namespace lodestone::level::chunk {
     class ChunkContainer;

@@ -12,7 +12,7 @@ public:
 
     constexpr virtual ~StringSerializable() = default;
 
-    constexpr operator std::string() const {
+    virtual constexpr operator std::string() const {
         return toString();
     }
 

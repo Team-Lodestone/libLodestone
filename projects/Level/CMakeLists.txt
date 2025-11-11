@@ -9,10 +9,10 @@ set(FILES
         include/Lodestone.Level/Level.h
         src/Level.cpp
 
-        include/Lodestone.Level/types/Vec2i.h
+        include/Lodestone.Level/types/Vec2.h
         src/chunk/Chunk.cpp
         include/Lodestone.Level/chunk/Chunk.h
-        include/Lodestone.Level/types/Vec3i.h
+        include/Lodestone.Level/types/Vec3.h
         src/block/Block.cpp
 
         include/Lodestone.Level/block/Block.h
@@ -54,8 +54,8 @@ set(FILES
         include/Lodestone.Level/conversion/region/RegionIO.h
         src/conversion/region/RegionIORegistry.cpp
         include/Lodestone.Level/conversion/region/RegionIORegistry.h
-        include/Lodestone.Level/types/Bounds3i.h
-        include/Lodestone.Level/types/Bounds2i.h
+        include/Lodestone.Level/types/Bounds3.h
+        include/Lodestone.Level/types/Bounds2.h
         include/Lodestone.Level/block/Blocks.h
         include/Lodestone.Level/conversion/block/VersionedBlockIO.h
         include/Lodestone.Level/conversion/block/BlockIO.h
@@ -78,6 +78,8 @@ set(FILES
         src/FiniteLevel.cpp
         include/Lodestone.Level/FiniteLevel.h
         include/Lodestone.Level/Identifiers.h
+        src/player/Player.cpp
+        include/Lodestone.Level/player/Player.h
 )
 
 # if (CMAKE_BUILD_TYPE STREQUAL "Debug")

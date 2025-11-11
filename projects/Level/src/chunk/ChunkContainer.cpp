@@ -6,7 +6,7 @@
 #include <iostream>
 
 #include "Lodestone.Level/chunk/LevelChunk.h"
-#include "Lodestone.Level/types/Bounds3i.h"
+#include "Lodestone.Level/types/Bounds3.h"
 
 namespace lodestone::level::chunk {
     bool ChunkContainer::hasChunk(const types::Vec2i &coords) const {

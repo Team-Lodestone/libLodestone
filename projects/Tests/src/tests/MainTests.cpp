@@ -43,18 +43,19 @@ namespace lodestone::tests::test {
     }
 
     void MainTests::readMcrFile() {
-        OPEN_FILE("r.0.0.mcr", c);
+        std::string name("r.-1.0_shadow");
+        OPEN_FILE(std::format("{}.mcr", name), c);
 
         java::mcr::region::McRegionRegionIO *io = (java::mcr::region::McRegionRegionIO *)
                 level::conversion::region::RegionIORegistry::sInstance.getRegionIO(java::identifiers::MCREGION);
-        level::region::Region *r = io->read(c.data(), c.size(), java::Version::b1_3, {0, 0});
+        level::region::Region *r = io->read(c.data(), c.size(), java::Version::b1_3, {-1, 0});
 
         const lodestone::level::conversion::world::FileWorldIO *l2 = dynamic_cast<const
             lodestone::level::conversion::world::FileWorldIO *>(
             lodestone::level::conversion::world::WorldIORegistry::sInstance.getWorldIO({"lodestone", "minev2"}));
         lodestone::java::classic::minev2::MineV2World *w = new lodestone::java::classic::minev2::MineV2World(
             std::unique_ptr<lodestone::level::Level>(r), "New World", "h");
-        WRITE_FILE("minev2.mine.out", reinterpret_cast<const char*>(l2->write(w, lodestone::java::c0_0_12a)),
-                   l2->getSize(w, lodestone::java::c0_0_12a));
+        WRITE_FILE(std::format("{}.dat", name), reinterpret_cast<const char*>(l2->write(w, lodestone::java::c0_28)),
+                   l2->getSize(w, lodestone::java::c0_28));
     }
 }

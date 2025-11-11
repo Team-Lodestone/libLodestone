@@ -4,7 +4,7 @@
 #include "Lodestone.Level/region/Region.h"
 
 #include "Lodestone.Level/FiniteLevel.h"
-#include "Lodestone.Level/types/Vec2i.h"
+#include "Lodestone.Level/types/Vec2.h"
 
 namespace lodestone::level::region {
     Region::Region(const types::Vec2i &coords) : level::FiniteLevel(

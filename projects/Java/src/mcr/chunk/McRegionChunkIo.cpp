@@ -28,11 +28,10 @@ namespace lodestone::java::mcr::chunk {
         int32_t x = chunk["xPos"].get().as<nbt::tag_int>().get();
         int32_t z = chunk["zPos"].get().as<nbt::tag_int>().get();
         const int64_t lastUpdate = chunk["LastUpdate"].get().as<nbt::tag_long>().get();
-        const bool isPopulated = chunk["TerrainPopulated"].get().as<nbt::tag_byte>().get();
         const int8_t *blocks = chunk["Blocks"].get().as<nbt::tag_byte_array>().get().data();
         const int8_t *data = chunk["Data"].get().as<nbt::tag_byte_array>().get().data();
 
-        McRegionChunk *c = new McRegionChunk({x, z}, lastUpdate, isPopulated);
+        McRegionChunk *c = new McRegionChunk({x, z}, lastUpdate);
 
         const std::unique_ptr<level::conversion::block::version::BlockIO> io = LodestoneJava::getInstance()->io.
                 getIo(version);

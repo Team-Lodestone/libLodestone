@@ -8,6 +8,7 @@
 #include <Lodestone.Common/string/StringSerializable.h>
 
 #include "Lodestone.Level/Level.h"
+#include "Lodestone.Level/player/Player.h"
 
 namespace lodestone::level::conversion::world {
     class WorldIO;
@@ -28,22 +29,21 @@ namespace lodestone::level::world {
         }
 
         World(std::unique_ptr<Level> overworldLevel, const std::string &name = "New World") : mName(name) {
-            this->mDimensions.emplace(Dimension::OVERWORLD, std::move(overworldLevel));
+            this->mLevels.emplace(Dimension::OVERWORLD, std::move(overworldLevel));
         }
 
         World(const std::string &name,
               gtl::flat_hash_map<lodestone::common::registry::NamespacedString, std::unique_ptr<Level>,
                   NamespacedStringHasher, NamespacedStringComparator> &&levels) : mName(std::move(name)),
-            mDimensions(std::move(levels)) {
+            mLevels(std::move(levels)) {
         }
 
-        void addDimension(const lodestone::common::registry::NamespacedString &id, std::unique_ptr<Level> level);
+        const gtl::flat_hash_map<lodestone::common::registry::NamespacedString, std::unique_ptr<Level>, NamespacedStringHasher, NamespacedStringComparator> &getLevels() const;
 
-        Level *getDimension(const lodestone::common::registry::NamespacedString &id) const;
-
-        void removeDimension(const lodestone::common::registry::NamespacedString &id);
-
-        bool hasDimension(const lodestone::common::registry::NamespacedString &id) const;
+        Level *addLevel(const lodestone::common::registry::NamespacedString &id, std::unique_ptr<Level> level);
+        Level *getLevel(const lodestone::common::registry::NamespacedString &id) const;
+        void removeLevel(const lodestone::common::registry::NamespacedString &id);
+        bool hasLevel(const lodestone::common::registry::NamespacedString &id) const;
 
         std::string toString() const override {
             return (new OperatorStringBuilder(typeid(*this)))
@@ -55,15 +55,41 @@ namespace lodestone::level::world {
 
         virtual const lodestone::level::conversion::world::WorldIO *getIO() = 0;
 
+        virtual level::Level *getDefaultLevel() const;
+
+        const gtl::flat_hash_map<std::string, std::unique_ptr<player::Player>> &getPlayers() const;
+        size_t getPlayerCount() const;
+
+        player::Player *addPlayer(std::unique_ptr<player::Player> player);
+        player::Player *getPlayer(const std::string &id) const;
+        void removePlayer(const std::string &id);
+        bool hasPlayer(const std::string &id) const;
+
+        void movePlayerToLevel(player::Player *player, const common::registry::NamespacedString &level);
+        void movePlayerToLevel(const std::string &id, const common::registry::NamespacedString &level) {
+            player::Player *player = getPlayer(id);
+            if (!player) throw std::runtime_error(std::format("Attempted to move nonexistent player '{}' to level '{}'", id, level));
+
+            movePlayerToLevel(player, level);
+        }
+
+        void movePlayerToWorld(player::Player *player, World *world);
+        void movePlayerToWorld(const std::string &id, World *world) {
+
+        }
+
+
     protected:
         std::string mName;
-        /** Dimensions
+        /** Levels
          *
-         * @tparam ID The dimension ID
+         * @tparam ID The level ID
          * @tparam Level The level
          */
         gtl::flat_hash_map<lodestone::common::registry::NamespacedString, std::unique_ptr<Level>, NamespacedStringHasher
-            , NamespacedStringComparator> mDimensions;
+            , NamespacedStringComparator> mLevels;
+
+        gtl::flat_hash_map<std::string, std::unique_ptr<player::Player>> mPlayers;
     };
 }
 
