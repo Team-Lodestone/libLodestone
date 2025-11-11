@@ -183,7 +183,7 @@ void createHeightmap(lodestone::level::Level *lvl) {
     o3.close();
 }
 
-void createMap(lodestone::level::types::Vec2 coords, lodestone::level::chunk::Chunk *chunk) {
+void createMap(lodestone::level::types::Vec2i coords, lodestone::level::chunk::Chunk *chunk) {
     const HEADER h = {
         0,
         0,
@@ -206,7 +206,7 @@ void createMap(lodestone::level::types::Vec2 coords, lodestone::level::chunk::Ch
     o3.close();
 }
 
-void createHeightmap(lodestone::level::types::Vec2 coords, const lodestone::level::chunk::Chunk *chunk) {
+void createHeightmap(lodestone::level::types::Vec2i coords, const lodestone::level::chunk::Chunk *chunk) {
     std::ofstream o(std::format("heightmaps/{}.{}.out", coords.x, coords.z), std::ios::binary);
     o.write(reinterpret_cast<const char *>(chunk->getHeightmap()),
             (lodestone::constants::CHUNK_WIDTH * lodestone::constants::CHUNK_DEPTH) * 2);

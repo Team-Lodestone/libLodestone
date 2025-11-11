@@ -78,8 +78,13 @@ set(FILES
         src/FiniteLevel.cpp
         include/Lodestone.Level/FiniteLevel.h
         include/Lodestone.Level/Identifiers.h
-        src/player/Player.cpp
-        include/Lodestone.Level/player/Player.h
+        src/entity/Player.cpp
+        include/Lodestone.Level/entity/Player.h
+        src/entity/Entity.cpp
+        include/Lodestone.Level/entity/Entity.h
+        src/entity/LevelEntity.cpp
+        include/Lodestone.Level/entity/ChunkEntity.h
+        include/Lodestone.Level/entity/Entities.h
 )
 
 # if (CMAKE_BUILD_TYPE STREQUAL "Debug")

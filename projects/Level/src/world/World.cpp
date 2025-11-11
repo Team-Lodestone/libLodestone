@@ -40,18 +40,18 @@ namespace lodestone::level::world {
         return mPlayers.size();
     }
 
-    player::Player *World::addPlayer(std::unique_ptr<player::Player> player) {
+    entity::Player *World::addPlayer(std::unique_ptr<entity::Player> player) {
         const std::string &id = player->getId();
         if (hasPlayer(id)) throw std::runtime_error(std::format("Attempted to add duplicate player '{}'", id));
 
-        player::Player* p = player.get();
+        entity::Player* p = player.get();
         this->mPlayers[id] = std::move(player);
         p->setWorld(this);
 
         return p; // I think this should work??
     }
 
-    player::Player * World::getPlayer(const std::string &id) const {
+    entity::Player * World::getPlayer(const std::string &id) const {
         if (const auto it = mPlayers.find(id); it != mPlayers.end()) return it->second.get();
 
         return nullptr;
@@ -72,11 +72,11 @@ namespace lodestone::level::world {
         return mPlayers.contains(id);
     }
 
-    void World::movePlayerToLevel(std::unique_ptr<player::Player> player, const common::registry::NamespacedString &level) {
+    void World::movePlayerToLevel(std::unique_ptr<entity::Player> player, const common::registry::NamespacedString &level) {
         Level *lvl = getLevel(level);
         if (!lvl) throw std::runtime_error(std::format("Tried to move player '{}' to nonexistent level '{}'", player->getId(), level));
 
-        player::Player *p = player.get();
+        entity::Player *p = player.get();
         if (player->mWorld != this) {
             if (player->mWorld) player->mWorld->removePlayer(player->getId());
             p = addPlayer(std::move(player));
@@ -85,14 +85,14 @@ namespace lodestone::level::world {
         p->setLevel(lvl);
     }
 
-    void World::movePlayerToWorld(std::unique_ptr<player::Player> player, World *world) {
+    void World::movePlayerToWorld(std::unique_ptr<entity::Player> player, World *world) {
         if (player->mWorld == this) return;
 
         removePlayer(player->getId());
         world->addPlayer(std::move(player));
     }
 
-    const gtl::flat_hash_map<std::string, std::unique_ptr<player::Player>> &World::getPlayers() const {
+    const gtl::flat_hash_map<std::string, std::unique_ptr<entity::Player>> &World::getPlayers() const {
         return mPlayers;
     }
 

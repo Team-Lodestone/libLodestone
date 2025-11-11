@@ -52,7 +52,7 @@ namespace lodestone::java::classic::minev2 {
         }
 
         const MineV2LevelIO *lio = dynamic_cast<const MineV2LevelIO *>(getLevelIO(version));
-        lio->write(w->getDimension(level::world::World::Dimension::OVERWORLD), io.getDataRelative(), version);
+        lio->write(w->getDefaultLevel(), io.getDataRelative(), version);
         // todo: VERSION STUFF
 
         return io.getData();
@@ -73,7 +73,7 @@ namespace lodestone::java::classic::minev2 {
         s += sizeof(uint64_t);
 
         const MineV2LevelIO *lio = dynamic_cast<const MineV2LevelIO *>(getLevelIO(version));
-        s += lio->getSize(w->getDimension(level::world::World::Dimension::OVERWORLD), version);
+        s += lio->getSize(w->getDefaultLevel(), version);
 
         return s;
     }

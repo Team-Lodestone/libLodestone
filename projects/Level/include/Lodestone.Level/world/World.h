@@ -8,7 +8,7 @@
 #include <Lodestone.Common/string/StringSerializable.h>
 
 #include "Lodestone.Level/Level.h"
-#include "Lodestone.Level/player/Player.h"
+#include "Lodestone.Level/entity/Player.h"
 
 namespace lodestone::level::conversion::world {
     class WorldIO;
@@ -57,15 +57,15 @@ namespace lodestone::level::world {
 
         virtual level::Level *getDefaultLevel() const;
 
-        const gtl::flat_hash_map<std::string, std::unique_ptr<player::Player>> &getPlayers() const;
+        const gtl::flat_hash_map<std::string, std::unique_ptr<entity::Player>> &getPlayers() const;
         size_t getPlayerCount() const;
 
-        player::Player *addPlayer(std::unique_ptr<player::Player> player);
-        player::Player *getPlayer(const std::string &id) const;
+        entity::Player *addPlayer(std::unique_ptr<entity::Player> player);
+        entity::Player *getPlayer(const std::string &id) const;
         void removePlayer(const std::string &id);
         bool hasPlayer(const std::string &id) const;
 
-        void movePlayerToLevel(std::unique_ptr<player::Player> player, const common::registry::NamespacedString &level);
+        void movePlayerToLevel(std::unique_ptr<entity::Player> player, const common::registry::NamespacedString &level);
         void movePlayerToLevel(const std::string &id, const common::registry::NamespacedString &level) {
             const auto it = mPlayers.find(id);
             if (it == mPlayers.end()) throw std::runtime_error(std::format("Attempted to move nonexistent player '{}' to level '{}'", id, level));
@@ -73,7 +73,7 @@ namespace lodestone::level::world {
             movePlayerToLevel(std::move(it->second), level);
         }
 
-        void movePlayerToWorld(std::unique_ptr<player::Player> player, World *world);
+        void movePlayerToWorld(std::unique_ptr<entity::Player> player, World *world);
         void movePlayerToWorld(const std::string &id, World *world) {
             const auto it = mPlayers.find(id);
             if (it == mPlayers.end()) throw std::runtime_error(std::format("Attempted to move nonexistent player '{}' to world '{}'", id, world->toString()));
@@ -92,7 +92,7 @@ namespace lodestone::level::world {
         gtl::flat_hash_map<lodestone::common::registry::NamespacedString, std::unique_ptr<Level>, NamespacedStringHasher
             , NamespacedStringComparator> mLevels;
 
-        gtl::flat_hash_map<std::string, std::unique_ptr<player::Player>> mPlayers;
+        gtl::flat_hash_map<std::string, std::unique_ptr<entity::Player>> mPlayers;
     };
 }
 

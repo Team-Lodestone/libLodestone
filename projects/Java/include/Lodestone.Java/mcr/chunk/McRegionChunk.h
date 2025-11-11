@@ -12,10 +12,10 @@ namespace lodestone::java::mcr::chunk {
             mLastUpdate(lastUpdate) {
         }
 
-        explicit McRegionChunk(const level::types::Vec2 &coords, const int64_t lastUpdate = 0) : LevelChunk(128, coords), mLastUpdate(lastUpdate) {
+        explicit McRegionChunk(const level::types::Vec2i &coords, const int64_t lastUpdate = 0) : LevelChunk(128, coords), mLastUpdate(lastUpdate) {
         }
 
-        McRegionChunk(level::chunk::ChunkContainer *container, const level::types::Vec2 &coords,
+        McRegionChunk(level::chunk::ChunkContainer *container, const level::types::Vec2i &coords,
                       const int64_t lastUpdate = 0) : LevelChunk(128, container, coords), mLastUpdate(lastUpdate) {
         }
 

@@ -1,11 +1,12 @@
 //
 // Created by DexrnZacAttack on 11/11/25 using zPc-i2.
 //
-#include "Lodestone.Level/player/Player.h"
+#include "Lodestone.Level/entity/Player.h"
 
+#include "Lodestone.Level/entity/Entities.h"
 #include "Lodestone.Level/world/World.h"
 
-namespace lodestone::level::player {
+namespace lodestone::level::entity {
     world::World * Player::getWorld() const {
         return mWorld;
     }
@@ -37,19 +38,15 @@ namespace lodestone::level::player {
         }
     }
 
+    const common::registry::NamespacedString * Player::getType() {
+        return &PLAYER;
+    }
+
     Level * Player::getLevel() const {
         return mCurrentLevel;
     }
 
     bool Player::isInLevel() const {
         return getLevel();
-    }
-
-    const std::optional<types::Vec3f> & Player::getPosition() const {
-        return mPosition;
-    }
-
-    void Player::setPosition(const types::Vec3f &pos) {
-        this->mPosition = pos;
     }
 }

@@ -5,18 +5,12 @@
 #define LODESTONE_PLAYER_H
 #include <string>
 
+#include "Lodestone.Level/entity/Entity.h"
 #include "Lodestone.Level/Level.h"
 
-namespace lodestone::level::world {
-    class World;
-}
-
-namespace lodestone::level::player {
-    // maybe should be entity?
-    class LODESTONE_API Player {
+namespace lodestone::level::entity {
+    class LODESTONE_API Player : public Entity {
     public:
-        virtual ~Player() = default;
-
         /** Can return a UUID, player name, or other depending on the version */
         virtual const std::string &getId() = 0;
 
@@ -25,16 +19,6 @@ namespace lodestone::level::player {
 
         level::Level *getLevel() const;
         bool isInLevel() const;
-
-        const std::optional<types::Vec3f> &getPosition() const;
-        /** Sets the player's position
-         *
-         * This works without the player being in a world
-         */
-        void setPosition(const types::Vec3f &pos);
-        void setPosition(float x, float y, float z) {
-            setPosition({x, y, z});
-        }
     protected:
         /** Sets the player's level
          *
@@ -47,8 +31,9 @@ namespace lodestone::level::player {
          * NOTE: if the current level does not exist within the given world, the player will be moved to the default level.
          */
         void setWorld(world::World *world, bool resetCoords = true);
+
+        const common::registry::NamespacedString *getType() override;
     private:
-        std::optional<types::Vec3f> mPosition;
         world::World *mWorld = nullptr;
         level::Level *mCurrentLevel = nullptr;
 
