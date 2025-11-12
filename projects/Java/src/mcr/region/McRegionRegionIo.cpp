@@ -6,6 +6,7 @@
 
 #include <format>
 #include <iostream>
+#include <zlib.h>
 #include <BinaryIO/BinaryIO.h>
 
 #include "Lodestone.Java/Identifiers.h"
@@ -13,10 +14,11 @@
 #include "Lodestone.Java/mcr/chunk/McRegionChunkIo.h"
 #include "Lodestone.Java/mcr/RegionChunkIndice.h"
 #include "Lodestone.Java/mcr/RegionCompression.h"
-#include <libnbt++/io/zlib_streambuf.h>
 #include <Lodestone.Level/conversion/chunk/ChunkIO.h>
 #include <Lodestone.Level/conversion/chunk/ChunkIORegistry.h>
 #include <Lodestone.Level/region/Region.h>
+
+#include "Lodestone.Java/mcr/region/McRegionRegion.h"
 
 namespace lodestone::java::mcr::region {
     lodestone::level::region::Region *McRegionRegionIO::read(uint8_t *data, size_t size, const int version,
@@ -26,7 +28,7 @@ namespace lodestone::java::mcr::region {
         const chunk::McRegionChunkIO *chunkIo = dynamic_cast<const chunk::McRegionChunkIO *>(
             level::conversion::chunk::ChunkIORegistry::sInstance.getChunkIO(identifiers::MCREGION));
 
-        lodestone::level::region::Region *region = new lodestone::level::region::Region(coords);
+        lodestone::java::mcr::region::McRegionRegion *region = new lodestone::java::mcr::region::McRegionRegion(coords);
 
         std::vector<RegionChunkIndice> locations(CHUNK_COUNT);
         bio::BinaryIO timestampIo(io.getDataRelative() + (CHUNK_COUNT * 4));
@@ -47,6 +49,8 @@ namespace lodestone::java::mcr::region {
 
             uint32_t len = io.readBE<uint32_t>();
             RegionCompression compression = static_cast<RegionCompression>(io.readByte());
+
+            if (compression == 0) continue;
 
             uint32_t chunkSize = loc.size * SECTOR_SIZE;
 

@@ -21,6 +21,7 @@
 #include <Lodestone.Level/conversion/world/WorldIORegistry.h>
 #include "Lodestone.Java/mcr/chunk/McRegionChunkIo.h"
 #include "Lodestone.Java/mcr/region/McRegionRegionIo.h"
+#include "Lodestone.Java/mcr/world/McRegionWorldIo.h"
 
 namespace lodestone::java {
     LodestoneJava *LodestoneJava::sInstance = nullptr;
@@ -61,6 +62,11 @@ namespace lodestone::java {
         level::conversion::region::RegionIORegistry::sInstance.registerRegionIO(
             identifiers::MCREGION,
             std::make_unique<mcr::region::McRegionRegionIO>()
+        );
+
+        level::conversion::world::WorldIORegistry::sInstance.registerWorldIO(
+            identifiers::MCREGION,
+            std::make_unique<mcr::world::McRegionWorldIo>()
         );
     }
 

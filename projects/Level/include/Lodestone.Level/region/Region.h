@@ -13,7 +13,7 @@ namespace lodestone::level::region {
 
         explicit Region(const types::Vec2i &coords);
 
-    private:
+    protected:
         types::Vec2i mCoords;
     };
 }

@@ -13,6 +13,8 @@ namespace lodestone::tests::test {
         static void readMcrChunk();
 
         static void readMcrFile();
+
+        static void readMcrWorld();
     };
 }
 

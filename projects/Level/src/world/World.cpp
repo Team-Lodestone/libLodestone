@@ -32,6 +32,10 @@ namespace lodestone::level::world {
         return mLevels.contains(id);
     }
 
+    const lodestone::level::conversion::world::WorldIO * World::getIO() {
+        return nullptr;
+    }
+
     level::Level * World::getDefaultLevel() const {
         return getLevel(Dimension::OVERWORLD);
     }

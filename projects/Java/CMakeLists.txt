@@ -26,6 +26,12 @@ set(FILES
         include/Lodestone.Java/mcr/RegionChunkIndice.h
         include/Lodestone.Java/mcr/RegionCompression.h
         include/Lodestone.Java/Identifiers.h
+        src/mcr/world/McRegionWorldIo.cpp
+        include/Lodestone.Java/mcr/world/McRegionWorldIo.h
+        src/mcr/world/McRegionWorld.cpp
+        include/Lodestone.Java/mcr/world/McRegionWorld.h
+        src/mcr/region/McRegionRegion.cpp
+        include/Lodestone.Java/mcr/region/McRegionRegion.h
 )
 
 # NBT

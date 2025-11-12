@@ -46,14 +46,12 @@ namespace lodestone::level::world {
         bool hasLevel(const lodestone::common::registry::NamespacedString &id) const;
 
         std::string toString() const override {
-            return (new OperatorStringBuilder(typeid(*this)))
-                    ->ADD_FIELD(mName)
-                    ->toString();
+            return std::format("World[name={}]", mName);
         };
 
         std::string getName() const { return mName; }
 
-        virtual const lodestone::level::conversion::world::WorldIO *getIO() = 0;
+        virtual const lodestone::level::conversion::world::WorldIO *getIO();
 
         virtual level::Level *getDefaultLevel() const;
 

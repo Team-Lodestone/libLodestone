@@ -13,8 +13,8 @@
 namespace lodestone::java::mcr::region {
     class McRegionRegionIO : public level::conversion::region::RegionIO {
     public:
-        static constexpr const int CHUNK_COUNT = 1024;
-        static constexpr const int SECTOR_SIZE = 4096;
+        static constexpr int CHUNK_COUNT = 1024;
+        static constexpr int SECTOR_SIZE = 4096;
 
         /** Reads data into a new Region */
         lodestone::level::region::Region *read(uint8_t *data, size_t size, int version,

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.30)
 project(Lodestone VERSION 1.0.0)
 
-set(VERSION_SUFFIX "-dev.20") # used for non-stable versions, otherwise blank
+set(VERSION_SUFFIX "-dev.21") # used for non-stable versions, otherwise blank
 set(CMAKE_CXX_STANDARD 20)
 
 option(ENABLE_LINTERS "Enable source linters" ON)
@@ -54,7 +54,7 @@ add_subdirectory(projects/Common)
 add_subdirectory(projects/Level)
 add_subdirectory(projects/Java)
 
-# TODO: this is probably a bad idea incase one wants to only include certain licenses
+# TODO: this is probably a bad idea incase one wants to only include certain libraries
 target_link_libraries(Lodestone.Tests PRIVATE BIO gtl)
 target_link_libraries(Lodestone.Common PRIVATE BIO gtl)
 target_link_libraries(Lodestone.Level PRIVATE BIO gtl)

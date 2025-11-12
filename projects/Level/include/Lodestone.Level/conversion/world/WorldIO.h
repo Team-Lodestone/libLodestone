@@ -11,9 +11,6 @@ namespace lodestone::level::conversion::world {
     public:
         virtual ~WorldIO() = default;
 
-        /** Gets the size of the level in bytes */
-        virtual size_t getSize(lodestone::level::world::World *w, int version) const = 0;
-
         /** Gets the corresponding LevelIO */
         virtual const lodestone::level::conversion::level::LevelIO *getLevelIO(int version) const = 0;
     };

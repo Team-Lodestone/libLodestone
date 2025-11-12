@@ -11,6 +11,8 @@
 #include <Lodestone.Java/mcr/region/McRegionRegionIo.h>
 #include <Lodestone.Java/classic/minev2/MineV2World.h>
 #include <Lodestone.Java/mcr/chunk/McRegionChunkIo.h>
+#include <Lodestone.Java/mcr/world/McRegionWorld.h>
+#include <Lodestone.Java/mcr/world/McRegionWorldIo.h>
 #include <Lodestone.Level/Level.h>
 #include <Lodestone.Level/conversion/chunk/ChunkIORegistry.h>
 #include <Lodestone.Level/conversion/region/RegionIORegistry.h>
@@ -21,6 +23,7 @@ namespace lodestone::tests::test {
     void MainTests::run() {
         ADD_TEST(READ_MCR_CHUNK, readMcrChunk, util::types::MAIN, "Read McRegion Chunk");
         ADD_TEST(READ_MCR_FILE, readMcrFile, util::types::MAIN, "Read McRegion File");
+        ADD_TEST(READ_MCR_WORLD, readMcrWorld, util::types::MAIN, "Read McRegion World");
     }
 
     void MainTests::readMcrChunk() {
@@ -57,5 +60,18 @@ namespace lodestone::tests::test {
             std::unique_ptr<lodestone::level::Level>(r), "New World", "h");
         WRITE_FILE(std::format("{}.dat", name), reinterpret_cast<const char*>(l2->write(w, lodestone::java::c0_28)),
                    l2->getSize(w, lodestone::java::c0_28));
+    }
+
+    void MainTests::readMcrWorld() {
+        std::string name("ShadowWorld");
+        std::filesystem::path dir(util::INPUT_FOLDER / name);
+
+        const java::mcr::world::McRegionWorldIo *io = (java::mcr::world::McRegionWorldIo *)
+        level::conversion::world::WorldIORegistry::sInstance.getWorldIO(java::identifiers::MCREGION);
+        level::world::World *w = io->read(dir, java::Version::b1_3);
+
+        const lodestone::level::conversion::world::FileWorldIO *l2 = dynamic_cast<const lodestone::level::conversion::world::FileWorldIO *>(lodestone::level::conversion::world::WorldIORegistry::sInstance.getWorldIO({"lodestone", "minev2"}));
+        WRITE_FILE(std::format("{}.dat", name), reinterpret_cast<const char*>(l2->write(w, lodestone::java::c0_28)),
+           l2->getSize(w, lodestone::java::c0_28));
     }
 }
