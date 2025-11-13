@@ -4,53 +4,25 @@
 #include "Lodestone.Level/conversion/block/BlockIO.h"
 
 namespace lodestone::level::conversion::block {
-    gtl::flat_hash_map<const lodestone::common::registry::NamespacedString *, data::AbstractBlockData *> &
-    version::BlockIO::
-    getFromInternalConversionMap() {
-        return mFromInternalConversionMap;
-    }
-
-    gtl::flat_hash_map<const data::AbstractBlockData *, const lodestone::common::registry::NamespacedString *,
-        types::hash::BlockDataHash, types::hash::BlockDataComparator> &version::BlockIO::
-    getToInternalConversionMap() {
-        return mToInternalConversionMap;
-    }
-
-    gtl::flat_hash_map<const void *, data::AbstractBlockData *> &version::BlockIO::getDefaultDataMap() {
-        return mDefaultDataMap;
-    }
-
     void version::BlockIO::registerBlock(const lodestone::common::registry::NamespacedString *internal,
                                          data::AbstractBlockData *blk,
                                          const bool isDefault) {
-        gtl::flat_hash_map<const lodestone::common::registry::NamespacedString *, data::AbstractBlockData *> &c =
-                getFromInternalConversionMap();
-        gtl::flat_hash_map<const data::AbstractBlockData *, const lodestone::common::registry::NamespacedString *,
-            types::hash::BlockDataHash, types::hash::BlockDataComparator> &i = getToInternalConversionMap();
-
-        c[internal] = blk;
-        i[blk] = internal;
+        mFromInternalConversionMap[internal] = blk;
+        mToInternalConversionMap[blk] = internal;
         if (isDefault) {
-            gtl::flat_hash_map<const void *, data::AbstractBlockData *> &d = getDefaultDataMap();
-            d[blk->getIdPtr()] = blk;
+            mDefaultDataMap[blk->getIdPtr()] = blk;
         }
     }
 
     void version::BlockIO::registerBlockIfNotExist(const lodestone::common::registry::NamespacedString *internal,
                                                    data::AbstractBlockData *blk,
                                                    const bool isDefault) {
-        gtl::flat_hash_map<const lodestone::common::registry::NamespacedString *, data::AbstractBlockData *> &c =
-                getFromInternalConversionMap();
-        gtl::flat_hash_map<const data::AbstractBlockData *, const lodestone::common::registry::NamespacedString *,
-            types::hash::BlockDataHash, types::hash::BlockDataComparator> &i = getToInternalConversionMap();
+        if (mFromInternalConversionMap.contains(internal)) return;
 
-        if (c.contains(internal)) return;
-
-        c[internal] = blk;
-        i[blk] = internal;
+        mFromInternalConversionMap[internal] = blk;
+        mToInternalConversionMap[blk] = internal;
         if (isDefault) {
-            gtl::flat_hash_map<const void *, data::AbstractBlockData *> &d = getDefaultDataMap();
-            d[blk->getIdPtr()] = blk;
+            mDefaultDataMap[blk->getIdPtr()] = blk;
         }
     }
 
@@ -68,8 +40,7 @@ namespace lodestone::level::conversion::block {
         }
 
         // otherwise, if we have block id with default value, return that
-        const auto &d = getDefaultDataMap();
-        if (d.find(b.getIdPtr()) != d.end()) {
+        if (mDefaultDataMap.find(b.getIdPtr()) != mDefaultDataMap.end()) {
             if (const auto itr = mToInternalConversionMap.find(&b); itr != mToInternalConversionMap.end()) {
                 return level::block::state::BlockState(itr->second);
             }
