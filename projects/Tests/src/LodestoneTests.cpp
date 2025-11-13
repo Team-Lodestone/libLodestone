@@ -214,7 +214,7 @@ void createHeightmap(lodestone::level::types::Vec2i coords, const lodestone::lev
 }
 
 void generateWorld(lodestone::level::Level *l, const int w, const int h, const int d) {
-    std::unique_ptr<lodestone::level::conversion::block::version::BlockIO> io =
+    const std::unique_ptr<lodestone::level::conversion::block::version::BlockIO> io =
             lodestone::java::LodestoneJava::getInstance()->io.getIo(lodestone::java::rd131655);
     for (int x = 0; x < w; x++) {
         for (int y = 0; y < h; y++) {
@@ -222,12 +222,12 @@ void generateWorld(lodestone::level::Level *l, const int w, const int h, const i
                 if (x == y && z == y
                     && x == z && y == z
                     && y == x && z == x) {
-                    l->setBlockCreate(new lodestone::level::block::state::BlockState(
+                    l->setBlockCreate(lodestone::level::block::state::BlockState(
                                           io->convertBlockToInternal(
                                               new lodestone::level::conversion::block::data::ClassicBlockData(x))), x,
                                       y, z, h);
                 } else {
-                    l->setBlockCreate(new lodestone::level::block::state::BlockState(
+                    l->setBlockCreate(lodestone::level::block::state::BlockState(
                                           io->convertBlockToInternal(
                                               new lodestone::level::conversion::block::data::ClassicBlockData(
                                                   x + y + z))), x, y, z, h);

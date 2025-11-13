@@ -113,8 +113,8 @@ namespace lodestone::level::chunk {
         }
     }
 
-    void LevelChunk::setBlock(block::state::BlockState &blk, const int x, const int y, const int z) {
-        setBlockRaw(blk, x, y, z);
+    void LevelChunk::setBlock(block::state::BlockState &&blk, const int x, const int y, const int z) {
+        setBlockRaw(std::move(blk), x, y, z);
 
         if (!blk.getBlock())
             throw std::runtime_error("attempted to set blockstate with null block");
@@ -154,7 +154,7 @@ namespace lodestone::level::chunk {
         }
     }
 
-    void LevelChunk::setBlockRaw(block::state::BlockState &blk, const int x, const int y, const int z) {
-        getSectionCreate(y >> 4)->setBlock(blk, x, y & 15, z);
+    void LevelChunk::setBlockRaw(block::state::BlockState &&blk, const int x, const int y, const int z) {
+        getSectionCreate(y >> 4)->setBlock(std::move(blk), x, y & 15, z);
     }
 }

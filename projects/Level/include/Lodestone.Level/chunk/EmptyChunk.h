@@ -34,9 +34,9 @@ namespace lodestone::level::chunk {
 
         section::Section *getSectionCreate(int y) override;
 
-        void setBlock(block::state::BlockState &blk, int x, int y, int z) override;
+        void setBlock(block::state::BlockState &&blk, int x, int y, int z) override;
 
-        void setBlockRaw(block::state::BlockState &blk, int x, int y, int z) override;
+        void setBlockRaw(block::state::BlockState &&blk, int x, int y, int z) override;
 
         void setHeightAt(int16_t h, int x, int z) override;
 

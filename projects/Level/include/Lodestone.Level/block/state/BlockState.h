@@ -17,19 +17,21 @@ namespace lodestone::level::block::state {
     /** Wraps a block with runtime-modifiable "properties" */
     class BlockState : public StringSerializable {
     public:
+        static const gtl::flat_hash_map<std::string, std::string> EMPTY_PROPERTIES;
+
         BlockState(const Block *block) : mBlock(block) {
         };
 
-        BlockState(const lodestone::common::registry::NamespacedString *id) : mBlock(
+        BlockState(const common::registry::NamespacedString *id) : mBlock(
             BlockRegistry::sInstance.getBlock(id)) {
         };
 
         BlockState() : mBlock(BlockRegistry::sDefaultBlock) {
         }
 
-        ~BlockState() override;
+        ~BlockState() override = default;
 
-        const gtl::flat_hash_map<std::string, std::string> &getStates();
+        const gtl::flat_hash_map<std::string, std::string> &getStates() const;
 
         bool hasProperty(const std::string &id) const;
 
@@ -46,7 +48,7 @@ namespace lodestone::level::block::state {
         std::string &operator[](const std::string &id);
 
         bool operator==(const BlockState &b) const {
-            return mBlock == b.mBlock && mProperties == b.mProperties;
+            return mBlock == b.mBlock && mProperties.has_value() ? mProperties == b.mProperties : mProperties.has_value() == b.mProperties.has_value();
         }
 
         constexpr std::string toString() const override {
@@ -57,7 +59,7 @@ namespace lodestone::level::block::state {
         const Block *mBlock;
         // TODO: it's almost definitely a good idea to figure out how to initialize this only when needed.
         // TODO: also we should be able to store more than strings
-        gtl::flat_hash_map<std::string, std::string> mProperties;
+        std::optional<gtl::flat_hash_map<std::string, std::string>> mProperties;
     };
 }
 

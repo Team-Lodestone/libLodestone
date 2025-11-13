@@ -50,7 +50,7 @@ namespace lodestone::java::mcr::chunk {
                             0)); // TODO metadata (maybe MetadataIO or BlockPropertyIO?)
 
                     if (b.getBlock() != level::block::BlockRegistry::sDefaultBlock)
-                        c->setBlockRaw(b, cx, cy, cz);
+                        c->setBlockRaw(std::move(b), cx, cy, cz);
                 }
             }
         }

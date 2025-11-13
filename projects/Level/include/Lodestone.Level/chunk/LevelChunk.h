@@ -50,9 +50,9 @@ namespace lodestone::level::chunk {
 
         block::state::BlockState *getBlock(const int x, const int y, const int z) const override;
 
-        void setBlock(block::state::BlockState &blk, int x, int y, int z) override;
+        void setBlock(block::state::BlockState &&blk, int x, int y, int z) override;
 
-        void setBlockRaw(block::state::BlockState &blk, int x, int y, int z) override;
+        void setBlockRaw(block::state::BlockState &&blk, int x, int y, int z) override;
 
     protected:
         /** Chunk Sections

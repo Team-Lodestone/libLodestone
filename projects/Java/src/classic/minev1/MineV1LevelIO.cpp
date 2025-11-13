@@ -35,7 +35,7 @@ namespace lodestone::java::classic::minev1 {
                     level::block::state::BlockState b = io->convertBlockToInternal(
                         new level::conversion::block::data::ClassicBlockData(*data));
                     if (b.getBlock() != level::block::BlockRegistry::sDefaultBlock)
-                        l->setBlockCreateRaw(b, x, y, z, HEIGHT);
+                        l->setBlockCreateRaw(std::move(b), x, y, z, HEIGHT);
 
                     data++;
                 }

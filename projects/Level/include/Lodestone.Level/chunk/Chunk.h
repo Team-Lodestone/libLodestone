@@ -36,7 +36,7 @@ namespace lodestone::level::chunk {
 
         Chunk(ChunkContainer *container, const types::Vec2i &coords);
 
-        ~Chunk() override = default;
+        ~Chunk() override;
 
         virtual void calculateBlockmap() = 0;
 
@@ -70,13 +70,13 @@ namespace lodestone::level::chunk {
          *
          * Also updates the blockmap and heightmap
          */
-        virtual void setBlock(block::state::BlockState &blk, int x, int y, int z) = 0;
+        virtual void setBlock(block::state::BlockState &&blk, int x, int y, int z) = 0;
 
         /** Sets a block at the given X, Y, and Z coordinates.
          *
          * Does not update blockmap nor heightmap
          */
-        virtual void setBlockRaw(block::state::BlockState &blk, int x, int y, int z) = 0;
+        virtual void setBlockRaw(block::state::BlockState &&blk, int x, int y, int z) = 0;
 
         virtual int16_t getHeightAt(int x, int z) const;
 

@@ -23,10 +23,10 @@ namespace lodestone::level::chunk {
         return section::EmptySection::sInstance;
     }
 
-    void EmptyChunk::setBlock(block::state::BlockState &blk, int x, int y, int z) {
+    void EmptyChunk::setBlock(block::state::BlockState &&blk, int x, int y, int z) {
     }
 
-    void EmptyChunk::setBlockRaw(block::state::BlockState &blk, int x, int y, int z) {
+    void EmptyChunk::setBlockRaw(block::state::BlockState &&blk, int x, int y, int z) {
     }
 
     void EmptyChunk::setHeightAt(int16_t h, int x, int z) {

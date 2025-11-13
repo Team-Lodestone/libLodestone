@@ -29,7 +29,7 @@ namespace lodestone::level::chunk::section {
 
         virtual block::state::BlockState *getBlock(const int x, const int y, const int z) const = 0;
 
-        virtual void setBlock(block::state::BlockState &blk, int x, int y, int z) = 0;
+        virtual void setBlock(block::state::BlockState &&blk, int x, int y, int z) = 0;
 
         virtual SectionType getType() = 0;
 

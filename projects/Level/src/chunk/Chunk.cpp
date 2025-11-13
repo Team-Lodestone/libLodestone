@@ -3,6 +3,8 @@
 //
 #include "Lodestone.Level/chunk/Chunk.h"
 
+#include "Lodestone.Level/chunk/ChunkContainer.h"
+
 namespace lodestone::level::chunk {
     Chunk::Chunk() {
         this->mContainer = nullptr;
@@ -19,6 +21,12 @@ namespace lodestone::level::chunk {
     Chunk::Chunk(ChunkContainer *container, const types::Vec2i &coords) : Chunk() {
         this->mCoords = std::move(coords);
         this->mContainer = container;
+    }
+
+    Chunk::~Chunk() {
+        delete mContainer;
+        delete[] mHeightmap;
+        delete[] mBlockmap;
     }
 
     int Chunk::getChunkBlockHeight() const {

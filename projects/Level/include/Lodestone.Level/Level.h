@@ -26,13 +26,13 @@ namespace lodestone::level {
 
         block::state::BlockState *getBlock(size_t x, size_t y, size_t z);
 
-        void setBlock(block::state::BlockState &blk, size_t x, size_t y, size_t z);
+        void setBlock(block::state::BlockState &&blk, size_t x, size_t y, size_t z);
 
-        void setBlockRaw(block::state::BlockState &blk, size_t x, size_t y, size_t z);
+        void setBlockRaw(block::state::BlockState &&blk, size_t x, size_t y, size_t z);
 
-        void setBlockCreate(block::state::BlockState *blk, size_t x, size_t y, size_t z, int height = 256);
+        void setBlockCreate(block::state::BlockState &&blk, size_t x, size_t y, size_t z, int height = 256);
 
-        void setBlockCreateRaw(block::state::BlockState &blk, size_t x, size_t y, size_t z, int height = 256);
+        void setBlockCreateRaw(block::state::BlockState &&blk, size_t x, size_t y, size_t z, int height = 256);
 
         int16_t getHeightAt(int x, int z) const;
 
