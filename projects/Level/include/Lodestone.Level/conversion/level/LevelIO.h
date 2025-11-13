@@ -12,7 +12,7 @@ namespace lodestone::level::conversion::level {
         virtual ~LevelIO() = default;
 
         /** Reads data into a new Level */
-        virtual Level *read(uint8_t *data, int version) const = 0;
+        virtual std::unique_ptr<Level> read(uint8_t *data, int version) const = 0;
 
         /** Writes a level to data */
         virtual uint8_t *write(Level *l, int version) const = 0;

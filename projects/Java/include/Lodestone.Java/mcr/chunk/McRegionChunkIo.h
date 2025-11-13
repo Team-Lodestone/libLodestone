@@ -9,9 +9,9 @@
 namespace lodestone::java::mcr::chunk {
     class McRegionChunkIO : public level::conversion::chunk::ChunkIO {
     public:
-        level::chunk::Chunk *read(uint8_t *data, size_t size, int version) const override;
+        std::unique_ptr<level::chunk::Chunk> read(uint8_t *data, size_t size, int version) const override;
 
-        level::chunk::Chunk *read(nbt::tag_compound &chunk, int version) const;
+        std::unique_ptr<level::chunk::Chunk> read(nbt::tag_compound &chunk, int version) const;
 
         uint8_t *write(level::chunk::Chunk *c, int version) const override;
 

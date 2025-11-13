@@ -17,13 +17,13 @@ namespace lodestone::java::mcr::region {
         static constexpr int SECTOR_SIZE = 4096;
 
         /** Reads data into a new Region */
-        lodestone::level::region::Region *read(uint8_t *data, size_t size, int version,
-                                               const level::types::Vec2i &coords) override;
+        std::unique_ptr<lodestone::level::region::Region> read(uint8_t *data, size_t size, int version,
+                                               const level::types::Vec2i &coords) const override;
 
         /** Writes a region to data */
-        uint8_t *write(lodestone::level::region::Region *c, int version, const level::types::Vec2i &coords) override;
+        uint8_t *write(lodestone::level::region::Region *c, int version, const level::types::Vec2i &coords) const override;
 
-        size_t getSize(lodestone::level::region::Region *c, int version) override;
+        size_t getSize(lodestone::level::region::Region *c, int version) const override;
     };
 }
 

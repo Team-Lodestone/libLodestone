@@ -35,3 +35,6 @@
 #else
 #define LODESTONE_BUILD_TYPE "Release"
 #endif
+
+// you're telling me they couldn't have come up with some neat way to cast between unique_ptr types?
+#define CAST_UNIQUE_PTR(to, var) std::unique_ptr<to>(static_cast<to *>(var.release()));

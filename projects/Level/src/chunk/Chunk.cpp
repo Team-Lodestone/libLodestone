@@ -24,7 +24,6 @@ namespace lodestone::level::chunk {
     }
 
     Chunk::~Chunk() {
-        delete mContainer;
         delete[] mHeightmap;
         delete[] mBlockmap;
     }

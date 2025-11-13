@@ -21,14 +21,14 @@
 #include "Lodestone.Java/mcr/region/McRegionRegion.h"
 
 namespace lodestone::java::mcr::region {
-    lodestone::level::region::Region *McRegionRegionIO::read(uint8_t *data, size_t size, const int version,
-                                                             const level::types::Vec2i &coords) {
+    std::unique_ptr<lodestone::level::region::Region> McRegionRegionIO::read(uint8_t *data, size_t size, const int version,
+                                                             const level::types::Vec2i &coords) const {
         bio::BinaryIO io(data);
 
         const chunk::McRegionChunkIO *chunkIo = dynamic_cast<const chunk::McRegionChunkIO *>(
             level::conversion::chunk::ChunkIORegistry::sInstance.getChunkIO(identifiers::MCREGION));
 
-        lodestone::java::mcr::region::McRegionRegion *region = new lodestone::java::mcr::region::McRegionRegion(coords);
+        std::unique_ptr<lodestone::level::region::Region> region = std::make_unique<McRegionRegion>(coords);
 
         std::vector<RegionChunkIndice> locations(CHUNK_COUNT);
         bio::BinaryIO timestampIo(io.getDataRelative() + (CHUNK_COUNT * 4));
@@ -91,9 +91,9 @@ namespace lodestone::java::mcr::region {
                     if (fail) continue;
 
                     // now we process the chunk
-                    chunk::McRegionChunk *c = static_cast<chunk::McRegionChunk *>(chunkIo->read(
+                    std::unique_ptr<chunk::McRegionChunk> c = CAST_UNIQUE_PTR(chunk::McRegionChunk, chunkIo->read(
                         decompressed.data(), decompressed.size(), version));
-                    region->addChunk(std::unique_ptr<chunk::McRegionChunk>(c));
+                    region->addChunk(std::move(c));
 
                     break;
                 }
@@ -116,9 +116,9 @@ namespace lodestone::java::mcr::region {
     }
 
     uint8_t *McRegionRegionIO::write(lodestone::level::region::Region *c, int version,
-                                     const level::types::Vec2i &coords) {
+                                     const level::types::Vec2i &coords) const {
     }
 
-    size_t McRegionRegionIO::getSize(lodestone::level::region::Region *c, int version) {
+    size_t McRegionRegionIO::getSize(lodestone::level::region::Region *c, int version) const {
     }
 }

@@ -11,7 +11,7 @@ namespace lodestone::level::conversion::chunk {
         virtual ~ChunkIO() = default;
 
         /** Reads data into a new Chunk */
-        virtual lodestone::level::chunk::Chunk *read(uint8_t *data, size_t size, int version) const = 0;
+        virtual std::unique_ptr<lodestone::level::chunk::Chunk> read(uint8_t *data, size_t size, int version) const = 0;
 
         /** Writes a chunk to data */
         virtual uint8_t *write(lodestone::level::chunk::Chunk *c, int version) const = 0;

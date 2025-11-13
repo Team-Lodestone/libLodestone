@@ -9,10 +9,10 @@
 namespace lodestone::java::indev {
     class McLevelLevelIO : public level::conversion::level::LevelIO {
     public:
-        level::Level *read(uint8_t *data, int version) const override;
+        std::unique_ptr<level::Level> read(uint8_t *data, int version) const override;
 
         /** Creates a Level from a mclevel Map compound tag */
-        level::Level *read(nbt::tag_compound *map) const;
+        std::unique_ptr<level::Level> read(nbt::tag_compound *map) const;
 
         uint8_t *write(level::Level *l, int version) const override;
 

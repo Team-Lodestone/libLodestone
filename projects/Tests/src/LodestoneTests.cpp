@@ -224,12 +224,12 @@ void generateWorld(lodestone::level::Level *l, const int w, const int h, const i
                     && y == x && z == x) {
                     l->setBlockCreate(lodestone::level::block::state::BlockState(
                                           io->convertBlockToInternal(
-                                              new lodestone::level::conversion::block::data::ClassicBlockData(x))), x,
+                                          lodestone::level::conversion::block::data::ClassicBlockData(x))), x,
                                       y, z, h);
                 } else {
                     l->setBlockCreate(lodestone::level::block::state::BlockState(
                                           io->convertBlockToInternal(
-                                              new lodestone::level::conversion::block::data::ClassicBlockData(
+                                          lodestone::level::conversion::block::data::ClassicBlockData(
                                                   x + y + z))), x, y, z, h);
                 }
             }

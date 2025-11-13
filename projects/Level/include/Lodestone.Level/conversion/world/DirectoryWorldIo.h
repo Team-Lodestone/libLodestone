@@ -11,7 +11,7 @@ namespace lodestone::level::conversion::world {
     class LODESTONE_API DirectoryWorldIO : public WorldIO {
     public:
         /** Reads data into a new World */
-        virtual lodestone::level::world::World *read(const std::filesystem::path &path, int version) const = 0;
+        virtual std::unique_ptr<lodestone::level::world::World> read(const std::filesystem::path &path, int version) const = 0;
 
         // TODO: this should allow for reading from VFS
         /** Writes a world to data */

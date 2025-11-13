@@ -5,16 +5,16 @@
 
 namespace lodestone::level::chunk {
     LevelChunk::LevelChunk(const int height) : Chunk() {
-        this->mSections = std::vector<std::unique_ptr<section::Section> >(height / 16);
+        this->mSections.reserve(height / 16);
     }
 
     LevelChunk::LevelChunk(const int height, const types::Vec2i &coords) : Chunk(coords) {
-        this->mSections = std::vector<std::unique_ptr<section::Section> >(height / 16);
+        this->mSections.reserve(height / 16);
     }
 
     LevelChunk::LevelChunk(const int height, ChunkContainer *container, const types::Vec2i &coords) : Chunk(
         container, coords) {
-        this->mSections = std::vector<std::unique_ptr<section::Section> >(height / 16);
+        this->mSections.reserve(height / 16);
     }
 
     int LevelChunk::getChunkHeight() const {
@@ -22,7 +22,7 @@ namespace lodestone::level::chunk {
     }
 
     bool LevelChunk::hasSection(const int y) const {
-        if (mSections.size() > y)
+        if (y < 0 || y >= mSections.size())
             return (mSections[y] != nullptr);
 
         return false;
@@ -37,7 +37,16 @@ namespace lodestone::level::chunk {
     }
 
     section::Section *LevelChunk::getSectionCreate(const int y) {
-        if (!hasSection(y)) mSections[y] = std::make_unique<section::LevelSection>();
+        if (y >= static_cast<int>(mSections.size()))
+            mSections.resize(y + 1);
+
+        if (!mSections[y]) {
+            auto s = std::make_unique<section::LevelSection>();
+            section::LevelSection *p = s.get();
+
+            mSections[y] = std::move(s);
+            return p;
+        }
 
         return mSections[y].get();
     }
@@ -123,7 +132,7 @@ namespace lodestone::level::chunk {
         if (blk.getBlock() != block::BlockRegistry::sDefaultBlock) {
             // if our block is higher than the current height, and isn't air, then it's obviously higher up.
             // so we set the new height
-            if (y >= getHeightAt(x, z)) {
+            if (y + 1 > getHeightAt(x, z)) {
                 setHeightAt(std::min(y + 1, height - 1), x, z);
 
                 if (&blk != getBlockmapBlockAt(x, z))

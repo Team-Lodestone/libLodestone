@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.30)
 project(Lodestone VERSION 1.0.0)
 
-set(VERSION_SUFFIX "-dev.22") # used for non-stable versions, otherwise blank
+set(VERSION_SUFFIX "-dev.23") # used for non-stable versions, otherwise blank
 set(CMAKE_CXX_STANDARD 20)
 
 option(ENABLE_LINTERS "Enable source linters" ON)

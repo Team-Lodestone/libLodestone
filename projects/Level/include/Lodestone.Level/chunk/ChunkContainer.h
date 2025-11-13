@@ -13,6 +13,11 @@ namespace lodestone::level::chunk {
     /** Holds chunks */
     class LODESTONE_API ChunkContainer : public StringSerializable {
     public:
+        ~ChunkContainer() override = default;
+        ChunkContainer() = default;
+        ChunkContainer(ChunkContainer&&) = default;
+        ChunkContainer& operator=(ChunkContainer&&) = default;
+
         constexpr std::string toString() const override {
             return std::format("ChunkContainer[chunks={},bounds={}]", getChunkBounds().toString(), mChunks.size());
         };
@@ -93,7 +98,7 @@ namespace lodestone::level::chunk {
             removeChunk({x, z});
         };
 
-        void merge(ChunkContainer &rhs);
+        void merge(std::unique_ptr<ChunkContainer> rhs);
 
         gtl::flat_hash_map<types::Vec2i, std::unique_ptr<Chunk> > &getChunks() {
             return mChunks;
@@ -105,6 +110,9 @@ namespace lodestone::level::chunk {
 
         // todo replace with inbuilt bounds that gets updated
         types::Bounds3i getChunkBounds() const;
+
+        ChunkContainer(const ChunkContainer &) = delete;
+        ChunkContainer& operator=(const ChunkContainer&) = delete;
 
     protected:
         gtl::flat_hash_map<types::Vec2i, std::unique_ptr<Chunk> > mChunks;

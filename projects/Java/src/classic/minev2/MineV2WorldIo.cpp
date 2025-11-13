@@ -11,7 +11,7 @@
 #include <Lodestone.Level/conversion/level/LevelIORegistry.h>
 
 namespace lodestone::java::classic::minev2 {
-    level::world::World *MineV2WorldIO::read(uint8_t *data, const int version) const {
+    std::unique_ptr<level::world::World> MineV2WorldIO::read(uint8_t *data, const int version) const {
         bio::BinaryIO io(data);
 
         const uint32_t sig = io.readBE<uint32_t>();
@@ -26,8 +26,8 @@ namespace lodestone::java::classic::minev2 {
 
         const MineV2LevelIO *lio = dynamic_cast<const MineV2LevelIO *>(getLevelIO(version));
 
-        std::unique_ptr<level::Level> unique(lio->read(io.getDataRelative(), version)); // todo: proper version!!!!
-        return new MineV2World(std::move(unique), name, author);
+        std::unique_ptr<level::Level> unique = lio->read(io.getDataRelative(), version); // todo: proper version!!!!
+        return std::make_unique<MineV2World>(std::move(unique), name, author);
     }
 
     uint8_t *MineV2WorldIO::write(level::world::World *w, const int version) const {

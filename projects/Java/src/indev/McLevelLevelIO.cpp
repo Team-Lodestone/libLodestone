@@ -4,10 +4,10 @@
 #include "Lodestone.Java/indev/McLevelLevelIO.h"
 
 namespace lodestone::java::indev {
-    level::Level *McLevelLevelIO::read(uint8_t *data, int version) const {
+    std::unique_ptr<level::Level> McLevelLevelIO::read(uint8_t *data, int version) const {
     }
 
-    level::Level *McLevelLevelIO::read(nbt::tag_compound *map) const {
+    std::unique_ptr<level::Level> McLevelLevelIO::read(nbt::tag_compound *map) const {
     }
 
     uint8_t *McLevelLevelIO::write(level::Level *l, int version) const {

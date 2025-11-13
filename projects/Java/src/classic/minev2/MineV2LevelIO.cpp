@@ -14,15 +14,15 @@
 #include "Lodestone.Level/conversion/block/data/ClassicBlockData.h"
 
 namespace lodestone::java::classic::minev2 {
-    level::Level *MineV2LevelIO::read(uint8_t *data, int version) const {
+    std::unique_ptr<level::Level> MineV2LevelIO::read(uint8_t *data, int version) const {
         bio::BinaryIO io(data);
 
         const int width = io.readBE<uint16_t>();
         const int depth = io.readBE<uint16_t>();
         const int height = io.readBE<uint16_t>();
 
-        level::FiniteLevel *l = new level::FiniteLevel(
-            {
+        std::unique_ptr<level::FiniteLevel> l = std::make_unique<level::FiniteLevel>(
+            level::types::Bounds2i {
                 {0, 0},
                 {
                     BLOCK_IDX_TO_CHUNK_IDX(width) - 1,
@@ -30,21 +30,21 @@ namespace lodestone::java::classic::minev2 {
                 }
             });
 
-        uint8_t *rd = io.getDataRelative();
+        const std::unique_ptr<level::conversion::block::version::BlockIO> bio = LodestoneJava::getInstance()->io.
+                getIo(version);
+
+        const uint8_t *rd = io.getDataRelative();
         for (int y = 0; y < height; y++) {
             for (int z = 0; z < depth; z++) {
                 for (int x = 0; x < width; x++) {
-                    // level::block::state::BlockState b = ClassicBlockIO::sInstance->readBlock(rd);
-                    // if (b.getBlock() != level::block::BlockRegistry::sDefaultBlock)
-                    // l->setBlockCreateRaw(b, x, y, z, height);
+                    level::block::state::BlockState b = bio->convertBlockToInternal(level::conversion::block::data::ClassicBlockData(*rd));
+                    if (b.getBlock() != level::block::BlockRegistry::sDefaultBlock)
+                        l->setBlockCreate(std::move(b), x, y, z, height);
 
                     rd++;
                 }
             }
         }
-
-        for (auto &chunk: l->getChunks() | std::views::values)
-            chunk->calculateMaps();
 
         return l;
     }

@@ -57,7 +57,6 @@ namespace lodestone::level::block::state {
 
     private:
         const Block *mBlock;
-        // TODO: it's almost definitely a good idea to figure out how to initialize this only when needed.
         // TODO: also we should be able to store more than strings
         std::optional<gtl::flat_hash_map<std::string, std::string>> mProperties;
     };

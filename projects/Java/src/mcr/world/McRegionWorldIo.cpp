@@ -22,10 +22,10 @@ namespace lodestone::java::mcr::world {
         return level::conversion::level::LevelIORegistry::sInstance.getLevelIO(identifiers::MCREGION);
     }
 
-    lodestone::level::world::World * McRegionWorldIo::read(const std::filesystem::path &path, int version) const {
+    std::unique_ptr<lodestone::level::world::World> McRegionWorldIo::read(const std::filesystem::path &path, int version) const {
         if (!std::filesystem::exists(path)) return nullptr;
 
-        level::world::World *world = new level::world::World();
+        std::unique_ptr<level::world::World> world = std::make_unique<level::world::World>();
         if (std::filesystem::exists(path / "level.dat")) {
             std::ifstream dat(path / "level.dat", std::ios::binary);
             zlib::izlibstream strm(dat);
@@ -36,7 +36,7 @@ namespace lodestone::java::mcr::world {
             nbt::tag_compound &data = (tag.get()->at("Data").as<nbt::tag_compound>());
 
             std::string name = data["LevelName"].get().as<nbt::tag_string>();
-            McRegionWorld *w = new McRegionWorld(name);
+            std::unique_ptr<McRegionWorld> w = std::make_unique<McRegionWorld>(name);
 
             // todo handle player tag
 
@@ -72,11 +72,14 @@ namespace lodestone::java::mcr::world {
             int64_t size = data["SizeOnDisk"].get().as<nbt::tag_long>();
             w->setSize(size);
 
-            world = w;
+            std::cout << w->toString() << std::endl;
+            world = std::move(w);
+            dat.close();
         }
 
 
-        java::mcr::region::McRegionRegionIO *io = (java::mcr::region::McRegionRegionIO *)level::conversion::region::RegionIORegistry::sInstance.getRegionIO(java::identifiers::MCREGION);
+        const java::mcr::region::McRegionRegionIO *io = static_cast<const java::mcr::region::McRegionRegionIO *>(level::conversion::region::RegionIORegistry::sInstance.
+            getRegionIO(java::identifiers::MCREGION));
 
         // do I need to call exists?
         if (std::filesystem::exists(path / "region") && std::filesystem::is_directory(path / "region")) {
@@ -91,10 +94,9 @@ namespace lodestone::java::mcr::world {
                 std::vector<uint8_t> mcr(f.file_size());
                 ifs.read(reinterpret_cast<char *>(mcr.data()), mcr.size());
 
-                level::region::Region *r = io->read(mcr.data(), mcr.size(), version, coords); // todo return value?
+                std::unique_ptr<level::region::Region> r = io->read(mcr.data(), mcr.size(), version, coords); // todo return value?
 
-                overworld->merge(*r);
-                delete r;
+                overworld->merge(std::move(r));
                 ifs.close();
 
                 std::cout << coords << std::endl;

@@ -92,15 +92,15 @@ namespace lodestone::level::chunk {
         mChunks.erase(coords);
     }
 
-    void ChunkContainer::merge(ChunkContainer &rhs) {
-        for (auto it = rhs.mChunks.begin(); it != rhs.mChunks.end();) {
+    void ChunkContainer::merge(std::unique_ptr<ChunkContainer> rhs) {
+        for (auto it = rhs->mChunks.begin(); it != rhs->mChunks.end();) {
             if (auto dest = mChunks.find(it->first); dest == mChunks.end()
                                                      && this->isChunkInBounds(it->first)) {
                 it->second->attach(this);
                 this->mChunks.emplace(it->first, std::move(it->second));
             }
 
-            it = rhs.mChunks.erase(it);
+            it = rhs->mChunks.erase(it);
         }
     }
 

@@ -10,7 +10,7 @@ namespace lodestone::level::conversion::world {
     public:
         // TODO: this should read from VFS
         /** Reads data into a new World */
-        virtual lodestone::level::world::World *read(uint8_t *data, int version) const = 0;
+        virtual std::unique_ptr<lodestone::level::world::World> read(uint8_t *data, int version) const = 0;
 
         // TODO: this *should* write to a VFS
         /** Writes a world to data */

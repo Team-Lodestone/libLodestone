@@ -12,9 +12,9 @@
 #include "Lodestone.Level/conversion/block/data/ClassicBlockData.h"
 
 namespace lodestone::java::classic::minev1 {
-    level::Level *MineV1LevelIO::read(uint8_t *data, const int version) const {
-        level::FiniteLevel *l = new level::FiniteLevel(
-            {
+    std::unique_ptr<level::Level> MineV1LevelIO::read(uint8_t *data, const int version) const {
+        std::unique_ptr<level::FiniteLevel> l = std::make_unique<level::FiniteLevel>(
+            level::types::Bounds2i {
                 {
                     0,
                     0
@@ -33,17 +33,13 @@ namespace lodestone::java::classic::minev1 {
             for (int z = 0; z < DEPTH; z++) {
                 for (int x = 0; x < WIDTH; x++) {
                     level::block::state::BlockState b = io->convertBlockToInternal(
-                        new level::conversion::block::data::ClassicBlockData(*data));
+                        level::conversion::block::data::ClassicBlockData(*data));
                     if (b.getBlock() != level::block::BlockRegistry::sDefaultBlock)
-                        l->setBlockCreateRaw(std::move(b), x, y, z, HEIGHT);
+                        l->setBlockCreate(std::move(b), x, y, z, HEIGHT);
 
                     data++;
                 }
             }
-        }
-
-        for (const auto &chunk: l->getChunks() | std::views::values) {
-            chunk->calculateMaps();
         }
 
         return l;

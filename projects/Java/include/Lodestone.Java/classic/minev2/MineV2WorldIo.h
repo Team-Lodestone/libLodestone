@@ -12,7 +12,7 @@ namespace lodestone::java::classic::minev2 {
     public:
         static constexpr uint32_t SIGNATURE = 0x271BB788;
 
-        level::world::World *read(uint8_t *data, int version) const override;
+        std::unique_ptr<level::world::World> read(uint8_t *data, int version) const override;
 
         uint8_t *write(level::world::World *w, int version) const override;
 
