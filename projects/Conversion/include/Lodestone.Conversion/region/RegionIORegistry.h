@@ -1,0 +1,31 @@
+//
+// Created by DexrnZacAttack on 10/15/25 using zPc-i2.
+//
+#ifndef LODESTONE_REGIONIOFACTORY_H
+#define LODESTONE_REGIONIOFACTORY_H
+#include <string>
+#include <memory>
+
+#include "Lodestone.Conversion/region/RegionIO.h"
+
+namespace lodestone::conversion::region {
+    /** Creates regions based on registered region IO classes */
+    class LODESTONE_API RegionIORegistry {
+    protected:
+        RegionIORegistry() = default;
+
+    public:
+        static RegionIORegistry sInstance;
+
+        void registerRegionIO(const lodestone::common::registry::NamespacedString &id,
+                              std::unique_ptr<const RegionIO> io);
+
+        const RegionIO *getRegionIO(const lodestone::common::registry::NamespacedString &id) const;
+
+    private:
+        gtl::flat_hash_map<lodestone::common::registry::NamespacedString, std::unique_ptr<const RegionIO>,
+            NamespacedStringHasher, NamespacedStringComparator> mRegisteredRegionIOs = {};
+    };
+}
+
+#endif //LODESTONE_REGIONIOFACTORY_H

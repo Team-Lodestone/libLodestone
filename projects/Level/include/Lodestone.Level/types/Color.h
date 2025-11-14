@@ -8,7 +8,7 @@
 #include <functional>
 
 namespace lodestone::level::types {
-    struct Color : public StringSerializable {
+    struct Color : public common::string::StringSerializable {
         unsigned char r, g, b, a;
 
         constexpr Color(const unsigned char r, const unsigned char g, const unsigned char b,

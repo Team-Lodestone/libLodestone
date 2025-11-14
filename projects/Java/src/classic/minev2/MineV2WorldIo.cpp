@@ -8,7 +8,7 @@
 #include <BinaryIO/BinaryIO.h>
 #include "Lodestone.Java/classic/minev2/MineV2LevelIO.h"
 #include "Lodestone.Java/classic/minev2/MineV2World.h"
-#include <Lodestone.Level/conversion/level/LevelIORegistry.h>
+#include <Lodestone.Conversion/level/LevelIORegistry.h>
 
 namespace lodestone::java::classic::minev2 {
     std::unique_ptr<level::world::World> MineV2WorldIO::read(uint8_t *data, const int version) const {
@@ -48,7 +48,7 @@ namespace lodestone::java::classic::minev2 {
             io.writeBE<uint16_t>(strlen("Player"));
             io.writeString("Player");
 
-            io.writeBE<uint64_t>(getCurrentTimeMillis());
+            io.writeBE<uint64_t>(common::getCurrentTimeMillis());
         }
 
         const MineV2LevelIO *lio = dynamic_cast<const MineV2LevelIO *>(getLevelIO(version));
@@ -78,7 +78,7 @@ namespace lodestone::java::classic::minev2 {
         return s;
     }
 
-    const lodestone::level::conversion::level::LevelIO *MineV2WorldIO::getLevelIO(int version) const {
-        return level::conversion::level::LevelIORegistry::sInstance.getLevelIO(identifiers::MINEV2);
+    const lodestone::conversion::level::LevelIO *MineV2WorldIO::getLevelIO(int version) const {
+        return lodestone::conversion::level::LevelIORegistry::sInstance.getLevelIO(identifiers::MINEV2);
     }
 }

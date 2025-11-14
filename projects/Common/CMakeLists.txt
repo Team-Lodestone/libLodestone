@@ -4,8 +4,8 @@ project(Lodestone.Common)
 set(CMAKE_CXX_STANDARD 20)
 
 set(FILES
-        include/Lodestone.Common/Lodestone.h
-        src/Lodestone.cpp
+        include/Lodestone.Common/LodestoneCommon.h
+        src/LodestoneCommon.cpp
 
         include/Lodestone.Common/Defines.h
         include/Lodestone.Common/string/OperatorStringBuilder.h

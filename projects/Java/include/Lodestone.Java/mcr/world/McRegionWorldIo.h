@@ -3,13 +3,13 @@
 //
 #ifndef LODESTONE_MCREGIONWORLDIO_H
 #define LODESTONE_MCREGIONWORLDIO_H
-#include <Lodestone.Level/conversion/world/DirectoryWorldIo.h>
+#include <Lodestone.Conversion/world/DirectoryWorldIo.h>
 #include <filesystem>
 
 namespace lodestone::java::mcr::world {
-    class McRegionWorldIo : public level::conversion::world::DirectoryWorldIO {
+    class McRegionWorldIo : public lodestone::conversion::world::DirectoryWorldIO {
     public:
-        const lodestone::level::conversion::level::LevelIO * getLevelIO(int version) const override;
+        const lodestone::conversion::level::LevelIO * getLevelIO(int version) const override;
 
         std::unique_ptr<lodestone::level::world::World> read(const std::filesystem::path &path, int version) const override;
 

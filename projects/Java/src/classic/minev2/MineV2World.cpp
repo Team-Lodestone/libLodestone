@@ -3,27 +3,27 @@
 //
 #include "Lodestone.Java/classic/minev2/MineV2World.h"
 
-#include <Lodestone.Common/Lodestone.h>
+#include <Lodestone.Common/LodestoneCommon.h>
 
 #include "Lodestone.Java/Identifiers.h"
 #include "Lodestone.Java/classic/minev2/MineV2WorldIo.h"
-#include <Lodestone.Level/conversion/world/WorldIORegistry.h>
+#include <Lodestone.Conversion/world/WorldIORegistry.h>
 
 namespace lodestone::java::classic::minev2 {
     MineV2World::MineV2World(const std::string &name, const std::string &author) : World(name), mAuthor(author),
-        mCreationTime(getCurrentTimeMillis()) {
+        mCreationTime(common::getCurrentTimeMillis()) {
     }
 
     MineV2World::MineV2World(std::unique_ptr<level::Level> &&overworld, const std::string &name,
                              const std::string &author) : World(std::move(overworld), name), mAuthor(author),
-                                                          mCreationTime(getCurrentTimeMillis()) {
+                                                          mCreationTime(common::getCurrentTimeMillis()) {
     }
 
     MineV2World::MineV2World(
         gtl::flat_hash_map<lodestone::common::registry::NamespacedString, std::unique_ptr<level::Level>,
             NamespacedStringHasher, NamespacedStringComparator> &&levels, const std::string &name,
         const std::string &author) : World(name, std::move(levels)), mAuthor(author),
-                                     mCreationTime(getCurrentTimeMillis()) {
+                                     mCreationTime(common::getCurrentTimeMillis()) {
     }
 
     const std::string &MineV2World::getAuthor() const {
@@ -46,7 +46,7 @@ namespace lodestone::java::classic::minev2 {
         this->mCreationTime = time;
     }
 
-    const lodestone::level::conversion::world::WorldIO *MineV2World::getIO() {
-        return level::conversion::world::WorldIORegistry::sInstance.getWorldIO(identifiers::MINEV2);
+    const lodestone::conversion::world::WorldIO *MineV2World::getIO() {
+        return lodestone::conversion::world::WorldIORegistry::sInstance.getWorldIO(identifiers::MINEV2);
     }
 }

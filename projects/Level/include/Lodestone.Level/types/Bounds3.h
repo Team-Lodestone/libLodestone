@@ -4,12 +4,12 @@
 #ifndef LODESTONE_BOUNDS_H
 #define LODESTONE_BOUNDS_H
 
-#include <Lodestone.Common/Lodestone.h>
+#include <Lodestone.Common/LodestoneCommon.h>
 #include "Lodestone.Level/types/Vec3.h"
 
 namespace lodestone::level::types {
     template <typename T>
-    struct LODESTONE_API Bounds3 final : public StringSerializable {
+    struct LODESTONE_API Bounds3 final : public lodestone::common::string::StringSerializable {
         Vec3<T> min;
         Vec3<T> max;
 

@@ -16,7 +16,7 @@ namespace lodestone::level::chunk {
 }
 
 namespace lodestone::level::chunk {
-    class LODESTONE_API Chunk : public StringSerializable {
+    class LODESTONE_API Chunk : public lodestone::common::string::StringSerializable {
     public:
         Chunk();
 
@@ -114,13 +114,13 @@ namespace lodestone::level::chunk {
          *
          * Each x and z coord corresponds to the topmost block's height
          */
-        int16_t *mHeightmap = new int16_t[constants::CHUNK_WIDTH * constants::CHUNK_DEPTH]{};
+        int16_t *mHeightmap = new int16_t[common::constants::CHUNK_WIDTH * common::constants::CHUNK_DEPTH]{};
         /** Blockmap
          *
          * Each x and z coord corresponds to the topmost block's state
          */
         block::state::BlockState **mBlockmap = new block::state::BlockState *[
-            constants::CHUNK_WIDTH * constants::CHUNK_DEPTH]{};
+            common::constants::CHUNK_WIDTH * common::constants::CHUNK_DEPTH]{};
 
         // gtl::flat_hash_map<Vec3i, TileEntity> mTileEntities;
         // gtl::flat_hash_map<Vec3i, Entity> mEntities;

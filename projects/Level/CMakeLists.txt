@@ -3,8 +3,6 @@ project(Lodestone.Level)
 
 set(CMAKE_CXX_STANDARD 20)
 
-OPTION(USE_FALLBACK_BLOCK "Use fallback block when conversion of a block fails" ON)
-
 set(FILES
         include/Lodestone.Level/Level.h
         src/Level.cpp
@@ -37,47 +35,21 @@ set(FILES
         include/Lodestone.Level/chunk/LevelChunk.h
         src/chunk/EmptyChunk.cpp
         include/Lodestone.Level/chunk/EmptyChunk.h
-        src/conversion/chunk/ChunkIORegistry.cpp
-        include/Lodestone.Level/conversion/chunk/ChunkIORegistry.h
-        src/conversion/chunk/ChunkIO.cpp
-        include/Lodestone.Level/conversion/chunk/ChunkIO.h
-        src/conversion/level/LevelIORegistry.cpp
-        include/Lodestone.Level/conversion/level/LevelIORegistry.h
-        src/conversion/level/LevelIO.cpp
-        include/Lodestone.Level/conversion/level/LevelIO.h
+
         src/world/World.cpp
         include/Lodestone.Level/world/World.h
-        src/conversion/world/WorldIO.cpp
-        include/Lodestone.Level/conversion/world/WorldIO.h
-        src/conversion/world/WorldIORegistry.cpp
-        include/Lodestone.Level/conversion/world/WorldIORegistry.h
-        include/Lodestone.Level/conversion/region/RegionIO.h
-        src/conversion/region/RegionIORegistry.cpp
-        include/Lodestone.Level/conversion/region/RegionIORegistry.h
+
         include/Lodestone.Level/types/Bounds3.h
         include/Lodestone.Level/types/Bounds2.h
         include/Lodestone.Level/block/Blocks.h
-        include/Lodestone.Level/conversion/block/VersionedBlockIO.h
-        include/Lodestone.Level/conversion/block/BlockIO.h
-        src/conversion/block/BlockIO.cpp
-        include/Lodestone.Level/conversion/block/data/NumericBlockData.h
-        include/Lodestone.Level/conversion/block/data/ClassicBlockData.h
-        src/conversion/block/data/ClassicBlockData.cpp
-        include/Lodestone.Level/conversion/block/data/FlattenedBlockData.h
-        src/conversion/block/data/FlattenedBlockData.cpp
-        include/Lodestone.Level/conversion/block/data/AbstractBlockData.h
-        src/conversion/block/data/NumericBlockData.cpp
-        src/conversion/block/VersionedBlockIO.cpp
-        include/Lodestone.Level/types/hash/BlockDataHash.h
-        include/Lodestone.Level/conversion/world/FileWorldIo.h
-        include/Lodestone.Level/conversion/world/DirectoryWorldIo.h
+        ../Conversion/include/Lodestone.Conversion/types/hash/BlockDataHash.h
         src/region/Region.cpp
         include/Lodestone.Level/region/Region.h
         src/chunk/ChunkContainer.cpp
         include/Lodestone.Level/chunk/ChunkContainer.h
         src/FiniteLevel.cpp
         include/Lodestone.Level/FiniteLevel.h
-        include/Lodestone.Level/Identifiers.h
+        ../Conversion/include/Lodestone.Conversion/Identifiers.h
         src/entity/Player.cpp
         include/Lodestone.Level/entity/Player.h
         src/entity/Entity.cpp
@@ -103,7 +75,3 @@ target_include_directories(Lodestone.Level
 )
 
 target_link_libraries(Lodestone.Level PUBLIC Lodestone.Common)
-
-if (USE_FALLBACK_BLOCK)
-    target_compile_definitions(Lodestone.Level PRIVATE USE_FALLBACK_BLOCK)
-endif ()

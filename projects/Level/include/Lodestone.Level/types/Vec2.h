@@ -6,7 +6,7 @@
 
 namespace lodestone::level::types {
     template <typename T>
-    struct Vec2 final : StringSerializable {
+    struct Vec2 final : common::string::StringSerializable {
         T x, z;
 
         constexpr Vec2(const T x, const T z) : x(x), z(z) {}

@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.30)
 project(Lodestone VERSION 1.0.0)
 
-set(VERSION_SUFFIX "-dev.23") # used for non-stable versions, otherwise blank
+set(VERSION_SUFFIX "-dev.24") # used for non-stable versions, otherwise blank
 set(CMAKE_CXX_STANDARD 20)
 
 option(ENABLE_LINTERS "Enable source linters" ON)
+option(BUILD_VIEWER "Build Lodestone.Viewer" OFF)
 
 if (ENABLE_LINTERS STREQUAL "ON")
     add_custom_target(LodestoneScripts.CheckIncludePaths
@@ -16,8 +17,9 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DCMAKE_BUILD_DEBUG)
 endif ()
 
-option(ENABLE_OPTIMIZATIONS "Enable compiler optimizations" OFF)
+option(ENABLE_OPTIMIZATIONS "Enable compiler optimizations" ON)
 if (ENABLE_OPTIMIZATIONS STREQUAL "ON")
+    message(NOTICE "Compiler optimizations enabled")
     add_compile_options(
             "$<$<COMPILE_LANGUAGE:CXX>:-O3;-ffast-math;-march=native;-fpic;-ftree-vectorize>"
     )
@@ -52,17 +54,23 @@ find_package(ZLIB)
 add_subdirectory(projects/Tests)
 add_subdirectory(projects/Common)
 add_subdirectory(projects/Level)
+add_subdirectory(projects/Conversion)
 add_subdirectory(projects/Java)
+if (BUILD_VIEWER STREQUAL "ON")
+    add_subdirectory(projects/Viewer)
+endif()
 
 # TODO: this is probably a bad idea incase one wants to only include certain libraries
 target_link_libraries(Lodestone.Tests PRIVATE BIO gtl)
 target_link_libraries(Lodestone.Common PRIVATE BIO gtl)
 target_link_libraries(Lodestone.Level PRIVATE BIO gtl)
+target_link_libraries(Lodestone.Conversion PRIVATE BIO gtl)
 target_link_libraries(Lodestone.Java PRIVATE BIO ZLIB::ZLIB gtl)
 
 add_dependencies(Lodestone.Tests LodestoneScripts.CheckIncludePaths)
 add_dependencies(Lodestone.Common LodestoneScripts.CheckIncludePaths)
 add_dependencies(Lodestone.Level LodestoneScripts.CheckIncludePaths)
+add_dependencies(Lodestone.Conversion LodestoneScripts.CheckIncludePaths)
 add_dependencies(Lodestone.Java LodestoneScripts.CheckIncludePaths)
 
 # DEFINITIONS
@@ -86,8 +94,10 @@ add_custom_target(Lodestone.All ALL DEPENDS
         LodestoneScripts.CheckIncludePaths
         Lodestone.Common
         Lodestone.Level
+        Lodestone.Conversion
         Lodestone.Tests
         Lodestone.Java
+#        Lodestone.Viewer
 )
 
 

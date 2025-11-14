@@ -4,7 +4,7 @@
 #include "Lodestone.Java/mcr/world/McRegionWorld.h"
 
 #include "Lodestone.Java/Identifiers.h"
-#include <Lodestone.Level/conversion/world/WorldIORegistry.h>
+#include <Lodestone.Conversion/world/WorldIORegistry.h>
 
 namespace lodestone::java::mcr::world {
     McRegionWorld::McRegionWorld(const std::string &name) : World(name), mSeed(0), mSpawnPos(0, 0, 0),
@@ -15,8 +15,8 @@ namespace lodestone::java::mcr::world {
                                                             mLastPlayed(0), mSize(0) {
     }
 
-    const lodestone::level::conversion::world::WorldIO * McRegionWorld::getIO() {
-        return level::conversion::world::WorldIORegistry::sInstance.getWorldIO(identifiers::MCREGION);
+    const lodestone::conversion::world::WorldIO * McRegionWorld::getIO() {
+        return lodestone::conversion::world::WorldIORegistry::sInstance.getWorldIO(identifiers::MCREGION);
     }
 
     int64_t McRegionWorld::getSeed() const {

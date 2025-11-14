@@ -7,7 +7,7 @@
 
 namespace lodestone::level::types {
     template <typename T>
-    struct LODESTONE_API Vec3 final : public StringSerializable {
+    struct LODESTONE_API Vec3 final : public lodestone::common::string::StringSerializable {
         T x, y, z;
 
         constexpr Vec3(const T x, const T y, const T z) : x(x), y(y), z(z) {

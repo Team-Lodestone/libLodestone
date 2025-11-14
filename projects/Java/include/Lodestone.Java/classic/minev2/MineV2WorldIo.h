@@ -3,12 +3,12 @@
 //
 #ifndef LODESTONE_MINEV2WORLDIO_H
 #define LODESTONE_MINEV2WORLDIO_H
-#include <Lodestone.Level/conversion/level/LevelIO.h>
-#include <Lodestone.Level/conversion/world/FileWorldIo.h>
-#include <Lodestone.Level/conversion/world/WorldIO.h>
+#include <Lodestone.Conversion/level/LevelIO.h>
+#include <Lodestone.Conversion/world/FileWorldIo.h>
+#include <Lodestone.Conversion/world/WorldIO.h>
 
 namespace lodestone::java::classic::minev2 {
-    class MineV2WorldIO : public level::conversion::world::FileWorldIO {
+    class MineV2WorldIO : public lodestone::conversion::world::FileWorldIO {
     public:
         static constexpr uint32_t SIGNATURE = 0x271BB788;
 
@@ -18,7 +18,7 @@ namespace lodestone::java::classic::minev2 {
 
         size_t getSize(level::world::World *w, int version) const override;
 
-        const lodestone::level::conversion::level::LevelIO *getLevelIO(int version) const override;
+        const lodestone::conversion::level::LevelIO *getLevelIO(int version) const override;
     };
 }
 

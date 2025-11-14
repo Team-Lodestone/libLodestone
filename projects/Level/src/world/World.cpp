@@ -32,7 +32,7 @@ namespace lodestone::level::world {
         return mLevels.contains(id);
     }
 
-    const lodestone::level::conversion::world::WorldIO * World::getIO() {
+    const lodestone::conversion::world::WorldIO * World::getIO() {
         return nullptr;
     }
 

@@ -3,11 +3,11 @@
 //
 #ifndef LODESTONE_MCLEVELLEVELIO_H
 #define LODESTONE_MCLEVELLEVELIO_H
-#include "Lodestone.Level/conversion/level/LevelIO.h"
+#include <Lodestone.Conversion/level/LevelIO.h>
 #include <libnbt++/nbt_tags.h>
 
 namespace lodestone::java::indev {
-    class McLevelLevelIO : public level::conversion::level::LevelIO {
+    class McLevelLevelIO : public lodestone::conversion::level::LevelIO {
     public:
         std::unique_ptr<level::Level> read(uint8_t *data, int version) const override;
 

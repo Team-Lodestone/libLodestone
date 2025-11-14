@@ -11,7 +11,7 @@
 #include <libnbt++/io/stream_reader.h>
 #include <Lodestone.Common/io/DataBuffer.h>
 #include <Lodestone.Common/Indexing.h>
-#include <Lodestone.Level/conversion/block/data/NumericBlockData.h>
+#include <Lodestone.Conversion/block/data/NumericBlockData.h>
 #include "Lodestone.Java/mcr/chunk/McRegionChunk.h"
 
 namespace lodestone::java::mcr::chunk {
@@ -33,7 +33,7 @@ namespace lodestone::java::mcr::chunk {
 
         std::unique_ptr<McRegionChunk> c = std::make_unique<McRegionChunk>(level::types::Vec2i(x, z), lastUpdate);
 
-        const std::unique_ptr<level::conversion::block::version::BlockIO> io = LodestoneJava::getInstance()->io.
+        const std::unique_ptr<lodestone::conversion::block::version::BlockIO> io = LodestoneJava::getInstance()->io.
                 getIo(version);
 
         for (int cx = 0; cx < 16; cx++) {
@@ -45,12 +45,12 @@ namespace lodestone::java::mcr::chunk {
                     const uint8_t dat = ((idx / 2) % 2 == 0) ? (d >> 4) & 0x0F : d & 0x0F;
 
                     level::block::state::BlockState b = io->convertBlockToInternal(
-                    level::conversion::block::data::NumericBlockData(
+                    lodestone::conversion::block::data::NumericBlockData(
                             static_cast<uint8_t>(blocks[idx]),
                             0)); // TODO metadata (maybe MetadataIO or BlockPropertyIO?)
 
                     if (b.getBlock() != level::block::BlockRegistry::sDefaultBlock)
-                        c->McRegionChunk::setBlock(std::move(b), cx, cy, cz);
+                        c->McRegionChunk::setBlockRaw(std::move(b), cx, cy, cz);
                 }
             }
         }

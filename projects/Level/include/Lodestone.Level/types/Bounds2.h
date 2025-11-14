@@ -11,7 +11,7 @@
 
 namespace lodestone::level::types {
     template <typename T>
-    struct LODESTONE_API Bounds2 final : StringSerializable {
+    struct LODESTONE_API Bounds2 final : common::string::StringSerializable {
         Vec2<T> min;
         Vec2<T> max;
 

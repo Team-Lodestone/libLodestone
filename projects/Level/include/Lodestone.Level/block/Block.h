@@ -13,7 +13,7 @@
 namespace lodestone::level::block {
     class BlockState;
 
-    class Block : public StringSerializable {
+    class Block : public common::string::StringSerializable {
     public:
         constexpr Block(const lodestone::common::registry::NamespacedString *id,
                         const material::Material &material) : mId(id), mMaterial(material) {

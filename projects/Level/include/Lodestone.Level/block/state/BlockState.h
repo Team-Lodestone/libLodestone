@@ -15,7 +15,7 @@ namespace lodestone::level::block {
 
 namespace lodestone::level::block::state {
     /** Wraps a block with runtime-modifiable "properties" */
-    class BlockState : public StringSerializable {
+    class BlockState : public lodestone::common::string::StringSerializable {
     public:
         static const gtl::flat_hash_map<std::string, std::string> EMPTY_PROPERTIES;
 

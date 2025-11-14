@@ -7,11 +7,11 @@
 #include <stddef.h>
 
 #include <Lodestone.Level/region/Region.h>
-#include <Lodestone.Level/conversion/region/RegionIO.h>
+#include <Lodestone.Conversion/region/RegionIO.h>
 #include <Lodestone.Level/types/Vec2.h>
 
 namespace lodestone::java::mcr::region {
-    class McRegionRegionIO : public level::conversion::region::RegionIO {
+    class McRegionRegionIO : public lodestone::conversion::region::RegionIO {
     public:
         static constexpr int CHUNK_COUNT = 1024;
         static constexpr int SECTOR_SIZE = 4096;

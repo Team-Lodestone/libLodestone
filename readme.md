@@ -4,12 +4,13 @@ Provides file type reading, file type writing, and world & format conversion for
 LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE).
 
 ### Libraries
-| Name                                 | Description                                  |
-|--------------------------------------|----------------------------------------------|
-| [Lodestone.Level](/projects/Level)   | Voxel world engine with dynamic registration |
-| [Lodestone.Java](/projects/Java)     | Java Edition format converters               |
-| [Lodestone.Common](/projects/Common) | Common dependencies for all projects         |
-| [Lodestone.Tests](/projects/Tests)   | Tests for our converters                     |
+| Name                                         | Description                                  |
+|----------------------------------------------|----------------------------------------------|
+| [Lodestone.Level](/projects/Level)           | Voxel world engine with dynamic registration |
+| [Lodestone.Conversion](/projects/Conversion) | Conversion base classes & registries         |
+| [Lodestone.Java](/projects/Java)             | Java Edition format converters               |
+| [Lodestone.Common](/projects/Common)         | Common dependencies for all projects         |
+| [Lodestone.Tests](/projects/Tests)           | Tests for our converters                     |
 
 
 # Roadmap
@@ -18,7 +19,7 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
     - [X] Chunked Level
       - [X] Chunk Sections
       - [ ] Palettes (for memory usage)
-      - [ ] Lighting calculation (maybe?)
+    - [ ] Lighting calculation (maybe?)
     - [ ] Biomes
     - [ ] POI/Structure system
     - [ ] Players (store player data per world)

@@ -10,16 +10,16 @@
 #include <libnbt++/io/izlibstream.h>
 #include <libnbt++/io/stream_reader.h>
 #include <libnbt++/nbt_tags.h>
-#include <Lodestone.Level/conversion/level/LevelIORegistry.h>
+#include <Lodestone.Conversion/level/LevelIORegistry.h>
 #include "Lodestone.Java/Identifiers.h"
-#include <Lodestone.Level/conversion/region/RegionIORegistry.h>
+#include <Lodestone.Conversion/region/RegionIORegistry.h>
 #include "Lodestone.Java/mcr/chunk/McRegionChunk.h"
 #include "Lodestone.Java/mcr/region/McRegionRegion.h"
 #include "Lodestone.Java/mcr/region/McRegionRegionIo.h"
 
 namespace lodestone::java::mcr::world {
-    const lodestone::level::conversion::level::LevelIO * McRegionWorldIo::getLevelIO(int version) const {
-        return level::conversion::level::LevelIORegistry::sInstance.getLevelIO(identifiers::MCREGION);
+    const lodestone::conversion::level::LevelIO * McRegionWorldIo::getLevelIO(int version) const {
+        return lodestone::conversion::level::LevelIORegistry::sInstance.getLevelIO(identifiers::MCREGION);
     }
 
     std::unique_ptr<lodestone::level::world::World> McRegionWorldIo::read(const std::filesystem::path &path, int version) const {
@@ -78,7 +78,7 @@ namespace lodestone::java::mcr::world {
         }
 
 
-        const java::mcr::region::McRegionRegionIO *io = static_cast<const java::mcr::region::McRegionRegionIO *>(level::conversion::region::RegionIORegistry::sInstance.
+        const java::mcr::region::McRegionRegionIO *io = static_cast<const java::mcr::region::McRegionRegionIO *>(lodestone::conversion::region::RegionIORegistry::sInstance.
             getRegionIO(java::identifiers::MCREGION));
 
         // do I need to call exists?

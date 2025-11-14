@@ -21,7 +21,7 @@ namespace lodestone::level::chunk::section {
     }
 
     block::state::BlockState *LevelSection::getBlock(const int x, const int y, const int z) const {
-        return &mBlocks[INDEX_YZX(x, y, z, constants::CHUNK_WIDTH, constants::CHUNK_DEPTH)];
+        return &mBlocks[INDEX_YZX(x, y, z, common::constants::CHUNK_WIDTH, common::constants::CHUNK_DEPTH)];
     }
 
     const block::state::BlockState *LevelSection::getBlocks() {
@@ -33,6 +33,6 @@ namespace lodestone::level::chunk::section {
     }
 
     void LevelSection::setBlock(block::state::BlockState &&blk, const int x, const int y, const int z) {
-        mBlocks[INDEX_YZX(x, y, z, constants::CHUNK_WIDTH, constants::CHUNK_DEPTH)] = std::move(blk);
+        mBlocks[INDEX_YZX(x, y, z, common::constants::CHUNK_WIDTH, common::constants::CHUNK_DEPTH)] = std::move(blk);
     }
 }

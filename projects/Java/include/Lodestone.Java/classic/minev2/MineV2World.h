@@ -5,7 +5,7 @@
 #define LODESTONE_MINEV2WORLD_H
 #include <Lodestone.Level/world/World.h>
 
-#include <Lodestone.Level/conversion/world/WorldIO.h>
+#include <Lodestone.Conversion/world/WorldIO.h>
 
 namespace lodestone::java::classic::minev2 {
     class MineV2World : public level::world::World {
@@ -30,7 +30,7 @@ namespace lodestone::java::classic::minev2 {
 
         void setCreationTime(const uint64_t time);
 
-        const lodestone::level::conversion::world::WorldIO *getIO() override;
+        const lodestone::conversion::world::WorldIO *getIO() override;
 
     protected:
         std::string mAuthor;

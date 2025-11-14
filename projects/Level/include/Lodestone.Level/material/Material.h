@@ -8,7 +8,7 @@
 #include "Lodestone.Level/types/Color.h"
 
 namespace lodestone::level::material {
-    class Material : public StringSerializable {
+    class Material : public common::string::StringSerializable {
     public:
         constexpr Material(const types::Color &color) : mColor(color) {
         };

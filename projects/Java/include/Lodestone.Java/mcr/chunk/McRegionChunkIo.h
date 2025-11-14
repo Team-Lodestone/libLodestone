@@ -4,10 +4,10 @@
 #ifndef LODESTONE_MCREGIONCHUNKIO_H
 #define LODESTONE_MCREGIONCHUNKIO_H
 #include <libnbt++/tag_compound.h>
-#include <Lodestone.Level/conversion/chunk/ChunkIO.h>
+#include <Lodestone.Conversion/chunk/ChunkIO.h>
 
 namespace lodestone::java::mcr::chunk {
-    class McRegionChunkIO : public level::conversion::chunk::ChunkIO {
+    class McRegionChunkIO : public lodestone::conversion::chunk::ChunkIO {
     public:
         std::unique_ptr<level::chunk::Chunk> read(uint8_t *data, size_t size, int version) const override;
 

@@ -51,5 +51,5 @@ target_include_directories(Lodestone.Java
         ${CMAKE_CURRENT_SOURCE_DIR}/include/Lodestone.Java
 )
 
-target_link_libraries(Lodestone.Java PRIVATE Lodestone.Level nbt++)
+target_link_libraries(Lodestone.Java PRIVATE Lodestone.Level Lodestone.Conversion nbt++)
 #target_link_libraries(Lodestone.Java PRIVATE Lodestone.Common)

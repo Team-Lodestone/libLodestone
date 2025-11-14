@@ -10,12 +10,12 @@
 #include "Lodestone.Level/Level.h"
 #include "Lodestone.Level/entity/Player.h"
 
-namespace lodestone::level::conversion::world {
+namespace lodestone::conversion::world {
     class WorldIO;
 }
 
 namespace lodestone::level::world {
-    class World : public StringSerializable {
+    class World : public lodestone::common::string::StringSerializable {
     public:
         class Dimension {
             // just a class full of constants for now
@@ -51,7 +51,7 @@ namespace lodestone::level::world {
 
         std::string getName() const { return mName; }
 
-        virtual const lodestone::level::conversion::world::WorldIO *getIO();
+        virtual const lodestone::conversion::world::WorldIO *getIO();
 
         virtual level::Level *getDefaultLevel() const;
 

@@ -9,7 +9,7 @@
 
 // this class required me to upgrade to c++20
 namespace lodestone::common::registry {
-    class NamespacedString : public StringSerializable {
+    class NamespacedString : public string::StringSerializable {
     protected:
         explicit constexpr NamespacedString(const char *name) noexcept : mNamespace("lodestone"), mName(name) {
         };

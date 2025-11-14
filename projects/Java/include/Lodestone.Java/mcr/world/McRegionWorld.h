@@ -14,7 +14,7 @@ namespace lodestone::java::mcr::world {
             return std::format("McRegionWorld[seed={}, time={}, spawnPos={}", mSeed, mTime, mSpawnPos.toString());
         }
 
-        const lodestone::level::conversion::world::WorldIO * getIO() override;
+        const lodestone::conversion::world::WorldIO * getIO() override;
 
         int64_t getSeed() const;
         void setSeed(int64_t seed);

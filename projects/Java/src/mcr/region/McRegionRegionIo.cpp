@@ -14,8 +14,8 @@
 #include "Lodestone.Java/mcr/chunk/McRegionChunkIo.h"
 #include "Lodestone.Java/mcr/RegionChunkIndice.h"
 #include "Lodestone.Java/mcr/RegionCompression.h"
-#include <Lodestone.Level/conversion/chunk/ChunkIO.h>
-#include <Lodestone.Level/conversion/chunk/ChunkIORegistry.h>
+#include <Lodestone.Conversion/chunk/ChunkIO.h>
+#include <Lodestone.Conversion/chunk/ChunkIORegistry.h>
 #include <Lodestone.Level/region/Region.h>
 
 #include "Lodestone.Java/mcr/region/McRegionRegion.h"
@@ -26,7 +26,7 @@ namespace lodestone::java::mcr::region {
         bio::BinaryIO io(data);
 
         const chunk::McRegionChunkIO *chunkIo = dynamic_cast<const chunk::McRegionChunkIO *>(
-            level::conversion::chunk::ChunkIORegistry::sInstance.getChunkIO(identifiers::MCREGION));
+            lodestone::conversion::chunk::ChunkIORegistry::sInstance.getChunkIO(identifiers::MCREGION));
 
         std::unique_ptr<lodestone::level::region::Region> region = std::make_unique<McRegionRegion>(coords);
 

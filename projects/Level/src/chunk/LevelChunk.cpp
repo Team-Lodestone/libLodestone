@@ -5,16 +5,16 @@
 
 namespace lodestone::level::chunk {
     LevelChunk::LevelChunk(const int height) : Chunk() {
-        this->mSections.reserve(height / 16);
+        this->mSections = std::vector<std::unique_ptr<section::Section> >(height / 16);
     }
 
     LevelChunk::LevelChunk(const int height, const types::Vec2i &coords) : Chunk(coords) {
-        this->mSections.reserve(height / 16);
+        this->mSections = std::vector<std::unique_ptr<section::Section> >(height / 16);
     }
 
     LevelChunk::LevelChunk(const int height, ChunkContainer *container, const types::Vec2i &coords) : Chunk(
         container, coords) {
-        this->mSections.reserve(height / 16);
+        this->mSections = std::vector<std::unique_ptr<section::Section> >(height / 16);
     }
 
     int LevelChunk::getChunkHeight() const {
@@ -37,16 +37,8 @@ namespace lodestone::level::chunk {
     }
 
     section::Section *LevelChunk::getSectionCreate(const int y) {
-        if (y >= static_cast<int>(mSections.size()))
-            mSections.resize(y + 1);
-
-        if (!mSections[y]) {
-            auto s = std::make_unique<section::LevelSection>();
-            section::LevelSection *p = s.get();
-
-            mSections[y] = std::move(s);
-            return p;
-        }
+        if (!mSections[y])
+            mSections[y] = std::make_unique<section::LevelSection>();
 
         return mSections[y].get();
     }
@@ -58,8 +50,8 @@ namespace lodestone::level::chunk {
     void LevelChunk::calculateHeightmap() {
         const int height = getChunkBlockHeight();
 
-        for (int z = 0; z < constants::CHUNK_DEPTH; z++) {
-            for (int x = 0; x < constants::CHUNK_WIDTH; x++) {
+        for (int z = 0; z < common::constants::CHUNK_DEPTH; z++) {
+            for (int x = 0; x < common::constants::CHUNK_WIDTH; x++) {
                 calculateHeightmapAtColumn(x, z, height);
             }
         }
@@ -68,8 +60,8 @@ namespace lodestone::level::chunk {
     void LevelChunk::calculateBlockmap() {
         const int height = getChunkBlockHeight();
 
-        for (int z = 0; z < constants::CHUNK_DEPTH; z++) {
-            for (int x = 0; x < constants::CHUNK_WIDTH; x++) {
+        for (int z = 0; z < common::constants::CHUNK_DEPTH; z++) {
+            for (int x = 0; x < common::constants::CHUNK_WIDTH; x++) {
                 for (int y = height; y >= 0; y--) {
                     if (block::state::BlockState *s = getBlock(x, y, z);
                         s != getBlockmapBlockAt(x, z) && *s != block::BlockRegistry::sDefaultBlock) {
@@ -84,8 +76,8 @@ namespace lodestone::level::chunk {
     void LevelChunk::calculateMaps() {
         const int height = getChunkBlockHeight();
 
-        for (int z = 0; z < constants::CHUNK_DEPTH; z++) {
-            for (int x = 0; x < constants::CHUNK_WIDTH; x++) {
+        for (int z = 0; z < common::constants::CHUNK_DEPTH; z++) {
+            for (int x = 0; x < common::constants::CHUNK_WIDTH; x++) {
                 calculateMapsAtColumn(x, z, height);
             }
         }

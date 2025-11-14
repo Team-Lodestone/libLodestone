@@ -3,10 +3,10 @@
 //
 #ifndef LODESTONE_MINEV2LEVELIO_H
 #define LODESTONE_MINEV2LEVELIO_H
-#include "Lodestone.Level/conversion/level/LevelIO.h"
+#include <Lodestone.Conversion/level/LevelIO.h>
 
 namespace lodestone::java::classic::minev2 {
-    class MineV2LevelIO : public level::conversion::level::LevelIO {
+    class MineV2LevelIO : public lodestone::conversion::level::LevelIO {
     public:
         std::unique_ptr<level::Level> read(uint8_t *data, int version) const override;
 

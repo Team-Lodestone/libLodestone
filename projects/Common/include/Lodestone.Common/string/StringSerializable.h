@@ -5,23 +5,25 @@
 #define LODESTONE_STRINGSERIALIZABLE_H
 #include <string>
 
-/** Java toString clone */
-class StringSerializable {
-public:
-    constexpr StringSerializable() = default;
+namespace lodestone::common::string {
+    /** Java toString clone */
+    class StringSerializable {
+    public:
+        constexpr StringSerializable() = default;
 
-    constexpr virtual ~StringSerializable() = default;
+        constexpr virtual ~StringSerializable() = default;
 
-    virtual constexpr operator std::string() const {
-        return toString();
-    }
+        virtual constexpr operator std::string() const {
+            return toString();
+        }
 
-    constexpr virtual std::string toString() const = 0;
+        constexpr virtual std::string toString() const = 0;
 
-    constexpr friend std::ostream &operator<<(std::ostream &os, const StringSerializable &s) {
-        os << s.toString();
-        return os;
+        constexpr friend std::ostream &operator<<(std::ostream &os, const StringSerializable &s) {
+            os << s.toString();
+            return os;
+        };
     };
-};
+}
 
 #endif //LODESTONE_STRINGSERIALIZABLE_H

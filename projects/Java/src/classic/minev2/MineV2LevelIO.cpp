@@ -10,8 +10,8 @@
 #include "Lodestone.Java/classic/minev1/MineV1LevelIO.h"
 #include "Lodestone.Level/FiniteLevel.h"
 #include <Lodestone.Common/Indexing.h>
-#include "Lodestone.Level/conversion/block/BlockIO.h"
-#include "Lodestone.Level/conversion/block/data/ClassicBlockData.h"
+#include <Lodestone.Conversion/block/BlockIO.h>
+#include <Lodestone.Conversion/block/data/ClassicBlockData.h>
 
 namespace lodestone::java::classic::minev2 {
     std::unique_ptr<level::Level> MineV2LevelIO::read(uint8_t *data, int version) const {
@@ -30,14 +30,14 @@ namespace lodestone::java::classic::minev2 {
                 }
             });
 
-        const std::unique_ptr<level::conversion::block::version::BlockIO> bio = LodestoneJava::getInstance()->io.
+        const std::unique_ptr<lodestone::conversion::block::version::BlockIO> bio = LodestoneJava::getInstance()->io.
                 getIo(version);
 
         const uint8_t *rd = io.getDataRelative();
         for (int y = 0; y < height; y++) {
             for (int z = 0; z < depth; z++) {
                 for (int x = 0; x < width; x++) {
-                    level::block::state::BlockState b = bio->convertBlockToInternal(level::conversion::block::data::ClassicBlockData(*rd));
+                    level::block::state::BlockState b = bio->convertBlockToInternal(lodestone::conversion::block::data::ClassicBlockData(*rd));
                     if (b.getBlock() != level::block::BlockRegistry::sDefaultBlock)
                         l->setBlockCreate(std::move(b), x, y, z, height);
 
@@ -51,7 +51,7 @@ namespace lodestone::java::classic::minev2 {
 
     void MineV2LevelIO::write(level::Level *l, uint8_t *out, const int version) const {
         bio::BinaryIO io(out);
-        const std::unique_ptr<level::conversion::block::version::BlockIO> bio = LodestoneJava::getInstance()->io.
+        const std::unique_ptr<lodestone::conversion::block::version::BlockIO> bio = LodestoneJava::getInstance()->io.
                 getIo(version);
 
         auto [min, max] = l->getBlockBounds();
@@ -72,12 +72,12 @@ namespace lodestone::java::classic::minev2 {
                 for (int x = 0; x < w; x++) {
                     level::block::state::BlockState *b = l->getBlock(x + min.x, y + min.y, z + min.z);
                     if (b->getBlock() != level::block::BlockRegistry::sDefaultBlock) {
-                        level::conversion::block::data::AbstractBlockData *bl = bio->convertBlockFromInternal(b);
+                        lodestone::conversion::block::data::AbstractBlockData *bl = bio->convertBlockFromInternal(b);
                         if (!bl)
                             blocks[INDEX_YZX(x, y, z, w, d)] = 0;
                         else
                             blocks[INDEX_YZX(x, y, z, w, d)] = bl->as<
-                                level::conversion::block::data::ClassicBlockData>()->getId();
+                                lodestone::conversion::block::data::ClassicBlockData>()->getId();
                     }
 
                     // io.seekRelative(1); // TODO: I can make this operator++

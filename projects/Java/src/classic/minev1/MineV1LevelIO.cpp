@@ -8,8 +8,8 @@
 #include "Lodestone.Java/LodestoneJava.h"
 #include "Lodestone.Level/FiniteLevel.h"
 #include <Lodestone.Common/Indexing.h>
-#include "Lodestone.Level/conversion/block/BlockIO.h"
-#include "Lodestone.Level/conversion/block/data/ClassicBlockData.h"
+#include <Lodestone.Conversion/block/BlockIO.h>
+#include <Lodestone.Conversion/block/data/ClassicBlockData.h>
 
 namespace lodestone::java::classic::minev1 {
     std::unique_ptr<level::Level> MineV1LevelIO::read(uint8_t *data, const int version) const {
@@ -26,14 +26,14 @@ namespace lodestone::java::classic::minev1 {
             }
         );
 
-        const std::unique_ptr<level::conversion::block::version::BlockIO> io = LodestoneJava::getInstance()->io.
+        const std::unique_ptr<lodestone::conversion::block::version::BlockIO> io = LodestoneJava::getInstance()->io.
                 getIo(version);
 
         for (int y = 0; y < HEIGHT; y++) {
             for (int z = 0; z < DEPTH; z++) {
                 for (int x = 0; x < WIDTH; x++) {
                     level::block::state::BlockState b = io->convertBlockToInternal(
-                        level::conversion::block::data::ClassicBlockData(*data));
+                        lodestone::conversion::block::data::ClassicBlockData(*data));
                     if (b.getBlock() != level::block::BlockRegistry::sDefaultBlock)
                         l->setBlockCreate(std::move(b), x, y, z, HEIGHT);
 
@@ -53,7 +53,7 @@ namespace lodestone::java::classic::minev1 {
     }
 
     void MineV1LevelIO::write(level::Level *l, uint8_t *out, const int version) const {
-        const std::unique_ptr<level::conversion::block::version::BlockIO> io = LodestoneJava::getInstance()->io.
+        const std::unique_ptr<lodestone::conversion::block::version::BlockIO> io = LodestoneJava::getInstance()->io.
                 getIo(version);
 
         for (int x = 0; x < WIDTH; x++) {
@@ -61,9 +61,9 @@ namespace lodestone::java::classic::minev1 {
                 for (int z = 0; z < DEPTH; z++) {
                     const level::block::state::BlockState *b = l->getBlock(x, y, z);
                     if (b->getBlock() != level::block::BlockRegistry::sDefaultBlock) {
-                        const level::conversion::block::data::AbstractBlockData *bd = io->convertBlockFromInternal(b);
+                        const lodestone::conversion::block::data::AbstractBlockData *bd = io->convertBlockFromInternal(b);
                         out[INDEX_YZX(x, y, z, WIDTH, DEPTH)] = (bd->as<
-                            level::conversion::block::data::ClassicBlockData>())->getId();
+                            lodestone::conversion::block::data::ClassicBlockData>())->getId();
                     }
                 }
             }
