@@ -14,14 +14,14 @@ namespace lodestone::conversion::world {
     public:
         static WorldIORegistry sInstance;
 
-        void registerWorldIO(const lodestone::common::registry::NamespacedString &id,
+        void registerWorldIO(const lodestone::common::registry::Identifier &id,
                              std::unique_ptr<const WorldIO> io);
 
-        const WorldIO *getWorldIO(const lodestone::common::registry::NamespacedString &id) const;
+        const WorldIO *getWorldIO(const lodestone::common::registry::Identifier &id) const;
 
     private:
-        gtl::flat_hash_map<lodestone::common::registry::NamespacedString, std::unique_ptr<const WorldIO>,
-            NamespacedStringHasher, NamespacedStringComparator> mRegisteredWorldIOs = {};
+        gtl::flat_hash_map<lodestone::common::registry::Identifier, std::unique_ptr<const WorldIO>,
+            IdentifierHasher, IdentifierComparator> mRegisteredWorldIOs = {};
     };
 }
 

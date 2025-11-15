@@ -2,7 +2,7 @@
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
 #include "Lodestone.Level/chunk/section/EmptySection.h"
-#include "Lodestone.Level/block/state/BlockState.h"
+#include "Lodestone.Level/block/properties/BlockProperties.h"
 
 namespace lodestone::level::chunk::section {
     EmptySection *EmptySection::sInstance = new EmptySection();
@@ -11,7 +11,7 @@ namespace lodestone::level::chunk::section {
         return SectionType::EmptySection;
     }
 
-    const block::state::BlockState *EmptySection::getBlocks() {
+    const block::properties::BlockProperties *EmptySection::getBlocks() {
         return nullptr;
     }
 
@@ -23,10 +23,10 @@ namespace lodestone::level::chunk::section {
         return nullptr;
     }
 
-    block::state::BlockState *EmptySection::getBlock(const int x, const int y, const int z) const {
-        return new block::state::BlockState();
+    block::properties::BlockProperties *EmptySection::getBlock(const int x, const int y, const int z) const {
+        return new block::properties::BlockProperties();
     }
 
-    void EmptySection::setBlock(block::state::BlockState &&blk, int x, int y, int z) {
+    void EmptySection::setBlock(block::properties::BlockProperties &&blk, int x, int y, int z) {
     }
 }

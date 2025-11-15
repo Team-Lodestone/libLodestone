@@ -17,32 +17,25 @@ namespace lodestone::level::chunk {
         EmptyChunk(ChunkContainer *container, const types::Vec2i &coords) : Chunk(container, coords) {
         }
 
-        constexpr std::string toString() const override {
-            if (this->mCoords.has_value())
-                return std::format("EmptyChunk[coords={}]", mCoords->toString());
-
-            return std::format("EmptyChunk");
-        };
-
         void calculateHeightmap() override;
 
         int getChunkHeight() const override;
 
         section::Section *getSection(int y) const override;
 
-        block::state::BlockState *getBlock(int x, int y, int z) const override;
+        block::properties::BlockProperties *getBlock(int x, int y, int z) const override;
 
         section::Section *getSectionCreate(int y) override;
 
-        void setBlock(block::state::BlockState &&blk, int x, int y, int z) override;
+        void setBlock(block::properties::BlockProperties &&blk, int x, int y, int z) override;
 
-        void setBlockRaw(block::state::BlockState &&blk, int x, int y, int z) override;
+        void setBlockRaw(block::properties::BlockProperties &&blk, int x, int y, int z) override;
 
         void setHeightAt(int16_t h, int x, int z) override;
 
         void calculateBlockmap() override;
 
-        void setBlockmapBlockAt(block::state::BlockState *h, int x, int z) override;
+        void setBlockmapBlockAt(block::properties::BlockProperties *h, int x, int z) override;
 
         void calculateMaps() override;
 

@@ -7,7 +7,7 @@
 #include <libnbt++/nbt_tags.h>
 
 namespace lodestone::java::indev {
-    class McLevelLevelIO : public lodestone::conversion::level::LevelIO {
+    class McLevelLevelIO : public lodestone::conversion::level::PlayerIO {
     public:
         std::unique_ptr<level::Level> read(uint8_t *data, int version) const override;
 

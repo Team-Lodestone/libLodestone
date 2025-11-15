@@ -9,7 +9,7 @@ set(FILES
 
         include/Lodestone.Common/Defines.h
         include/Lodestone.Common/string/OperatorStringBuilder.h
-        include/Lodestone.Common/registry/NamespacedString.h
+        include/Lodestone.Common/registry/Identifier.h
         include/Lodestone.Common/Indexing.h
         include/Lodestone.Common/Constants.h
         include/Lodestone.Common/string/StringSerializable.h

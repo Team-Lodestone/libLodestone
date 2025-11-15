@@ -50,7 +50,7 @@ target_compile_definitions(Lodestone.Tests PRIVATE
 
 # ENABLE INDIVIDUAL TESTS HERE
 target_compile_definitions(Lodestone.Tests PRIVATE
-        READ_MCR_WORLD=false
+        READ_MCR_WORLD=true
         READ_MCR_CHUNK=false
-        READ_MCR_FILE=true
+        READ_MCR_FILE=false
 )

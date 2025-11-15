@@ -14,7 +14,7 @@ namespace lodestone::level::types {
         Vec3<T> max;
 
         constexpr std::string toString() const override {
-            return std::format("Bounds3[min={},max={}]", min.toString(), max.toString());
+            return std::format("Bounds3[min={}, max={}]", min.toString(), max.toString());
         };
 
         constexpr Bounds3(const Vec3<T> &min, const Vec3<T> &max) : min(min), max(max) {

@@ -17,14 +17,14 @@ namespace lodestone::conversion::region {
     public:
         static RegionIORegistry sInstance;
 
-        void registerRegionIO(const lodestone::common::registry::NamespacedString &id,
+        void registerRegionIO(const lodestone::common::registry::Identifier &id,
                               std::unique_ptr<const RegionIO> io);
 
-        const RegionIO *getRegionIO(const lodestone::common::registry::NamespacedString &id) const;
+        const RegionIO *getRegionIO(const lodestone::common::registry::Identifier &id) const;
 
     private:
-        gtl::flat_hash_map<lodestone::common::registry::NamespacedString, std::unique_ptr<const RegionIO>,
-            NamespacedStringHasher, NamespacedStringComparator> mRegisteredRegionIOs = {};
+        gtl::flat_hash_map<lodestone::common::registry::Identifier, std::unique_ptr<const RegionIO>,
+            IdentifierHasher, IdentifierComparator> mRegisteredRegionIOs = {};
     };
 }
 

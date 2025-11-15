@@ -9,7 +9,7 @@ namespace lodestone::level::chunk {
     Chunk::Chunk() {
         this->mContainer = nullptr;
         for (int x = 0; x < lodestone::common::constants::CHUNK_WIDTH * common::constants::CHUNK_DEPTH; ++x) {
-            mBlockmap[x] = new block::state::BlockState();
+            mBlockmap[x] = new block::properties::BlockProperties();
         }
     }
 
@@ -36,8 +36,8 @@ namespace lodestone::level::chunk {
         return mHeightmap;
     }
 
-    const block::state::BlockState **Chunk::getBlockmap() const {
-        return const_cast<const block::state::BlockState **>(mBlockmap);
+    const block::properties::BlockProperties **Chunk::getBlockmap() const {
+        return const_cast<const block::properties::BlockProperties **>(mBlockmap);
     }
 
     int16_t Chunk::getHeightAt(const int x, const int z) const {
@@ -48,11 +48,11 @@ namespace lodestone::level::chunk {
         mHeightmap[z * common::constants::CHUNK_WIDTH + x] = h;
     }
 
-    const block::state::BlockState *Chunk::getBlockmapBlockAt(const int x, const int z) const {
+    const block::properties::BlockProperties *Chunk::getBlockmapBlockAt(const int x, const int z) const {
         return mBlockmap[z * common::constants::CHUNK_WIDTH + x];
     }
 
-    void Chunk::setBlockmapBlockAt(block::state::BlockState *b, const int x, const int z) {
+    void Chunk::setBlockmapBlockAt(block::properties::BlockProperties *b, const int x, const int z) {
         mBlockmap[z * common::constants::CHUNK_WIDTH + x] = b;
     }
 

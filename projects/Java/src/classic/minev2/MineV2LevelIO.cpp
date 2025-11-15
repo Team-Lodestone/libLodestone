@@ -37,7 +37,7 @@ namespace lodestone::java::classic::minev2 {
         for (int y = 0; y < height; y++) {
             for (int z = 0; z < depth; z++) {
                 for (int x = 0; x < width; x++) {
-                    level::block::state::BlockState b = bio->convertBlockToInternal(lodestone::conversion::block::data::ClassicBlockData(*rd));
+                    level::block::properties::BlockProperties b = bio->convertBlockToInternal(lodestone::conversion::block::data::ClassicBlockData(*rd));
                     if (b.getBlock() != level::block::BlockRegistry::sDefaultBlock)
                         l->setBlockCreate(std::move(b), x, y, z, height);
 
@@ -70,7 +70,7 @@ namespace lodestone::java::classic::minev2 {
         for (int y = 0; y < h; y++) {
             for (int z = 0; z < d; z++) {
                 for (int x = 0; x < w; x++) {
-                    level::block::state::BlockState *b = l->getBlock(x + min.x, y + min.y, z + min.z);
+                    level::block::properties::BlockProperties *b = l->getBlock(x + min.x, y + min.y, z + min.z);
                     if (b->getBlock() != level::block::BlockRegistry::sDefaultBlock) {
                         lodestone::conversion::block::data::AbstractBlockData *bl = bio->convertBlockFromInternal(b);
                         if (!bl)

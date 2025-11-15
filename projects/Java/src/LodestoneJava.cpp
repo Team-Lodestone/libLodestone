@@ -19,9 +19,12 @@
 #include <Lodestone.Conversion/chunk/ChunkIORegistry.h>
 #include <Lodestone.Conversion/region/RegionIORegistry.h>
 #include <Lodestone.Conversion/world/WorldIORegistry.h>
+
+#include <Lodestone.Conversion/player/PlayerIORegistry.h>
 #include "Lodestone.Java/mcr/chunk/McRegionChunkIo.h"
 #include "Lodestone.Java/mcr/region/McRegionRegionIo.h"
 #include "Lodestone.Java/mcr/world/McRegionWorldIo.h"
+#include "Lodestone.Java/mcr/player/McRegionPlayerIo.h"
 
 namespace lodestone::java {
     LodestoneJava *LodestoneJava::sInstance = nullptr;
@@ -31,13 +34,13 @@ namespace lodestone::java {
         initBlocks();
 
         // mine v1
-        lodestone::conversion::level::LevelIORegistry::sInstance.registerLevelIO(
+        lodestone::conversion::level::PlayerIORegistry::sInstance.registerLevelIO(
             identifiers::MINEV1,
             std::make_unique<classic::minev1::MineV1LevelIO>()
         );
 
         // minev2
-        lodestone::conversion::level::LevelIORegistry::sInstance.registerLevelIO(
+        lodestone::conversion::level::PlayerIORegistry::sInstance.registerLevelIO(
             identifiers::MINEV2,
             std::make_unique<classic::minev2::MineV2LevelIO>()
         );
@@ -48,7 +51,7 @@ namespace lodestone::java {
         );
 
         // indev
-        lodestone::conversion::level::LevelIORegistry::sInstance.registerLevelIO(
+        lodestone::conversion::level::PlayerIORegistry::sInstance.registerLevelIO(
             identifiers::MCLEVEL,
             std::make_unique<indev::McLevelLevelIO>()
         );
@@ -67,6 +70,11 @@ namespace lodestone::java {
         lodestone::conversion::world::WorldIORegistry::sInstance.registerWorldIO(
             identifiers::MCREGION,
             std::make_unique<mcr::world::McRegionWorldIo>()
+        );
+
+        lodestone::conversion::player::PlayerIORegistry::sInstance.registerPlayerIO(
+            identifiers::MCREGION,
+            std::make_unique<mcr::player::McRegionPlayerIO>()
         );
     }
 

@@ -66,7 +66,7 @@ namespace lodestone::tests::test {
     }
 
     void MainTests::readMcrWorld() {
-        std::string name("omnibeta");
+        std::string name("ShadowWorld");
         std::filesystem::path dir(util::INPUT_FOLDER / name);
 
         const java::mcr::world::McRegionWorldIo *io = (java::mcr::world::McRegionWorldIo *)

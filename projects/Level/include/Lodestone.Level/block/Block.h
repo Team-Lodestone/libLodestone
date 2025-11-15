@@ -8,20 +8,23 @@
 #include <Lodestone.Common/string/OperatorStringBuilder.h>
 #include <Lodestone.Common/string/StringSerializable.h>
 #include "Lodestone.Level/material/Material.h"
-#include <Lodestone.Common/registry/NamespacedString.h>
+#include <Lodestone.Common/registry/Identifier.h>
+
+#include "Lodestone.Level/item/block/BlockItem.h"
 
 namespace lodestone::level::block {
     class BlockState;
 
     class Block : public common::string::StringSerializable {
     public:
-        constexpr Block(const lodestone::common::registry::NamespacedString *id,
+        constexpr Block(const lodestone::common::registry::Identifier *id,
                         const material::Material &material) : mId(id), mMaterial(material) {
+            this->mItem = new lodestone::level::item::block::BlockItem(id, this);
         };
 
         constexpr ~Block() override = default;
 
-        constexpr const lodestone::common::registry::NamespacedString *getID() const {
+        constexpr const lodestone::common::registry::Identifier *getID() const {
             return mId;
         };
 
@@ -33,12 +36,20 @@ namespace lodestone::level::block {
             return mMaterial;
         }
 
-        constexpr std::string toString() const override {
-            return std::format("Block[id={},material={}]", *mId, mMaterial.toString());
+        std::string toString() const override {
+            return (common::string::OperatorStringBuilder(typeid(*this)))
+                .addField("id", *mId)
+                ->addField("material", mMaterial.toString())
+                ->toString();
         };
 
+        constexpr const item::block::BlockItem *getItem() const {
+            return mItem;
+        }
+
     private:
-        const lodestone::common::registry::NamespacedString *mId;
+        const lodestone::common::registry::Identifier *mId;
+        const item::block::BlockItem *mItem;
         const material::Material mMaterial;
     };
 }

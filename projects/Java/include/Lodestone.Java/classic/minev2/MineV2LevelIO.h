@@ -6,7 +6,7 @@
 #include <Lodestone.Conversion/level/LevelIO.h>
 
 namespace lodestone::java::classic::minev2 {
-    class MineV2LevelIO : public lodestone::conversion::level::LevelIO {
+    class MineV2LevelIO : public lodestone::conversion::level::PlayerIO {
     public:
         std::unique_ptr<level::Level> read(uint8_t *data, int version) const override;
 

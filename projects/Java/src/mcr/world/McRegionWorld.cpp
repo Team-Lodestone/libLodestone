@@ -7,7 +7,7 @@
 #include <Lodestone.Conversion/world/WorldIORegistry.h>
 
 namespace lodestone::java::mcr::world {
-    McRegionWorld::McRegionWorld(const std::string &name) : World(name), mSeed(0), mSpawnPos(0, 0, 0),
+    McRegionWorld::McRegionWorld(const std::string &name) : World(name), mSeed(0),
                                                             mIsRaining(false),
                                                             mRainTime(0),
                                                             mIsThundering(false),
@@ -25,14 +25,6 @@ namespace lodestone::java::mcr::world {
 
     void McRegionWorld::setSeed(const int64_t seed) {
         mSeed = seed;
-    }
-
-    const level::types::Vec3i & McRegionWorld::getSpawnPos() const {
-        return mSpawnPos;
-    }
-
-    void McRegionWorld::setSpawnPos(const level::types::Vec3i &spawnPos) {
-        mSpawnPos = spawnPos;
     }
 
     bool McRegionWorld::isRaining() const {

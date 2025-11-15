@@ -6,7 +6,7 @@
 #include <cstdint>
 
 #include "Lodestone.Conversion/block/data/AbstractBlockData.h"
-#include <Lodestone.Common/registry/NamespacedString.h>
+#include <Lodestone.Common/registry/Identifier.h>
 
 namespace lodestone::conversion::block::data {
     class NumericBlockData final : public AbstractBlockData {
@@ -30,7 +30,7 @@ namespace lodestone::conversion::block::data {
 
         const std::type_info &getDataType() const override;
 
-        const lodestone::common::registry::NamespacedString *getTypeName() const override;
+        const lodestone::common::registry::Identifier *getTypeName() const override;
 
         const std::type_info &getType() const override;
 

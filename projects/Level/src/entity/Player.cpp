@@ -23,7 +23,11 @@ namespace lodestone::level::entity {
 
             this->mWorld = level->getWorld();
 
-            if (resetCoords) this->mPosition.reset();
+            if (resetCoords) {
+                this->mPosition.reset();
+                this->mMotion = {0,0,0};
+                this->mRotation = {0,0};
+            }
         }
     }
 
@@ -34,11 +38,15 @@ namespace lodestone::level::entity {
 
         if (!(this->mCurrentLevel && this->mCurrentLevel->getWorld() == world)) {
             this->mCurrentLevel = world->getDefaultLevel();
-            if (resetCoords) this->mPosition.reset();
+            if (resetCoords) {
+                this->mPosition.reset();
+                this->mMotion = {0,0,0};
+                this->mRotation = {0,0};
+            }
         }
     }
 
-    const common::registry::NamespacedString * Player::getType() {
+    const common::registry::Identifier * Player::getType() const {
         return &PLAYER;
     }
 
@@ -48,5 +56,19 @@ namespace lodestone::level::entity {
 
     bool Player::isInLevel() const {
         return getLevel();
+    }
+
+    void Player::respawn(const bool inDefaultLevel) {
+        if (const world::World *wld = getWorld(); inDefaultLevel && wld && wld->getDefaultLevel()) {
+            this->mPosition = wld->getDefaultLevel()->getSpawnPos().asVec<double>();
+        } else if (const Level *lvl = this->getLevel(); lvl != nullptr) {
+            this->mPosition = lvl->getSpawnPos().asVec<double>();
+        } else {
+            this->mPosition = {0, 64, 0};
+        }
+
+        this->mMotion = {0,0,0};
+        this->mRotation = {0,0};
+        this->mHealth = getMaxHealth();
     }
 }

@@ -7,9 +7,9 @@
 #include "Lodestone.Level/Level.h"
 
 namespace lodestone::conversion::level {
-    class LODESTONE_API LevelIO {
+    class LODESTONE_API PlayerIO {
     public:
-        virtual ~LevelIO() = default;
+        virtual ~PlayerIO() = default;
 
         /** Reads data into a new Level */
         virtual std::unique_ptr<lodestone::level::Level> read(uint8_t *data, int version) const = 0;

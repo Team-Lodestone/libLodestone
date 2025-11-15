@@ -3,9 +3,9 @@
 //
 #ifndef LODESTONE_ENTITIES_H
 #define LODESTONE_ENTITIES_H
-#include <Lodestone.Common/registry/NamespacedString.h>
+#include <Lodestone.Common/registry/Identifier.h>
 
-static constexpr lodestone::common::registry::NamespacedString ENTITY = {"lodestone", "entity"};
-static constexpr lodestone::common::registry::NamespacedString PLAYER = {"lodestone", "player"};
+static constexpr lodestone::common::registry::Identifier ENTITY = {"lodestone", "entity"};
+static constexpr lodestone::common::registry::Identifier PLAYER = {"lodestone", "player"};
 
 #endif //LODESTONE_ENTITIES_H

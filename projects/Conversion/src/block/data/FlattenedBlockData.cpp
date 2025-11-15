@@ -20,7 +20,7 @@ namespace lodestone::conversion::block::data {
         return typeid(std::monostate);
     }
 
-    const lodestone::common::registry::NamespacedString *FlattenedBlockData::getTypeName() const {
+    const lodestone::common::registry::Identifier *FlattenedBlockData::getTypeName() const {
         return &identifiers::FLATTENED_BLOCK_DATA;
     }
 

@@ -5,7 +5,7 @@
 #define LODESTONE_EMPTYSECTION_H
 
 #include "Lodestone.Level/chunk/section/Section.h"
-#include "Lodestone.Level/block/state/BlockState.h"
+#include "Lodestone.Level/block/properties/BlockProperties.h"
 
 namespace lodestone::level::chunk::section {
     class EmptySection : public Section {
@@ -14,15 +14,15 @@ namespace lodestone::level::chunk::section {
 
         SectionType getType() override;
 
-        const block::state::BlockState *getBlocks() override;
+        const block::properties::BlockProperties *getBlocks() override;
 
         const uint8_t *getBlockLight() const override;
 
         const uint8_t *getSkyLight() const override;
 
-        block::state::BlockState *getBlock(const int x, const int y, const int z) const override;
+        block::properties::BlockProperties *getBlock(const int x, const int y, const int z) const override;
 
-        void setBlock(block::state::BlockState &&blk, int x, int y, int z) override;
+        void setBlock(block::properties::BlockProperties &&blk, int x, int y, int z) override;
     };
 }
 

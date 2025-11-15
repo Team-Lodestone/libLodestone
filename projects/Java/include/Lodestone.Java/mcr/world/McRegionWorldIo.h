@@ -9,7 +9,7 @@
 namespace lodestone::java::mcr::world {
     class McRegionWorldIo : public lodestone::conversion::world::DirectoryWorldIO {
     public:
-        const lodestone::conversion::level::LevelIO * getLevelIO(int version) const override;
+        const lodestone::conversion::level::PlayerIO * getLevelIO(int version) const override;
 
         std::unique_ptr<lodestone::level::world::World> read(const std::filesystem::path &path, int version) const override;
 

@@ -17,14 +17,6 @@ namespace lodestone::level::chunk {
 
         LevelChunk(int height, ChunkContainer *container, const types::Vec2i &coords);
 
-        constexpr std::string toString() const override {
-            if (this->mCoords.has_value())
-                return std::format("LevelChunk[coords={}]", mCoords->toString());
-
-            return std::format("LevelChunk");
-        };
-
-
         int getChunkHeight() const override;
 
         /** Checks if a section at the given section relative y level exists (NOT BLOCK Y) */
@@ -48,11 +40,11 @@ namespace lodestone::level::chunk {
 
         void calculateMapsAtColumn(int x, int z, int height) override;
 
-        block::state::BlockState *getBlock(const int x, const int y, const int z) const override;
+        block::properties::BlockProperties *getBlock(const int x, const int y, const int z) const override;
 
-        void setBlock(block::state::BlockState &&blk, int x, int y, int z) override;
+        void setBlock(block::properties::BlockProperties &&blk, int x, int y, int z) override;
 
-        void setBlockRaw(block::state::BlockState &&blk, int x, int y, int z) override;
+        void setBlockRaw(block::properties::BlockProperties &&blk, int x, int y, int z) override;
 
     protected:
         /** Chunk Sections

@@ -5,6 +5,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <ranges>
 
 #include "Lodestone.Java/mcr/world/McRegionWorld.h"
 #include <libnbt++/io/izlibstream.h>
@@ -13,18 +14,23 @@
 #include <Lodestone.Conversion/level/LevelIORegistry.h>
 #include "Lodestone.Java/Identifiers.h"
 #include <Lodestone.Conversion/region/RegionIORegistry.h>
+
+#include <Lodestone.Conversion/player/PlayerIORegistry.h>
 #include "Lodestone.Java/mcr/chunk/McRegionChunk.h"
 #include "Lodestone.Java/mcr/region/McRegionRegion.h"
 #include "Lodestone.Java/mcr/region/McRegionRegionIo.h"
+#include "Lodestone.Java/mcr/player/McRegionPlayerIo.h"
+#include "Lodestone.Java/mcr/player/McRegionPlayer.h"
 
 namespace lodestone::java::mcr::world {
-    const lodestone::conversion::level::LevelIO * McRegionWorldIo::getLevelIO(int version) const {
-        return lodestone::conversion::level::LevelIORegistry::sInstance.getLevelIO(identifiers::MCREGION);
+    const lodestone::conversion::level::PlayerIO * McRegionWorldIo::getLevelIO(int version) const {
+        return lodestone::conversion::level::PlayerIORegistry::sInstance.getLevelIO(identifiers::MCREGION);
     }
 
     std::unique_ptr<lodestone::level::world::World> McRegionWorldIo::read(const std::filesystem::path &path, int version) const {
         if (!std::filesystem::exists(path)) return nullptr;
 
+        level::types::Vec3i spawnPos = {0, 64, 0};
         std::unique_ptr<level::world::World> world = std::make_unique<level::world::World>();
         if (std::filesystem::exists(path / "level.dat")) {
             std::ifstream dat(path / "level.dat", std::ios::binary);
@@ -43,7 +49,7 @@ namespace lodestone::java::mcr::world {
             int spawnX = data["SpawnX"].get().as<nbt::tag_int>();
             int spawnY = data["SpawnY"].get().as<nbt::tag_int>();
             int spawnZ = data["SpawnZ"].get().as<nbt::tag_int>();
-            w->setSpawnPos({spawnX, spawnY, spawnZ});
+            spawnPos = {spawnX, spawnY, spawnZ};
 
             int64_t time = data["Time"].get().as<nbt::tag_long>();
             w->setTime(time);
@@ -77,12 +83,30 @@ namespace lodestone::java::mcr::world {
             dat.close();
         }
 
+        if (std::filesystem::exists(path / "players") && std::filesystem::is_directory(path / "players")) {
+            const java::mcr::player::McRegionPlayerIO *pio = static_cast<const java::mcr::player::McRegionPlayerIO *>(lodestone::conversion::player::PlayerIORegistry::sInstance.getPlayerIO(java::identifiers::MCREGION));
+            for (const auto& f : std::filesystem::directory_iterator(path / "players")) {
+                if (!std::filesystem::is_regular_file(f)) continue;
 
-        const java::mcr::region::McRegionRegionIO *io = static_cast<const java::mcr::region::McRegionRegionIO *>(lodestone::conversion::region::RegionIORegistry::sInstance.
-            getRegionIO(java::identifiers::MCREGION));
+                std::ifstream ifs(f.path(), std::ifstream::binary);
+                zlib::izlibstream strm(ifs);
+
+                nbt::io::stream_reader nbt(strm);
+                auto [nm, root] = nbt.read_compound();
+
+                std::unique_ptr<level::entity::Player> r = pio->read(f, *root, version); // todo return value?
+
+                std::cout << r->toString() << std::endl;
+
+                world->addPlayer(std::move(r));
+                ifs.close();
+            }
+        }
 
         // do I need to call exists?
         if (std::filesystem::exists(path / "region") && std::filesystem::is_directory(path / "region")) {
+            const java::mcr::region::McRegionRegionIO *io = static_cast<const java::mcr::region::McRegionRegionIO *>(lodestone::conversion::region::RegionIORegistry::sInstance.
+    getRegionIO(java::identifiers::MCREGION));
             level::Level *overworld = new level::Level();
             for (const auto& f : std::filesystem::directory_iterator(path / "region")) {
                 if (!std::filesystem::is_regular_file(f)) continue;
@@ -102,7 +126,17 @@ namespace lodestone::java::mcr::world {
                 std::cout << coords << std::endl;
             }
 
+            overworld->setSpawnPos(spawnPos); // in beta, only worlds have the spawn position
             world->addLevel(level::world::World::Dimension::OVERWORLD, std::unique_ptr<level::Level>(overworld));
+        }
+
+        // move players to correct level otherwise they're stuck at correct coords in diff level
+        for (const auto &[name, plr]: world->getPlayers()) {
+            const player::McRegionPlayer *p = dynamic_cast<player::McRegionPlayer *>(plr.get());
+            if (!p) continue;
+
+            if (world->hasLevel(p->getDimension()))
+                world->movePlayerToLevel(name, p->getDimension(), false);
         }
 
         return world;

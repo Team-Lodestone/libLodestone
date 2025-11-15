@@ -9,21 +9,21 @@
 
 namespace lodestone::conversion::level {
     /** Creates chunks based on registered chunk IO classes */
-    class LODESTONE_API LevelIORegistry {
+    class LODESTONE_API PlayerIORegistry {
     protected:
-        LevelIORegistry() = default;
+        PlayerIORegistry() = default;
 
     public:
-        static LevelIORegistry sInstance;
+        static PlayerIORegistry sInstance;
 
-        void registerLevelIO(const lodestone::common::registry::NamespacedString &id,
-                             std::unique_ptr<const LevelIO> io);
+        void registerLevelIO(const lodestone::common::registry::Identifier &id,
+                             std::unique_ptr<const PlayerIO> io);
 
-        const LevelIO *getLevelIO(const lodestone::common::registry::NamespacedString &id) const;
+        const PlayerIO *getLevelIO(const lodestone::common::registry::Identifier &id) const;
 
     private:
-        gtl::flat_hash_map<lodestone::common::registry::NamespacedString, std::unique_ptr<const LevelIO>,
-            NamespacedStringHasher, NamespacedStringComparator> mRegisteredLevelIOs;
+        gtl::flat_hash_map<lodestone::common::registry::Identifier, std::unique_ptr<const PlayerIO>,
+            IdentifierHasher, IdentifierComparator> mRegisteredLevelIOs;
     };
 }
 

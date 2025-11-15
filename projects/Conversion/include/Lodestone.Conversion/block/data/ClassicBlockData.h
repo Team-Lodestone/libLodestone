@@ -6,7 +6,7 @@
 #include <variant>
 
 #include "Lodestone.Conversion/block/data/AbstractBlockData.h"
-#include <Lodestone.Common/registry/NamespacedString.h>
+#include <Lodestone.Common/registry/Identifier.h>
 
 namespace lodestone::conversion::block::data {
     class ClassicBlockData final : public AbstractBlockData {
@@ -26,12 +26,12 @@ namespace lodestone::conversion::block::data {
 
         const std::type_info &getDataType() const override;
 
-        const lodestone::common::registry::NamespacedString *getTypeName() const override;
+        const lodestone::common::registry::Identifier *getTypeName() const override;
 
         const std::type_info &getType() const override;
 
         constexpr size_t hash() const override {
-            return std::hash<uint8_t>()(mId) ^ (std::hash<const lodestone::common::registry::NamespacedString
+            return std::hash<uint8_t>()(mId) ^ (std::hash<const lodestone::common::registry::Identifier
                                                     *>()(getTypeName()) << 8);
         }
 

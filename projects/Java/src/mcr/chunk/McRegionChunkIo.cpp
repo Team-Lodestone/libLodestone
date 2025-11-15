@@ -44,7 +44,7 @@ namespace lodestone::java::mcr::chunk {
                     const uint8_t d = data[idx];
                     const uint8_t dat = ((idx / 2) % 2 == 0) ? (d >> 4) & 0x0F : d & 0x0F;
 
-                    level::block::state::BlockState b = io->convertBlockToInternal(
+                    level::block::properties::BlockProperties b = io->convertBlockToInternal(
                     lodestone::conversion::block::data::NumericBlockData(
                             static_cast<uint8_t>(blocks[idx]),
                             0)); // TODO metadata (maybe MetadataIO or BlockPropertyIO?)

@@ -16,8 +16,8 @@ namespace lodestone::java::classic::minev2 {
                     const std::string &author = "Player");
 
         MineV2World(
-            gtl::flat_hash_map<lodestone::common::registry::NamespacedString, std::unique_ptr<level::Level>,
-                NamespacedStringHasher, NamespacedStringComparator> &&levels, const std::string &name,
+            gtl::flat_hash_map<lodestone::common::registry::Identifier, std::unique_ptr<level::Level>,
+                IdentifierHasher, IdentifierComparator> &&levels, const std::string &name,
             const std::string &author);
 
         const std::string &getAuthor() const;

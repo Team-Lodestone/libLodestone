@@ -4,8 +4,6 @@
 #ifndef LODESTONE_ABSTRACTBLOCKDATA_H
 #define LODESTONE_ABSTRACTBLOCKDATA_H
 
-#include <Lodestone.Common/registry/NamespacedString.h>
-#include <Lodestone.Common/string/StringSerializable.h>
 #include "Lodestone.Conversion/Identifiers.h"
 
 namespace lodestone::conversion::block::data {
@@ -31,8 +29,8 @@ namespace lodestone::conversion::block::data {
 
         constexpr virtual const std::type_info &getType() const = 0;
 
-        constexpr virtual const lodestone::common::registry::NamespacedString *getTypeName() const {
-            return &identifiers::ABSTRACT_BLOCK_DATA;
+        constexpr virtual const lodestone::common::registry::Identifier *getTypeName() const {
+            return &lodestone::conversion::identifiers::ABSTRACT_BLOCK_DATA;
         };
 
         template<class T>

@@ -6,7 +6,7 @@
 #include <Lodestone.Conversion/level/LevelIO.h>
 
 namespace lodestone::java::classic::minev1 {
-    class MineV1LevelIO : public lodestone::conversion::level::LevelIO {
+    class MineV1LevelIO : public lodestone::conversion::level::PlayerIO {
     public:
         static constexpr int WIDTH = 256;
         static constexpr int HEIGHT = 64;

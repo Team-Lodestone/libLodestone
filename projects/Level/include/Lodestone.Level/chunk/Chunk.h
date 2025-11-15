@@ -4,7 +4,7 @@
 #ifndef LODESTONE_CHUNK_H
 #define LODESTONE_CHUNK_H
 
-#include "Lodestone.Level/block/state/BlockState.h"
+#include "Lodestone.Level/block/properties/BlockProperties.h"
 #include <Lodestone.Common/Constants.h>
 
 #include "Lodestone.Level/block/BlockRegistry.h"
@@ -27,9 +27,11 @@ namespace lodestone::level::chunk {
 
         constexpr std::string toString() const override {
             if (this->mCoords.has_value())
-                return std::format("Chunk[coords={}]", mCoords->toString());
+                return (common::string::OperatorStringBuilder(typeid(*this)))
+                    .addField("coords", this->mCoords->toString())
+                    ->toString();
 
-            return std::format("Chunk");
+            return (common::string::OperatorStringBuilder(typeid(*this))).toString();
         };
 
         explicit Chunk(const types::Vec2i &coords);
@@ -62,29 +64,29 @@ namespace lodestone::level::chunk {
 
         virtual const int16_t *getHeightmap() const;
 
-        virtual const block::state::BlockState **getBlockmap() const;
+        virtual const block::properties::BlockProperties **getBlockmap() const;
 
-        virtual block::state::BlockState *getBlock(int x, int y, int z) const = 0;
+        virtual block::properties::BlockProperties *getBlock(int x, int y, int z) const = 0;
 
         /** Sets a block at the given X, Y, and Z coordinates.
          *
          * Also updates the blockmap and heightmap
          */
-        virtual void setBlock(block::state::BlockState &&blk, int x, int y, int z) = 0;
+        virtual void setBlock(block::properties::BlockProperties &&blk, int x, int y, int z) = 0;
 
         /** Sets a block at the given X, Y, and Z coordinates.
          *
          * Does not update blockmap nor heightmap
          */
-        virtual void setBlockRaw(block::state::BlockState &&blk, int x, int y, int z) = 0;
+        virtual void setBlockRaw(block::properties::BlockProperties &&blk, int x, int y, int z) = 0;
 
         virtual int16_t getHeightAt(int x, int z) const;
 
         virtual void setHeightAt(int16_t h, int x, int z);
 
-        virtual const block::state::BlockState *getBlockmapBlockAt(int x, int z) const;
+        virtual const block::properties::BlockProperties *getBlockmapBlockAt(int x, int z) const;
 
-        virtual void setBlockmapBlockAt(block::state::BlockState *b, int x, int z);
+        virtual void setBlockmapBlockAt(block::properties::BlockProperties *b, int x, int z);
 
         bool hasCoords() const;
 
@@ -119,7 +121,7 @@ namespace lodestone::level::chunk {
          *
          * Each x and z coord corresponds to the topmost block's state
          */
-        block::state::BlockState **mBlockmap = new block::state::BlockState *[
+        block::properties::BlockProperties **mBlockmap = new block::properties::BlockProperties *[
             common::constants::CHUNK_WIDTH * common::constants::CHUNK_DEPTH]{};
 
         // gtl::flat_hash_map<Vec3i, TileEntity> mTileEntities;

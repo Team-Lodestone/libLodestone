@@ -5,8 +5,9 @@
 #define LODESTONE_LEVELSECTION_H
 
 #include <Lodestone.Common/Constants.h>
+
+#include "Lodestone.Level/block/properties/BlockProperties.h"
 #include "Lodestone.Level/chunk/section/Section.h"
-#include "Lodestone.Level/block/state/BlockState.h"
 
 namespace lodestone::level::chunk::section {
     class LevelSection : public Section {
@@ -17,16 +18,16 @@ namespace lodestone::level::chunk::section {
 
         const uint8_t *getSkyLight() const override;
 
-        block::state::BlockState *getBlock(int x, int y, int z) const override;
+        block::properties::BlockProperties *getBlock(int x, int y, int z) const override;
 
-        void setBlock(block::state::BlockState &&blk, int x, int y, int z) override;
+        void setBlock(block::properties::BlockProperties &&blk, int x, int y, int z) override;
 
-        const block::state::BlockState *getBlocks() override;
+        const block::properties::BlockProperties *getBlocks() override;
 
         SectionType getType() override;
 
     private:
-        block::state::BlockState *mBlocks = new block::state::BlockState[
+        block::properties::BlockProperties *mBlocks = new block::properties::BlockProperties[
             common::constants::CHUNK_WIDTH * common::constants::SECTION_HEIGHT * common::constants::CHUNK_DEPTH]{};
         // TODO: we could also calculate lighting for blocks, could have a map of xyz -> Block specifically for light blocks
 

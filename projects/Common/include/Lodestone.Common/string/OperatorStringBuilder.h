@@ -15,19 +15,24 @@ namespace lodestone::common::string {
     class OperatorStringBuilder {
     public:
         OperatorStringBuilder(const std::type_info &type) : mType(type) {
-            mStream << demangle(type.name()) << "[";
+            const std::string d = demangle(type.name());
+            mStream << d.substr(d.find_last_of(':') + 1) << "[";
         };
 
         template<typename T>
         constexpr OperatorStringBuilder *addField(const std::string &name, const T &v) {
-            mStream << name << "=" << v << ",";
+            mStream << name << "=" << v << ", ";
             return this;
         }
 
         constexpr std::string toString() {
             std::string s = mStream.str();
-            if (!s.empty() && s.back() == ',')
+            if (!s.empty() && s.ends_with(", ")) {
+                // substr probs creates new string
+                // so this should be more efficient
                 s.pop_back();
+                s.pop_back();
+            }
 
             mStream.str("");
             mStream << s << "]";
@@ -43,9 +48,11 @@ namespace lodestone::common::string {
             int err = 0;
             char *demangled = abi::__cxa_demangle(name, nullptr, nullptr, &err);
 
-            const char *r = (!err) ? demangled : name;
-            std::free(demangled);
-            return r;
+            if (!err)
+                return demangled;
+
+            free(demangled);
+            return name;
 #else
             return name;
 #endif

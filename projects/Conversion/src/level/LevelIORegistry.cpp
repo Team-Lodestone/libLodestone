@@ -6,10 +6,10 @@
 #include <iostream>
 
 namespace lodestone::conversion::level {
-    LevelIORegistry LevelIORegistry::sInstance = LevelIORegistry();
+    PlayerIORegistry PlayerIORegistry::sInstance = PlayerIORegistry();
 
-    void LevelIORegistry::registerLevelIO(const lodestone::common::registry::NamespacedString &id,
-                                          std::unique_ptr<const LevelIO> io) {
+    void PlayerIORegistry::registerLevelIO(const lodestone::common::registry::Identifier &id,
+                                          std::unique_ptr<const PlayerIO> io) {
         if (mRegisteredLevelIOs.contains(id))
             throw std::runtime_error(std::format("LevelIO '{}' is already registered", id));
 
@@ -20,7 +20,7 @@ namespace lodestone::conversion::level {
 #endif
     }
 
-    const LevelIO *LevelIORegistry::getLevelIO(const lodestone::common::registry::NamespacedString &id) const {
+    const PlayerIO *PlayerIORegistry::getLevelIO(const lodestone::common::registry::Identifier &id) const {
         if (const auto it = mRegisteredLevelIOs.find(id); it != mRegisteredLevelIOs.end())
             return it->second.get();
 

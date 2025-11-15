@@ -15,7 +15,7 @@ namespace lodestone::level::chunk {
         return section::EmptySection::sInstance;
     }
 
-    block::state::BlockState *EmptyChunk::getBlock(const int x, const int y, const int z) const {
+    block::properties::BlockProperties *EmptyChunk::getBlock(const int x, const int y, const int z) const {
         return section::EmptySection::sInstance->getBlock(x, y, z);
     }
 
@@ -23,10 +23,10 @@ namespace lodestone::level::chunk {
         return section::EmptySection::sInstance;
     }
 
-    void EmptyChunk::setBlock(block::state::BlockState &&blk, int x, int y, int z) {
+    void EmptyChunk::setBlock(block::properties::BlockProperties &&blk, int x, int y, int z) {
     }
 
-    void EmptyChunk::setBlockRaw(block::state::BlockState &&blk, int x, int y, int z) {
+    void EmptyChunk::setBlockRaw(block::properties::BlockProperties &&blk, int x, int y, int z) {
     }
 
     void EmptyChunk::setHeightAt(int16_t h, int x, int z) {
@@ -35,7 +35,7 @@ namespace lodestone::level::chunk {
     void EmptyChunk::calculateBlockmap() {
     }
 
-    void EmptyChunk::setBlockmapBlockAt(block::state::BlockState *h, int x, int z) {
+    void EmptyChunk::setBlockmapBlockAt(block::properties::BlockProperties *h, int x, int z) {
     }
 
     void EmptyChunk::calculateMaps() {

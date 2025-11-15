@@ -9,13 +9,13 @@
 
 // this class required me to upgrade to c++20
 namespace lodestone::common::registry {
-    class NamespacedString : public string::StringSerializable {
+    class Identifier : public string::StringSerializable {
     protected:
-        explicit constexpr NamespacedString(const char *name) noexcept : mNamespace("lodestone"), mName(name) {
+        explicit constexpr Identifier(const char *name) noexcept : mNamespace("lodestone"), mName(name) {
         };
 
     public:
-        constexpr NamespacedString(const char *nmsp, const char *name) noexcept : mNamespace(nmsp), mName(name) {
+        constexpr Identifier(const char *nmsp, const char *name) noexcept : mNamespace(nmsp), mName(name) {
         };
 
         constexpr const char *getName() const noexcept {
@@ -34,7 +34,7 @@ namespace lodestone::common::registry {
             return getString();
         };
 
-        constexpr bool operator==(const NamespacedString &rhs) const noexcept {
+        constexpr bool operator==(const Identifier &rhs) const noexcept {
             return this->mName == rhs.mName && this->mNamespace == rhs.mNamespace;
         }
 
@@ -42,7 +42,7 @@ namespace lodestone::common::registry {
             return getString();
         }
 
-        constexpr friend std::ostream &operator<<(std::ostream &os, const NamespacedString &s) noexcept {
+        constexpr friend std::ostream &operator<<(std::ostream &os, const Identifier &s) noexcept {
             os << s.getString();
             return os;
         }
@@ -54,23 +54,23 @@ namespace lodestone::common::registry {
 }
 
 template<>
-struct std::formatter<lodestone::common::registry::NamespacedString> : formatter<string> {
-    std::format_context::iterator format(const lodestone::common::registry::NamespacedString &s,
+struct std::formatter<lodestone::common::registry::Identifier> : formatter<string> {
+    std::format_context::iterator format(const lodestone::common::registry::Identifier &s,
                                          format_context &c) const {
         return formatter<string>::format(s.getString(), c);
     }
 };
 
-struct NamespacedStringHasher {
-    size_t operator()(const lodestone::common::registry::NamespacedString &s) const noexcept {
+struct IdentifierHasher {
+    size_t operator()(const lodestone::common::registry::Identifier &s) const noexcept {
         return std::hash<std::string_view>{}(s.getName())
                ^ (std::hash<std::string_view>{}(s.getNamespace()) << 1);
     }
 };
 
-struct NamespacedStringComparator {
-    bool operator()(const lodestone::common::registry::NamespacedString &lhs,
-                    const lodestone::common::registry::NamespacedString &rhs) const noexcept {
+struct IdentifierComparator {
+    bool operator()(const lodestone::common::registry::Identifier &lhs,
+                    const lodestone::common::registry::Identifier &rhs) const noexcept {
         return !std::strcmp(lhs.getNamespace(), rhs.getNamespace()) &&
                !std::strcmp(lhs.getName(), rhs.getName());
     }

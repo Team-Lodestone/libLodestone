@@ -14,15 +14,17 @@ set(FILES
         src/block/Block.cpp
 
         include/Lodestone.Level/block/Block.h
-        include/Lodestone.Level/block/BlockRegistry.h
         src/material/Material.cpp
         include/Lodestone.Level/material/Material.h
         include/Lodestone.Level/types/Color.h
+        include/Lodestone.Level/block/BlockRegistry.h
         src/block/BlockRegistry.cpp
+        include/Lodestone.Level/item/ItemRegistry.h
+        src/item/ItemRegistry.cpp
         src/material/MaterialRegistry.cpp
         include/Lodestone.Level/material/MaterialRegistry.h
-        src/block/state/BlockState.cpp
-        include/Lodestone.Level/block/state/BlockState.h
+        src/block/state/BlockProperties.cpp
+        include/Lodestone.Level/block/state/BlockProperties.h
         src/chunk/section/EmptySection.cpp
         include/Lodestone.Level/chunk/section/EmptySection.h
         src/chunk/section/Section.cpp
@@ -42,14 +44,12 @@ set(FILES
         include/Lodestone.Level/types/Bounds3.h
         include/Lodestone.Level/types/Bounds2.h
         include/Lodestone.Level/block/Blocks.h
-        ../Conversion/include/Lodestone.Conversion/types/hash/BlockDataHash.h
         src/region/Region.cpp
         include/Lodestone.Level/region/Region.h
         src/chunk/ChunkContainer.cpp
         include/Lodestone.Level/chunk/ChunkContainer.h
         src/FiniteLevel.cpp
         include/Lodestone.Level/FiniteLevel.h
-        ../Conversion/include/Lodestone.Conversion/Identifiers.h
         src/entity/Player.cpp
         include/Lodestone.Level/entity/Player.h
         src/entity/Entity.cpp
@@ -57,6 +57,18 @@ set(FILES
         src/entity/LevelEntity.cpp
         include/Lodestone.Level/entity/ChunkEntity.h
         include/Lodestone.Level/entity/Entities.h
+        src/container/ItemContainer.cpp
+        include/Lodestone.Level/container/ItemContainer.h
+        src/item/Item.cpp
+        include/Lodestone.Level/item/Item.h
+        src/item/block/BlockItem.cpp
+        include/Lodestone.Level/item/block/BlockItem.h
+        src/item/ItemProperties.cpp
+        include/Lodestone.Level/item/ItemProperties.h
+        include/Lodestone.Level/properties/AbstractProperty.h
+        include/Lodestone.Level/Identifiers.h
+        include/Lodestone.Level/properties/TemplatedProperty.h
+        include/Lodestone.Level/item/Items.h
 )
 
 # if (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -67,11 +79,8 @@ set(FILES
 # endif ()
 
 add_library(Lodestone.Level SHARED ${FILES})
-target_include_directories(Lodestone.Level
-        PUBLIC
+target_include_directories(Lodestone.Level PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/Lodestone.Level
 )
 
 target_link_libraries(Lodestone.Level PUBLIC Lodestone.Common)

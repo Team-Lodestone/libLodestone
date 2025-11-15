@@ -14,7 +14,7 @@ namespace lodestone::level::types {
         }
 
         constexpr std::string toString() const override {
-            return std::format("Vec3[x={},y={},z={}]", x, y, z);
+            return std::format("Vec3[x={}, y={}, z={}]", x, y, z);
         };
 
         constexpr operator T *() { return &x; }
@@ -88,6 +88,11 @@ namespace lodestone::level::types {
                 y / rhs.y,
                 z / rhs.z
             };
+        }
+
+        template <typename V>
+        Vec3<V> asVec() const {
+            return Vec3<V>(static_cast<V>(x), static_cast<V>(y), static_cast<V>(z));
         }
     };
 

@@ -18,7 +18,7 @@ namespace lodestone::java::classic::minev2 {
 
         size_t getSize(level::world::World *w, int version) const override;
 
-        const lodestone::conversion::level::LevelIO *getLevelIO(int version) const override;
+        const lodestone::conversion::level::PlayerIO *getLevelIO(int version) const override;
     };
 }
 

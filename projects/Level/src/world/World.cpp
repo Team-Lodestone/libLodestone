@@ -4,7 +4,7 @@
 #include "Lodestone.Level/world/World.h"
 
 namespace lodestone::level::world {
-    Level *World::addLevel(const lodestone::common::registry::NamespacedString &id, std::unique_ptr<Level> level) {
+    Level *World::addLevel(const lodestone::common::registry::Identifier &id, std::unique_ptr<Level> level) {
         if (hasLevel(id)) throw std::runtime_error(
             std::format("Level '{}' already exists in world '{}'", id, mName));
 
@@ -14,21 +14,21 @@ namespace lodestone::level::world {
         return l;
     }
 
-    Level *World::getLevel(const lodestone::common::registry::NamespacedString &id) const {
+    Level *World::getLevel(const lodestone::common::registry::Identifier &id) const {
         if (const auto it = mLevels.find(id); it != mLevels.end())
             return it->second.get();
 
         return nullptr;
     }
 
-    void World::removeLevel(const lodestone::common::registry::NamespacedString &id) {
+    void World::removeLevel(const lodestone::common::registry::Identifier &id) {
         if (!hasLevel(id)) throw std::runtime_error(
             std::format("Cannot remove nonexistent level '{}' in world '{}'", id, mName));
 
         mLevels.erase(id);
     }
 
-    bool World::hasLevel(const lodestone::common::registry::NamespacedString &id) const {
+    bool World::hasLevel(const lodestone::common::registry::Identifier &id) const {
         return mLevels.contains(id);
     }
 
@@ -76,7 +76,7 @@ namespace lodestone::level::world {
         return mPlayers.contains(id);
     }
 
-    void World::movePlayerToLevel(std::unique_ptr<entity::Player> player, const common::registry::NamespacedString &level) {
+    void World::movePlayerToLevel(std::unique_ptr<entity::Player> player, const common::registry::Identifier &level, const bool resetCoords) {
         Level *lvl = getLevel(level);
         if (!lvl) throw std::runtime_error(std::format("Tried to move player '{}' to nonexistent level '{}'", player->getId(), level));
 
@@ -86,7 +86,7 @@ namespace lodestone::level::world {
             p = addPlayer(std::move(player));
         }
 
-        p->setLevel(lvl);
+        p->setLevel(lvl, resetCoords);
     }
 
     void World::movePlayerToWorld(std::unique_ptr<entity::Player> player, World *world) {
@@ -100,8 +100,8 @@ namespace lodestone::level::world {
         return mPlayers;
     }
 
-    const gtl::flat_hash_map<lodestone::common::registry::NamespacedString, std::unique_ptr<Level>,
-    NamespacedStringHasher, NamespacedStringComparator> & World::getLevels() const {
+    const gtl::flat_hash_map<lodestone::common::registry::Identifier, std::unique_ptr<Level>,
+    IdentifierHasher, IdentifierComparator> & World::getLevels() const {
         return mLevels;
     }
 }

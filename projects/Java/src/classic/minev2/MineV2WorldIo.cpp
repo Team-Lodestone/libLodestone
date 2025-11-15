@@ -78,7 +78,7 @@ namespace lodestone::java::classic::minev2 {
         return s;
     }
 
-    const lodestone::conversion::level::LevelIO *MineV2WorldIO::getLevelIO(int version) const {
-        return lodestone::conversion::level::LevelIORegistry::sInstance.getLevelIO(identifiers::MINEV2);
+    const lodestone::conversion::level::PlayerIO *MineV2WorldIO::getLevelIO(int version) const {
+        return lodestone::conversion::level::PlayerIORegistry::sInstance.getLevelIO(identifiers::MINEV2);
     }
 }

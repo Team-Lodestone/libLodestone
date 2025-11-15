@@ -4,11 +4,11 @@
 #ifndef LODESTONE_BLOCKS_H
 #define LODESTONE_BLOCKS_H
 
-#include <Lodestone.Common/registry/NamespacedString.h>
+#include <Lodestone.Common/registry/Identifier.h>
 
 namespace lodestone::level::block {
     struct Blocks {
-#define ADD_BLOCK(name, id) static constexpr const lodestone::common::registry::NamespacedString name = lodestone::common::registry::NamespacedString{"lodestone", id}
+#define ADD_BLOCK(name, id) static constexpr const lodestone::common::registry::Identifier name = lodestone::common::registry::Identifier{"lodestone", id}
 
         ADD_BLOCK(AIR, "air");
         ADD_BLOCK(STONE, "stone");

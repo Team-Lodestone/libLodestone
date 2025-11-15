@@ -32,6 +32,10 @@ set(FILES
         include/Lodestone.Java/mcr/world/McRegionWorld.h
         src/mcr/region/McRegionRegion.cpp
         include/Lodestone.Java/mcr/region/McRegionRegion.h
+        src/mcr/player/McRegionPlayer.cpp
+        include/Lodestone.Java/mcr/player/McRegionPlayer.h
+        src/mcr/player/McRegionPlayerIo.cpp
+        include/Lodestone.Java/mcr/player/McRegionPlayerIo.h
 )
 
 # NBT
@@ -43,6 +47,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(nbt++)
 
+FetchContent_Declare(
+        stduuid
+        GIT_REPOSITORY https://github.com/mariusbancila/stduuid.git
+        GIT_TAG master
+)
+FetchContent_MakeAvailable(stduuid)
+
 add_library(Lodestone.Java SHARED ${FILES})
 target_include_directories(Lodestone.Java
         PUBLIC
@@ -51,5 +62,5 @@ target_include_directories(Lodestone.Java
         ${CMAKE_CURRENT_SOURCE_DIR}/include/Lodestone.Java
 )
 
-target_link_libraries(Lodestone.Java PRIVATE Lodestone.Level Lodestone.Conversion nbt++)
+target_link_libraries(Lodestone.Java PRIVATE Lodestone.Level Lodestone.Conversion nbt++ stduuid)
 #target_link_libraries(Lodestone.Java PRIVATE Lodestone.Common)

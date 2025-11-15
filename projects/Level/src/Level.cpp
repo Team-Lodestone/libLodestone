@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <limits.h>
+#include <random>
 
 #include "Lodestone.Level/chunk/LevelChunk.h"
 
@@ -14,19 +15,19 @@ namespace lodestone::level {
         return true;
     }
 
-    block::state::BlockState *Level::getBlock(const size_t x, const size_t y, const size_t z) {
+    block::properties::BlockProperties *Level::getBlock(const size_t x, const size_t y, const size_t z) {
         if (const chunk::Chunk *c = getChunk(x / common::constants::CHUNK_WIDTH, z / common::constants::CHUNK_DEPTH))
             return c->getBlock(x % common::constants::CHUNK_WIDTH, y, z % common::constants::CHUNK_DEPTH);
 
-        return new block::state::BlockState();
+        return new block::properties::BlockProperties();
     }
 
-    void Level::setBlock(block::state::BlockState &&blk, const size_t x, const size_t y, const size_t z) {
+    void Level::setBlock(block::properties::BlockProperties &&blk, const size_t x, const size_t y, const size_t z) {
         if (chunk::Chunk *c = getChunk(x / common::constants::CHUNK_WIDTH, z / common::constants::CHUNK_DEPTH))
             c->setBlock(std::move(blk), x % common::constants::CHUNK_WIDTH, y, z % common::constants::CHUNK_DEPTH);
     }
 
-    void Level::setBlockCreate(block::state::BlockState &&blk, const size_t x, const size_t y, const size_t z,
+    void Level::setBlockCreate(block::properties::BlockProperties &&blk, const size_t x, const size_t y, const size_t z,
                                const int height) {
         chunk::Chunk *c = getChunk(x / common::constants::CHUNK_WIDTH, z / common::constants::CHUNK_DEPTH);
 
@@ -35,12 +36,12 @@ namespace lodestone::level {
         c->setBlock(std::move(blk), x % common::constants::CHUNK_WIDTH, y, z % common::constants::CHUNK_DEPTH);
     }
 
-    void Level::setBlockRaw(block::state::BlockState &&blk, const size_t x, const size_t y, const size_t z) {
+    void Level::setBlockRaw(block::properties::BlockProperties &&blk, const size_t x, const size_t y, const size_t z) {
         if (chunk::Chunk *c = getChunk(x / common::constants::CHUNK_WIDTH, z / common::constants::CHUNK_DEPTH))
             c->setBlockRaw(std::move(blk), x % common::constants::CHUNK_WIDTH, y, z % common::constants::CHUNK_DEPTH);
     }
 
-    void Level::setBlockCreateRaw(block::state::BlockState &&blk, const size_t x, const size_t y, const size_t z,
+    void Level::setBlockCreateRaw(block::properties::BlockProperties &&blk, const size_t x, const size_t y, const size_t z,
                                   const int height) {
         chunk::Chunk *c = getChunk(x / common::constants::CHUNK_WIDTH, z / common::constants::CHUNK_DEPTH);
 
@@ -73,19 +74,19 @@ namespace lodestone::level {
 #pragma endregion
 
 #pragma region Blockmap
-    const block::state::BlockState *Level::getBlockmapBlockAt(const int x, const int z) const {
+    const block::properties::BlockProperties *Level::getBlockmapBlockAt(const int x, const int z) const {
         if (const chunk::Chunk *c = getChunk(x / common::constants::CHUNK_WIDTH, z / common::constants::CHUNK_DEPTH))
             return c->getBlockmapBlockAt(x % common::constants::CHUNK_WIDTH, z % common::constants::CHUNK_DEPTH);
 
-        return new block::state::BlockState();
+        return new block::properties::BlockProperties();
     }
 
-    void Level::setBlockmapBlockAt(block::state::BlockState *b, const int x, const int z) {
+    void Level::setBlockmapBlockAt(block::properties::BlockProperties *b, const int x, const int z) {
         if (chunk::Chunk *c = getChunk(x / common::constants::CHUNK_WIDTH, z / common::constants::CHUNK_DEPTH))
             c->setBlockmapBlockAt(b, x % common::constants::CHUNK_WIDTH, z % common::constants::CHUNK_DEPTH);
     }
 
-    void Level::setBlockmapBlockAtCreate(block::state::BlockState *b, const int x, const int z, const int height) {
+    void Level::setBlockmapBlockAtCreate(block::properties::BlockProperties *b, const int x, const int z, const int height) {
         chunk::Chunk *c = getChunk(x / common::constants::CHUNK_WIDTH, z / common::constants::CHUNK_DEPTH);
 
         if (!c) c = createChunk(x / common::constants::CHUNK_WIDTH, z / common::constants::CHUNK_DEPTH, height);
@@ -133,5 +134,31 @@ namespace lodestone::level {
 
     void Level::setWorld(world::World *world) {
         this->mWorld = world;
+    }
+
+    types::Vec3i Level::generateSpawnPos(const unsigned int radius) {
+        int x = 0;
+        int z = 0;
+
+        // spread the player
+        if (radius != 0) {
+            std::random_device rd;
+            std::mt19937 gen(rd());
+            std::uniform_int_distribution<> distrib(0 - radius, 0 + radius);
+
+            x = distrib(gen);
+            z = distrib(gen);
+        }
+
+        int y = getHeightAt(x, z);
+        return {x, y, z};
+    }
+
+    const level::types::Vec3i & Level::getSpawnPos() const {
+        return this->mSpawnPos;
+    }
+
+    void Level::setSpawnPos(const level::types::Vec3i &spawnPos) {
+        this->mSpawnPos = spawnPos;
     }
 }

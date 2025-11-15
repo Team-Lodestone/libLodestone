@@ -76,8 +76,13 @@ namespace lodestone::level::types {
         }
 
         constexpr std::string toString() const override {
-            return std::format("Vec2[x={},z={}]", x, z);
+            return std::format("Vec2[x={}, z={}]", x, z);
         };
+
+        template <typename V>
+        Vec2<V> asVec() const {
+            return Vec2<V>(static_cast<V>(x), static_cast<V>(z));
+        }
     };
 
     typedef Vec2<int> Vec2i;

@@ -17,14 +17,14 @@ namespace lodestone::conversion::chunk {
     public:
         static ChunkIORegistry sInstance;
 
-        void registerChunkIO(const lodestone::common::registry::NamespacedString &id,
+        void registerChunkIO(const lodestone::common::registry::Identifier &id,
                              std::unique_ptr<const ChunkIO> io);
 
-        const ChunkIO *getChunkIO(const lodestone::common::registry::NamespacedString &id) const;
+        const ChunkIO *getChunkIO(const lodestone::common::registry::Identifier &id) const;
 
     private:
-        gtl::flat_hash_map<lodestone::common::registry::NamespacedString, std::unique_ptr<const ChunkIO>,
-            NamespacedStringHasher, NamespacedStringComparator> mRegisteredChunkIOs = {};
+        gtl::flat_hash_map<lodestone::common::registry::Identifier, std::unique_ptr<const ChunkIO>,
+            IdentifierHasher, IdentifierComparator> mRegisteredChunkIOs = {};
     };
 }
 

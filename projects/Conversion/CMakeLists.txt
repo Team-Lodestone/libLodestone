@@ -14,6 +14,10 @@ set(FILES
         include/Lodestone.Conversion/level/LevelIORegistry.h
         src/level/LevelIO.cpp
         include/Lodestone.Conversion/level/LevelIO.h
+        src/player/PlayerIORegistry.cpp
+        include/Lodestone.Conversion/player/PlayerIORegistry.h
+        src/player/PlayerIO.cpp
+        include/Lodestone.Conversion/player/PlayerIO.h
         src/world/WorldIO.cpp
         include/Lodestone.Conversion/world/WorldIO.h
         src/world/WorldIORegistry.cpp

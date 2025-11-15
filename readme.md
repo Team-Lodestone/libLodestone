@@ -22,14 +22,18 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
     - [ ] Lighting calculation (maybe?)
     - [ ] Biomes
     - [ ] POI/Structure system
-    - [ ] Players (store player data per world)
-    - [ ] Dynamic Block & Material registration
-      - `DynamicBlock`
-      - `DynamicMaterial`
+    - [X] Players (store player data per world)
+    - [ ] Dynamic registration
+      - [ ] `DynamicBlock`
+      - [ ] `DynamicMaterial`
+      - [ ] `DynamicBiome`
     - [X] Internal Block IDs
         - [X] Block ID conversion map between versions
           - [X] Dynamic block map
           - [X] Versioned block map
+        - [ ] Item ID conversion map between versions
+          - [ ] Dynamic item map
+          - [ ] Versioned item map
         - [ ] Properly convert block states and other data
     - [ ] Entities
         - [ ] Tile Entities

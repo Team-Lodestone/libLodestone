@@ -24,15 +24,15 @@ namespace lodestone::level {
     public:
         bool isChunkInBounds(const types::Vec2i &coords) override;
 
-        block::state::BlockState *getBlock(size_t x, size_t y, size_t z);
+        block::properties::BlockProperties *getBlock(size_t x, size_t y, size_t z);
 
-        void setBlock(block::state::BlockState &&blk, size_t x, size_t y, size_t z);
+        void setBlock(block::properties::BlockProperties &&blk, size_t x, size_t y, size_t z);
 
-        void setBlockRaw(block::state::BlockState &&blk, size_t x, size_t y, size_t z);
+        void setBlockRaw(block::properties::BlockProperties &&blk, size_t x, size_t y, size_t z);
 
-        void setBlockCreate(block::state::BlockState &&blk, size_t x, size_t y, size_t z, int height = 256);
+        void setBlockCreate(block::properties::BlockProperties &&blk, size_t x, size_t y, size_t z, int height = 256);
 
-        void setBlockCreateRaw(block::state::BlockState &&blk, size_t x, size_t y, size_t z, int height = 256);
+        void setBlockCreateRaw(block::properties::BlockProperties &&blk, size_t x, size_t y, size_t z, int height = 256);
 
         int16_t getHeightAt(int x, int z) const;
 
@@ -40,11 +40,11 @@ namespace lodestone::level {
 
         void setHeightAtCreate(int16_t h, size_t x, size_t z, int height = 256);
 
-        const block::state::BlockState *getBlockmapBlockAt(int x, int z) const;
+        const block::properties::BlockProperties *getBlockmapBlockAt(int x, int z) const;
 
-        void setBlockmapBlockAt(block::state::BlockState *b, int x, int z);
+        void setBlockmapBlockAt(block::properties::BlockProperties *b, int x, int z);
 
-        void setBlockmapBlockAtCreate(block::state::BlockState *b, int x, int z, int height = 256);
+        void setBlockmapBlockAtCreate(block::properties::BlockProperties *b, int x, int z, int height = 256);
 
         size_t getBlockCount() const;
 
@@ -53,7 +53,12 @@ namespace lodestone::level {
         world::World *getWorld() const;
         bool isInWorld() const;
         void setWorld(world::World *world);
+
+        types::Vec3i generateSpawnPos(unsigned int radius = 21);
+        virtual const level::types::Vec3i & getSpawnPos() const;
+        virtual void setSpawnPos(const level::types::Vec3i &spawnPos);
     private:
+        level::types::Vec3i mSpawnPos{0, 64, 0};
         world::World *mWorld = nullptr;
     };
 }

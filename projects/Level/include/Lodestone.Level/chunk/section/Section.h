@@ -6,8 +6,8 @@
 #include <cstdint>
 
 namespace lodestone::level::block {
-    namespace state {
-        class BlockState;
+    namespace properties {
+        class BlockProperties;
     }
 }
 
@@ -21,15 +21,15 @@ namespace lodestone::level::chunk::section {
             EmptySection
         };
 
-        virtual const block::state::BlockState *getBlocks() = 0;
+        virtual const block::properties::BlockProperties *getBlocks() = 0;
 
         virtual const uint8_t *getBlockLight() const = 0;
 
         virtual const uint8_t *getSkyLight() const = 0;
 
-        virtual block::state::BlockState *getBlock(const int x, const int y, const int z) const = 0;
+        virtual block::properties::BlockProperties *getBlock(const int x, const int y, const int z) const = 0;
 
-        virtual void setBlock(block::state::BlockState &&blk, int x, int y, int z) = 0;
+        virtual void setBlock(block::properties::BlockProperties &&blk, int x, int y, int z) = 0;
 
         virtual SectionType getType() = 0;
 
