@@ -23,9 +23,9 @@ namespace lodestone::level::chunk {
 
     bool LevelChunk::hasSection(const int y) const {
         if (y < 0 || y >= mSections.size())
-            return (mSections[y] != nullptr);
+            return false;
 
-        return false;
+        return (mSections[y] != nullptr);
     }
 
     section::Section *LevelChunk::getSection(const int y) const {

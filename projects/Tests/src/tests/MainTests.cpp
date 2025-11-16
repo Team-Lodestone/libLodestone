@@ -30,51 +30,57 @@ namespace lodestone::tests::test {
     }
 
     void MainTests::readMcrChunk() {
-        OPEN_FILE("mcregion_chunk.dat", c);
+        OPEN_FILE_STREAM("mcregion_chunk.dat", c);
 
         java::mcr::chunk::McRegionChunkIO *io = (java::mcr::chunk::McRegionChunkIO *)
                 lodestone::conversion::chunk::ChunkIORegistry::sInstance.getChunkIO({"lodestone", "mcregion"});
-        std::unique_ptr<level::chunk::Chunk> ch = io->read(c.data(), c.size(), java::Version::b1_3);
+        std::unique_ptr<level::chunk::Chunk> ch = io->read(in, java::Version::b1_3);
 
         level::Level *level = new level::Level();
         level->addChunk(std::move(ch));
-
-        const lodestone::conversion::world::FileWorldIO *l2 = dynamic_cast<const
-            lodestone::conversion::world::FileWorldIO *>(
-            lodestone::conversion::world::WorldIORegistry::sInstance.getWorldIO({"lodestone", "minev2"}));
-        lodestone::java::classic::minev2::MineV2World *w = new lodestone::java::classic::minev2::MineV2World(
-            std::unique_ptr<lodestone::level::Level>(level), "New World", "h");
-        WRITE_FILE("minev2.mine.out", reinterpret_cast<const char*>(l2->write(w, lodestone::java::c0_0_12a)),
-                   l2->getSize(w, lodestone::java::c0_0_12a));
-    }
-
-    void MainTests::readMcrFile() {
-        std::string name("r.0.0.omnibeta");
-        OPEN_FILE(std::format("{}.mcr", name), c);
-
-        java::mcr::region::McRegionRegionIO *io = (java::mcr::region::McRegionRegionIO *)
-                lodestone::conversion::region::RegionIORegistry::sInstance.getRegionIO(java::identifiers::MCREGION);
-        std::unique_ptr<level::region::Region> r = io->read(c.data(), c.size(), java::Version::b1_3, java::mcr::region::McRegionRegion::getCoordsFromFilename(name));
 
         // const lodestone::conversion::world::FileWorldIO *l2 = dynamic_cast<const
         //     lodestone::conversion::world::FileWorldIO *>(
         //     lodestone::conversion::world::WorldIORegistry::sInstance.getWorldIO({"lodestone", "minev2"}));
         // lodestone::java::classic::minev2::MineV2World *w = new lodestone::java::classic::minev2::MineV2World(
-        //     std::move(r), "New World", "h");
-        // WRITE_FILE(std::format("{}.dat", name), reinterpret_cast<const char*>(l2->write(w, lodestone::java::c0_28)),
-        //            l2->getSize(w, lodestone::java::c0_28));
+        //     std::unique_ptr<lodestone::level::Level>(level), "New World", "h");
+        // WRITE_FILE("minev2.mine.out", reinterpret_cast<const char*>(l2->write(w, lodestone::java::c0_0_12a)),
+        //            l2->getSize(w, lodestone::java::c0_0_12a));
+    }
+
+    void MainTests::readMcrFile() {
+        std::string name("r.0.0.omnibeta");
+        OPEN_FILE_STREAM(std::format("{}.mcr", name), c);
+
+        java::mcr::region::McRegionRegionIO *io = (java::mcr::region::McRegionRegionIO *)
+                lodestone::conversion::region::RegionIORegistry::sInstance.getRegionIO(java::identifiers::MCREGION);
+        std::unique_ptr<level::region::Region> r = io->read(in, java::Version::b1_3, java::mcr::region::McRegionRegion::getCoordsFromFilename(name));
+
+        const lodestone::conversion::world::FileWorldIO *l2 = dynamic_cast<const
+            lodestone::conversion::world::FileWorldIO *>(
+            lodestone::conversion::world::WorldIORegistry::sInstance.getWorldIO({"lodestone", "minev2"}));
+        lodestone::java::classic::minev2::MineV2World *w = new lodestone::java::classic::minev2::MineV2World(
+            std::move(r), "New World", "h");
+
+        OPEN_WRITE_FILE_STREAM(std::format("{}.dat", name))
+        l2->write(w, lodestone::java::c0_28, out);
+        out.close();
     }
 
     void MainTests::readMcrWorld() {
-        std::string name("world");
+        std::string name("ShadowWorld");
         std::filesystem::path dir(util::INPUT_FOLDER / name);
 
         const java::mcr::world::McRegionWorldIo *io = (java::mcr::world::McRegionWorldIo *)
         lodestone::conversion::world::WorldIORegistry::sInstance.getWorldIO(java::identifiers::MCREGION);
         std::shared_ptr<level::world::World> w = io->read(dir, java::Version::b1_3);
 
+        std::cout << "done now writing" << std::endl;
+
         const lodestone::conversion::world::FileWorldIO *l2 = dynamic_cast<const lodestone::conversion::world::FileWorldIO *>(lodestone::conversion::world::WorldIORegistry::sInstance.getWorldIO({"lodestone", "minev2"}));
-        WRITE_FILE(std::format("{}.dat", name), reinterpret_cast<const char*>(l2->write(w.get(), lodestone::java::c0_28)),
-        l2->getSize(w.get(), lodestone::java::c0_28));
+
+        OPEN_WRITE_FILE_STREAM(std::format("{}.dat", name))
+        l2->write(w.get(), lodestone::java::c0_28, out);
+        out.close();
     }
 }

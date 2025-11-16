@@ -11,14 +11,6 @@
 #include "Lodestone.Java/mcr/player/McRegionPlayer.h"
 
 namespace lodestone::java::mcr::player {
-    std::unique_ptr<level::entity::Player> McRegionPlayerIO::read(const std::filesystem::path &filename, uint8_t *data, const size_t size, const int version) const {
-        std::istream buf(new common::io::DataBuffer(data, size));
-        nbt::io::stream_reader streamReader = nbt::io::stream_reader(buf, endian::big);
-
-        auto root = streamReader.read_compound();
-        return read(filename, *root.second, version);
-    }
-
     std::unique_ptr<level::entity::Player> McRegionPlayerIO::read(const std::filesystem::path &filename, nbt::tag_compound &player, const int version) const {
         // FOR LATER
         // I was accidentally reading from Project Poseidon player files which included some UUID
@@ -84,8 +76,6 @@ namespace lodestone::java::mcr::player {
         return p;
     }
 
-    uint8_t * McRegionPlayerIO::write(level::entity::Player *c, int version) const {
-    }
 
     nbt::tag_compound McRegionPlayerIO::write(level::entity::Player &c) const {
     }
@@ -93,6 +83,15 @@ namespace lodestone::java::mcr::player {
     size_t McRegionPlayerIO::getSize(level::entity::Player *c, int version) const {
     }
 
-    void McRegionPlayerIO::write(lodestone::level::entity::Player *p, uint8_t *out, int version) const {
+    std::unique_ptr<lodestone::level::entity::Player> McRegionPlayerIO::read(const std::filesystem::path &filename,
+        std::istream &in, int version) const {
+        nbt::io::stream_reader streamReader = nbt::io::stream_reader(in, endian::big);
+
+        auto root = streamReader.read_compound();
+        return read(filename, *root.second, version);
     }
+
+    void McRegionPlayerIO::write(lodestone::level::entity::Player *p, int version, std::ostream &out) const {
+    }
+
 }

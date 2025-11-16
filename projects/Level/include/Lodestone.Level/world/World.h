@@ -29,7 +29,7 @@ namespace lodestone::level::world {
         }
 
         World(std::unique_ptr<Level> overworldLevel, const std::string &name = "New World") : mName(name) {
-            this->mLevels.emplace(Dimension::OVERWORLD, std::move(overworldLevel));
+            this->addLevel(Dimension::OVERWORLD, std::move(overworldLevel));
         }
 
         World(const std::string &name,

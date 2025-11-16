@@ -7,7 +7,7 @@
 #include <format>
 #include <iostream>
 #include <zlib.h>
-#include <BinaryIO/BinaryIO.h>
+#include <BinaryIO/BinaryBuffer.h>
 
 #include "Lodestone.Java/Identifiers.h"
 #include "Lodestone.Java/mcr/chunk/McRegionChunk.h"
@@ -18,37 +18,53 @@
 #include <Lodestone.Conversion/chunk/ChunkIORegistry.h>
 #include <Lodestone.Level/region/Region.h>
 
+#include <BinaryIO/stream/BinaryInputStream.h>
+
+#include <libnbt++/io/izlibstream.h>
 #include "Lodestone.Java/mcr/region/McRegionRegion.h"
 
 namespace lodestone::java::mcr::region {
-    std::unique_ptr<lodestone::level::region::Region> McRegionRegionIO::read(uint8_t *data, size_t size, const int version,
-                                                             const level::types::Vec2i &coords) const {
-        bio::BinaryIO io(data);
+    size_t McRegionRegionIO::getSize(lodestone::level::region::Region *c, int version) const {
+    }
+
+    std::unique_ptr<lodestone::level::region::Region> McRegionRegionIO::read(std::istream &in, const int version,
+        const lodestone::level::types::Vec2i &coords) const {
+        bio::stream::BinaryInputStream bis(in);
 
         const chunk::McRegionChunkIO *chunkIo = dynamic_cast<const chunk::McRegionChunkIO *>(
             lodestone::conversion::chunk::ChunkIORegistry::sInstance.getChunkIO(identifiers::MCREGION));
 
         std::unique_ptr<lodestone::level::region::Region> region = std::make_unique<McRegionRegion>(coords);
 
-        std::vector<RegionChunkIndice> locations(CHUNK_COUNT);
-        bio::BinaryIO timestampIo(io.getDataRelative() + (CHUNK_COUNT * 4));
-        for (int i = 0; i < CHUNK_COUNT; i++) {
-            const uint32_t offset = io.readUint24(bio::ByteOrder::BIG);
-            const uint8_t sz = io.readByte();
+        std::vector<RegionChunkIndice> locations;
+        locations.reserve(CHUNK_COUNT);
 
-            const int32_t timestamp = timestampIo.readBE<int32_t>();
+        uint8_t *locs = new uint8_t[CHUNK_COUNT * 4];
+        bis.readInto(locs, CHUNK_COUNT * 4);
+
+        uint8_t *timestamps = new uint8_t[CHUNK_COUNT * 4];
+        bis.readInto(timestamps, CHUNK_COUNT * 4);
+
+        bio::BinaryBuffer locBuf(locs);
+        bio::BinaryBuffer timeBuf(timestamps);
+        for (int i = 0; i < CHUNK_COUNT; i++) {
+            const uint32_t offset = locBuf.readUint24(bio::util::ByteOrder::BIG);
+            const uint8_t sz = locBuf.readByte();
+
+            const int32_t timestamp = timeBuf.readBE<int32_t>();
 
             if (sz != 0 && offset != 0)
                 locations.push_back({offset, sz, timestamp});
         }
 
-        io.seek((CHUNK_COUNT * 4) * 2);
+        delete[] timestamps;
+        delete[] locs;
 
         for (const auto loc: locations) {
-            io.seek(loc.offset * SECTOR_SIZE);
+            bis.seek(loc.offset * SECTOR_SIZE);
 
-            uint32_t len = io.readBE<uint32_t>();
-            RegionCompression compression = static_cast<RegionCompression>(io.readByte());
+            uint32_t len = bis.readBE<uint32_t>();
+            RegionCompression compression = static_cast<RegionCompression>(bis.readByte());
 
             if (compression == 0) continue;
 
@@ -57,49 +73,16 @@ namespace lodestone::java::mcr::region {
             bool fail = false;
             switch (compression) {
                 case Zlib: {
-                    z_stream s{};
-                    s.next_in = (Bytef *) io.getDataRelative();
-                    s.avail_in = (chunkSize) - 5;
-
-                    if (inflateInit(&s) != Z_OK) {
-                        std::cerr << "Failed to decompress chunk" << std::endl;
-                        continue;
-                    }
-
-                    std::vector<uint8_t> decompressed;
-
-                    int res = Z_OK;
-                    uint8_t tmpOut[chunkSize];
-
-                    while (res != Z_STREAM_END) {
-                        s.next_out = tmpOut;
-                        s.avail_out = chunkSize;
-
-                        res = inflate(&s, Z_NO_FLUSH);
-
-                        if (res != Z_OK && res != Z_STREAM_END && res != Z_BUF_ERROR) {
-                            inflateEnd(&s);
-                            std::cerr << std::format("Failed to inflate: code {}", res);
-
-                            fail = true;
-                            break;
-                        }
-
-                        decompressed.insert(decompressed.end(), tmpOut, tmpOut + (chunkSize - s.avail_out));
-                    }
-
-                    if (fail) continue;
-
-                    // now we process the chunk
+                    zlib::izlibstream strm(bis.getStream());
                     std::unique_ptr<chunk::McRegionChunk> c = CAST_UNIQUE_PTR(chunk::McRegionChunk, chunkIo->read(
-                        decompressed.data(), decompressed.size(), version));
+                        strm, version));
                     region->addChunk(std::move(c));
 
                     break;
                 }
                 case Custom: {
-                    const uint16_t l = io.readBE<uint16_t>();
-                    std::string name = io.readString(l); // who cares about mutf8 :trolley:
+                    const uint16_t l = bis.readBE<uint16_t>();
+                    std::string name = bis.readString(l); // who cares about mutf8 :trolley:
 
                     // don't throw as we can keep going
                     std::cerr << std::format("Unsupported compression type '{}'", name) << std::endl;
@@ -115,10 +98,7 @@ namespace lodestone::java::mcr::region {
         return region;
     }
 
-    uint8_t *McRegionRegionIO::write(lodestone::level::region::Region *c, int version,
-                                     const level::types::Vec2i &coords) const {
-    }
-
-    size_t McRegionRegionIO::getSize(lodestone::level::region::Region *c, int version) const {
+    void McRegionRegionIO::write(lodestone::level::region::Region *c, int version,
+        const lodestone::level::types::Vec2i &coords, std::ostream &out) const {
     }
 }

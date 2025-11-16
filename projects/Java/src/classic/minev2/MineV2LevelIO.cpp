@@ -4,44 +4,54 @@
 #include "Lodestone.Java/classic/minev2/MineV2LevelIO.h"
 
 #include <ranges>
-#include <BinaryIO/BinaryIO.h>
 
 #include "Lodestone.Java/LodestoneJava.h"
-#include "Lodestone.Java/classic/minev1/MineV1LevelIO.h"
 #include "Lodestone.Level/FiniteLevel.h"
 #include <Lodestone.Common/Indexing.h>
 #include <Lodestone.Conversion/block/BlockIO.h>
 #include <Lodestone.Conversion/block/data/ClassicBlockData.h>
 
-namespace lodestone::java::classic::minev2 {
-    std::unique_ptr<level::Level> MineV2LevelIO::read(uint8_t *data, int version) const {
-        bio::BinaryIO io(data);
+#include <BinaryIO/stream/BinaryInputStream.h>
+#include <BinaryIO/stream/BinaryOutputStream.h>
 
-        const int width = io.readBE<uint16_t>();
-        const int depth = io.readBE<uint16_t>();
-        const int height = io.readBE<uint16_t>();
+namespace lodestone::java::classic::minev2 {
+
+    size_t MineV2LevelIO::getSize(level::Level *l, int version) const {
+        return 2 + 2 + 2 + l->getBlockCount();
+    }
+
+    std::unique_ptr<lodestone::level::Level> MineV2LevelIO::read(std::istream &in, const int version) const {
+        bio::stream::BinaryInputStream bis(in);
+
+        const int width = bis.readBE<uint16_t>();
+        const int depth = bis.readBE<uint16_t>();
+        const int height = bis.readBE<uint16_t>();
 
         std::unique_ptr<level::FiniteLevel> l = std::make_unique<level::FiniteLevel>(
             level::types::Bounds2i {
                 {0, 0},
                 {
-                    BLOCK_IDX_TO_CHUNK_IDX(width) - 1,
-                    BLOCK_IDX_TO_CHUNK_IDX(depth) - 1
+                    CHUNK_IDX(width) - 1,
+                    CHUNK_IDX(depth) - 1
                 }
             });
 
         const std::unique_ptr<lodestone::conversion::block::version::BlockIO> bio = LodestoneJava::getInstance()->io.
                 getIo(version);
 
-        const uint8_t *rd = io.getDataRelative();
         for (int y = 0; y < height; y++) {
             for (int z = 0; z < depth; z++) {
                 for (int x = 0; x < width; x++) {
-                    level::block::properties::BlockProperties b = bio->convertBlockToInternal(lodestone::conversion::block::data::ClassicBlockData(*rd));
+                    const uint8_t bb = bis.readByte();
+
+#ifdef USE_RISKY_OPTIMIZATIONS
+                    if (bb == 0) // since air is id 0
+                        continue; // this skips us having to convert the block
+#endif
+
+                    level::block::properties::BlockProperties b = bio->convertBlockToInternal(lodestone::conversion::block::data::ClassicBlockData(bb));
                     if (b.getBlock() != level::block::BlockRegistry::sDefaultBlock)
                         l->setBlockCreate(std::move(b), x, y, z, height);
-
-                    rd++;
                 }
             }
         }
@@ -49,8 +59,8 @@ namespace lodestone::java::classic::minev2 {
         return l;
     }
 
-    void MineV2LevelIO::write(level::Level *l, uint8_t *out, const int version) const {
-        bio::BinaryIO io(out);
+    void MineV2LevelIO::write(lodestone::level::Level *l, const int version, std::ostream &out) const {
+        bio::stream::BinaryOutputStream bos(out);
         const std::unique_ptr<lodestone::conversion::block::version::BlockIO> bio = LodestoneJava::getInstance()->io.
                 getIo(version);
 
@@ -62,38 +72,24 @@ namespace lodestone::java::classic::minev2 {
 
         // TODO if there's a singular chunk at a far away distance it will never be written since we normalize the values to the size and read from the center of the world
 
-        io.writeBE<uint16_t>(w);
-        io.writeBE<uint16_t>(d);
-        io.writeBE<uint16_t>(h);
+        bos.writeBE<uint16_t>(w);
+        bos.writeBE<uint16_t>(d);
+        bos.writeBE<uint16_t>(h);
 
-        uint8_t *blocks = io.getDataRelative();
         for (int y = 0; y < h; y++) {
             for (int z = 0; z < d; z++) {
                 for (int x = 0; x < w; x++) {
-                    level::block::properties::BlockProperties *b = l->getBlock(x + min.x, y + min.y, z + min.z);
+                    const level::block::properties::BlockProperties *b = l->getBlock(x + min.x, y + min.y, z + min.z);
+
+                    uint8_t v = 0;
                     if (b->getBlock() != level::block::BlockRegistry::sDefaultBlock) {
-                        lodestone::conversion::block::data::AbstractBlockData *bl = bio->convertBlockFromInternal(b);
-                        if (!bl)
-                            blocks[INDEX_YZX(x, y, z, w, d)] = 0;
-                        else
-                            blocks[INDEX_YZX(x, y, z, w, d)] = bl->as<
-                                lodestone::conversion::block::data::ClassicBlockData>()->getId();
+                        if (const lodestone::conversion::block::data::AbstractBlockData *bl = bio->convertBlockFromInternal(b))
+                            v = bl->as<lodestone::conversion::block::data::ClassicBlockData>()->getId();
                     }
 
-                    // io.seekRelative(1); // TODO: I can make this operator++
+                    bos << v;
                 }
             }
         }
-    }
-
-    uint8_t *MineV2LevelIO::write(level::Level *l, const int version) const {
-        uint8_t *d = new uint8_t[getSize(l, version)]{};
-        write(l, d, version);
-
-        return d;
-    }
-
-    size_t MineV2LevelIO::getSize(level::Level *l, int version) const {
-        return 2 + 2 + 2 + l->getBlockCount();
     }
 }

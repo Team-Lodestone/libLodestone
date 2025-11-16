@@ -10,7 +10,8 @@ namespace lodestone::common {
 #define INDEX_YX(x, y, w) y * w + x
 #define INDEX_XY(x, y, h) x * h + y
 
-#define BLOCK_IDX_TO_CHUNK_IDX(i) ((i + (lodestone::common::constants::CHUNK_WIDTH - 1)) / lodestone::common::constants::CHUNK_WIDTH)
+#define CHUNK_IDX(blk) (blk >> 4)
+#define CHUNK_LOCAL_IDX(blk, v) (blk & (v - 1))
 }
 
 #endif // LODESTONE_INDEXING_H

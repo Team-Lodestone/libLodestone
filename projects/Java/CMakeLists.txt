@@ -64,3 +64,8 @@ target_include_directories(Lodestone.Java
 
 target_link_libraries(Lodestone.Java PRIVATE Lodestone.Level Lodestone.Conversion nbt++ stduuid)
 #target_link_libraries(Lodestone.Java PRIVATE Lodestone.Common)
+
+option(ENABLE_RISKY_OPTIMIZATIONS "Enable risky optimizations" ON)
+if (ENABLE_RISKY_OPTIMIZATIONS STREQUAL ON)
+    target_compile_definitions(Lodestone.Java PRIVATE USE_RISKY_OPTIMIZATIONS)
+endif ()

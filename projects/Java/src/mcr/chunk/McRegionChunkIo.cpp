@@ -15,15 +15,6 @@
 #include "Lodestone.Java/mcr/chunk/McRegionChunk.h"
 
 namespace lodestone::java::mcr::chunk {
-    std::unique_ptr<level::chunk::Chunk> McRegionChunkIO::read(uint8_t *data, const size_t size, const int version) const {
-        std::istream buf(new common::io::DataBuffer(data, size));
-        nbt::io::stream_reader streamReader = nbt::io::stream_reader(buf, endian::big);
-
-        auto [name, root] = streamReader.read_compound();
-        nbt::tag_compound &level = (root.get()->at("Level").as<nbt::tag_compound>());
-        return read(level, version);
-    }
-
     std::unique_ptr<level::chunk::Chunk> McRegionChunkIO::read(nbt::tag_compound &chunk, const int version) const {
         const int32_t x = chunk["xPos"].get().as<nbt::tag_int>().get();
         const int32_t z = chunk["zPos"].get().as<nbt::tag_int>().get();
@@ -41,12 +32,19 @@ namespace lodestone::java::mcr::chunk {
                 for (int cy = 0; cy < 128; cy++) {
                     const size_t idx = INDEX_XZY(cx, cy, cz, 128, 16);
 
+                    const uint8_t bb = blocks[idx];
+
+#ifdef USE_RISKY_OPTIMIZATIONS
+                    if (bb == 0) // since air is id 0
+                        continue; // this skips us having to convert the block
+#endif
+
                     const uint8_t d = data[idx];
                     const uint8_t dat = ((idx / 2) % 2 == 0) ? (d >> 4) & 0x0F : d & 0x0F;
 
                     level::block::properties::BlockProperties b = io->convertBlockToInternal(
                     lodestone::conversion::block::data::NumericBlockData(
-                            static_cast<uint8_t>(blocks[idx]),
+                            bb,
                             0)); // TODO metadata (maybe MetadataIO or BlockPropertyIO?)
 
                     if (b.getBlock() != level::block::BlockRegistry::sDefaultBlock)
@@ -58,13 +56,21 @@ namespace lodestone::java::mcr::chunk {
         return c;
     }
 
-    uint8_t *McRegionChunkIO::write(level::chunk::Chunk *c, int version) const {
-    }
-
     nbt::tag_compound McRegionChunkIO::write(level::chunk::Chunk &c) const {
     }
 
     size_t McRegionChunkIO::getSize(level::chunk::Chunk *c, int version) const {
         return 0;
+    }
+
+    std::unique_ptr<lodestone::level::chunk::Chunk> McRegionChunkIO::read(std::istream &in, const int version) const {
+        nbt::io::stream_reader streamReader = nbt::io::stream_reader(in, endian::big);
+
+        auto [name, root] = streamReader.read_compound();
+        nbt::tag_compound &level = (root.get()->at("Level").as<nbt::tag_compound>());
+        return read(level, version);
+    }
+
+    void McRegionChunkIO::write(lodestone::level::chunk::Chunk *c, int version, std::ostream &out) const {
     }
 }

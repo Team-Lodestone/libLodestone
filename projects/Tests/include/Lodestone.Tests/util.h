@@ -47,22 +47,28 @@ namespace lodestone::tests::util {
 #endif
     }
 
+#define _OPEN_FILE_STREAM(path, out, name)                                            \
+std::ifstream name(util::INPUT_FOLDER / path, std::ifstream::binary);          \
+                                                                                \
+if (!name.is_open())                                                       \
+    throw std::ios_base::failure(std::string("Failed to open file ") +     \
+    (util::INPUT_FOLDER / path).string());        \
+
 #define _OPEN_FILE(path, out, name)                                            \
-    std::ifstream name(util::INPUT_FOLDER / path, std::ifstream::binary);          \
-                                                                               \
-    if (!name.is_open())                                                       \
-        throw std::ios_base::failure(std::string("Failed to open file ") +     \
-                                     (util::INPUT_FOLDER / path).string());        \
+    _OPEN_FILE_STREAM(path, out, name)                                         \
                                                                                \
     std::vector<uint8_t> out(                                                  \
         std::filesystem::file_size(util::INPUT_FOLDER / path));                    \
     name.read(reinterpret_cast<char *>(out.data()), out.size())
 
+#define _OPEN_WRITE_FILE_STREAM(path, name)                                    \
+std::ofstream name(util::OUTPUT_FOLDER / path, std::ios::binary);                 \
+                                                                                    \
+if (!name)                                                                 \
+throw std::ios_base::failure("Failed to open file");                   \
+
 #define _WRITE_FILE(path, data, size, name)                                    \
-    std::ofstream name(util::OUTPUT_FOLDER / path, std::ios::binary);                 \
-                                                                               \
-    if (!name)                                                                 \
-        throw std::ios_base::failure("Failed to open file");                   \
+    _OPEN_WRITE_FILE_STREAM(path, name) \
                                                                                \
     name.write(data, size);                                                    \
                                                                                \
@@ -72,6 +78,8 @@ namespace lodestone::tests::util {
     name.close()
 
 #define OPEN_FILE(path, out) _OPEN_FILE(path, out, in)
+#define OPEN_FILE_STREAM(path, out) _OPEN_FILE_STREAM(path, out, in)
+#define OPEN_WRITE_FILE_STREAM(path) _OPEN_WRITE_FILE_STREAM(path, out)
 #define WRITE_FILE(path, data, size) _WRITE_FILE(path, data, size, out)
 
 #define ADD_TEST(testName, ...)                                                \

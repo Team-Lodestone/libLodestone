@@ -5,60 +5,16 @@
 
 #include "Lodestone.Java/Identifiers.h"
 #include "Lodestone.Java/Version.h"
-#include <BinaryIO/BinaryIO.h>
+#include <BinaryIO/BinaryBuffer.h>
 #include "Lodestone.Java/classic/minev2/MineV2LevelIO.h"
 #include "Lodestone.Java/classic/minev2/MineV2World.h"
 #include <Lodestone.Conversion/level/LevelIORegistry.h>
 
+#include <BinaryIO/stream/BinaryInputStream.h>
+#include <BinaryIO/stream/BinaryOutputStream.h>
+
 namespace lodestone::java::classic::minev2 {
-    std::unique_ptr<level::world::World> MineV2WorldIO::read(uint8_t *data, const int version) const {
-        bio::BinaryIO io(data);
-
-        const uint32_t sig = io.readBE<uint32_t>();
-        if (sig != SIGNATURE) {
-            throw std::runtime_error("Signature does not match expected 0x271BB788");
-        }
-
-        char ver = io.readSignedByte();
-        const std::string name = io.readString(io.readBE<uint16_t>());
-        const std::string author = io.readString(io.readBE<uint16_t>());
-        uint64_t creationTime = io.readBE<uint64_t>(); // todo use
-
-        const MineV2LevelIO *lio = dynamic_cast<const MineV2LevelIO *>(getLevelIO(version));
-
-        std::unique_ptr<level::Level> unique = lio->read(io.getDataRelative(), version); // todo: proper version!!!!
-        return std::make_unique<MineV2World>(std::move(unique), name, author);
-    }
-
-    uint8_t *MineV2WorldIO::write(level::world::World *w, const int version) const {
-        bio::BinaryIO io(new uint8_t[getSize(w, version)]{});
-
-        io.writeBE<uint32_t>(SIGNATURE);
-        io.writeByte(1);
-
-        io.writeBE<uint16_t>(w->getName().length());
-        io.writeString(w->getName());
-
-        if (MineV2World *mv2 = dynamic_cast<MineV2World *>(w)) {
-            io.writeBE<uint16_t>(mv2->getAuthor().length());
-            io.writeString(mv2->getAuthor());
-
-            io.writeBE<uint64_t>(mv2->getCreationTime());
-        } else {
-            io.writeBE<uint16_t>(strlen("Player"));
-            io.writeString("Player");
-
-            io.writeBE<uint64_t>(common::getCurrentTimeMillis());
-        }
-
-        const MineV2LevelIO *lio = dynamic_cast<const MineV2LevelIO *>(getLevelIO(version));
-        lio->write(w->getDefaultLevel(), io.getDataRelative(), version);
-        // todo: VERSION STUFF
-
-        return io.getData();
-    }
-
-    size_t MineV2WorldIO::getSize(level::world::World *w, int version) const {
+    size_t MineV2WorldIO::getSize(level::world::World *w, const int version) const {
         size_t s = sizeof(uint32_t) // signature
                    + sizeof(char)
                    + sizeof(uint16_t)
@@ -80,5 +36,50 @@ namespace lodestone::java::classic::minev2 {
 
     const lodestone::conversion::level::PlayerIO *MineV2WorldIO::getLevelIO(int version) const {
         return lodestone::conversion::level::PlayerIORegistry::sInstance.getLevelIO(identifiers::MINEV2);
+    }
+
+    std::unique_ptr<lodestone::level::world::World> MineV2WorldIO::read(std::istream &in, int version) const {
+        bio::stream::BinaryInputStream bis(in);
+
+        const uint32_t sig = bis.readBE<uint32_t>();
+        if (sig != SIGNATURE) {
+            throw std::runtime_error("Signature does not match expected 0x271BB788");
+        }
+
+        char ver = bis.readSignedByte();
+        const std::string name = bis.readString(bis.readBE<uint16_t>());
+        const std::string author = bis.readString(bis.readBE<uint16_t>());
+        uint64_t creationTime = bis.readBE<uint64_t>(); // todo use
+
+        const MineV2LevelIO *lio = dynamic_cast<const MineV2LevelIO *>(getLevelIO(version));
+
+        std::unique_ptr<level::Level> unique = lio->read(bis.getStream(), version); // todo: proper version!!!!
+        return std::make_unique<MineV2World>(std::move(unique), name, author);
+    }
+
+    void MineV2WorldIO::write(lodestone::level::world::World *w, int version, std::ostream &out) const {
+        bio::stream::BinaryOutputStream bos(out);
+
+        bos.writeBE<uint32_t>(SIGNATURE);
+        bos.writeByte(1);
+
+        bos.writeBE<uint16_t>(w->getName().length());
+        bos.writeString(w->getName(), false);
+
+        if (MineV2World *mv2 = dynamic_cast<MineV2World *>(w)) {
+            bos.writeBE<uint16_t>(mv2->getAuthor().length());
+            bos.writeString(mv2->getAuthor(), false);
+
+            bos.writeBE<uint64_t>(mv2->getCreationTime());
+        } else {
+            bos.writeBE<uint16_t>(strlen("Player"));
+            bos.writeString("Player", false);
+
+            bos.writeBE<uint64_t>(common::getCurrentTimeMillis());
+        }
+
+        const MineV2LevelIO *lio = dynamic_cast<const MineV2LevelIO *>(getLevelIO(version));
+        lio->write(w->getDefaultLevel(), version, bos.getStream());
+        // todo: VERSION STUFF
     }
 }

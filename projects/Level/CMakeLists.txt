@@ -69,6 +69,8 @@ set(FILES
         include/Lodestone.Level/Identifiers.h
         include/Lodestone.Level/properties/TemplatedProperty.h
         include/Lodestone.Level/item/Items.h
+        src/block/properties/EmptyBlockProperties.cpp
+        include/Lodestone.Level/block/properties/EmptyBlockProperties.h
 )
 
 # if (CMAKE_BUILD_TYPE STREQUAL "Debug")

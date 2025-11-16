@@ -56,6 +56,6 @@ target_include_directories(Lodestone.Conversion
 
 target_link_libraries(Lodestone.Conversion PUBLIC Lodestone.Common Lodestone.Level)
 
-if (USE_FALLBACK_BLOCK)
+if (USE_FALLBACK_BLOCK STREQUAL ON)
     target_compile_definitions(Lodestone.Conversion PRIVATE USE_FALLBACK_BLOCK)
 endif ()

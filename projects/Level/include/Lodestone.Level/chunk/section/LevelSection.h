@@ -12,6 +12,7 @@
 namespace lodestone::level::chunk::section {
     class LevelSection : public Section {
     public:
+        LevelSection();
         ~LevelSection() override;
 
         const uint8_t *getBlockLight() const override;
@@ -28,14 +29,14 @@ namespace lodestone::level::chunk::section {
 
     private:
         block::properties::BlockProperties *mBlocks = new block::properties::BlockProperties[
-            common::constants::CHUNK_WIDTH * common::constants::SECTION_HEIGHT * common::constants::CHUNK_DEPTH]{};
+            common::constants::CHUNK_WIDTH * common::constants::SECTION_HEIGHT * common::constants::CHUNK_DEPTH]();
         // TODO: we could also calculate lighting for blocks, could have a map of xyz -> Block specifically for light blocks
 
         uint8_t *mBlockLight = new uint8_t[(common::constants::CHUNK_WIDTH * common::constants::SECTION_HEIGHT * common::constants::CHUNK_DEPTH)
-                                           / 2]{};
+                                           / 2]();
         uint8_t *mSkyLight = new uint8_t[(common::constants::CHUNK_WIDTH * common::constants::SECTION_HEIGHT * common::constants::CHUNK_DEPTH) /
-                                         2]{};
-        const char **mBiomes = new const char *[common::constants::CHUNK_WIDTH * common::constants::CHUNK_DEPTH]{};
+                                         2]();
+        const char **mBiomes = new const char *[common::constants::CHUNK_WIDTH * common::constants::CHUNK_DEPTH]();
         // TODO: should biomes be numeric?
     };
 }

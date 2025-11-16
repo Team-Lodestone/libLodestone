@@ -12,13 +12,13 @@ namespace lodestone::java::classic::minev2 {
     public:
         static constexpr uint32_t SIGNATURE = 0x271BB788;
 
-        std::unique_ptr<level::world::World> read(uint8_t *data, int version) const override;
-
-        uint8_t *write(level::world::World *w, int version) const override;
-
         size_t getSize(level::world::World *w, int version) const override;
 
         const lodestone::conversion::level::PlayerIO *getLevelIO(int version) const override;
+
+        std::unique_ptr<lodestone::level::world::World> read(std::istream &in, int version) const override;
+
+        void write(lodestone::level::world::World *w, int version, std::ostream &out) const override;
     };
 }
 

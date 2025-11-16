@@ -9,6 +9,7 @@ namespace lodestone::level::world {
             std::format("Level '{}' already exists in world '{}'", id, mName));
 
         Level *l = level.get();
+        l->setWorld(this);
         mLevels[id] = std::move(level);
 
         return l;

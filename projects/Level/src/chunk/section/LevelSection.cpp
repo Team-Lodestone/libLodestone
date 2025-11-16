@@ -2,9 +2,14 @@
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
 #include "Lodestone.Level/chunk/section/LevelSection.h"
+
+#include <iostream>
 #include <Lodestone.Common/Indexing.h>
 
 namespace lodestone::level::chunk::section {
+    LevelSection::LevelSection() {
+    }
+
     LevelSection::~LevelSection() {
         delete[] mSkyLight;
         delete[] mBlockLight;

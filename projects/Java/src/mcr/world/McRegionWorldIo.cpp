@@ -115,10 +115,7 @@ namespace lodestone::java::mcr::world {
 
                 std::ifstream ifs(f.path(), std::ifstream::binary);
 
-                std::vector<uint8_t> mcr(f.file_size());
-                ifs.read(reinterpret_cast<char *>(mcr.data()), mcr.size());
-
-                std::unique_ptr<level::region::Region> r = io->read(mcr.data(), mcr.size(), version, coords); // todo return value?
+                std::unique_ptr<level::region::Region> r = io->read(ifs, version, coords); // todo return value?
 
                 overworld->merge(std::move(r));
                 ifs.close();

@@ -3,6 +3,7 @@
 //
 #include "Lodestone.Level/chunk/section/EmptySection.h"
 #include "Lodestone.Level/block/properties/BlockProperties.h"
+#include "Lodestone.Level/block/properties/EmptyBlockProperties.h"
 
 namespace lodestone::level::chunk::section {
     EmptySection *EmptySection::sInstance = new EmptySection();
@@ -24,7 +25,7 @@ namespace lodestone::level::chunk::section {
     }
 
     block::properties::BlockProperties *EmptySection::getBlock(const int x, const int y, const int z) const {
-        return new block::properties::BlockProperties();
+        return block::properties::EmptyBlockProperties::getInstance();
     }
 
     void EmptySection::setBlock(block::properties::BlockProperties &&blk, int x, int y, int z) {

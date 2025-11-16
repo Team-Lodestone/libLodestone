@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.30)
 project(Lodestone VERSION 1.0.0)
 
-set(VERSION_SUFFIX "-dev.25") # used for non-stable versions, otherwise blank
+set(VERSION_SUFFIX "-dev.26") # used for non-stable versions, otherwise blank
 set(CMAKE_CXX_STANDARD 20)
 
 option(ENABLE_LINTERS "Enable source linters" ON)
@@ -68,11 +68,11 @@ if (BUILD_VIEWER STREQUAL "ON")
 endif()
 
 # TODO: this is probably a bad idea incase one wants to only include certain libraries
-target_link_libraries(Lodestone.Tests PRIVATE BIO gtl)
-target_link_libraries(Lodestone.Common PRIVATE BIO gtl)
-target_link_libraries(Lodestone.Level PRIVATE BIO gtl)
-target_link_libraries(Lodestone.Conversion PRIVATE BIO gtl)
-target_link_libraries(Lodestone.Java PRIVATE BIO ZLIB::ZLIB gtl)
+target_link_libraries(Lodestone.Tests PRIVATE BIO-Static gtl)
+target_link_libraries(Lodestone.Common PRIVATE BIO-Static gtl)
+target_link_libraries(Lodestone.Level PRIVATE BIO-Static gtl)
+target_link_libraries(Lodestone.Conversion PRIVATE BIO-Static gtl)
+target_link_libraries(Lodestone.Java PRIVATE BIO-Static ZLIB::ZLIB gtl)
 
 add_dependencies(Lodestone.Tests LodestoneScripts.CheckIncludePaths)
 add_dependencies(Lodestone.Common LodestoneScripts.CheckIncludePaths)

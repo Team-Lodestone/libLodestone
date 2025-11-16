@@ -9,15 +9,16 @@
 namespace lodestone::java::mcr::chunk {
     class McRegionChunkIO : public lodestone::conversion::chunk::ChunkIO {
     public:
-        std::unique_ptr<level::chunk::Chunk> read(uint8_t *data, size_t size, int version) const override;
 
         std::unique_ptr<level::chunk::Chunk> read(nbt::tag_compound &chunk, int version) const;
-
-        uint8_t *write(level::chunk::Chunk *c, int version) const override;
 
         nbt::tag_compound write(level::chunk::Chunk &c) const;
 
         size_t getSize(level::chunk::Chunk *c, int version) const override;
+
+        std::unique_ptr<lodestone::level::chunk::Chunk> read(std::istream &in, int version) const override;
+
+        void write(lodestone::level::chunk::Chunk *c, int version, std::ostream &out) const override;
     };
 }
 

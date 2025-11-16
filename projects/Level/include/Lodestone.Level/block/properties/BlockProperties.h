@@ -17,10 +17,12 @@ namespace lodestone::level::block::properties {
     /** Wraps a block with runtime-modifiable properties */
     class BlockProperties : public lodestone::common::string::StringSerializable {
     public:
-        static const gtl::flat_hash_map<std::string, std::unique_ptr<level::properties::AbstractProperty>> EMPTY_PROPERTIES;
+        static const gtl::flat_hash_map<std::string, level::properties::AbstractProperty *> EMPTY_PROPERTIES;
 
         BlockProperties(const Block *block) : mBlock(block) {
         };
+
+        ~BlockProperties() override;
 
         explicit BlockProperties(const common::registry::Identifier *id) : mBlock(
             BlockRegistry::getInstance().getBlock(id)) {
@@ -31,24 +33,24 @@ namespace lodestone::level::block::properties {
 
 // TODO add destructor back for some reason it throws some stupid error right now
 
-        const gtl::flat_hash_map<std::string, std::unique_ptr<level::properties::AbstractProperty>> &getProperties() const;
+        const gtl::flat_hash_map<std::string, level::properties::AbstractProperty *> &getProperties() const;
 
-        bool hasProperty(const std::string &id) const;
+        virtual bool hasProperty(const std::string &id) const;
 
-        const level::properties::AbstractProperty *getProperty(const std::string &id) const;
+        virtual const level::properties::AbstractProperty *getProperty(const std::string &id) const;
 
-        level::properties::AbstractProperty *getProperty(const std::string &id);
+        virtual level::properties::AbstractProperty *getProperty(const std::string &id);
 
         const Block *getBlock() const { return mBlock; }
 
-        void setProperty(const std::string &id, std::unique_ptr<level::properties::AbstractProperty> property);
+        virtual void setProperty(const std::string &id, level::properties::AbstractProperty * property);
 
-        const level::properties::AbstractProperty *operator[](const std::string &id) const;
+        virtual const level::properties::AbstractProperty *operator[](const std::string &id) const;
 
-        level::properties::AbstractProperty *operator[](const std::string &id);
+        virtual level::properties::AbstractProperty *operator[](const std::string &id);
 
         bool operator==(const BlockProperties &b) const {
-            return mBlock == b.mBlock && mProperties.has_value() ? mProperties == b.mProperties : mProperties.has_value() == b.mProperties.has_value();
+            return mBlock == b.mBlock && mProperties == b.mProperties;
         }
 
         constexpr std::string toString() const override {
@@ -57,7 +59,7 @@ namespace lodestone::level::block::properties {
 
     private:
         const Block *mBlock;
-        std::optional<gtl::flat_hash_map<std::string, std::unique_ptr<level::properties::AbstractProperty>>> mProperties;
+        gtl::flat_hash_map<std::string, level::properties::AbstractProperty*> *mProperties = nullptr;
     };
 }
 
