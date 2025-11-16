@@ -12,13 +12,10 @@ namespace lodestone::conversion::level {
         virtual ~PlayerIO() = default;
 
         /** Reads data into a new Level */
-        virtual std::unique_ptr<lodestone::level::Level> read(uint8_t *data, int version) const = 0;
+        virtual std::unique_ptr<lodestone::level::Level> read(std::istream &in, int version) const = 0;
 
         /** Writes a level to data */
-        virtual uint8_t *write(lodestone::level::Level *l, int version) const = 0;
-
-        /** Writes a level to data */
-        virtual void write(lodestone::level::Level *l, uint8_t *out, int version) const = 0;
+        virtual void write(lodestone::level::Level *l, int version, std::ostream &out) const = 0;
 
         /** Gets the size of the level in bytes */
         virtual size_t getSize(lodestone::level::Level *l, int version) const = 0;

@@ -46,7 +46,7 @@ namespace lodestone::java::mcr::player {
         // };
         // uuids::uuid uuid(u);
 
-        std::unique_ptr<McRegionPlayer> p = std::make_unique<McRegionPlayer>(filename.stem());
+        std::unique_ptr<McRegionPlayer> p = std::make_unique<McRegionPlayer>(filename.stem().string());
 
         const nbt::tag_list pos = player["Pos"].as<nbt::tag_list>();
         p->setPosition(level::types::Vec3d {

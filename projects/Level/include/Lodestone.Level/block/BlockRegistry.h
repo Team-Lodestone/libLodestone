@@ -22,10 +22,7 @@ namespace lodestone::level::block {
 
         static const Block *sDefaultBlock;
 
-        static BlockRegistry& getInstance() {
-            static BlockRegistry sInstance;
-            return sInstance;
-        }
+        static BlockRegistry& getInstance();
 
         void registerBlock(const lodestone::common::registry::Identifier *id, const Block *block);
 

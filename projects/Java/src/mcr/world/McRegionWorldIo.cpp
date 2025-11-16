@@ -111,7 +111,7 @@ namespace lodestone::java::mcr::world {
             for (const auto& f : std::filesystem::directory_iterator(path / "region")) {
                 if (!std::filesystem::is_regular_file(f)) continue;
 
-                level::types::Vec2i coords = region::McRegionRegion::getCoordsFromFilename(f.path().filename());
+                level::types::Vec2i coords = region::McRegionRegion::getCoordsFromFilename(f.path().filename().string());
 
                 std::ifstream ifs(f.path(), std::ifstream::binary);
 

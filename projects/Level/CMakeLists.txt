@@ -23,8 +23,8 @@ set(FILES
         src/item/ItemRegistry.cpp
         src/material/MaterialRegistry.cpp
         include/Lodestone.Level/material/MaterialRegistry.h
-        src/block/state/BlockProperties.cpp
-        include/Lodestone.Level/block/state/BlockProperties.h
+        src/block/properties/BlockProperties.cpp
+        include/Lodestone.Level/block/properties/BlockProperties.h
         src/chunk/section/EmptySection.cpp
         include/Lodestone.Level/chunk/section/EmptySection.h
         src/chunk/section/Section.cpp

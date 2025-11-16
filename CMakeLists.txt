@@ -46,7 +46,14 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(gtl)
 
-find_package(ZLIB)
+FetchContent_Declare(
+        zlib
+        GIT_REPOSITORY "https://github.com/madler/zlib.git"
+        FIND_PACKAGE_ARGS NAMES ZLIB
+)
+FetchContent_MakeAvailable(zlib)
+
+add_library(ZLIB::ZLIB ALIAS zlibstatic)
 
 #include_directories(${BIO_SOURCE_DIR})
 

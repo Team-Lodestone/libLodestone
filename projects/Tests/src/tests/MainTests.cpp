@@ -66,15 +66,15 @@ namespace lodestone::tests::test {
     }
 
     void MainTests::readMcrWorld() {
-        std::string name("ShadowWorld");
+        std::string name("world");
         std::filesystem::path dir(util::INPUT_FOLDER / name);
 
         const java::mcr::world::McRegionWorldIo *io = (java::mcr::world::McRegionWorldIo *)
         lodestone::conversion::world::WorldIORegistry::sInstance.getWorldIO(java::identifiers::MCREGION);
         std::shared_ptr<level::world::World> w = io->read(dir, java::Version::b1_3);
 
-        // const lodestone::conversion::world::FileWorldIO *l2 = dynamic_cast<const lodestone::conversion::world::FileWorldIO *>(lodestone::conversion::world::WorldIORegistry::sInstance.getWorldIO({"lodestone", "minev2"}));
-        // WRITE_FILE(std::format("{}.dat", name), reinterpret_cast<const char*>(l2->write(w.get(), lodestone::java::c0_28)),
-        //    l2->getSize(w.get(), lodestone::java::c0_28));
+        const lodestone::conversion::world::FileWorldIO *l2 = dynamic_cast<const lodestone::conversion::world::FileWorldIO *>(lodestone::conversion::world::WorldIORegistry::sInstance.getWorldIO({"lodestone", "minev2"}));
+        WRITE_FILE(std::format("{}.dat", name), reinterpret_cast<const char*>(l2->write(w.get(), lodestone::java::c0_28)),
+        l2->getSize(w.get(), lodestone::java::c0_28));
     }
 }

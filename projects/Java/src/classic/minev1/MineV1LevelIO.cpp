@@ -73,4 +73,8 @@ namespace lodestone::java::classic::minev1 {
     size_t MineV1LevelIO::getSize(level::Level *l, int version) const {
         return WIDTH * HEIGHT * DEPTH;
     }
-}
+    std::unique_ptr<lodestone::level::Level>
+    MineV1LevelIO::read(std::istream &in, int version) const {
+        // todo rewrite and use streams on main pc since input lag is too much
+    }
+} // namespace lodestone::java::classic::minev1

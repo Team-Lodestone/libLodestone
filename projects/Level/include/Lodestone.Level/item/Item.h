@@ -8,7 +8,7 @@
 
 #include <Lodestone.Common/registry/Identifier.h>
 
-#include "Lodestone.Common/string/OperatorStringBuilder.h"
+#include <Lodestone.Common/string/OperatorStringBuilder.h>
 
 namespace lodestone::level::block {
     class Block;

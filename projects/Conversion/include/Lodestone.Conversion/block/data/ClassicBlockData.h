@@ -6,7 +6,9 @@
 #include <variant>
 
 #include "Lodestone.Conversion/block/data/AbstractBlockData.h"
+
 #include <Lodestone.Common/registry/Identifier.h>
+#include <cstdint>
 
 namespace lodestone::conversion::block::data {
     class ClassicBlockData final : public AbstractBlockData {

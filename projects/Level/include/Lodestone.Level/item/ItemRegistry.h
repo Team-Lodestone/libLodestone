@@ -21,10 +21,7 @@ namespace lodestone::level::item {
 
         static const Item *sDefaultItem;
 
-        static ItemRegistry& getInstance() {
-            static ItemRegistry sInstance;
-            return sInstance;
-        }
+        static ItemRegistry& getInstance();
 
         void registerItem(const lodestone::common::registry::Identifier *id, const Item *item);
 

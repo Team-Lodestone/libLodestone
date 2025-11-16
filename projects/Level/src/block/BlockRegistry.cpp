@@ -66,6 +66,11 @@ namespace lodestone::level::block {
         REGISTER_BLOCK_FUNC(&Blocks::OBSIDIAN, material::Material({0, 0, 0, 0}));
     }
 
+    BlockRegistry &BlockRegistry::getInstance()  {
+        static BlockRegistry sInstance;
+        return sInstance;
+    }
+
     void BlockRegistry::registerBlock(const lodestone::common::registry::Identifier *id, const Block *block) {
         if (mBlocks.contains(id))
             throw std::runtime_error(std::format("Block '{}' is already registered", *id));

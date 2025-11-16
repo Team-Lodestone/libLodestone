@@ -12,13 +12,11 @@ namespace lodestone::java::classic::minev1 {
         static constexpr int HEIGHT = 64;
         static constexpr int DEPTH = 256;
 
-        std::unique_ptr<level::Level> read(uint8_t *data, int version) const override;
-
-        uint8_t *write(level::Level *l, int version) const override;
-
         size_t getSize(level::Level *l, int version) const override;
 
-        void write(level::Level *l, uint8_t *out, int version) const override;
+        std::unique_ptr<lodestone::level::Level> read(std::istream &in, int version) const override;
+
+        void write(lodestone::level::Level *l, int version, std::ostream &out) const override;
     };
 }
 

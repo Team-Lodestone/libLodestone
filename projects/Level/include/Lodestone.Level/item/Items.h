@@ -4,7 +4,7 @@
 #ifndef LODESTONE_ITEMS_H
 #define LODESTONE_ITEMS_H
 
-#include "Lodestone.Common/registry/Identifier.h"
+#include <Lodestone.Common/registry/Identifier.h>
 
 namespace lodestone::level::item {
     struct Items {

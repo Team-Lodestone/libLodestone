@@ -13,11 +13,11 @@ namespace lodestone::conversion::region {
         virtual ~RegionIO() = default;
 
         /** Reads data into a new Region */
-        virtual std::unique_ptr<lodestone::level::region::Region> read(uint8_t *data, size_t size, int version,
+        virtual std::unique_ptr<lodestone::level::region::Region> read(std::istream &in, int version,
                                                        const lodestone::level::types::Vec2i &coords) const = 0;
 
         /** Writes a region to data */
-        virtual uint8_t *write(lodestone::level::region::Region *c, int version, const lodestone::level::types::Vec2i &coords) const = 0;
+        virtual void write(lodestone::level::region::Region *c, int version, const lodestone::level::types::Vec2i &coords, std::ostream &out) const = 0;
 
         /** Gets the size of the region in bytes */
         virtual size_t getSize(lodestone::level::region::Region *c, int version) const = 0;

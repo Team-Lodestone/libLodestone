@@ -9,6 +9,11 @@
 namespace lodestone::level::item {
     const Item *ItemRegistry::sDefaultItem = getInstance().getItem(&Items::NONE);
 
+    ItemRegistry &ItemRegistry::getInstance()  {
+        static ItemRegistry sInstance;
+        return sInstance;
+    }
+
     void ItemRegistry::registerItem(const lodestone::common::registry::Identifier *id, const Item *item) {
         if (mItems.contains(id))
             throw std::runtime_error(std::format("Item '{}' is already registered", *id));
