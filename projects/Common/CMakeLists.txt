@@ -16,6 +16,8 @@ set(FILES
         src/string/OperatorStringBuilder.cpp
         src/io/DataBuffer.cpp
         include/Lodestone.Common/io/DataBuffer.h
+        src/Math.cpp
+        include/Lodestone.Common/Math.h
 )
 
 # hm I wonder if there will be problems if I link against 2 libs that both compile this

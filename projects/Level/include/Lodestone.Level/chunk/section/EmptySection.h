@@ -8,9 +8,10 @@
 #include "Lodestone.Level/block/properties/BlockProperties.h"
 
 namespace lodestone::level::chunk::section {
+    /** Immutable section, used in place of returning empty/null LevelSection */
     class EmptySection : public Section {
     public:
-        static EmptySection *sInstance;
+        static EmptySection *getInstance();
 
         SectionType getType() override;
 

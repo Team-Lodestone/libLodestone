@@ -14,6 +14,8 @@
 #include <BinaryIO/stream/BinaryInputStream.h>
 #include <BinaryIO/stream/BinaryOutputStream.h>
 
+#include <Lodestone.Common/Math.h>
+
 namespace lodestone::java::classic::minev2 {
 
     size_t MineV2LevelIO::getSize(level::Level *l, int version) const {
@@ -31,8 +33,8 @@ namespace lodestone::java::classic::minev2 {
             level::types::Bounds2i {
                 {0, 0},
                 {
-                    CHUNK_IDX(width) - 1,
-                    CHUNK_IDX(depth) - 1
+                    common::Math::ceilDiv(CHUNK_IDX(width) - 1, common::constants::CHUNK_WIDTH),
+                    common::Math::ceilDiv(CHUNK_IDX(depth) - 1, common::constants::CHUNK_DEPTH)
                 }
             });
 
@@ -69,8 +71,6 @@ namespace lodestone::java::classic::minev2 {
         const int w = (max.x - min.x + 1);
         const int h = (max.y - min.y);
         const int d = (max.z - min.z + 1);
-
-        // TODO if there's a singular chunk at a far away distance it will never be written since we normalize the values to the size and read from the center of the world
 
         bos.writeBE<uint16_t>(w);
         bos.writeBE<uint16_t>(d);

@@ -24,7 +24,7 @@ namespace lodestone::conversion::player {
         const PlayerIO *getPlayerIO(const lodestone::common::registry::Identifier &id) const;
 
     private:
-        gtl::flat_hash_map<lodestone::common::registry::Identifier, std::unique_ptr<const PlayerIO>,
+        map_t<lodestone::common::registry::Identifier, std::unique_ptr<const PlayerIO>,
             IdentifierHasher, IdentifierComparator> mRegisteredPlayerIOs;
     };
 }

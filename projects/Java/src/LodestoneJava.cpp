@@ -139,6 +139,45 @@ namespace lodestone::java {
         io.registerBlock(Version::c0_26st, &level::block::Blocks::BOOKSHELF, new lodestone::conversion::block::data::ClassicBlockData(47));
         io.registerBlock(Version::c0_26st, &level::block::Blocks::MOSSY_COBBLESTONE, new lodestone::conversion::block::data::ClassicBlockData(48));
         io.registerBlock(Version::c0_28, &level::block::Blocks::OBSIDIAN, new lodestone::conversion::block::data::ClassicBlockData(49));
+        // CPE specific
+        io.registerBlock(Version::c0_30_CPE, &level::block::Blocks::COBBLESTONE_SLAB, new lodestone::conversion::block::data::ClassicBlockData(50));
+        io.registerBlock(Version::c0_30_CPE, &level::block::Blocks::ROPE, new lodestone::conversion::block::data::ClassicBlockData(51));
+        io.registerBlock(Version::c0_30_CPE, &level::block::Blocks::SANDSTONE, new lodestone::conversion::block::data::ClassicBlockData(52));
+        io.registerBlock(Version::c0_30_CPE, &level::block::Blocks::SNOW_LAYER, new lodestone::conversion::block::data::ClassicBlockData(53));
+        io.registerBlock(Version::c0_30_CPE, &level::block::Blocks::FIRE, new lodestone::conversion::block::data::ClassicBlockData(54));
+        io.registerBlock(Version::c0_30_CPE, &level::block::Blocks::ICE, new lodestone::conversion::block::data::ClassicBlockData(60));
+        io.registerBlock(Version::c0_30_CPE, &level::block::Blocks::CERAMIC_TILE, new lodestone::conversion::block::data::ClassicBlockData(61));
+        io.registerBlock(Version::c0_30_CPE, &level::block::Blocks::MAGMA_BLOCK, new lodestone::conversion::block::data::ClassicBlockData(62));
+        io.registerBlock(Version::c0_30_CPE, &level::block::Blocks::QUARTZ_PILLAR, new lodestone::conversion::block::data::ClassicBlockData(63));
+        io.registerBlock(Version::c0_30_CPE, &level::block::Blocks::CRATE, new lodestone::conversion::block::data::ClassicBlockData(64));
+        io.registerBlock(Version::c0_30_CPE, &level::block::Blocks::STONE_BRICKS, new lodestone::conversion::block::data::ClassicBlockData(65));
+
+        // Remove the cpe specific blocks because they didn't exist here
+        io.removeBlock(Version::in20091223_1457, &level::block::Blocks::COBBLESTONE_SLAB);
+        io.removeBlock(Version::in20091223_1457, &level::block::Blocks::ROPE);
+        io.removeBlock(Version::in20091223_1457, &level::block::Blocks::SANDSTONE);
+        io.removeBlock(Version::in20091223_1457, &level::block::Blocks::SNOW_LAYER);
+        io.removeBlock(Version::in20091223_1457, &level::block::Blocks::FIRE);
+        io.removeBlock(Version::in20091223_1457, &level::block::Blocks::ICE);
+        io.removeBlock(Version::in20091223_1457, &level::block::Blocks::CERAMIC_TILE);
+        io.removeBlock(Version::in20091223_1457, &level::block::Blocks::MAGMA_BLOCK);
+        io.removeBlock(Version::in20091223_1457, &level::block::Blocks::QUARTZ_PILLAR);
+        io.removeBlock(Version::in20091223_1457, &level::block::Blocks::CRATE);
+        io.removeBlock(Version::in20091223_1457, &level::block::Blocks::STONE_BRICKS);
+
+        io.registerBlock(Version::in20091223_1457, &level::block::Blocks::TORCH, new lodestone::conversion::block::data::ClassicBlockData(50));
+        io.registerBlock(Version::in20100109_1939, &level::block::Blocks::FIRE, new lodestone::conversion::block::data::ClassicBlockData(51));
+        io.registerBlock(Version::in20100114, &level::block::Blocks::WATER_SPAWNER, new lodestone::conversion::block::data::ClassicBlockData(52));
+        io.registerBlock(Version::in20100122_2251, &level::block::Blocks::LAVA_SPAWNER, new lodestone::conversion::block::data::ClassicBlockData(53));
+        io.registerBlock(Version::in20100124_2119, &level::block::Blocks::CHEST, new lodestone::conversion::block::data::ClassicBlockData(54));
+        io.registerBlock(Version::in20100128_2200, &level::block::Blocks::GEAR, new lodestone::conversion::block::data::ClassicBlockData(55));
+        io.registerBlock(Version::in20100128_2200, &level::block::Blocks::DIAMOND_ORE, new lodestone::conversion::block::data::ClassicBlockData(56));
+        io.registerBlock(Version::in20100128_2200, &level::block::Blocks::DIAMOND_BLOCK, new lodestone::conversion::block::data::ClassicBlockData(57));
+        io.registerBlock(Version::in20100129_2332, &level::block::Blocks::CRAFTING_TABLE, new lodestone::conversion::block::data::ClassicBlockData(58));
+        io.registerBlock(Version::in20100206_2034, &level::block::Blocks::WHEAT, new lodestone::conversion::block::data::ClassicBlockData(59));
+        io.registerBlock(Version::in20100206_2034, &level::block::Blocks::FARMLAND, new lodestone::conversion::block::data::ClassicBlockData(60));
+        io.registerBlock(Version::in20100219, &level::block::Blocks::FURNACE, new lodestone::conversion::block::data::ClassicBlockData(61));
+        io.registerBlock(Version::in20100219, &level::block::Blocks::LIT_FURNACE, new lodestone::conversion::block::data::ClassicBlockData(62));
 
         // TODO sometime we need to implement item conversion too
 

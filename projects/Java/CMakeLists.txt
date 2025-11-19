@@ -36,6 +36,7 @@ set(FILES
         include/Lodestone.Java/mcr/player/McRegionPlayer.h
         src/mcr/player/McRegionPlayerIo.cpp
         include/Lodestone.Java/mcr/player/McRegionPlayerIo.h
+        include/Lodestone.Java/io/chunk/NbtChunkIo.h
 )
 
 # NBT
@@ -47,12 +48,12 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(nbt++)
 
-FetchContent_Declare(
-        stduuid
-        GIT_REPOSITORY https://github.com/mariusbancila/stduuid.git
-        GIT_TAG master
-)
-FetchContent_MakeAvailable(stduuid)
+#FetchContent_Declare(
+#        stduuid
+#        GIT_REPOSITORY https://github.com/mariusbancila/stduuid.git
+#        GIT_TAG master
+#)
+#FetchContent_MakeAvailable(stduuid)
 
 add_library(Lodestone.Java SHARED ${FILES})
 target_include_directories(Lodestone.Java
@@ -62,8 +63,16 @@ target_include_directories(Lodestone.Java
         ${CMAKE_CURRENT_SOURCE_DIR}/include/Lodestone.Java
 )
 
-target_link_libraries(Lodestone.Java PRIVATE Lodestone.Level Lodestone.Conversion nbt++ stduuid)
+find_package(OpenMP COMPONENTS C CXX)
+target_link_libraries(Lodestone.Java PRIVATE Lodestone.Level Lodestone.Conversion nbt++)
 #target_link_libraries(Lodestone.Java PRIVATE Lodestone.Common)
+
+option(USE_OPENMP "Use OpenMP" ON)
+if (USE_OPENMP STREQUAL ON AND OpenMP_CXX_FOUND AND OpenMP_C_FOUND)
+    message(STATUS "Using OpenMP")
+    target_link_libraries(Lodestone.Java PRIVATE OpenMP::OpenMP_CXX)
+    target_compile_definitions(Lodestone.Java PRIVATE USE_OPENMP)
+endif()
 
 option(ENABLE_RISKY_OPTIMIZATIONS "Enable risky optimizations" ON)
 if (ENABLE_RISKY_OPTIMIZATIONS STREQUAL ON)

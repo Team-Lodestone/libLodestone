@@ -3,18 +3,20 @@
 //
 #include "Lodestone.Level/chunk/LevelChunk.h"
 
+#include <Lodestone.Common/Math.h>
+
 namespace lodestone::level::chunk {
     LevelChunk::LevelChunk(const int height) : Chunk() {
-        this->mSections = std::vector<std::unique_ptr<section::Section> >(height / 16);
+        this->mSections = std::vector<std::unique_ptr<section::Section> >(common::Math::ceilDiv(height, common::constants::SECTION_HEIGHT));
     }
 
     LevelChunk::LevelChunk(const int height, const types::Vec2i &coords) : Chunk(coords) {
-        this->mSections = std::vector<std::unique_ptr<section::Section> >(height / 16);
+        this->mSections = std::vector<std::unique_ptr<section::Section> >(common::Math::ceilDiv(height, common::constants::SECTION_HEIGHT));
     }
 
     LevelChunk::LevelChunk(const int height, ChunkContainer *container, const types::Vec2i &coords) : Chunk(
         container, coords) {
-        this->mSections = std::vector<std::unique_ptr<section::Section> >(height / 16);
+        this->mSections = std::vector<std::unique_ptr<section::Section> >(common::Math::ceilDiv(height, common::constants::SECTION_HEIGHT));
     }
 
     int LevelChunk::getChunkHeight() const {
@@ -31,7 +33,7 @@ namespace lodestone::level::chunk {
     section::Section *LevelChunk::getSection(const int y) const {
         // if non-existent, return fake one
         if (!hasSection(y))
-            return section::EmptySection::sInstance;
+            return section::EmptySection::getInstance();
 
         return mSections[y].get();
     }

@@ -103,11 +103,11 @@ namespace lodestone::level::chunk {
 
         void merge(std::unique_ptr<ChunkContainer> rhs);
 
-        gtl::flat_hash_map<types::Vec2i, std::unique_ptr<Chunk> > &getChunks() {
+        map_t<types::Vec2i, std::unique_ptr<Chunk> > &getChunks() {
             return mChunks;
         }
 
-        const gtl::flat_hash_map<types::Vec2i, std::unique_ptr<Chunk> > &getChunks() const {
+        const map_t<types::Vec2i, std::unique_ptr<Chunk> > &getChunks() const {
             return mChunks;
         }
 
@@ -118,7 +118,7 @@ namespace lodestone::level::chunk {
         ChunkContainer& operator=(const ChunkContainer&) = delete;
 
     protected:
-        gtl::flat_hash_map<types::Vec2i, std::unique_ptr<Chunk> > mChunks;
+        map_t<types::Vec2i, std::unique_ptr<Chunk> > mChunks;
     };
 }
 

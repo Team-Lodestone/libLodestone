@@ -6,7 +6,10 @@
 #include "Lodestone.Level/block/properties/EmptyBlockProperties.h"
 
 namespace lodestone::level::chunk::section {
-    EmptySection *EmptySection::sInstance = new EmptySection();
+    EmptySection * EmptySection::getInstance() {
+        static EmptySection sInstance;
+        return &sInstance;
+    }
 
     Section::SectionType EmptySection::getType() {
         return SectionType::EmptySection;

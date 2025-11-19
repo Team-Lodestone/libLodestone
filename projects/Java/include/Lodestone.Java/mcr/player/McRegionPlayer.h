@@ -4,7 +4,6 @@
 #ifndef LODESTONE_MCREGIONPLAYER_H
 #define LODESTONE_MCREGIONPLAYER_H
 #include <Lodestone.Level/entity/Player.h>
-#include <uuid.h>
 #include <Lodestone.Level/container/ItemContainer.h>
 
 namespace lodestone::java::mcr::player {

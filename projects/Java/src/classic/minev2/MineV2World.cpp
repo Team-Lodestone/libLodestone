@@ -20,7 +20,7 @@ namespace lodestone::java::classic::minev2 {
     }
 
     MineV2World::MineV2World(
-        gtl::flat_hash_map<lodestone::common::registry::Identifier, std::unique_ptr<level::Level>,
+        map_t<lodestone::common::registry::Identifier, std::unique_ptr<level::Level>,
             IdentifierHasher, IdentifierComparator> &&levels, const std::string &name,
         const std::string &author) : World(name, std::move(levels)), mAuthor(author),
                                      mCreationTime(common::getCurrentTimeMillis()) {

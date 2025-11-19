@@ -6,9 +6,10 @@
 #include "Lodestone.Level/chunk/Chunk.h"
 
 namespace lodestone::level::chunk {
-    // TODO we can probably optimize by making this a singleton
     class EmptyChunk : public Chunk {
     public:
+        static EmptyChunk *getInstance();
+
         EmptyChunk() : Chunk() {
         }
 

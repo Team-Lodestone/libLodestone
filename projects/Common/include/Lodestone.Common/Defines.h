@@ -2,6 +2,7 @@
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
 #pragma once
+#include <gtl/phmap.hpp>
 
 #ifdef __EMSCRIPTEN__
 #define LODESTONE_API
@@ -40,3 +41,10 @@
 #define CAST_UNIQUE_PTR(to, var) std::unique_ptr<to>(static_cast<to *>(var.release()));
 
 typedef long signed int signed_size_t;
+
+template<typename... T>
+#ifdef CMAKE_BUILD_DEBUG
+using map_t = std::unordered_map<T...>; // so we can inspect in debugger
+#else
+using map_t = gtl::flat_hash_map<T...>;
+#endif

@@ -33,7 +33,7 @@ namespace lodestone::level::item {
 
         std::string toString() const override {
             return (common::string::OperatorStringBuilder(typeid(*this)))
-                .addField("id", this->getID())
+                .addField("id", *this->getID())
                 ->toString();
         };
 

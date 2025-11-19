@@ -5,6 +5,7 @@
 
 #include <iostream>
 
+#include <Lodestone.Common/Math.h>
 #include "Lodestone.Level/chunk/LevelChunk.h"
 #include "Lodestone.Level/types/Bounds3.h"
 
@@ -122,6 +123,6 @@ namespace lodestone::level::chunk {
             maxZ = std::max(maxZ, coord.z);
         }
 
-        return {minX, minY, minZ, maxX, maxY, maxZ};
+        return {minX, minY, minZ, common::Math::ceilDiv(maxX - minX + 1, 1), common::Math::ceilDiv(maxY - minY + 1, 1), common::Math::ceilDiv(maxZ - minZ + 1, 1)};
     }
 }

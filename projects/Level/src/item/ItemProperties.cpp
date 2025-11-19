@@ -4,9 +4,9 @@
 #include "Lodestone.Level/item/ItemProperties.h"
 
 namespace lodestone::level::item {
-    const gtl::flat_hash_map<std::string, std::unique_ptr<properties::AbstractProperty>> ItemProperties::EMPTY_PROPERTIES{};
+    const map_t<std::string, std::unique_ptr<properties::AbstractProperty>> ItemProperties::EMPTY_PROPERTIES{};
 
-    const gtl::flat_hash_map<std::string, std::unique_ptr<properties::AbstractProperty>> &ItemProperties::getProperties() const {
+    const map_t<std::string, std::unique_ptr<properties::AbstractProperty>> &ItemProperties::getProperties() const {
         if (!mProperties) return EMPTY_PROPERTIES;
         return *mProperties;
     }
@@ -34,7 +34,7 @@ namespace lodestone::level::item {
 
 
     void ItemProperties::setProperty(const std::string &id, std::unique_ptr<properties::AbstractProperty> property) {
-        if (!mProperties) mProperties = gtl::flat_hash_map<std::string, std::unique_ptr<properties::AbstractProperty>>();
+        if (!mProperties) mProperties = map_t<std::string, std::unique_ptr<properties::AbstractProperty>>();
         mProperties->emplace(id, std::move(property));
     }
 

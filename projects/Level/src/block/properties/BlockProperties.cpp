@@ -5,13 +5,13 @@
 #include <memory>
 
 namespace lodestone::level::block::properties {
-    const gtl::flat_hash_map<std::string, level::properties::AbstractProperty *> BlockProperties::EMPTY_PROPERTIES{};
+    const map_t<std::string, level::properties::AbstractProperty *> BlockProperties::EMPTY_PROPERTIES{};
 
     BlockProperties::~BlockProperties() {
         delete mProperties;
     }
 
-    const gtl::flat_hash_map<std::string, level::properties::AbstractProperty *> &BlockProperties::getProperties() const {
+    const map_t<std::string, level::properties::AbstractProperty *> &BlockProperties::getProperties() const {
         if (!mProperties) return EMPTY_PROPERTIES;
         return *mProperties;
     }
@@ -38,7 +38,7 @@ namespace lodestone::level::block::properties {
     }
 
     void BlockProperties::setProperty(const std::string &id, level::properties::AbstractProperty *property) {
-        if (!mProperties) mProperties = new gtl::flat_hash_map<std::string, level::properties::AbstractProperty*>();
+        if (!mProperties) mProperties = new map_t<std::string, level::properties::AbstractProperty*>();
         mProperties->emplace(id, std::move(property));
     }
 

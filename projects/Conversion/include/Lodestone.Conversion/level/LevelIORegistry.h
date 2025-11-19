@@ -22,7 +22,7 @@ namespace lodestone::conversion::level {
         const PlayerIO *getLevelIO(const lodestone::common::registry::Identifier &id) const;
 
     private:
-        gtl::flat_hash_map<lodestone::common::registry::Identifier, std::unique_ptr<const PlayerIO>,
+        map_t<lodestone::common::registry::Identifier, std::unique_ptr<const PlayerIO>,
             IdentifierHasher, IdentifierComparator> mRegisteredLevelIOs;
     };
 }

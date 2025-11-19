@@ -34,16 +34,16 @@ namespace lodestone::level::block {
 
         const Block *operator[](const lodestone::common::registry::Identifier *id) const;
 
-        gtl::flat_hash_map<const lodestone::common::registry::Identifier *, const Block *>::iterator begin() {
+        map_t<const lodestone::common::registry::Identifier *, const Block *>::iterator begin() {
             return mBlocks.begin();
         }
 
-        gtl::flat_hash_map<const lodestone::common::registry::Identifier *, const Block *>::iterator end() {
+        map_t<const lodestone::common::registry::Identifier *, const Block *>::iterator end() {
             return mBlocks.end();
         }
 
     private:
-        gtl::flat_hash_map<const lodestone::common::registry::Identifier *, const Block *> mBlocks;
+        map_t<const lodestone::common::registry::Identifier *, const Block *> mBlocks;
     };
 }
 

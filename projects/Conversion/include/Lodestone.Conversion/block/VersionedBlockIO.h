@@ -24,11 +24,15 @@ namespace lodestone::conversion::block::version {
             mFromInternalConversionMap[version][internal] = blk;
         }
 
+        constexpr void removeBlock(const uint32_t version, const lodestone::common::registry::Identifier *internal) {
+            mFromInternalConversionMap[version][internal] = nullptr;
+        }
+
         std::unique_ptr<BlockIO> getIo(uint32_t version);
 
     private:
-        std::map<uint32_t, gtl::flat_hash_map<const lodestone::common::registry::Identifier *,
-            data::AbstractBlockData *> > mFromInternalConversionMap{};
+        std::map<uint32_t, map_t<const lodestone::common::registry::Identifier *,
+            data::AbstractBlockData *> > mFromInternalConversionMap;
     };
 }
 

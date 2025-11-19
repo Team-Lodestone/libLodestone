@@ -23,6 +23,7 @@ namespace lodestone::level::world {
             static constexpr const lodestone::common::registry::Identifier OVERWORLD = {"lodestone", "overworld"};
             static constexpr const lodestone::common::registry::Identifier NETHER = {"lodestone", "nether"};
             static constexpr const lodestone::common::registry::Identifier END = {"lodestone", "end"};
+            static constexpr const lodestone::common::registry::Identifier UNKNOWN = {"lodestone", "unknown"}; // todo we can make level type registry
         };
 
         explicit World(const std::string &name = "New World") : mName(name) {
@@ -33,12 +34,12 @@ namespace lodestone::level::world {
         }
 
         World(const std::string &name,
-              gtl::flat_hash_map<lodestone::common::registry::Identifier, std::unique_ptr<Level>,
+              map_t<lodestone::common::registry::Identifier, std::unique_ptr<Level>,
                   IdentifierHasher, IdentifierComparator> &&levels) : mName(std::move(name)),
             mLevels(std::move(levels)) {
         }
 
-        const gtl::flat_hash_map<lodestone::common::registry::Identifier, std::unique_ptr<Level>, IdentifierHasher, IdentifierComparator> &getLevels() const;
+        const map_t<lodestone::common::registry::Identifier, std::unique_ptr<Level>, IdentifierHasher, IdentifierComparator> &getLevels() const;
 
         Level *addLevel(const lodestone::common::registry::Identifier &id, std::unique_ptr<Level> level);
         Level *getLevel(const lodestone::common::registry::Identifier &id) const;
@@ -57,10 +58,10 @@ namespace lodestone::level::world {
 
         virtual level::Level *getDefaultLevel() const;
 
-        const gtl::flat_hash_map<std::string, std::unique_ptr<entity::Player>> &getPlayers() const;
+        const map_t<std::string, std::unique_ptr<entity::Player>> &getPlayers() const;
         size_t getPlayerCount() const;
 
-        entity::Player *addPlayer(std::unique_ptr<entity::Player> player);
+        entity::Player *addPlayer(std::unique_ptr<entity::Player> player, bool resetCoords = true);
         entity::Player *getPlayer(const std::string &id) const;
         void removePlayer(const std::string &id);
         bool hasPlayer(const std::string &id) const;
@@ -89,10 +90,10 @@ namespace lodestone::level::world {
          * @tparam ID The level ID
          * @tparam Level The level
          */
-        gtl::flat_hash_map<lodestone::common::registry::Identifier, std::unique_ptr<Level>, IdentifierHasher
+        map_t<lodestone::common::registry::Identifier, std::unique_ptr<Level>, IdentifierHasher
             , IdentifierComparator> mLevels;
 
-        gtl::flat_hash_map<std::string, std::unique_ptr<entity::Player>> mPlayers;
+        map_t<std::string, std::unique_ptr<entity::Player>> mPlayers;
     };
 }
 

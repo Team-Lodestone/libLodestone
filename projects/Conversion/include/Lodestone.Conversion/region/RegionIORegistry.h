@@ -23,7 +23,7 @@ namespace lodestone::conversion::region {
         const RegionIO *getRegionIO(const lodestone::common::registry::Identifier &id) const;
 
     private:
-        gtl::flat_hash_map<lodestone::common::registry::Identifier, std::unique_ptr<const RegionIO>,
+        map_t<lodestone::common::registry::Identifier, std::unique_ptr<const RegionIO>,
             IdentifierHasher, IdentifierComparator> mRegisteredRegionIOs = {};
     };
 }

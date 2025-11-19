@@ -19,6 +19,7 @@ namespace lodestone::java {
         c0_0_20a,
         c0_26st,// survival test
         c0_28,
+        c0_30_CPE, // specifically for classic protocol extensions, which adds additional blocks
         // Indev
         in20091223_1457,
         in20100109_1939,

@@ -16,13 +16,17 @@ namespace lodestone::java::mcr::region {
         static constexpr int CHUNK_COUNT = 1024;
         static constexpr int SECTOR_SIZE = 4096;
 
-        size_t getSize(lodestone::level::region::Region *c, int version) const override;
+        size_t getSize(lodestone::level::Level *c, int version) const override;
 
         std::unique_ptr<lodestone::level::region::Region> read(std::istream &in, int version,
             const lodestone::level::types::Vec2i &coords) const override;
 
-        void write(lodestone::level::region::Region *c, int version, const lodestone::level::types::Vec2i &coords,
+        // We take coords here so we don't have to convert our existing Level into a Region.
+        // The coords are enough information to correctly write the chunks
+        void write(lodestone::level::Level *c, int version, const lodestone::level::types::Vec2i &coords,
             std::ostream &out) const override;
+
+        const conversion::chunk::ChunkIO *getChunkIO(int version) const override;
     };
 }
 

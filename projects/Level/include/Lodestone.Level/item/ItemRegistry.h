@@ -33,16 +33,16 @@ namespace lodestone::level::item {
 
         const Item *operator[](const lodestone::common::registry::Identifier *id) const;
 
-        gtl::flat_hash_map<const lodestone::common::registry::Identifier *, const Item *>::iterator begin() {
+        map_t<const lodestone::common::registry::Identifier *, const Item *>::iterator begin() {
             return mItems.begin();
         }
 
-        gtl::flat_hash_map<const lodestone::common::registry::Identifier *, const Item *>::iterator end() {
+        map_t<const lodestone::common::registry::Identifier *, const Item *>::iterator end() {
             return mItems.end();
         }
 
     private:
-        gtl::flat_hash_map<const lodestone::common::registry::Identifier *, const Item *> mItems = {
+        map_t<const lodestone::common::registry::Identifier *, const Item *> mItems = {
             REGISTER_ITEM(&Items::NONE)
         };
     };

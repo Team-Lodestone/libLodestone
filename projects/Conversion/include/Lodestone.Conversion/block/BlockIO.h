@@ -38,9 +38,9 @@ namespace lodestone::conversion::block::version {
         lodestone::level::block::properties::BlockProperties convertBlockToInternal(const data::AbstractBlockData &b);
     private:
         // todo I have learned about the existence of bimap but I don't know if a lib exists for cpp
-        gtl::flat_hash_map<const lodestone::level::block::Block *, data::AbstractBlockData *>
+        map_t<const lodestone::level::block::Block *, data::AbstractBlockData *>
         mFromInternalConversionMap;
-        gtl::flat_hash_map<const data::AbstractBlockData *, const lodestone::level::block::Block *,
+        map_t<const data::AbstractBlockData *, const lodestone::level::block::Block *,
             types::hash::BlockDataHash, types::hash::BlockDataComparator> mToInternalConversionMap;
     };
 }

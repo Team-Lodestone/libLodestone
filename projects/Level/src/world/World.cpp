@@ -45,13 +45,13 @@ namespace lodestone::level::world {
         return mPlayers.size();
     }
 
-    entity::Player *World::addPlayer(std::unique_ptr<entity::Player> player) {
+    entity::Player *World::addPlayer(std::unique_ptr<entity::Player> player, const bool resetCoords) {
         const std::string &id = player->getId();
         if (hasPlayer(id)) throw std::runtime_error(std::format("Attempted to add duplicate player '{}'", id));
 
         entity::Player* p = player.get();
         this->mPlayers[id] = std::move(player);
-        p->setWorld(this);
+        p->setWorld(this, resetCoords);
 
         return p; // I think this should work??
     }
@@ -97,11 +97,11 @@ namespace lodestone::level::world {
         world->addPlayer(std::move(player));
     }
 
-    const gtl::flat_hash_map<std::string, std::unique_ptr<entity::Player>> &World::getPlayers() const {
+    const map_t<std::string, std::unique_ptr<entity::Player>> &World::getPlayers() const {
         return mPlayers;
     }
 
-    const gtl::flat_hash_map<lodestone::common::registry::Identifier, std::unique_ptr<Level>,
+    const map_t<lodestone::common::registry::Identifier, std::unique_ptr<Level>,
     IdentifierHasher, IdentifierComparator> & World::getLevels() const {
         return mLevels;
     }

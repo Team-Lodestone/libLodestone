@@ -139,9 +139,9 @@ namespace lodestone::java::mcr::player {
     const common::registry::Identifier &McRegionPlayer::dimensionIdToIdentifier(const int id) {
         switch (id) {
             case -1: return level::world::World::Dimension::NETHER;
-            default:
-                return level::world::World::Dimension::OVERWORLD;
+            case 0: return level::world::World::Dimension::OVERWORLD;
             case 1: return level::world::World::Dimension::END;
+            default: return level::world::World::Dimension::UNKNOWN;
         }
     }
 
@@ -151,6 +151,8 @@ namespace lodestone::java::mcr::player {
                 ? -1
                 : str == level::world::World::Dimension::END // if end return 1
                 ? 1
-                : 0; // otherwise overworld (0)
+                : str == level::world::World::Dimension::OVERWORLD // otherwise overworld (0)
+                ? 0
+                : 0x7FFFFFFF;
     }
 }

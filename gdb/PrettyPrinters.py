@@ -5,7 +5,7 @@ class StringSerializablePrinter:
         self.val = val
     def to_string(self):
         try:
-            return str(gdb.parse_and_eval(f"((StringSerializable*){int(self.val.address)})->toString()")) # jank?
+            return str(gdb.parse_and_eval(f"((lodestone::common::string::StringSerializable*){int(self.val.address)})->toString()")) # jank?
         except Exception as ex:
             print("tostring", ex)
             return None
@@ -43,7 +43,7 @@ def derived(t, seen=None):
 
     seen.add(n)
 
-    if n == "StringSerializable":
+    if n == "lodestone::common::string::StringSerializable":
         return True
 
     try:

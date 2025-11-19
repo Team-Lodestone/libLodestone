@@ -23,7 +23,7 @@ namespace lodestone::conversion::chunk {
         const ChunkIO *getChunkIO(const lodestone::common::registry::Identifier &id) const;
 
     private:
-        gtl::flat_hash_map<lodestone::common::registry::Identifier, std::unique_ptr<const ChunkIO>,
+        map_t<lodestone::common::registry::Identifier, std::unique_ptr<const ChunkIO>,
             IdentifierHasher, IdentifierComparator> mRegisteredChunkIOs = {};
     };
 }

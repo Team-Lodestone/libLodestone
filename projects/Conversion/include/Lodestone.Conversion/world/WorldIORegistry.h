@@ -20,7 +20,7 @@ namespace lodestone::conversion::world {
         const WorldIO *getWorldIO(const lodestone::common::registry::Identifier &id) const;
 
     private:
-        gtl::flat_hash_map<lodestone::common::registry::Identifier, std::unique_ptr<const WorldIO>,
+        map_t<lodestone::common::registry::Identifier, std::unique_ptr<const WorldIO>,
             IdentifierHasher, IdentifierComparator> mRegisteredWorldIOs = {};
     };
 }

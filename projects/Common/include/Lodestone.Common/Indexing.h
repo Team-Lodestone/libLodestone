@@ -12,6 +12,11 @@ namespace lodestone::common {
 
 #define CHUNK_IDX(blk) (blk >> 4)
 #define CHUNK_LOCAL_IDX(blk, v) (blk & (v - 1))
+
+// https://stackoverflow.com/a/34165114
+#define GET_NIBBLE(ary, idx) (idx % 2 ? /* if odd */ ary[idx/2] & 0xf0 >> 4 : /* if even */ ary[idx/2] & 0x0f)
+#define SET_NIBBLE(ary, idx, val) (idx % 2 ? ary[idx/2] = (ary[idx/2] & 0x0f) | ((val & 0x0f) << 4) : ary[idx/2] = (ary[idx/2] & 0xf0) | (val & 0x0f))
+
 }
 
 #endif // LODESTONE_INDEXING_H

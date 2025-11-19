@@ -17,7 +17,7 @@ namespace lodestone::level::block::properties {
     /** Wraps a block with runtime-modifiable properties */
     class BlockProperties : public lodestone::common::string::StringSerializable {
     public:
-        static const gtl::flat_hash_map<std::string, level::properties::AbstractProperty *> EMPTY_PROPERTIES;
+        static const map_t<std::string, level::properties::AbstractProperty *> EMPTY_PROPERTIES;
 
         BlockProperties(const Block *block) : mBlock(block) {
         };
@@ -33,7 +33,7 @@ namespace lodestone::level::block::properties {
 
 // TODO add destructor back for some reason it throws some stupid error right now
 
-        const gtl::flat_hash_map<std::string, level::properties::AbstractProperty *> &getProperties() const;
+        const map_t<std::string, level::properties::AbstractProperty *> &getProperties() const;
 
         virtual bool hasProperty(const std::string &id) const;
 
@@ -59,7 +59,7 @@ namespace lodestone::level::block::properties {
 
     private:
         const Block *mBlock;
-        gtl::flat_hash_map<std::string, level::properties::AbstractProperty*> *mProperties = nullptr;
+        map_t<std::string, level::properties::AbstractProperty*> *mProperties = nullptr;
     };
 }
 

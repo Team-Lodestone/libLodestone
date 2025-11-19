@@ -15,6 +15,8 @@ namespace lodestone::tests::test {
         static void readMcrFile();
 
         static void readMcrWorld();
+
+        static void readMinev2World();
     };
 }
 

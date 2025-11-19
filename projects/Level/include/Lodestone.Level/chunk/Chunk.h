@@ -124,8 +124,8 @@ namespace lodestone::level::chunk {
         block::properties::BlockProperties **mBlockmap = new block::properties::BlockProperties *[
             common::constants::CHUNK_WIDTH * common::constants::CHUNK_DEPTH]{};
 
-        // gtl::flat_hash_map<Vec3i, TileEntity> mTileEntities;
-        // gtl::flat_hash_map<Vec3i, Entity> mEntities;
+        // map_t<Vec3i, TileEntity> mTileEntities;
+        // map_t<Vec3i, Entity> mEntities;
     };
 }
 

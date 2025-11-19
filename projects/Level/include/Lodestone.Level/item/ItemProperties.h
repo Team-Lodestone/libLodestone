@@ -13,7 +13,7 @@
 namespace lodestone::level::item {
     class ItemProperties : public common::string::StringSerializable {
     public:
-        static const gtl::flat_hash_map<std::string, std::unique_ptr<properties::AbstractProperty>> EMPTY_PROPERTIES;
+        static const map_t<std::string, std::unique_ptr<properties::AbstractProperty>> EMPTY_PROPERTIES;
 
         ItemProperties(const Item *block) : mItem(block) {
         };
@@ -27,7 +27,7 @@ namespace lodestone::level::item {
 
         ~ItemProperties() override = default;
 
-        const gtl::flat_hash_map<std::string, std::unique_ptr<properties::AbstractProperty>> &getProperties() const;
+        const map_t<std::string, std::unique_ptr<properties::AbstractProperty>> &getProperties() const;
 
         bool hasProperty(const std::string &id) const;
 
@@ -53,7 +53,7 @@ namespace lodestone::level::item {
 
     private:
         const Item *mItem;
-        std::optional<gtl::flat_hash_map<std::string, std::unique_ptr<properties::AbstractProperty>>> mProperties;
+        std::optional<map_t<std::string, std::unique_ptr<properties::AbstractProperty>>> mProperties;
     };
 }
 

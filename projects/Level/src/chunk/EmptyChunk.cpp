@@ -4,6 +4,11 @@
 #include "Lodestone.Level/chunk/EmptyChunk.h"
 
 namespace lodestone::level::chunk {
+    EmptyChunk *EmptyChunk::getInstance() {
+        static EmptyChunk sInstance;
+        return &sInstance;
+    }
+
     void EmptyChunk::calculateHeightmap() {
     }
 
@@ -12,15 +17,15 @@ namespace lodestone::level::chunk {
     }
 
     section::Section *EmptyChunk::getSection(int y) const {
-        return section::EmptySection::sInstance;
+        return section::EmptySection::getInstance();
     }
 
     block::properties::BlockProperties *EmptyChunk::getBlock(const int x, const int y, const int z) const {
-        return section::EmptySection::sInstance->getBlock(x, y, z);
+        return section::EmptySection::getInstance()->getBlock(x, y, z);
     }
 
     section::Section *EmptyChunk::getSectionCreate(int y) {
-        return section::EmptySection::sInstance;
+        return section::EmptySection::getInstance();
     }
 
     void EmptyChunk::setBlock(block::properties::BlockProperties &&blk, int x, int y, int z) {

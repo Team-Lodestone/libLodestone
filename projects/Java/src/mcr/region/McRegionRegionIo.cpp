@@ -4,6 +4,7 @@
 
 #include "Lodestone.Java/mcr/region/McRegionRegionIo.h"
 
+#include <omp.h>
 #include <format>
 #include <iostream>
 #include <zlib.h>
@@ -21,10 +22,14 @@
 #include <BinaryIO/stream/BinaryInputStream.h>
 
 #include <libnbt++/io/izlibstream.h>
+
+#include <libnbt++/io/ozlibstream.h>
+#include <BinaryIO/stream/BinaryOutputStream.h>
 #include "Lodestone.Java/mcr/region/McRegionRegion.h"
 
 namespace lodestone::java::mcr::region {
-    size_t McRegionRegionIO::getSize(lodestone::level::region::Region *c, int version) const {
+    size_t McRegionRegionIO::getSize(lodestone::level::Level *c, int version) const {
+        return 0;
     }
 
     std::unique_ptr<lodestone::level::region::Region> McRegionRegionIO::read(std::istream &in, const int version,
@@ -32,7 +37,7 @@ namespace lodestone::java::mcr::region {
         bio::stream::BinaryInputStream bis(in);
 
         const chunk::McRegionChunkIO *chunkIo = dynamic_cast<const chunk::McRegionChunkIO *>(
-            lodestone::conversion::chunk::ChunkIORegistry::sInstance.getChunkIO(identifiers::MCREGION));
+            getChunkIO(version));
 
         std::unique_ptr<lodestone::level::region::Region> region = std::make_unique<McRegionRegion>(coords);
 
@@ -98,7 +103,78 @@ namespace lodestone::java::mcr::region {
         return region;
     }
 
-    void McRegionRegionIO::write(lodestone::level::region::Region *c, int version,
+    void McRegionRegionIO::write(lodestone::level::Level *c, const int version,
         const lodestone::level::types::Vec2i &coords, std::ostream &out) const {
+        bio::stream::BinaryOutputStream bos(out);
+
+        const chunk::McRegionChunkIO *chunkIo = dynamic_cast<const chunk::McRegionChunkIO *>(
+    getChunkIO(version));
+
+        bos.fill(0, (4 * 1024) * 2);
+
+        const int minX = coords.x << 5;
+        const int minZ = coords.z << 5;
+
+        // since this is such pain with a stream
+        // although doing it like this is messy, I would like to refactor this sometime. TODO
+        for (char x = 0; x < 16; x++) {
+            for (char z = 0; z < 16; z++) {
+                // get chunk coords
+                int cx = minX + x;
+                int cz = minZ + z;
+
+                size_t idx = ((cx % 32) + (cz % 32) * 32) * 4;
+
+                // get our chunk
+                level::chunk::Chunk *ch = c->getChunk(cx, cz);
+                if (!ch) continue;
+
+                // get the position BEFORE we write the chunk
+                const size_t s = bos.getPosition();
+
+                bos.writeLE<int32_t>(0); // size (temp)
+                bos.writeByte(Zlib); // compression
+
+                // create z stream
+                zlib::ozlibstream zs(bos.getStream());
+                chunkIo->write(ch, {cx, cz}, version, zs); // write w/ zlib
+                zs.close();
+
+                // get it after, and get total bytes written
+                const size_t se = bos.getPosition();
+                const size_t sz = se - s;
+
+                // and then we calculate some sector shit,
+                // specifically how many sectors it will take up
+                const size_t sc = (sz + SECTOR_SIZE - 1) / SECTOR_SIZE;
+
+                // write sector padding
+                bos.fill(0, sc * SECTOR_SIZE - sz);
+
+                // get last position (needed to continue writing)
+                const size_t sa = bos.getPosition();
+
+                // write compressed size
+                bos.seek(s);
+                bos.writeBE<int32_t>(sz - 5);
+
+                // now we seek back and write location
+                bos.seek(idx);
+
+                bos.writeInt24(s / 4096, bio::util::ByteOrder::BIG); // offset
+                bos.writeByte(sc); // size
+
+                // write timestamp
+                bos.seek(idx + SECTOR_SIZE);
+                bos.writeBE<int32_t>(common::getCurrentTimeMillis());
+
+                // seek back and write next one
+                bos.seek(sa);
+            }
+        }
+    }
+
+    const conversion::chunk::ChunkIO * McRegionRegionIO::getChunkIO(int version) const {
+        return conversion::chunk::ChunkIORegistry::sInstance.getChunkIO(identifiers::MCREGION);
     }
 }

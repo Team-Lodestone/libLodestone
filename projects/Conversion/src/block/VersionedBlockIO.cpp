@@ -11,7 +11,10 @@ namespace lodestone::conversion::block {
         auto it = mFromInternalConversionMap.upper_bound(version);
         while (it != mFromInternalConversionMap.begin()) {
             --it;
-            for (auto &[internal, blk]: it->second) io->registerBlockIfNotExist(internal, blk);
+            for (auto &[internal, blk]: it->second) {
+                if (blk != nullptr) // if we want to signify block removal we can set it to nullptr
+                    io->registerBlockIfNotExist(internal, blk);
+            }
         }
 
         return io;

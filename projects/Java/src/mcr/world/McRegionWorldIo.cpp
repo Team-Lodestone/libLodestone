@@ -6,6 +6,8 @@
 #include <fstream>
 #include <iostream>
 #include <ranges>
+#include <stack>
+#include <omp.h>
 
 #include "Lodestone.Java/mcr/world/McRegionWorld.h"
 #include <libnbt++/io/izlibstream.h>
@@ -16,6 +18,8 @@
 #include <Lodestone.Conversion/region/RegionIORegistry.h>
 
 #include <Lodestone.Conversion/player/PlayerIORegistry.h>
+
+#include <libnbt++/io/ozlibstream.h>
 #include "Lodestone.Java/mcr/chunk/McRegionChunk.h"
 #include "Lodestone.Java/mcr/region/McRegionRegion.h"
 #include "Lodestone.Java/mcr/region/McRegionRegionIo.h"
@@ -29,6 +33,25 @@ namespace lodestone::java::mcr::world {
 
     std::unique_ptr<lodestone::level::world::World> McRegionWorldIo::read(const std::filesystem::path &path, int version) const {
         if (!std::filesystem::exists(path)) return nullptr;
+
+        map_t<int, std::filesystem::path> dims;
+        dims.emplace(0, path); // main dim
+
+        // scan for dims
+        for (auto& d : std::filesystem::directory_iterator(path)) {
+            const std::string name = d.path().filename().string();
+
+            if (!d.is_directory() || !name.starts_with("DIM")) continue;
+
+            const std::string nm = name.substr(3, name.size() - 3); // remove dim
+
+            int i = std::stoi(nm);
+            dims.emplace(i, d.path());
+        }
+
+        // if (std::filesystem::exists(path / "DIM1")) dims.emplace(1, path / "DIM1"); // TODO we can probably just regex our way out of this
+        // if (std::filesystem::exists(path / "DIM-1")) dims.emplace(-1, path / "DIM-1");
+
 
         level::types::Vec3i spawnPos = {0, 64, 0};
         std::unique_ptr<level::world::World> world = std::make_unique<level::world::World>();
@@ -98,33 +121,55 @@ namespace lodestone::java::mcr::world {
 
                 std::cout << r->toString() << std::endl;
 
-                world->addPlayer(std::move(r));
+                world->addPlayer(std::move(r), false);
                 ifs.close();
             }
         }
 
+        const java::mcr::region::McRegionRegionIO *io = static_cast<const java::mcr::region::McRegionRegionIO *>(lodestone::conversion::region::RegionIORegistry::sInstance.
+getRegionIO(java::identifiers::MCREGION));
+
+        int t = 2;
         // do I need to call exists?
-        if (std::filesystem::exists(path / "region") && std::filesystem::is_directory(path / "region")) {
-            const java::mcr::region::McRegionRegionIO *io = static_cast<const java::mcr::region::McRegionRegionIO *>(lodestone::conversion::region::RegionIORegistry::sInstance.
-    getRegionIO(java::identifiers::MCREGION));
-            level::Level *overworld = new level::Level();
-            for (const auto& f : std::filesystem::directory_iterator(path / "region")) {
-                if (!std::filesystem::is_regular_file(f)) continue;
+        for (auto [id, pth]: dims) {
+            if (std::filesystem::exists(pth / "region") && std::filesystem::is_directory(pth / "region")) {
 
-                level::types::Vec2i coords = region::McRegionRegion::getCoordsFromFilename(f.path().filename().string());
+                std::cout << pth << std::endl;
 
-                std::ifstream ifs(f.path(), std::ifstream::binary);
+                level::Level *dim = new level::Level();
+#ifdef USE_OPENMP
+                std::vector<std::filesystem::directory_entry> e;
+                for (auto& f : std::filesystem::directory_iterator(pth / "region"))
+                    e.push_back(f);
 
-                std::unique_ptr<level::region::Region> r = io->read(ifs, version, coords); // todo return value?
+                #pragma omp parallel for
+                for (size_t i = 0; i < e.size(); ++i) {
+                    const auto& f = e[i];
+#else
+                for (const auto& f : std::filesystem::directory_iterator(pth / "region")) {
+#endif
+                    if (!std::filesystem::is_regular_file(f) || f.path().extension() != ".mcr") continue;
+                    
+                    level::types::Vec2i coords = region::McRegionRegion::getCoordsFromFilename(f.path().filename().string());
 
-                overworld->merge(std::move(r));
-                ifs.close();
+                    std::ifstream ifs(f.path(), std::ifstream::binary);
 
-                std::cout << coords << std::endl;
+                    std::unique_ptr<level::region::Region> r = io->read(ifs, version, coords); // todo return value?
+
+                    dim->merge(std::move(r));
+                    ifs.close();
+
+                    std::cout << coords << std::endl;
+                }
+
+                dim->setSpawnPos(spawnPos); // in beta, only worlds have the spawn position
+                // get dim (or temp name if conversion unknown)
+                common::registry::Identifier d = player::McRegionPlayer::dimensionIdToIdentifier(id);
+                if (d == level::world::World::Dimension::UNKNOWN)
+                    d = common::registry::Identifier("lodestone", ("unknown_dim_" + std::to_string(t)).c_str());
+                world->addLevel(d, std::unique_ptr<level::Level>(dim)); // todo move dimension id shit to world
             }
-
-            overworld->setSpawnPos(spawnPos); // in beta, only worlds have the spawn position
-            world->addLevel(level::world::World::Dimension::OVERWORLD, std::unique_ptr<level::Level>(overworld));
+            t++;
         }
 
         // move players to correct level otherwise they're stuck at correct coords in diff level
@@ -141,5 +186,90 @@ namespace lodestone::java::mcr::world {
 
     void McRegionWorldIo::write(const std::filesystem::path &path, lodestone::level::world::World *w,
         int version) const {
+        if (!exists(path)) std::filesystem::create_directories(path);
+        if (!std::filesystem::is_directory(path)) throw std::runtime_error("Cannot write a world to a path that is not a directory");
+
+        {
+            // Leveldat
+            // TODO incomplete
+            std::ofstream dat(path / "level.dat", std::ios::binary);
+            zlib::ozlibstream strm(dat, Z_DEFAULT_COMPRESSION, true);
+
+            nbt::io::stream_writer nbt(strm);
+            nbt::tag_compound root{};
+
+            nbt::tag_compound data{};
+
+            data["LevelName"] = w->getName();
+
+            // int spawnX = data["SpawnX"].get().as<nbt::tag_int>();
+            // int spawnY = data["SpawnY"].get().as<nbt::tag_int>();
+            // int spawnZ = data["SpawnZ"].get().as<nbt::tag_int>();
+            // spawnPos = {spawnX, spawnY, spawnZ};
+            //
+            // int64_t time = data["Time"].get().as<nbt::tag_long>();
+            // w->setTime(time);
+            //
+            // int rainTime = data["rainTime"].get().as<nbt::tag_int>();
+            // int thunderTime = data["thunderTime"].get().as<nbt::tag_int>();
+            //
+            // w->setRainTime(rainTime);
+            // w->setThunderTime(thunderTime);
+            //
+            // bool raining = data["raining"].get().as<nbt::tag_byte>();
+            // bool thundering = data["thundering"].get().as<nbt::tag_byte>();
+            //
+            // w->setIsRaining(raining);
+            // w->setIsThundering(thundering);
+            //
+            // int64_t seed = data["RandomSeed"].get().as<nbt::tag_long>();
+            // w->setSeed(seed);
+            //
+            // int ver = data["version"].get().as<nbt::tag_int>();
+            // w->setVersion(ver);
+            //
+            // int64_t lastPlayed = data["LastPlayed"].get().as<nbt::tag_long>();
+            // w->setLastPlayed(lastPlayed);
+            //
+            // int64_t size = data["SizeOnDisk"].get().as<nbt::tag_long>();
+            // w->setSize(size);
+
+            root.emplace<nbt::tag_compound>("Data", data);
+            nbt.write_tag("", root);
+        }
+        // Regions
+        const java::mcr::region::McRegionRegionIO *io = static_cast<const java::mcr::region::McRegionRegionIO *>(lodestone::conversion::region::RegionIORegistry::sInstance.
+getRegionIO(java::identifiers::MCREGION));
+
+        std::filesystem::path p = path;
+
+        int i = 2; // for writing other dims
+        for (auto &[id, lvl] : w->getLevels()) {
+            if (const int dim = player::McRegionPlayer::identifierToDimensionId(id); dim != 0) {
+                const int d = dim == 0x7FFFFFFF ? i : dim;
+                p = path / ("DIM" + std::to_string(d));
+            }
+            i++;
+
+            std::filesystem::path r = p / "region";
+            if (!std::filesystem::exists(r))
+                std::filesystem::create_directory(r);
+
+            level::types::Bounds3i bounds = lvl->getChunkBounds();
+
+            for (int rx = bounds.min.x; rx < bounds.max.x; rx += 32*32) {
+                for (int rz = bounds.min.z; rz < bounds.max.z; rz += 32*32) {
+                    std::ofstream o(r / ("r." + std::to_string(rx) + "." + std::to_string(rz) + ".mcr"));
+
+                    io->write(lvl.get(), version, {rx, rz}, o);
+
+                    o.close();
+                }
+            }
+        }
+
+        // TODO player data
+        // TODO settings class for readers & writers, lets us pass a default player to put in level.dat too!
+        // TODO for block states we might be able to make registry that maps fields to bits in data byte per block
     }
 }
