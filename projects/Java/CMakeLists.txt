@@ -37,6 +37,7 @@ set(FILES
         src/mcr/player/McRegionPlayerIo.cpp
         include/Lodestone.Java/mcr/player/McRegionPlayerIo.h
         include/Lodestone.Java/io/chunk/NbtChunkIo.h
+        include/Lodestone.Java/classic/minev2/options/MineV2WorldWriteOptions.h
 )
 
 # NBT

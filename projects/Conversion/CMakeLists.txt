@@ -40,6 +40,8 @@ set(FILES
         include/Lodestone.Conversion/world/DirectoryWorldIo.h
         include/Lodestone.Conversion/Identifiers.h
         include/Lodestone.Conversion/types/hash/BlockDataHash.h
+        include/Lodestone.Conversion/world/options/AbstractWorldWriteOptions.h
+        include/Lodestone.Conversion/world/options/AbstractWorldReadOptions.h
 )
 
 # if (CMAKE_BUILD_TYPE STREQUAL "Debug")

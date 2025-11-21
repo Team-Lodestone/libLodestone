@@ -41,7 +41,7 @@ namespace lodestone::java::classic::minev2 {
     }
 
     std::unique_ptr<lodestone::level::world::World>
-    MineV2WorldIO::read(std::istream &in, int version) const {
+    MineV2WorldIO::read(std::istream &in, int version, const conversion::world::options::AbstractWorldReadOptions &options) const {
         bio::stream::BinaryInputStream bis(in);
 
         const uint32_t sig = bis.readBE<uint32_t>();
@@ -60,11 +60,18 @@ namespace lodestone::java::classic::minev2 {
 
         std::unique_ptr<level::Level> unique =
             lio->read(bis.getStream(), version); // todo: proper version!!!!
+
         return std::make_unique<MineV2World>(std::move(unique), name, author);
     }
 
     void MineV2WorldIO::write(lodestone::level::world::World *w, int version,
-                              std::ostream &out) const {
+                              std::ostream &out, const conversion::world::options::AbstractWorldWriteOptions &options) const {
+        const options::MineV2WorldWriteOptions *writeOptions = dynamic_cast<const options::MineV2WorldWriteOptions *>(&options);
+
+        options::MineV2WorldWriteOptions def{};
+        if (!writeOptions)
+            writeOptions = &def;
+
         bio::stream::BinaryOutputStream bos(out);
 
         bos.writeBE<uint32_t>(SIGNATURE);
@@ -87,7 +94,7 @@ namespace lodestone::java::classic::minev2 {
 
         const MineV2LevelIO *lio =
             dynamic_cast<const MineV2LevelIO *>(getLevelIO(version));
-        lio->write(w->getDefaultLevel(), version, bos.getStream());
+        lio->write(w->getLevel(writeOptions->level), version, bos.getStream());
         // todo: VERSION STUFF
     }
 } // namespace lodestone::java::classic::minev2

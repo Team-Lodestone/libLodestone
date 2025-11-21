@@ -14,11 +14,11 @@ namespace lodestone::java::mcr::world {
         getLevelIO(int version) const override;
 
         std::unique_ptr<lodestone::level::world::World>
-        read(const std::filesystem::path &path, int version) const override;
+        read(const std::filesystem::path &path, int version, const conversion::world::options::AbstractWorldReadOptions &options) const override;
 
         void write(const std::filesystem::path &path,
                    lodestone::level::world::World *w,
-                   int version) const override;
+                   int version, const conversion::world::options::AbstractWorldWriteOptions &options) const override;
     };
 } // namespace lodestone::java::mcr::world
 
