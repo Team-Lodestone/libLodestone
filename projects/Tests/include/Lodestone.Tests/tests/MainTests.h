@@ -17,6 +17,8 @@ namespace lodestone::tests::test {
         static void readMcrWorld();
 
         static void readMinev2World();
+
+        static void readAlphaWorld();
     };
 } // namespace lodestone::tests::test
 

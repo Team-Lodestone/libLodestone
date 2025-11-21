@@ -6,6 +6,9 @@
 
 #include "Lodestone.Level/Level.h"
 
+#include "Lodestone.Conversion/world/options/AbstractWorldReadOptions.h"
+#include "Lodestone.Conversion/world/options/AbstractWorldWriteOptions.h"
+
 namespace lodestone::conversion::level {
     class LODESTONE_API PlayerIO {
       public:

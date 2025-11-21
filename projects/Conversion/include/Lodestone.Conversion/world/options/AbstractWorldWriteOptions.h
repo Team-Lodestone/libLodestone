@@ -8,6 +8,6 @@ namespace lodestone::conversion::world::options {
     struct AbstractWorldWriteOptions {
         virtual ~AbstractWorldWriteOptions() = default;
     };
-}
+} // namespace lodestone::conversion::world::options
 
 #endif // LODESTONE_ABSTRACTWORLDIOOPTIONS_H

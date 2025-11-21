@@ -14,13 +14,15 @@ namespace lodestone::conversion::world {
       public:
         /** Reads data into a new World */
         virtual std::unique_ptr<lodestone::level::world::World>
-        read(const std::filesystem::path &path, int version, const options::AbstractWorldReadOptions &options) const = 0;
+        read(const std::filesystem::path &path, int version,
+             const options::AbstractWorldReadOptions &options) const = 0;
 
         // TODO: this should allow for reading from VFS
         /** Writes a world to data */
-        virtual void write(const std::filesystem::path &path,
-                           lodestone::level::world::World *w,
-                           int version, const options::AbstractWorldWriteOptions &options) const = 0;
+        virtual void
+        write(const std::filesystem::path &path,
+              lodestone::level::world::World *w, int version,
+              const options::AbstractWorldWriteOptions &options) const = 0;
 
         // TODO: this *should* allow for writing to a VFS
     };

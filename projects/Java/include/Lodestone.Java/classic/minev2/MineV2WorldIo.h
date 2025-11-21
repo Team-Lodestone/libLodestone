@@ -7,8 +7,6 @@
 #include <Lodestone.Conversion/world/FileWorldIo.h>
 #include <Lodestone.Conversion/world/WorldIO.h>
 
-#include "options/MineV2WorldWriteOptions.h"
-
 namespace lodestone::java::classic::minev2 {
     class MineV2WorldIO : public lodestone::conversion::world::FileWorldIO {
       public:
@@ -20,10 +18,14 @@ namespace lodestone::java::classic::minev2 {
         getLevelIO(int version) const override;
 
         std::unique_ptr<lodestone::level::world::World>
-        read(std::istream &in, int version, const conversion::world::options::AbstractWorldReadOptions &options) const override;
+        read(std::istream &in, int version,
+             const conversion::world::options::AbstractWorldReadOptions
+                 &options) const override;
 
         void write(lodestone::level::world::World *w, int version,
-                   std::ostream &out, const conversion::world::options::AbstractWorldWriteOptions &options) const override;
+                   std::ostream &out,
+                   const conversion::world::options::AbstractWorldWriteOptions
+                       &options) const override;
     };
 } // namespace lodestone::java::classic::minev2
 

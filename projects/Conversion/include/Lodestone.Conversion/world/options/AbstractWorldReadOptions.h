@@ -5,8 +5,7 @@
 #define LODESTONE_ABSTRACTWORLDREADOPTIONS_H
 
 namespace lodestone::conversion::world::options {
-    class AbstractWorldReadOptions {
-    };
-}
+    class AbstractWorldReadOptions {};
+} // namespace lodestone::conversion::world::options
 
 #endif // LODESTONE_ABSTRACTWORLDIOOPTIONS_H

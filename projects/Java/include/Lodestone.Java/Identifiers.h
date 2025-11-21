@@ -12,6 +12,8 @@ namespace lodestone::java::identifiers {
         "lodestone", "minev2"};
     static constexpr lodestone::common::registry::Identifier MCLEVEL = {
         "lodestone", "mclevel"};
+    static constexpr lodestone::common::registry::Identifier ALPHA = {
+        "lodestone", "alpha"};
     static constexpr lodestone::common::registry::Identifier MCREGION = {
         "lodestone", "mcregion"};
 

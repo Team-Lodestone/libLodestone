@@ -3,6 +3,10 @@
 //
 #include "Lodestone.Tests/tests/MainTests.h"
 
+#include <Lodestone.Java/classic/minev2/options/MineV2WorldWriteOptions.h>
+
+#include <Lodestone.Java/alpha/world/AlphaWorldIo.h>
+
 #include <fstream>
 
 #include "Lodestone.Tests/util.h"
@@ -34,6 +38,8 @@ namespace lodestone::tests::test {
                  "Read McRegion World");
         ADD_TEST(READ_MINEV2_WORLD, readMinev2World, util::types::MAIN,
                  "Read Classic .mine v2 World");
+        ADD_TEST(READ_ALPHA_WORLD, readAlphaWorld, util::types::MAIN,
+                 "Read Alpha World");
     }
 
     void MainTests::readMcrChunk() {
@@ -98,7 +104,7 @@ namespace lodestone::tests::test {
                 lodestone::conversion::world::WorldIORegistry::getInstance()
                     .getWorldIO(java::identifiers::MCREGION);
         std::shared_ptr<level::world::World> w =
-            io->read(dir, java::Version::b1_3);
+            io->read(dir, java::Version::b1_3, {});
 
         std::cout << "done now writing" << std::endl;
 
@@ -131,13 +137,50 @@ namespace lodestone::tests::test {
                     .getWorldIO(java::identifiers::MINEV2);
 
         std::unique_ptr<level::world::World> wld =
-            mv2io->read(in, lodestone::java::c0_28);
+            mv2io->read(in, lodestone::java::c0_28, {});
 
         const java::mcr::world::McRegionWorldIo *mcrio =
             (java::mcr::world::McRegionWorldIo *)
                 lodestone::conversion::world::WorldIORegistry::getInstance()
                     .getWorldIO(java::identifiers::MCREGION);
 
-        mcrio->write(util::OUTPUT_FOLDER / name, wld.get(), java::b1_3);
+        mcrio->write(util::OUTPUT_FOLDER / name, wld.get(), java::b1_3,
+                     java::classic::minev2::options::MineV2WorldWriteOptions{
+                         level::world::World::Dimension::OVERWORLD});
+    }
+
+    void MainTests::readAlphaWorld() {
+        std::string name("alphaworld");
+        std::filesystem::path dir(util::INPUT_FOLDER / name);
+
+        const java::alpha::world::AlphaWorldIo *io =
+            static_cast<const java::alpha::world::AlphaWorldIo *>(
+                lodestone::conversion::world::WorldIORegistry::getInstance()
+                    .getWorldIO(java::identifiers::ALPHA));
+
+        std::shared_ptr<level::world::World> w =
+            io->read(dir, java::Version::b1_3, {});
+
+        std::cout << "done now writing" << std::endl;
+
+        const lodestone::conversion::world::FileWorldIO *l2 =
+            dynamic_cast<const lodestone::conversion::world::FileWorldIO *>(
+                lodestone::conversion::world::WorldIORegistry::getInstance()
+                    .getWorldIO({"lodestone", "minev2"}));
+        {
+            OPEN_WRITE_FILE_STREAM(std::format("{}_overworld.dat", name))
+            l2->write(w.get(), lodestone::java::c0_28, out,
+                      java::classic::minev2::options::MineV2WorldWriteOptions{
+                          level::world::World::Dimension::OVERWORLD});
+            out.close();
+        }
+
+        {
+            OPEN_WRITE_FILE_STREAM(std::format("{}_nether.dat", name))
+            l2->write(w.get(), lodestone::java::c0_28, out,
+                      java::classic::minev2::options::MineV2WorldWriteOptions{
+                          level::world::World::Dimension::NETHER});
+            out.close();
+        }
     }
 } // namespace lodestone::tests::test
