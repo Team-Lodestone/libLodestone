@@ -27,4 +27,4 @@ namespace lodestone::common {
     // clang-format on
 } // namespace lodestone::common
 
-#endif //LODESTONE_LODESTONECOMMON_H
+#endif // LODESTONE_LODESTONECOMMON_H

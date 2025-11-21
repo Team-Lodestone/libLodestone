@@ -7,7 +7,9 @@
 #include <BinaryIO/BinaryBuffer.h>
 #include <format>
 #include <iostream>
+#ifdef USE_OPENMP
 #include <omp.h>
+#endif
 #include <zlib.h>
 
 #include "Lodestone.Java/Identifiers.h"

@@ -6,7 +6,7 @@
 #include <Lodestone.Common/Math.h>
 
 namespace lodestone::level::chunk {
-    LevelChunk::LevelChunk(const int height) : Chunk() {
+    LevelChunk::LevelChunk(const int height) {
         this->mSections = std::vector<std::unique_ptr<section::Section>>(
             common::Math::ceilDiv(height, common::constants::SECTION_HEIGHT));
     }

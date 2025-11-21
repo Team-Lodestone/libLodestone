@@ -5,7 +5,9 @@
 
 #include <fstream>
 #include <iostream>
+#ifdef USE_OPENMP
 #include <omp.h>
+#endif
 #include <ranges>
 #include <stack>
 
@@ -27,8 +29,10 @@
 #include <libnbt++/io/ozlibstream.h>
 
 namespace lodestone::java::mcr::world {
-    const lodestone::conversion::level::PlayerIO * McRegionWorldIo::getLevelIO(int version) const {
-        return lodestone::conversion::level::LevelIoRegistry::getInstance().getLevelIO(identifiers::MCREGION);
+    const lodestone::conversion::level::PlayerIO *
+    McRegionWorldIo::getLevelIO(int version) const {
+        return lodestone::conversion::level::LevelIoRegistry::getInstance()
+            .getLevelIO(identifiers::MCREGION);
     }
 
     std::unique_ptr<lodestone::level::world::World>
@@ -117,10 +121,10 @@ namespace lodestone::java::mcr::world {
 
         if (std::filesystem::exists(path / "players") &&
             std::filesystem::is_directory(path / "players")) {
-            const java::mcr::player::McRegionPlayerIO *pio =
-                static_cast<const java::mcr::player::McRegionPlayerIO *>(
-                    lodestone::conversion::player::PlayerIORegistry::getInstance()
-                        .getPlayerIO(java::identifiers::MCREGION));
+            const java::mcr::player::McRegionPlayerIO *pio = static_cast<
+                const java::mcr::player::McRegionPlayerIO *>(
+                lodestone::conversion::player::PlayerIORegistry::getInstance()
+                    .getPlayerIO(java::identifiers::MCREGION));
             for (const auto &f :
                  std::filesystem::directory_iterator(path / "players")) {
                 if (!std::filesystem::is_regular_file(f))

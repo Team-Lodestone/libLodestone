@@ -10,17 +10,22 @@
 namespace lodestone::core {
     /** The core Lodestone class, used for registering other plugin libs. */
     class Lodestone {
-    public:
+      public:
         static Lodestone *getInstance();
 
         void registerExtension(LodestoneExtension *ext);
         bool hasExtension(const common::registry::Identifier &id);
-        LodestoneExtension *getExtension(const common::registry::Identifier &id);
-        const map_t<common::registry::Identifier, LodestoneExtension*, IdentifierHasher, IdentifierComparator> &getExtensions();
+        LodestoneExtension *
+        getExtension(const common::registry::Identifier &id);
+        const map_t<common::registry::Identifier, LodestoneExtension *,
+                    IdentifierHasher, IdentifierComparator> &
+        getExtensions();
 
-    private:
-        map_t<common::registry::Identifier, LodestoneExtension*, IdentifierHasher, IdentifierComparator> mExtensions;
+      private:
+        map_t<common::registry::Identifier, LodestoneExtension *,
+              IdentifierHasher, IdentifierComparator>
+            mExtensions;
     };
-}
+} // namespace lodestone::core
 
-#endif //LODESTONE_CORE_LODESTONE_H
+#endif // LODESTONE_CORE_LODESTONE_H

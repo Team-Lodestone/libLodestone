@@ -4,10 +4,10 @@
 #ifndef LODESTONE_COLOR_H
 #define LODESTONE_COLOR_H
 
+#include <Lodestone.Common/string/StringSerializable.h>
+
 #include <format>
 #include <functional>
-
-#include <Lodestone.Common/string/StringSerializable.h>
 
 namespace lodestone::level::types {
     struct Color : public common::string::StringSerializable {

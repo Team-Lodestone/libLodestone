@@ -3,5 +3,4 @@
 //
 #include "Lodestone.Core/LodestoneExtension.h"
 
-namespace lodestone::core {
-}
+namespace lodestone::core {}

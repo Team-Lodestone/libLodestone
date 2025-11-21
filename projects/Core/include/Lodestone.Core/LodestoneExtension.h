@@ -7,11 +7,11 @@
 
 namespace lodestone::core {
     class LodestoneExtension {
-    public:
+      public:
         virtual ~LodestoneExtension() = default;
 
         virtual common::registry::Identifier getIdentifier() = 0;
     };
-}
+} // namespace lodestone::core
 
-#endif //LODESTONE_LODESTONEEXTENSION_H
+#endif // LODESTONE_LODESTONEEXTENSION_H
