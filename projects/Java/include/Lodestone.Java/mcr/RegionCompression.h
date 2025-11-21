@@ -14,4 +14,4 @@ namespace lodestone::java::mcr {
     };
 }
 
-#endif //LODESTONE_REGIONCOMPRESSION_H
+#endif // LODESTONE_REGIONCOMPRESSION_H

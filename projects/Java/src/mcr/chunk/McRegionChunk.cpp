@@ -3,5 +3,4 @@
 //
 #include "Lodestone.Java/mcr/chunk/McRegionChunk.h"
 
-namespace lodestone::java::mcr {
-}
+namespace lodestone::java::mcr {}

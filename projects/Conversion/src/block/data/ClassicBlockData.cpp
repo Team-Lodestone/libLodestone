@@ -4,13 +4,9 @@
 #include "Lodestone.Conversion/block/data/ClassicBlockData.h"
 
 namespace lodestone::conversion::block::data {
-    const void *ClassicBlockData::getIdPtr() const {
-        return &mId;
-    }
+    const void *ClassicBlockData::getIdPtr() const { return &mId; }
 
-    const void *ClassicBlockData::getDataPtr() const {
-        return &mData;
-    }
+    const void *ClassicBlockData::getDataPtr() const { return &mData; }
 
     const std::type_info &ClassicBlockData::getIdType() const {
         return typeid(uint8_t);
@@ -20,7 +16,8 @@ namespace lodestone::conversion::block::data {
         return typeid(std::monostate);
     }
 
-    const lodestone::common::registry::Identifier *ClassicBlockData::getTypeName() const {
+    const lodestone::common::registry::Identifier *
+    ClassicBlockData::getTypeName() const {
         return &identifiers::CLASSIC_BLOCK_DATA;
     }
 
@@ -34,4 +31,4 @@ namespace lodestone::conversion::block::data {
 
         return false;
     }
-}
+} // namespace lodestone::conversion::block::data

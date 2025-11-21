@@ -8,9 +8,11 @@
 namespace lodestone::level::identifiers {
     // Properties
     namespace properties {
-        constexpr common::registry::Identifier ABSTRACT_PROPERTY = {"lodestone", "abstract_property"};
-        constexpr common::registry::Identifier TEMPLATED_PROPERTY = {"lodestone", "templated_property"};
-    }
-}
+        constexpr common::registry::Identifier ABSTRACT_PROPERTY = {
+            "lodestone", "abstract_property"};
+        constexpr common::registry::Identifier TEMPLATED_PROPERTY = {
+            "lodestone", "templated_property"};
+    } // namespace properties
+} // namespace lodestone::level::identifiers
 
-#endif //LODESTONE_LEVEL_IDENTIFIERS_H
+#endif // LODESTONE_LEVEL_IDENTIFIERS_H

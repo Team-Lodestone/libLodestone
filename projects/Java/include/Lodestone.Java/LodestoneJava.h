@@ -9,12 +9,12 @@
 
 namespace lodestone::java {
     class LODESTONE_API LodestoneJava {
-    private:
+      private:
         LodestoneJava();
 
         static LodestoneJava *sInstance;
 
-    public:
+      public:
         static LodestoneJava *getInstance();
 
         static void LODESTONE_API init();
@@ -23,6 +23,6 @@ namespace lodestone::java {
 
         lodestone::conversion::block::version::VersionedBlockIO io;
     };
-}
+} // namespace lodestone::java
 
-#endif //LODESTONE_MAIN_H
+#endif // LODESTONE_MAIN_H

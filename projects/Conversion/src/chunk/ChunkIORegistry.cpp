@@ -8,10 +8,12 @@
 namespace lodestone::conversion::chunk {
     ChunkIORegistry ChunkIORegistry::sInstance = ChunkIORegistry();
 
-    void ChunkIORegistry::registerChunkIO(const lodestone::common::registry::Identifier &id,
-                                          std::unique_ptr<const ChunkIO> io) {
+    void ChunkIORegistry::registerChunkIO(
+        const lodestone::common::registry::Identifier &id,
+        std::unique_ptr<const ChunkIO> io) {
         if (mRegisteredChunkIOs.contains(id))
-            throw std::runtime_error(std::format("ChunkIO '{}' is already registered", id));
+            throw std::runtime_error(
+                std::format("ChunkIO '{}' is already registered", id));
 
         mRegisteredChunkIOs[id] = std::move(io);
 
@@ -20,10 +22,12 @@ namespace lodestone::conversion::chunk {
 #endif
     }
 
-    const ChunkIO *ChunkIORegistry::getChunkIO(const lodestone::common::registry::Identifier &id) const {
-        if (const auto it = mRegisteredChunkIOs.find(id); it != mRegisteredChunkIOs.end())
+    const ChunkIO *ChunkIORegistry::getChunkIO(
+        const lodestone::common::registry::Identifier &id) const {
+        if (const auto it = mRegisteredChunkIOs.find(id);
+            it != mRegisteredChunkIOs.end())
             return it->second.get();
 
         return nullptr;
     }
-}
+} // namespace lodestone::conversion::chunk

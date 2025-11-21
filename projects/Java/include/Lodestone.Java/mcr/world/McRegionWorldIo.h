@@ -7,14 +7,19 @@
 #include <filesystem>
 
 namespace lodestone::java::mcr::world {
-    class McRegionWorldIo : public lodestone::conversion::world::DirectoryWorldIO {
-    public:
-        const lodestone::conversion::level::PlayerIO * getLevelIO(int version) const override;
+    class McRegionWorldIo
+        : public lodestone::conversion::world::DirectoryWorldIO {
+      public:
+        const lodestone::conversion::level::PlayerIO *
+        getLevelIO(int version) const override;
 
-        std::unique_ptr<lodestone::level::world::World> read(const std::filesystem::path &path, int version) const override;
+        std::unique_ptr<lodestone::level::world::World>
+        read(const std::filesystem::path &path, int version) const override;
 
-        void write(const std::filesystem::path &path, lodestone::level::world::World *w, int version) const override;
+        void write(const std::filesystem::path &path,
+                   lodestone::level::world::World *w,
+                   int version) const override;
     };
-}
+} // namespace lodestone::java::mcr::world
 
-#endif //LODESTONE_MCREGIONWORLDIO_H
+#endif // LODESTONE_MCREGIONWORLDIO_H

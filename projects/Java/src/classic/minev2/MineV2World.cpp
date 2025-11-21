@@ -10,43 +10,39 @@
 #include <Lodestone.Conversion/world/WorldIORegistry.h>
 
 namespace lodestone::java::classic::minev2 {
-    MineV2World::MineV2World(const std::string &name, const std::string &author) : World(name), mAuthor(author),
-        mCreationTime(common::getCurrentTimeMillis()) {
-    }
+    MineV2World::MineV2World(const std::string &name, const std::string &author)
+        : World(name), mAuthor(author),
+          mCreationTime(common::getCurrentTimeMillis()) {}
 
-    MineV2World::MineV2World(std::unique_ptr<level::Level> &&overworld, const std::string &name,
-                             const std::string &author) : World(std::move(overworld), name), mAuthor(author),
-                                                          mCreationTime(common::getCurrentTimeMillis()) {
-    }
+    MineV2World::MineV2World(std::unique_ptr<level::Level> &&overworld,
+                             const std::string &name, const std::string &author)
+        : World(std::move(overworld), name), mAuthor(author),
+          mCreationTime(common::getCurrentTimeMillis()) {}
 
     MineV2World::MineV2World(
-        map_t<lodestone::common::registry::Identifier, std::unique_ptr<level::Level>,
-            IdentifierHasher, IdentifierComparator> &&levels, const std::string &name,
-        const std::string &author) : World(name, std::move(levels)), mAuthor(author),
-                                     mCreationTime(common::getCurrentTimeMillis()) {
-    }
+        map_t<lodestone::common::registry::Identifier,
+              std::unique_ptr<level::Level>, IdentifierHasher,
+              IdentifierComparator> &&levels,
+        const std::string &name, const std::string &author)
+        : World(name, std::move(levels)), mAuthor(author),
+          mCreationTime(common::getCurrentTimeMillis()) {}
 
-    const std::string &MineV2World::getAuthor() const {
-        return mAuthor;
-    }
+    const std::string &MineV2World::getAuthor() const { return mAuthor; }
 
-    std::string &MineV2World::getAuthor() {
-        return mAuthor;
-    }
+    std::string &MineV2World::getAuthor() { return mAuthor; }
 
     void MineV2World::setAuthor(const std::string &author) {
         this->mAuthor = author;
     }
 
-    uint64_t MineV2World::getCreationTime() const {
-        return mCreationTime;
-    }
+    uint64_t MineV2World::getCreationTime() const { return mCreationTime; }
 
     void MineV2World::setCreationTime(const uint64_t time) {
         this->mCreationTime = time;
     }
 
     const lodestone::conversion::world::WorldIO *MineV2World::getIO() {
-        return lodestone::conversion::world::WorldIORegistry::sInstance.getWorldIO(identifiers::MINEV2);
+        return lodestone::conversion::world::WorldIORegistry::sInstance
+            .getWorldIO(identifiers::MINEV2);
     }
-}
+} // namespace lodestone::java::classic::minev2

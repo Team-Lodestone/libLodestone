@@ -20,7 +20,7 @@ namespace lodestone::level::chunk {
 
 namespace lodestone::level::entity {
     class Entity : public common::string::StringSerializable {
-    public:
+      public:
         static constexpr int MAX_HEALTH = 20;
 
         Entity() = default;
@@ -54,22 +54,24 @@ namespace lodestone::level::entity {
         virtual const common::registry::Identifier *getType() const;
 
         constexpr std::string toString() const override {
-            return std::format("Entity[type={}, health={}, pos={}]", getType()->getString(), mHealth, mPosition.value_or(types::Vec3d{0,0,0}).toString());
+            return std::format(
+                "Entity[type={}, health={}, pos={}]", getType()->getString(),
+                mHealth, mPosition.value_or(types::Vec3d{0, 0, 0}).toString());
         };
 
-    protected:
+      protected:
         /** Where the entity is located in world space */
         std::optional<types::Vec3d> mPosition;
         /** Which way the entity is facing */
-        types::Vec2f mRotation{0,0};
+        types::Vec2f mRotation{0, 0};
         /** The motion that the entity has */
-        types::Vec3d mMotion{0,0,0};
+        types::Vec3d mMotion{0, 0, 0};
 
         int mHealth = MAX_HEALTH;
 
         friend class lodestone::level::world::World;
         friend class lodestone::level::chunk::Chunk;
     };
-}
+} // namespace lodestone::level::entity
 
-#endif //LODESTONE_ENTITY_H
+#endif // LODESTONE_ENTITY_H

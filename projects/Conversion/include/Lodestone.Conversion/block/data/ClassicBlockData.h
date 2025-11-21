@@ -12,13 +12,10 @@
 
 namespace lodestone::conversion::block::data {
     class ClassicBlockData final : public AbstractBlockData {
-    public:
-        explicit constexpr ClassicBlockData(const uint8_t id) : mId(id) {
-        }
+      public:
+        explicit constexpr ClassicBlockData(const uint8_t id) : mId(id) {}
 
-        constexpr uint8_t getId() const {
-            return this->mId;
-        };
+        constexpr uint8_t getId() const { return this->mId; };
 
         const void *getIdPtr() const override;
 
@@ -28,13 +25,16 @@ namespace lodestone::conversion::block::data {
 
         const std::type_info &getDataType() const override;
 
-        const lodestone::common::registry::Identifier *getTypeName() const override;
+        const lodestone::common::registry::Identifier *
+        getTypeName() const override;
 
         const std::type_info &getType() const override;
 
         constexpr size_t hash() const override {
-            return std::hash<uint8_t>()(mId) ^ (std::hash<const lodestone::common::registry::Identifier
-                                                    *>()(getTypeName()) << 8);
+            return std::hash<uint8_t>()(mId) ^
+                   (std::hash<const lodestone::common::registry::Identifier
+                                  *>()(getTypeName())
+                    << 8);
         }
 
         bool equals(const AbstractBlockData *rhs) const override;
@@ -43,10 +43,10 @@ namespace lodestone::conversion::block::data {
             return std::format("ClassicBlockData[id={}]", mId);
         };
 
-    private:
+      private:
         const uint8_t mId;
         const std::monostate mData = {};
     };
-}
+} // namespace lodestone::conversion::block::data
 
-#endif //LODESTONE_BLOCKDATA_H
+#endif // LODESTONE_BLOCKDATA_H

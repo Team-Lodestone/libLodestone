@@ -4,13 +4,9 @@
 #include "Lodestone.Conversion/block/data/FlattenedBlockData.h"
 
 namespace lodestone::conversion::block::data {
-    const void *FlattenedBlockData::getIdPtr() const {
-        return &mId;
-    }
+    const void *FlattenedBlockData::getIdPtr() const { return &mId; }
 
-    const void *FlattenedBlockData::getDataPtr() const {
-        return &mData;
-    }
+    const void *FlattenedBlockData::getDataPtr() const { return &mData; }
 
     const std::type_info &FlattenedBlockData::getIdType() const {
         return typeid(const std::string);
@@ -20,7 +16,8 @@ namespace lodestone::conversion::block::data {
         return typeid(std::monostate);
     }
 
-    const lodestone::common::registry::Identifier *FlattenedBlockData::getTypeName() const {
+    const lodestone::common::registry::Identifier *
+    FlattenedBlockData::getTypeName() const {
         return &identifiers::FLATTENED_BLOCK_DATA;
     }
 
@@ -34,4 +31,4 @@ namespace lodestone::conversion::block::data {
 
         return false;
     }
-}
+} // namespace lodestone::conversion::block::data

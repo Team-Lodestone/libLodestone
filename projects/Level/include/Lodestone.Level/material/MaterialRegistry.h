@@ -3,12 +3,12 @@
 //
 #ifndef LODESTONE_MATERIALS_H
 #define LODESTONE_MATERIALS_H
-#include <Lodestone.Common/Defines.h>
 #include "Lodestone.Level/material/Material.h"
+#include <Lodestone.Common/Defines.h>
 
 namespace lodestone::level::material {
     class LODESTONE_API MaterialRegistry {
-    public:
+      public:
         // todo: later
         static const Material AIR;
         static const Material STONE;
@@ -17,6 +17,6 @@ namespace lodestone::level::material {
     };
 
     extern const Material *gMaterials;
-}
+} // namespace lodestone::level::material
 
-#endif //LODESTONE_MATERIALS_H
+#endif // LODESTONE_MATERIALS_H

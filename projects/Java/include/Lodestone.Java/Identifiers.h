@@ -6,12 +6,17 @@
 #include <Lodestone.Common/registry/Identifier.h>
 
 namespace lodestone::java::identifiers {
-    static constexpr lodestone::common::registry::Identifier MINEV1 = {"lodestone", "minev1"};
-    static constexpr lodestone::common::registry::Identifier MINEV2 = {"lodestone", "minev2"};
-    static constexpr lodestone::common::registry::Identifier MCLEVEL = {"lodestone", "mclevel"};
-    static constexpr lodestone::common::registry::Identifier MCREGION = {"lodestone", "mcregion"};
+    static constexpr lodestone::common::registry::Identifier MINEV1 = {
+        "lodestone", "minev1"};
+    static constexpr lodestone::common::registry::Identifier MINEV2 = {
+        "lodestone", "minev2"};
+    static constexpr lodestone::common::registry::Identifier MCLEVEL = {
+        "lodestone", "mclevel"};
+    static constexpr lodestone::common::registry::Identifier MCREGION = {
+        "lodestone", "mcregion"};
 
-    static constexpr lodestone::common::registry::Identifier MCREGION_PLAYER = {"lodestone", "mcregion_player"};
-}
+    static constexpr lodestone::common::registry::Identifier MCREGION_PLAYER = {
+        "lodestone", "mcregion_player"};
+} // namespace lodestone::java::identifiers
 
-#endif //LODESTONE_NAMESPACES_H
+#endif // LODESTONE_NAMESPACES_H

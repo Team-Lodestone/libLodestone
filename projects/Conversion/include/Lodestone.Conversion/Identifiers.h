@@ -8,10 +8,14 @@
 // Misc identifiers
 namespace lodestone::conversion::identifiers {
     // Block data
-    constexpr const common::registry::Identifier ABSTRACT_BLOCK_DATA = {"lodestone", "abstract_block_data"};
-    constexpr const common::registry::Identifier CLASSIC_BLOCK_DATA = {"lodestone", "classic_block_data"};
-    constexpr const common::registry::Identifier NUMERIC_BLOCK_DATA = {"lodestone", "numeric_block_data"};
-    constexpr const common::registry::Identifier FLATTENED_BLOCK_DATA = {"lodestone", "flattened_block_data"};
-}
+    constexpr const common::registry::Identifier ABSTRACT_BLOCK_DATA = {
+        "lodestone", "abstract_block_data"};
+    constexpr const common::registry::Identifier CLASSIC_BLOCK_DATA = {
+        "lodestone", "classic_block_data"};
+    constexpr const common::registry::Identifier NUMERIC_BLOCK_DATA = {
+        "lodestone", "numeric_block_data"};
+    constexpr const common::registry::Identifier FLATTENED_BLOCK_DATA = {
+        "lodestone", "flattened_block_data"};
+} // namespace lodestone::conversion::identifiers
 
 #endif

@@ -8,7 +8,7 @@
 
 namespace lodestone::level {
     class LODESTONE_API FiniteLevel : public Level {
-    public:
+      public:
         // TODO regular Level to FiniteLevel
         explicit FiniteLevel(const types::Bounds2i &bounds);
 
@@ -16,10 +16,10 @@ namespace lodestone::level {
 
         const types::Bounds2i &getBounds() const;
 
-    protected:
+      protected:
         // todo: 3d finite???
         types::Bounds2i mBounds;
     };
-}
+} // namespace lodestone::level
 
-#endif //LODESTONE_FINITELEVEL_H
+#endif // LODESTONE_FINITELEVEL_H

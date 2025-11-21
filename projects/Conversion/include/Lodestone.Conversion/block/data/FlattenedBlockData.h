@@ -10,13 +10,11 @@
 
 namespace lodestone::conversion::block::data {
     class FlattenedBlockData final : public AbstractBlockData {
-    public:
-        explicit constexpr FlattenedBlockData(const std::string &id) : mId(id) {
-        }
+      public:
+        explicit constexpr FlattenedBlockData(const std::string &id)
+            : mId(id) {}
 
-        constexpr const std::string &getId() const {
-            return this->mId;
-        };
+        constexpr const std::string &getId() const { return this->mId; };
 
         const void *getIdPtr() const override;
 
@@ -26,13 +24,16 @@ namespace lodestone::conversion::block::data {
 
         const std::type_info &getDataType() const override;
 
-        const lodestone::common::registry::Identifier *getTypeName() const override;
+        const lodestone::common::registry::Identifier *
+        getTypeName() const override;
 
         const std::type_info &getType() const override;
 
         constexpr size_t hash() const override {
-            return std::hash<std::string>()(mId) ^ (
-                       std::hash<const lodestone::common::registry::Identifier *>()(getTypeName()) << 8);
+            return std::hash<std::string>()(mId) ^
+                   (std::hash<const lodestone::common::registry::Identifier
+                                  *>()(getTypeName())
+                    << 8);
         }
 
         bool equals(const AbstractBlockData *rhs) const override;
@@ -41,10 +42,10 @@ namespace lodestone::conversion::block::data {
             return std::format("FlattenedBlockData[id={}]", mId);
         };
 
-    private:
+      private:
         const std::string mId;
         const std::monostate mData = {};
     };
-}
+} // namespace lodestone::conversion::block::data
 
-#endif //LODESTONE_FLATTENEDBLOCKDATA_H
+#endif // LODESTONE_FLATTENEDBLOCKDATA_H

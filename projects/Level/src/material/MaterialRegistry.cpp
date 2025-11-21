@@ -3,5 +3,4 @@
 //
 #include "Lodestone.Level/material/MaterialRegistry.h"
 
-namespace lodestone::level::material {
-}
+namespace lodestone::level::material {}

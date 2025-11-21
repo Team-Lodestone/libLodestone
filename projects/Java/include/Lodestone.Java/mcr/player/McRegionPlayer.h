@@ -3,18 +3,18 @@
 //
 #ifndef LODESTONE_MCREGIONPLAYER_H
 #define LODESTONE_MCREGIONPLAYER_H
-#include <Lodestone.Level/entity/Player.h>
 #include <Lodestone.Level/container/ItemContainer.h>
+#include <Lodestone.Level/entity/Player.h>
 
 namespace lodestone::java::mcr::player {
     // TODO make minecraft project that has common player data
     class McRegionPlayer final : public level::entity::Player {
-    public:
+      public:
         explicit McRegionPlayer(const std::string &name);
 
         const std::string &getId() const override;
 
-        const level::types::Vec3i & getSpawnPos() const;
+        const level::types::Vec3i &getSpawnPos() const;
 
         void setSpawnPos(const level::types::Vec3i &spawnPos);
 
@@ -54,9 +54,9 @@ namespace lodestone::java::mcr::player {
 
         void setFallDistance(const float fallDistance);
 
-        const level::container::ItemContainer & getInventory() const;
+        const level::container::ItemContainer &getInventory() const;
 
-        const level::container::ItemContainer & getArmor() const;
+        const level::container::ItemContainer &getArmor() const;
 
         const common::registry::Identifier *getType() const override;
 
@@ -64,12 +64,14 @@ namespace lodestone::java::mcr::player {
 
         void setSleeping(const bool isSleeping);
 
-        static const common::registry::Identifier &dimensionIdToIdentifier(int id);
-        static int identifierToDimensionId(const common::registry::Identifier &str);
+        static const common::registry::Identifier &
+        dimensionIdToIdentifier(int id);
+        static int
+        identifierToDimensionId(const common::registry::Identifier &str);
 
-    private:
+      private:
         std::string mName;
-        level::types::Vec3i mSpawnPos{0,0,0};
+        level::types::Vec3i mSpawnPos{0, 0, 0};
 
         short mSleepTimer;
         bool mIsSleeping;
@@ -86,9 +88,11 @@ namespace lodestone::java::mcr::player {
         /** How far the player has fallen */
         float mFallDistance;
 
-        level::container::ItemContainer mInventory = level::container::ItemContainer(35);
-        level::container::ItemContainer mArmor = level::container::ItemContainer(4);
+        level::container::ItemContainer mInventory =
+            level::container::ItemContainer(35);
+        level::container::ItemContainer mArmor =
+            level::container::ItemContainer(4);
     };
-}
+} // namespace lodestone::java::mcr::player
 
-#endif //LODESTONE_MCREGIONPLAYER_H
+#endif // LODESTONE_MCREGIONPLAYER_H

@@ -3,5 +3,4 @@
 //
 #include "Lodestone.Level/block/Block.h"
 
-namespace lodestone::level::block {
-}
+namespace lodestone::level::block {}

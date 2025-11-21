@@ -7,14 +7,14 @@
 
 namespace lodestone::java::mcr::region {
     class McRegionRegion final : public level::region::Region {
-    public:
+      public:
         explicit McRegionRegion(const level::types::Vec2i &coords)
-            : Region(coords) {
-        }
+            : Region(coords) {}
 
         std::string getFilename() const;
-        static level::types::Vec2i getCoordsFromFilename(const std::string &name);
+        static level::types::Vec2i
+        getCoordsFromFilename(const std::string &name);
     };
-}
+} // namespace lodestone::java::mcr::region
 
-#endif //LODESTONE_MCREGIONREGION_H
+#endif // LODESTONE_MCREGIONREGION_H

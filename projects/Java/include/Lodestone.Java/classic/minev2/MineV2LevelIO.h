@@ -7,14 +7,15 @@
 
 namespace lodestone::java::classic::minev2 {
     class MineV2LevelIO : public lodestone::conversion::level::PlayerIO {
-    public:
-
+      public:
         size_t getSize(level::Level *l, int version) const override;
 
-        std::unique_ptr<lodestone::level::Level> read(std::istream &in, int version) const override;
+        std::unique_ptr<lodestone::level::Level>
+        read(std::istream &in, int version) const override;
 
-        void write(lodestone::level::Level *l, int version, std::ostream &out) const override;
+        void write(lodestone::level::Level *l, int version,
+                   std::ostream &out) const override;
     };
-}
+} // namespace lodestone::java::classic::minev2
 
-#endif //LODESTONE_MINEV2LEVELIO_H
+#endif // LODESTONE_MINEV2LEVELIO_H

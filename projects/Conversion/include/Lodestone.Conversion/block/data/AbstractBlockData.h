@@ -7,8 +7,9 @@
 #include "Lodestone.Conversion/Identifiers.h"
 
 namespace lodestone::conversion::block::data {
-    class AbstractBlockData : public lodestone::common::string::StringSerializable {
-    public:
+    class AbstractBlockData
+        : public lodestone::common::string::StringSerializable {
+      public:
         constexpr ~AbstractBlockData() override = default;
 
         constexpr std::string toString() const override {
@@ -29,12 +30,12 @@ namespace lodestone::conversion::block::data {
 
         constexpr virtual const std::type_info &getType() const = 0;
 
-        constexpr virtual const lodestone::common::registry::Identifier *getTypeName() const {
+        constexpr virtual const lodestone::common::registry::Identifier *
+        getTypeName() const {
             return &lodestone::conversion::identifiers::ABSTRACT_BLOCK_DATA;
         };
 
-        template<class T>
-        constexpr const T *as() const {
+        template <class T> constexpr const T *as() const {
             return dynamic_cast<const T *>(this);
         }
 
@@ -42,6 +43,6 @@ namespace lodestone::conversion::block::data {
             return this->equals(&rhs);
         }
     };
-}
+} // namespace lodestone::conversion::block::data
 
-#endif //LODESTONE_ABSTRACTBLOCKDATA_H
+#endif // LODESTONE_ABSTRACTBLOCKDATA_H

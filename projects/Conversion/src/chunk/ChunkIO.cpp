@@ -3,5 +3,4 @@
 //
 #include "Lodestone.Conversion/chunk/ChunkIO.h"
 
-namespace lodestone::conversion::chunk {
-}
+namespace lodestone::conversion::chunk {}

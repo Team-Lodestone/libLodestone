@@ -6,11 +6,11 @@
 
 namespace lodestone::common {
     class Math {
-    public:
+      public:
         static constexpr int ceilDiv(const int x, const int y) {
             return (x + y - 1) / y;
         };
     };
-}
+} // namespace lodestone::common
 
-#endif //LODESTONE_MATH_H
+#endif // LODESTONE_MATH_H

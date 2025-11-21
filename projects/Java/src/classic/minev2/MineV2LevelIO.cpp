@@ -22,24 +22,24 @@ namespace lodestone::java::classic::minev2 {
         return 2 + 2 + 2 + l->getBlockCount();
     }
 
-    std::unique_ptr<lodestone::level::Level> MineV2LevelIO::read(std::istream &in, const int version) const {
+    std::unique_ptr<lodestone::level::Level>
+    MineV2LevelIO::read(std::istream &in, const int version) const {
         bio::stream::BinaryInputStream bis(in);
 
         const int width = bis.readBE<uint16_t>();
         const int depth = bis.readBE<uint16_t>();
         const int height = bis.readBE<uint16_t>();
 
-        std::unique_ptr<level::FiniteLevel> l = std::make_unique<level::FiniteLevel>(
-            level::types::Bounds2i {
+        std::unique_ptr<level::FiniteLevel> l =
+            std::make_unique<level::FiniteLevel>(level::types::Bounds2i{
                 {0, 0},
-                {
-                    common::Math::ceilDiv(CHUNK_IDX(width) - 1, common::constants::CHUNK_WIDTH),
-                    common::Math::ceilDiv(CHUNK_IDX(depth) - 1, common::constants::CHUNK_DEPTH)
-                }
-            });
+                {common::Math::ceilDiv(CHUNK_IDX(width) - 1,
+                                       common::constants::CHUNK_WIDTH),
+                 common::Math::ceilDiv(CHUNK_IDX(depth) - 1,
+                                       common::constants::CHUNK_DEPTH)}});
 
-        const std::unique_ptr<lodestone::conversion::block::version::BlockIO> bio = LodestoneJava::getInstance()->io.
-                getIo(version);
+        const std::unique_ptr<lodestone::conversion::block::version::BlockIO>
+            bio = LodestoneJava::getInstance()->io.getIo(version);
 
         for (int y = 0; y < height; y++) {
             for (int z = 0; z < depth; z++) {
@@ -47,12 +47,16 @@ namespace lodestone::java::classic::minev2 {
                     const uint8_t bb = bis.readByte();
 
 #ifdef USE_RISKY_OPTIMIZATIONS
-                    if (bb == 0) // since air is id 0
+                    if (bb == 0)  // since air is id 0
                         continue; // this skips us having to convert the block
 #endif
 
-                    level::block::properties::BlockProperties b = bio->convertBlockToInternal(lodestone::conversion::block::data::ClassicBlockData(bb));
-                    if (b.getBlock() != level::block::BlockRegistry::sDefaultBlock)
+                    level::block::properties::BlockProperties b =
+                        bio->convertBlockToInternal(
+                            lodestone::conversion::block::data::
+                                ClassicBlockData(bb));
+                    if (b.getBlock() !=
+                        level::block::BlockRegistry::sDefaultBlock)
                         l->setBlockCreate(std::move(b), x, y, z, height);
                 }
             }
@@ -61,10 +65,11 @@ namespace lodestone::java::classic::minev2 {
         return l;
     }
 
-    void MineV2LevelIO::write(lodestone::level::Level *l, const int version, std::ostream &out) const {
+    void MineV2LevelIO::write(lodestone::level::Level *l, const int version,
+                              std::ostream &out) const {
         bio::stream::BinaryOutputStream bos(out);
-        const std::unique_ptr<lodestone::conversion::block::version::BlockIO> bio = LodestoneJava::getInstance()->io.
-                getIo(version);
+        const std::unique_ptr<lodestone::conversion::block::version::BlockIO>
+            bio = LodestoneJava::getInstance()->io.getIo(version);
 
         auto [min, max] = l->getBlockBounds();
 
@@ -79,12 +84,18 @@ namespace lodestone::java::classic::minev2 {
         for (int y = 0; y < h; y++) {
             for (int z = 0; z < d; z++) {
                 for (int x = 0; x < w; x++) {
-                    const level::block::properties::BlockProperties *b = l->getBlock(x + min.x, y + min.y, z + min.z);
+                    const level::block::properties::BlockProperties *b =
+                        l->getBlock(x + min.x, y + min.y, z + min.z);
 
                     uint8_t v = 0;
-                    if (b->getBlock() != level::block::BlockRegistry::sDefaultBlock) {
-                        if (const lodestone::conversion::block::data::AbstractBlockData *bl = bio->convertBlockFromInternal(b))
-                            v = bl->as<lodestone::conversion::block::data::ClassicBlockData>()->getId();
+                    if (b->getBlock() !=
+                        level::block::BlockRegistry::sDefaultBlock) {
+                        if (const lodestone::conversion::block::data::
+                                AbstractBlockData *bl =
+                                    bio->convertBlockFromInternal(b))
+                            v = bl->as<lodestone::conversion::block::data::
+                                           ClassicBlockData>()
+                                    ->getId();
                     }
 
                     bos << v;
@@ -92,4 +103,4 @@ namespace lodestone::java::classic::minev2 {
             }
         }
     }
-}
+} // namespace lodestone::java::classic::minev2

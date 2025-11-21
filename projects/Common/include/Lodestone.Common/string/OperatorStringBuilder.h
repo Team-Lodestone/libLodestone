@@ -13,14 +13,15 @@
 namespace lodestone::common::string {
     // we have Apache ToStringBuilder at home.
     class OperatorStringBuilder {
-    public:
+      public:
         OperatorStringBuilder(const std::type_info &type) : mType(type) {
             const std::string d = demangle(type.name());
             mStream << d.substr(d.find_last_of(':') + 1) << "[";
         };
 
-        template<typename T>
-        constexpr OperatorStringBuilder *addField(const std::string &name, const T &v) {
+        template <typename T>
+        constexpr OperatorStringBuilder *addField(const std::string &name,
+                                                  const T &v) {
             mStream << name << "=" << v << ", ";
             return this;
         }
@@ -58,12 +59,10 @@ namespace lodestone::common::string {
 #endif
         }
 
-        constexpr operator std::string() {
-            return toString();
-        }
+        constexpr operator std::string() { return toString(); }
 
-    private:
+      private:
         const std::type_info &mType;
         std::ostringstream mStream;
     };
-}
+} // namespace lodestone::common::string

@@ -17,9 +17,11 @@ namespace lodestone::level::block {
 namespace lodestone::level::item {
     // cant wait to make io for this mmmmm
     class Item : public common::string::StringSerializable {
-    public:
-        explicit constexpr Item(const lodestone::common::registry::Identifier *id, const int maxStack = 64) : mId(id), mMaxStack(maxStack) {
-        };
+      public:
+        explicit constexpr Item(
+            const lodestone::common::registry::Identifier *id,
+            const int maxStack = 64)
+            : mId(id), mMaxStack(maxStack) {};
 
         constexpr ~Item() override = default;
 
@@ -27,9 +29,7 @@ namespace lodestone::level::item {
             return mId;
         };
 
-        constexpr std::string getIDString() const {
-            return mId->getString();
-        };
+        constexpr std::string getIDString() const { return mId->getString(); };
 
         std::string toString() const override {
             return (common::string::OperatorStringBuilder(typeid(*this)))
@@ -37,14 +37,12 @@ namespace lodestone::level::item {
                 ->toString();
         };
 
-        constexpr int getMaxStack() const {
-            return mMaxStack;
-        }
+        constexpr int getMaxStack() const { return mMaxStack; }
 
-    private:
+      private:
         const lodestone::common::registry::Identifier *mId;
         const int mMaxStack;
     };
-}
+} // namespace lodestone::level::item
 
-#endif //LODESTONE_ITEM_H
+#endif // LODESTONE_ITEM_H

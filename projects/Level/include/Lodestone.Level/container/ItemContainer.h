@@ -10,7 +10,7 @@
 
 namespace lodestone::level::container {
     class ItemContainer {
-    public:
+      public:
         explicit ItemContainer(int count = 35);
         ~ItemContainer();
 
@@ -19,12 +19,14 @@ namespace lodestone::level::container {
         const item::ItemProperties *getItems() const;
 
         item::ItemProperties *getItem(int slot) const;
-        void setItem(int slot, std::unique_ptr<item::ItemProperties> item) const;
+        void setItem(int slot,
+                     std::unique_ptr<item::ItemProperties> item) const;
         bool slotHasItem(int slot) const;
-    private:
+
+      private:
         int mCount;
         std::unique_ptr<item::ItemProperties> *mSlots;
     };
-}
+} // namespace lodestone::level::container
 
-#endif //LODESTONE_ITEMCONTAINER_H
+#endif // LODESTONE_ITEMCONTAINER_H

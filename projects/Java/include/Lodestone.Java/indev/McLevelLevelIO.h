@@ -8,8 +8,7 @@
 
 namespace lodestone::java::indev {
     class McLevelLevelIO : public lodestone::conversion::level::PlayerIO {
-    public:
-
+      public:
         /** Creates a Level from a mclevel Map compound tag */
         std::unique_ptr<level::Level> read(nbt::tag_compound *map) const;
 
@@ -21,10 +20,12 @@ namespace lodestone::java::indev {
 
         size_t getSize(level::Level *l, int version) const override;
 
-        std::unique_ptr<lodestone::level::Level> read(std::istream &in, int version) const override;
+        std::unique_ptr<lodestone::level::Level>
+        read(std::istream &in, int version) const override;
 
-        void write(lodestone::level::Level *l, int version, std::ostream &out) const override;
+        void write(lodestone::level::Level *l, int version,
+                   std::ostream &out) const override;
     };
-}
+} // namespace lodestone::java::indev
 
-#endif //LODESTONE_MCLEVELLEVELIO_H
+#endif // LODESTONE_MCLEVELLEVELIO_H

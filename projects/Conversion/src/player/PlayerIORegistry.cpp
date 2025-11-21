@@ -8,10 +8,12 @@
 namespace lodestone::conversion::player {
     PlayerIORegistry PlayerIORegistry::sInstance = PlayerIORegistry();
 
-    void PlayerIORegistry::registerPlayerIO(const lodestone::common::registry::Identifier &id,
-                                          std::unique_ptr<const PlayerIO> io) {
+    void PlayerIORegistry::registerPlayerIO(
+        const lodestone::common::registry::Identifier &id,
+        std::unique_ptr<const PlayerIO> io) {
         if (mRegisteredPlayerIOs.contains(id))
-            throw std::runtime_error(std::format("PlayerIO '{}' is already registered", id));
+            throw std::runtime_error(
+                std::format("PlayerIO '{}' is already registered", id));
 
         mRegisteredPlayerIOs[id] = std::move(io);
 
@@ -20,10 +22,12 @@ namespace lodestone::conversion::player {
 #endif
     }
 
-    const PlayerIO *PlayerIORegistry::getPlayerIO(const lodestone::common::registry::Identifier &id) const {
-        if (const auto it = mRegisteredPlayerIOs.find(id); it != mRegisteredPlayerIOs.end())
+    const PlayerIO *PlayerIORegistry::getPlayerIO(
+        const lodestone::common::registry::Identifier &id) const {
+        if (const auto it = mRegisteredPlayerIOs.find(id);
+            it != mRegisteredPlayerIOs.end())
             return it->second.get();
 
         return nullptr;
     }
-}
+} // namespace lodestone::conversion::player

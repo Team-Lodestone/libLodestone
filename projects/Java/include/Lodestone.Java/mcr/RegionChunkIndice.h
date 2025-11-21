@@ -10,6 +10,6 @@ namespace lodestone::java::mcr {
         uint8_t size;
         int32_t timestamp;
     };
-}
+} // namespace lodestone::java::mcr
 
-#endif //LODESTONE_REGIONCHUNKINFO_H
+#endif // LODESTONE_REGIONCHUNKINFO_H

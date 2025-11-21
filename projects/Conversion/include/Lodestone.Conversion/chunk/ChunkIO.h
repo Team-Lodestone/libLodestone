@@ -7,18 +7,22 @@
 
 namespace lodestone::conversion::chunk {
     class LODESTONE_API ChunkIO {
-    public:
+      public:
         virtual ~ChunkIO() = default;
 
         /** Reads data into a new Chunk */
-        virtual std::unique_ptr<lodestone::level::chunk::Chunk> read(std::istream &in, int version) const = 0;
+        virtual std::unique_ptr<lodestone::level::chunk::Chunk>
+        read(std::istream &in, int version) const = 0;
 
         /** Writes a chunk to data */
-        virtual void write(lodestone::level::chunk::Chunk *c, const lodestone::level::types::Vec2i &coords, int version, std::ostream &out) const = 0;
+        virtual void write(lodestone::level::chunk::Chunk *c,
+                           const lodestone::level::types::Vec2i &coords,
+                           int version, std::ostream &out) const = 0;
 
         /** Gets the size of the chunk in bytes */ // todo needed???
-        virtual size_t getSize(lodestone::level::chunk::Chunk *c, int version) const = 0;
+        virtual size_t getSize(lodestone::level::chunk::Chunk *c,
+                               int version) const = 0;
     };
-}
+} // namespace lodestone::conversion::chunk
 
-#endif //LODESTONE_CHUNKIO_H
+#endif // LODESTONE_CHUNKIO_H

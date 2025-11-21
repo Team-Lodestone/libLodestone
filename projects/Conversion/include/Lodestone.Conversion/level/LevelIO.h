@@ -8,18 +8,21 @@
 
 namespace lodestone::conversion::level {
     class LODESTONE_API PlayerIO {
-    public:
+      public:
         virtual ~PlayerIO() = default;
 
         /** Reads data into a new Level */
-        virtual std::unique_ptr<lodestone::level::Level> read(std::istream &in, int version) const = 0;
+        virtual std::unique_ptr<lodestone::level::Level>
+        read(std::istream &in, int version) const = 0;
 
         /** Writes a level to data */
-        virtual void write(lodestone::level::Level *l, int version, std::ostream &out) const = 0;
+        virtual void write(lodestone::level::Level *l, int version,
+                           std::ostream &out) const = 0;
 
         /** Gets the size of the level in bytes */
-        virtual size_t getSize(lodestone::level::Level *l, int version) const = 0;
+        virtual size_t getSize(lodestone::level::Level *l,
+                               int version) const = 0;
     };
-}
+} // namespace lodestone::conversion::level
 
-#endif //LODESTONE_LEVELIO_H
+#endif // LODESTONE_LEVELIO_H

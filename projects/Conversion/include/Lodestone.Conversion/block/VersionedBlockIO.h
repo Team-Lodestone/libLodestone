@@ -17,23 +17,28 @@
 
 namespace lodestone::conversion::block::version {
     class LODESTONE_API VersionedBlockIO {
-    public:
-        constexpr void registerBlock(const uint32_t version,
-                                     const lodestone::common::registry::Identifier *internal,
-                                     data::AbstractBlockData *blk) {
+      public:
+        constexpr void
+        registerBlock(const uint32_t version,
+                      const lodestone::common::registry::Identifier *internal,
+                      data::AbstractBlockData *blk) {
             mFromInternalConversionMap[version][internal] = blk;
         }
 
-        constexpr void removeBlock(const uint32_t version, const lodestone::common::registry::Identifier *internal) {
+        constexpr void
+        removeBlock(const uint32_t version,
+                    const lodestone::common::registry::Identifier *internal) {
             mFromInternalConversionMap[version][internal] = nullptr;
         }
 
         std::unique_ptr<BlockIO> getIo(uint32_t version);
 
-    private:
-        std::map<uint32_t, map_t<const lodestone::common::registry::Identifier *,
-            data::AbstractBlockData *> > mFromInternalConversionMap;
+      private:
+        std::map<uint32_t,
+                 map_t<const lodestone::common::registry::Identifier *,
+                       data::AbstractBlockData *>>
+            mFromInternalConversionMap;
     };
-}
+} // namespace lodestone::conversion::block::version
 
-#endif //LODESTONE_VERSIONEDBLOCKIO_H
+#endif // LODESTONE_VERSIONEDBLOCKIO_H

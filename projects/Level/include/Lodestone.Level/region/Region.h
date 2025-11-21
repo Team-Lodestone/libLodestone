@@ -8,14 +8,14 @@
 namespace lodestone::level::region {
     /** A container which holds 32x32 chunks */
     class LODESTONE_API Region : public FiniteLevel {
-    public:
+      public:
         static constexpr types::Vec2i MAX_BOUNDS = {32, 32};
 
         explicit Region(const types::Vec2i &coords);
 
-    protected:
+      protected:
         types::Vec2i mCoords;
     };
-}
+} // namespace lodestone::level::region
 
-#endif //LODESTONE_REGION_H
+#endif // LODESTONE_REGION_H

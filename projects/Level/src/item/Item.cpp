@@ -3,5 +3,4 @@
 //
 #include "Lodestone.Level/item/Item.h"
 
-namespace lodestone::level::item {
-}
+namespace lodestone::level::item {}

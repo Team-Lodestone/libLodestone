@@ -3,12 +3,11 @@
 //
 #include "Lodestone.Level/chunk/section/LevelSection.h"
 
-#include <iostream>
 #include <Lodestone.Common/Indexing.h>
+#include <iostream>
 
 namespace lodestone::level::chunk::section {
-    LevelSection::LevelSection() {
-    }
+    LevelSection::LevelSection() {}
 
     LevelSection::~LevelSection() {
         delete[] mSkyLight;
@@ -17,16 +16,14 @@ namespace lodestone::level::chunk::section {
         delete[] mBlocks;
     }
 
-    const uint8_t *LevelSection::getBlockLight() const {
-        return mBlockLight;
-    }
+    const uint8_t *LevelSection::getBlockLight() const { return mBlockLight; }
 
-    const uint8_t *LevelSection::getSkyLight() const {
-        return mSkyLight;
-    }
+    const uint8_t *LevelSection::getSkyLight() const { return mSkyLight; }
 
-    block::properties::BlockProperties *LevelSection::getBlock(const int x, const int y, const int z) const {
-        return &mBlocks[INDEX_YZX(x, y, z, common::constants::CHUNK_WIDTH, common::constants::CHUNK_DEPTH)];
+    block::properties::BlockProperties *
+    LevelSection::getBlock(const int x, const int y, const int z) const {
+        return &mBlocks[INDEX_YZX(x, y, z, common::constants::CHUNK_WIDTH,
+                                  common::constants::CHUNK_DEPTH)];
     }
 
     const block::properties::BlockProperties *LevelSection::getBlocks() {
@@ -37,7 +34,9 @@ namespace lodestone::level::chunk::section {
         return SectionType::LevelSection;
     }
 
-    void LevelSection::setBlock(block::properties::BlockProperties &&blk, const int x, const int y, const int z) {
-        mBlocks[INDEX_YZX(x, y, z, common::constants::CHUNK_WIDTH, common::constants::CHUNK_DEPTH)] = std::move(blk);
+    void LevelSection::setBlock(block::properties::BlockProperties &&blk,
+                                const int x, const int y, const int z) {
+        mBlocks[INDEX_YZX(x, y, z, common::constants::CHUNK_WIDTH,
+                          common::constants::CHUNK_DEPTH)] = std::move(blk);
     }
-}
+} // namespace lodestone::level::chunk::section

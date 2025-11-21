@@ -3,5 +3,4 @@
 //
 #include "Lodestone.Level/entity/ChunkEntity.h"
 
-namespace lodestone::level::entity {
-}
+namespace lodestone::level::entity {}

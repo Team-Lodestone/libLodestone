@@ -4,7 +4,6 @@
 #ifndef LODESTONE_LODESTONETESTS_H
 #define LODESTONE_LODESTONETESTS_H
 
-namespace lodestone::tests {
-}
+namespace lodestone::tests {}
 
-#endif //LODESTONE_LODESTONETESTS_H
+#endif // LODESTONE_LODESTONETESTS_H

@@ -8,12 +8,13 @@ namespace lodestone::java::mcr::region {
         return std::format("r.{}.{}.mcr", this->mCoords.x, this->mCoords.z);
     }
 
-    level::types::Vec2i McRegionRegion::getCoordsFromFilename(const std::string &name) {
+    level::types::Vec2i
+    McRegionRegion::getCoordsFromFilename(const std::string &name) {
         std::stringstream ss(name);
         std::string p;
         constexpr char d = '.';
 
-        level::types::Vec2i coords{0,0};
+        level::types::Vec2i coords{0, 0};
 
         std::getline(ss, p, d);
 
@@ -25,4 +26,4 @@ namespace lodestone::java::mcr::region {
 
         return coords;
     }
-}
+} // namespace lodestone::java::mcr::region

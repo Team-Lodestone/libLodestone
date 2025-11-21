@@ -7,21 +7,24 @@
 
 namespace lodestone::level::chunk {
     LevelChunk::LevelChunk(const int height) : Chunk() {
-        this->mSections = std::vector<std::unique_ptr<section::Section> >(common::Math::ceilDiv(height, common::constants::SECTION_HEIGHT));
+        this->mSections = std::vector<std::unique_ptr<section::Section>>(
+            common::Math::ceilDiv(height, common::constants::SECTION_HEIGHT));
     }
 
-    LevelChunk::LevelChunk(const int height, const types::Vec2i &coords) : Chunk(coords) {
-        this->mSections = std::vector<std::unique_ptr<section::Section> >(common::Math::ceilDiv(height, common::constants::SECTION_HEIGHT));
+    LevelChunk::LevelChunk(const int height, const types::Vec2i &coords)
+        : Chunk(coords) {
+        this->mSections = std::vector<std::unique_ptr<section::Section>>(
+            common::Math::ceilDiv(height, common::constants::SECTION_HEIGHT));
     }
 
-    LevelChunk::LevelChunk(const int height, ChunkContainer *container, const types::Vec2i &coords) : Chunk(
-        container, coords) {
-        this->mSections = std::vector<std::unique_ptr<section::Section> >(common::Math::ceilDiv(height, common::constants::SECTION_HEIGHT));
+    LevelChunk::LevelChunk(const int height, ChunkContainer *container,
+                           const types::Vec2i &coords)
+        : Chunk(container, coords) {
+        this->mSections = std::vector<std::unique_ptr<section::Section>>(
+            common::Math::ceilDiv(height, common::constants::SECTION_HEIGHT));
     }
 
-    int LevelChunk::getChunkHeight() const {
-        return mSections.size();
-    }
+    int LevelChunk::getChunkHeight() const { return mSections.size(); }
 
     bool LevelChunk::hasSection(const int y) const {
         if (y < 0 || y >= mSections.size())
@@ -45,7 +48,8 @@ namespace lodestone::level::chunk {
         return mSections[y].get();
     }
 
-    block::properties::BlockProperties *LevelChunk::getBlock(const int x, const int y, const int z) const {
+    block::properties::BlockProperties *
+    LevelChunk::getBlock(const int x, const int y, const int z) const {
         return getSection(y >> 4)->getBlock(x, y & 15, z);
     }
 
@@ -65,8 +69,10 @@ namespace lodestone::level::chunk {
         for (int z = 0; z < common::constants::CHUNK_DEPTH; z++) {
             for (int x = 0; x < common::constants::CHUNK_WIDTH; x++) {
                 for (int y = height; y >= 0; y--) {
-                    if (block::properties::BlockProperties *s = getBlock(x, y, z);
-                        s != getBlockmapBlockAt(x, z) && *s != block::BlockRegistry::sDefaultBlock) {
+                    if (block::properties::BlockProperties *s =
+                            getBlock(x, y, z);
+                        s != getBlockmapBlockAt(x, z) &&
+                        *s != block::BlockRegistry::sDefaultBlock) {
                         setBlockmapBlockAt(s, x, z);
                         break;
                     }
@@ -85,28 +91,34 @@ namespace lodestone::level::chunk {
         }
     }
 
-    void LevelChunk::calculateHeightmapAtColumn(const int x, const int z, const int height) {
+    void LevelChunk::calculateHeightmapAtColumn(const int x, const int z,
+                                                const int height) {
         for (int y = height; y >= 0; y--) {
-            if (getBlock(x, y, z)->getBlock() != block::BlockRegistry::sDefaultBlock) {
+            if (getBlock(x, y, z)->getBlock() !=
+                block::BlockRegistry::sDefaultBlock) {
                 setHeightAt(std::min(y + 1, height - 1), x, z);
                 break;
             }
         }
     }
 
-    void LevelChunk::calculateBlockmapAtColumn(const int x, const int z, const int height) {
+    void LevelChunk::calculateBlockmapAtColumn(const int x, const int z,
+                                               const int height) {
         for (int y = height; y >= 0; y--) {
             if (block::properties::BlockProperties *s = getBlock(x, y, z);
-                s != getBlockmapBlockAt(x, z) && *s != block::BlockRegistry::sDefaultBlock) {
+                s != getBlockmapBlockAt(x, z) &&
+                *s != block::BlockRegistry::sDefaultBlock) {
                 setBlockmapBlockAt(s, x, z);
                 break;
             }
         }
     }
 
-    void LevelChunk::calculateMapsAtColumn(const int x, const int z, const int height) {
+    void LevelChunk::calculateMapsAtColumn(const int x, const int z,
+                                           const int height) {
         for (int y = height; y >= 0; y--) {
-            if (block::properties::BlockProperties *s = getBlock(x, y, z); *s != block::BlockRegistry::sDefaultBlock) {
+            if (block::properties::BlockProperties *s = getBlock(x, y, z);
+                *s != block::BlockRegistry::sDefaultBlock) {
                 setHeightAt(std::min(y + 1, height - 1), x, z);
 
                 if (s != getBlockmapBlockAt(x, z))
@@ -116,16 +128,18 @@ namespace lodestone::level::chunk {
         }
     }
 
-    void LevelChunk::setBlock(block::properties::BlockProperties &&blk, const int x, const int y, const int z) {
+    void LevelChunk::setBlock(block::properties::BlockProperties &&blk,
+                              const int x, const int y, const int z) {
         setBlockRaw(std::move(blk), x, y, z);
 
         if (!blk.getBlock())
-            throw std::runtime_error("attempted to set blockstate with null block");
+            throw std::runtime_error(
+                "attempted to set blockstate with null block");
 
         const int height = getChunkBlockHeight();
         if (blk.getBlock() != block::BlockRegistry::sDefaultBlock) {
-            // if our block is higher than the current height, and isn't air, then it's obviously higher up.
-            // so we set the new height
+            // if our block is higher than the current height, and isn't air,
+            // then it's obviously higher up. so we set the new height
             if (y + 1 > getHeightAt(x, z)) {
                 setHeightAt(std::min(y + 1, height - 1), x, z);
 
@@ -137,9 +151,12 @@ namespace lodestone::level::chunk {
             if (y + 1 == getHeightAt(x, z)) {
                 // then we get the new topmost block
                 for (int i = y; i >= 0; i--) {
-                    if (block::properties::BlockProperties *s = getBlock(x, i, z);
-                        s->getBlock() != block::BlockRegistry::sDefaultBlock && s->getBlock()) {
-                        setHeightAt(std::min(i + 1, height - 1), x, z); // new highest block
+                    if (block::properties::BlockProperties *s =
+                            getBlock(x, i, z);
+                        s->getBlock() != block::BlockRegistry::sDefaultBlock &&
+                        s->getBlock()) {
+                        setHeightAt(std::min(i + 1, height - 1), x,
+                                    z); // new highest block
 
                         if (s != getBlockmapBlockAt(x, z))
                             setBlockmapBlockAt(s, x, z);
@@ -149,15 +166,18 @@ namespace lodestone::level::chunk {
                 }
 
                 // there were no blocks
-                setBlockmapBlockAt(new block::properties::BlockProperties(), x, z); // should be good?
+                setBlockmapBlockAt(new block::properties::BlockProperties(), x,
+                                   z); // should be good?
                 setHeightAt(x, z, 0);
             } else if (!getBlockmapBlockAt(x, z)->getBlock()) {
-                setBlockmapBlockAt(new block::properties::BlockProperties(), x, z); // should be good?
+                setBlockmapBlockAt(new block::properties::BlockProperties(), x,
+                                   z); // should be good?
             }
         }
     }
 
-    void LevelChunk::setBlockRaw(block::properties::BlockProperties &&blk, const int x, const int y, const int z) {
+    void LevelChunk::setBlockRaw(block::properties::BlockProperties &&blk,
+                                 const int x, const int y, const int z) {
         getSectionCreate(y >> 4)->setBlock(std::move(blk), x, y & 15, z);
     }
-}
+} // namespace lodestone::level::chunk

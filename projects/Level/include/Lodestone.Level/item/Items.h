@@ -8,10 +8,14 @@
 
 namespace lodestone::level::item {
     struct Items {
-#define ADD_ITEM(name, id) static constexpr const lodestone::common::registry::Identifier name = lodestone::common::registry::Identifier{"lodestone", id}
+#define ADD_ITEM(name, id)                                                     \
+    static constexpr const lodestone::common::registry::Identifier name =      \
+        lodestone::common::registry::Identifier {                              \
+        "lodestone", id                                                        \
+    }
 
         ADD_ITEM(NONE, "none");
     };
-}
+} // namespace lodestone::level::item
 
-#endif //LODESTONE_ITEMS_H
+#endif // LODESTONE_ITEMS_H

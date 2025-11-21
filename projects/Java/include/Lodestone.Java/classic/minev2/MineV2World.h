@@ -9,16 +9,18 @@
 
 namespace lodestone::java::classic::minev2 {
     class MineV2World : public level::world::World {
-    public:
-        MineV2World(const std::string &name = "New World", const std::string &author = "Player");
-
-        MineV2World(std::unique_ptr<level::Level> &&overworld, const std::string &name = "New World",
+      public:
+        MineV2World(const std::string &name = "New World",
                     const std::string &author = "Player");
 
-        MineV2World(
-            map_t<lodestone::common::registry::Identifier, std::unique_ptr<level::Level>,
-                IdentifierHasher, IdentifierComparator> &&levels, const std::string &name,
-            const std::string &author);
+        MineV2World(std::unique_ptr<level::Level> &&overworld,
+                    const std::string &name = "New World",
+                    const std::string &author = "Player");
+
+        MineV2World(map_t<lodestone::common::registry::Identifier,
+                          std::unique_ptr<level::Level>, IdentifierHasher,
+                          IdentifierComparator> &&levels,
+                    const std::string &name, const std::string &author);
 
         const std::string &getAuthor() const;
 
@@ -32,10 +34,10 @@ namespace lodestone::java::classic::minev2 {
 
         const lodestone::conversion::world::WorldIO *getIO() override;
 
-    protected:
+      protected:
         std::string mAuthor;
         std::uint64_t mCreationTime;
     };
-}
+} // namespace lodestone::java::classic::minev2
 
-#endif //LODESTONE_MINEV2WORLD_H
+#endif // LODESTONE_MINEV2WORLD_H

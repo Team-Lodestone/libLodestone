@@ -7,14 +7,15 @@
 
 namespace lodestone::java::mcr::world {
     class McRegionWorld final : public level::world::World {
-    public:
+      public:
         explicit McRegionWorld(const std::string &name);
 
         std::string toString() const override {
-            return std::format("McRegionWorld[name={}, seed={}, time={}]", mName, mSeed, mTime);
+            return std::format("McRegionWorld[name={}, seed={}, time={}]",
+                               mName, mSeed, mTime);
         }
 
-        const lodestone::conversion::world::WorldIO * getIO() override;
+        const lodestone::conversion::world::WorldIO *getIO() override;
 
         int64_t getSeed() const;
         void setSeed(int64_t seed);
@@ -43,7 +44,7 @@ namespace lodestone::java::mcr::world {
         int32_t getVersion() const;
         void setVersion(const int32_t version);
 
-    private:
+      private:
         int64_t mSeed;
 
         int64_t mTime;
@@ -57,6 +58,6 @@ namespace lodestone::java::mcr::world {
         int64_t mSize; // shouldnt this be dynamic?
         int32_t mVersion;
     };
-}
+} // namespace lodestone::java::mcr::world
 
-#endif //LODESTONE_MCREGIONWORLD_H
+#endif // LODESTONE_MCREGIONWORLD_H

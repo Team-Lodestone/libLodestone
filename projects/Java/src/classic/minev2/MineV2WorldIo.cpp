@@ -5,21 +5,20 @@
 
 #include "Lodestone.Java/Identifiers.h"
 #include "Lodestone.Java/Version.h"
-#include <BinaryIO/BinaryBuffer.h>
 #include "Lodestone.Java/classic/minev2/MineV2LevelIO.h"
 #include "Lodestone.Java/classic/minev2/MineV2World.h"
+#include <BinaryIO/BinaryBuffer.h>
 #include <Lodestone.Conversion/level/LevelIORegistry.h>
 
 #include <BinaryIO/stream/BinaryInputStream.h>
 #include <BinaryIO/stream/BinaryOutputStream.h>
 
 namespace lodestone::java::classic::minev2 {
-    size_t MineV2WorldIO::getSize(level::world::World *w, const int version) const {
+    size_t MineV2WorldIO::getSize(level::world::World *w,
+                                  const int version) const {
         size_t s = sizeof(uint32_t) // signature
-                   + sizeof(char)
-                   + sizeof(uint16_t)
-                   + w->getName().length()
-                   + sizeof(uint16_t);
+                   + sizeof(char) + sizeof(uint16_t) + w->getName().length() +
+                   sizeof(uint16_t);
 
         if (MineV2World *mv2 = dynamic_cast<MineV2World *>(w))
             s += mv2->getAuthor().length();
@@ -28,22 +27,27 @@ namespace lodestone::java::classic::minev2 {
 
         s += sizeof(uint64_t);
 
-        const MineV2LevelIO *lio = dynamic_cast<const MineV2LevelIO *>(getLevelIO(version));
+        const MineV2LevelIO *lio =
+            dynamic_cast<const MineV2LevelIO *>(getLevelIO(version));
         s += lio->getSize(w->getDefaultLevel(), version);
 
         return s;
     }
 
-    const lodestone::conversion::level::PlayerIO *MineV2WorldIO::getLevelIO(int version) const {
-        return lodestone::conversion::level::PlayerIORegistry::sInstance.getLevelIO(identifiers::MINEV2);
+    const lodestone::conversion::level::PlayerIO *
+    MineV2WorldIO::getLevelIO(int version) const {
+        return lodestone::conversion::level::PlayerIORegistry::sInstance
+            .getLevelIO(identifiers::MINEV2);
     }
 
-    std::unique_ptr<lodestone::level::world::World> MineV2WorldIO::read(std::istream &in, int version) const {
+    std::unique_ptr<lodestone::level::world::World>
+    MineV2WorldIO::read(std::istream &in, int version) const {
         bio::stream::BinaryInputStream bis(in);
 
         const uint32_t sig = bis.readBE<uint32_t>();
         if (sig != SIGNATURE) {
-            throw std::runtime_error("Signature does not match expected 0x271BB788");
+            throw std::runtime_error(
+                "Signature does not match expected 0x271BB788");
         }
 
         char ver = bis.readSignedByte();
@@ -51,13 +55,16 @@ namespace lodestone::java::classic::minev2 {
         const std::string author = bis.readString(bis.readBE<uint16_t>());
         uint64_t creationTime = bis.readBE<uint64_t>(); // todo use
 
-        const MineV2LevelIO *lio = dynamic_cast<const MineV2LevelIO *>(getLevelIO(version));
+        const MineV2LevelIO *lio =
+            dynamic_cast<const MineV2LevelIO *>(getLevelIO(version));
 
-        std::unique_ptr<level::Level> unique = lio->read(bis.getStream(), version); // todo: proper version!!!!
+        std::unique_ptr<level::Level> unique =
+            lio->read(bis.getStream(), version); // todo: proper version!!!!
         return std::make_unique<MineV2World>(std::move(unique), name, author);
     }
 
-    void MineV2WorldIO::write(lodestone::level::world::World *w, int version, std::ostream &out) const {
+    void MineV2WorldIO::write(lodestone::level::world::World *w, int version,
+                              std::ostream &out) const {
         bio::stream::BinaryOutputStream bos(out);
 
         bos.writeBE<uint32_t>(SIGNATURE);
@@ -78,8 +85,9 @@ namespace lodestone::java::classic::minev2 {
             bos.writeBE<uint64_t>(common::getCurrentTimeMillis());
         }
 
-        const MineV2LevelIO *lio = dynamic_cast<const MineV2LevelIO *>(getLevelIO(version));
+        const MineV2LevelIO *lio =
+            dynamic_cast<const MineV2LevelIO *>(getLevelIO(version));
         lio->write(w->getDefaultLevel(), version, bos.getStream());
         // todo: VERSION STUFF
     }
-}
+} // namespace lodestone::java::classic::minev2

@@ -5,23 +5,26 @@
 #include <memory>
 
 namespace lodestone::level::block::properties {
-    const map_t<std::string, level::properties::AbstractProperty *> BlockProperties::EMPTY_PROPERTIES{};
+    const map_t<std::string, level::properties::AbstractProperty *>
+        BlockProperties::EMPTY_PROPERTIES{};
 
-    BlockProperties::~BlockProperties() {
-        delete mProperties;
-    }
+    BlockProperties::~BlockProperties() { delete mProperties; }
 
-    const map_t<std::string, level::properties::AbstractProperty *> &BlockProperties::getProperties() const {
-        if (!mProperties) return EMPTY_PROPERTIES;
+    const map_t<std::string, level::properties::AbstractProperty *> &
+    BlockProperties::getProperties() const {
+        if (!mProperties)
+            return EMPTY_PROPERTIES;
         return *mProperties;
     }
 
     bool BlockProperties::hasProperty(const std::string &id) const {
-        if (!mProperties) return false;
+        if (!mProperties)
+            return false;
         return mProperties->contains(id);
     }
 
-    const level::properties::AbstractProperty *BlockProperties::getProperty(const std::string &id) const {
+    const level::properties::AbstractProperty *
+    BlockProperties::getProperty(const std::string &id) const {
         if (mProperties)
             if (const auto it = mProperties->find(id); it != mProperties->end())
                 return it->second;
@@ -29,7 +32,8 @@ namespace lodestone::level::block::properties {
         return nullptr;
     }
 
-    level::properties::AbstractProperty *BlockProperties::getProperty(const std::string &id) {
+    level::properties::AbstractProperty *
+    BlockProperties::getProperty(const std::string &id) {
         if (mProperties)
             if (const auto it = mProperties->find(id); it != mProperties->end())
                 return it->second;
@@ -37,16 +41,21 @@ namespace lodestone::level::block::properties {
         return nullptr;
     }
 
-    void BlockProperties::setProperty(const std::string &id, level::properties::AbstractProperty *property) {
-        if (!mProperties) mProperties = new map_t<std::string, level::properties::AbstractProperty*>();
+    void BlockProperties::setProperty(
+        const std::string &id, level::properties::AbstractProperty *property) {
+        if (!mProperties)
+            mProperties =
+                new map_t<std::string, level::properties::AbstractProperty *>();
         mProperties->emplace(id, std::move(property));
     }
 
-    const level::properties::AbstractProperty *BlockProperties::operator[](const std::string &id) const {
+    const level::properties::AbstractProperty *
+    BlockProperties::operator[](const std::string &id) const {
         return getProperty(id);
     }
 
-    level::properties::AbstractProperty *BlockProperties::operator[](const std::string &id) {
+    level::properties::AbstractProperty *
+    BlockProperties::operator[](const std::string &id) {
         return getProperty(id);
     }
-}
+} // namespace lodestone::level::block::properties

@@ -9,9 +9,9 @@
 
 namespace lodestone::common::io {
     class DataBuffer final : public std::streambuf {
-    public:
+      public:
         DataBuffer(uint8_t *data, size_t size);
     };
-}
+} // namespace lodestone::common::io
 
-#endif //LODESTONE_DATABUFFER_H
+#endif // LODESTONE_DATABUFFER_H

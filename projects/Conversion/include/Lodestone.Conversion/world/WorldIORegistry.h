@@ -8,21 +8,24 @@
 namespace lodestone::conversion::world {
     /** Creates worlds based on registered world IO classes */
     class LODESTONE_API WorldIORegistry {
-    protected:
+      protected:
         WorldIORegistry() = default;
 
-    public:
+      public:
         static WorldIORegistry sInstance;
 
         void registerWorldIO(const lodestone::common::registry::Identifier &id,
                              std::unique_ptr<const WorldIO> io);
 
-        const WorldIO *getWorldIO(const lodestone::common::registry::Identifier &id) const;
+        const WorldIO *
+        getWorldIO(const lodestone::common::registry::Identifier &id) const;
 
-    private:
-        map_t<lodestone::common::registry::Identifier, std::unique_ptr<const WorldIO>,
-            IdentifierHasher, IdentifierComparator> mRegisteredWorldIOs = {};
+      private:
+        map_t<lodestone::common::registry::Identifier,
+              std::unique_ptr<const WorldIO>, IdentifierHasher,
+              IdentifierComparator>
+            mRegisteredWorldIOs = {};
     };
-}
+} // namespace lodestone::conversion::world
 
-#endif //LODESTONE_WORLDIOREGISTRY_H
+#endif // LODESTONE_WORLDIOREGISTRY_H

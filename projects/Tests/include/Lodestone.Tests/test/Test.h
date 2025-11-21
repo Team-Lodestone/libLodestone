@@ -5,8 +5,7 @@
 #define LODESTONE_TEST_H
 
 namespace lodestone::tests::test {
-    class Test {
-    };
-}
+    class Test {};
+} // namespace lodestone::tests::test
 
-#endif //LODESTONE_TEST_H
+#endif // LODESTONE_TEST_H

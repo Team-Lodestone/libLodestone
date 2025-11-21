@@ -4,14 +4,13 @@
 #ifndef LODESTONE_MATERIAL_H
 #define LODESTONE_MATERIAL_H
 
-#include <Lodestone.Common/string/StringSerializable.h>
 #include "Lodestone.Level/types/Color.h"
+#include <Lodestone.Common/string/StringSerializable.h>
 
 namespace lodestone::level::material {
     class Material : public common::string::StringSerializable {
-    public:
-        constexpr Material(const types::Color &color) : mColor(color) {
-        };
+      public:
+        constexpr Material(const types::Color &color) : mColor(color) {};
 
         constexpr const types::Color &getColor() const { return mColor; }
 
@@ -19,9 +18,9 @@ namespace lodestone::level::material {
             return "Material[color=" + mColor.toString() + "]";
         };
 
-    private:
+      private:
         const types::Color mColor;
     };
-}
+} // namespace lodestone::level::material
 
-#endif //LODESTONE_MATERIAL_H
+#endif // LODESTONE_MATERIAL_H

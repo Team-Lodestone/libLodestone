@@ -7,16 +7,18 @@
 
 namespace lodestone::level::item::block {
     class BlockItem final : public Item {
-    public:
-        constexpr BlockItem(const common::registry::Identifier *id, const level::block::Block *block) : Item(id, 64), mBlock(block) {};
+      public:
+        constexpr BlockItem(const common::registry::Identifier *id,
+                            const level::block::Block *block)
+            : Item(id, 64), mBlock(block) {};
 
         constexpr const level::block::Block *getBlock() const {
             return mBlock;
         };
 
-    private:
+      private:
         const lodestone::level::block::Block *mBlock;
     };
-}
+} // namespace lodestone::level::item::block
 
-#endif //LODESTONE_BLOCKITEM_H
+#endif // LODESTONE_BLOCKITEM_H

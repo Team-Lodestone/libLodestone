@@ -4,13 +4,13 @@
 #ifndef LODESTONE_EMPTYSECTION_H
 #define LODESTONE_EMPTYSECTION_H
 
-#include "Lodestone.Level/chunk/section/Section.h"
 #include "Lodestone.Level/block/properties/BlockProperties.h"
+#include "Lodestone.Level/chunk/section/Section.h"
 
 namespace lodestone::level::chunk::section {
     /** Immutable section, used in place of returning empty/null LevelSection */
     class EmptySection : public Section {
-    public:
+      public:
         static EmptySection *getInstance();
 
         SectionType getType() override;
@@ -21,10 +21,12 @@ namespace lodestone::level::chunk::section {
 
         const uint8_t *getSkyLight() const override;
 
-        block::properties::BlockProperties *getBlock(const int x, const int y, const int z) const override;
+        block::properties::BlockProperties *
+        getBlock(const int x, const int y, const int z) const override;
 
-        void setBlock(block::properties::BlockProperties &&blk, int x, int y, int z) override;
+        void setBlock(block::properties::BlockProperties &&blk, int x, int y,
+                      int z) override;
     };
-}
+} // namespace lodestone::level::chunk::section
 
-#endif //LODESTONE_EMPTYSECTION_H
+#endif // LODESTONE_EMPTYSECTION_H

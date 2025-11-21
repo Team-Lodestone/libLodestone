@@ -7,16 +7,11 @@
 #include "Lodestone.Common/Defines.h"
 
 namespace lodestone::common {
-    constexpr const char *const LIBRARY_STRING = "libLodestone v" LODESTONE_VERSION
-    " ("
-    LODESTONE_COMPILER_NAME
-    " / "
-    LODESTONE_BUILD_TYPE
-    " | "
-    LODESTONE_PLATFORM_NAME
-    " "
-    LODESTONE_PLATFORM_ARCH
-    ") | https://github.com/Team-Lodestone/libLodestone";
+    constexpr const char *const LIBRARY_STRING =
+        "libLodestone v" LODESTONE_VERSION " (" LODESTONE_COMPILER_NAME
+        " / " LODESTONE_BUILD_TYPE " | " LODESTONE_PLATFORM_NAME
+        " " LODESTONE_PLATFORM_ARCH
+        ") | https://github.com/Team-Lodestone/libLodestone";
 
     LODESTONE_API unsigned long long getCurrentTimeMillis();
 
@@ -30,6 +25,6 @@ namespace lodestone::common {
         LODESTONE_API NO_DISCARD constexpr const char *lodestone_get_library_string(); // NOLINT
     }
     // clang-format on
-} // lodestone
+} // namespace lodestone::common
 
-#endif //LODESTONE_LODESTONE_H
+#endif // LODESTONE_LODESTONE_H

@@ -3,5 +3,4 @@
 //
 #include "Lodestone.Level/chunk/section/Section.h"
 
-namespace lodestone::level::chunk::section {
-}
+namespace lodestone::level::chunk::section {}

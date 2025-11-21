@@ -11,12 +11,13 @@
 
 namespace lodestone::level::chunk {
     /** Holds chunks */
-    class LODESTONE_API ChunkContainer : public lodestone::common::string::StringSerializable {
-    public:
+    class LODESTONE_API ChunkContainer
+        : public lodestone::common::string::StringSerializable {
+      public:
         ~ChunkContainer() override = default;
         ChunkContainer() = default;
-        ChunkContainer(ChunkContainer&&) = default;
-        ChunkContainer& operator=(ChunkContainer&&) = default;
+        ChunkContainer(ChunkContainer &&) = default;
+        ChunkContainer &operator=(ChunkContainer &&) = default;
 
         std::string toString() const override {
             return (common::string::OperatorStringBuilder(typeid(*this)))
@@ -73,9 +74,7 @@ namespace lodestone::level::chunk {
 
         Chunk *getChunk(const types::Vec2i &coords);
 
-        Chunk *getChunk(const int x, const int z) {
-            return getChunk({x, z});
-        };
+        Chunk *getChunk(const int x, const int z) { return getChunk({x, z}); };
 
         Chunk *getChunkCreate(const types::Vec2i &coords, int height = 256);
 
@@ -89,25 +88,26 @@ namespace lodestone::level::chunk {
             return getChunk({x, z});
         };
 
-        std::unique_ptr<Chunk> detachChunk(const types::Vec2i &coords, bool shouldInvalidateCoords = true);
+        std::unique_ptr<Chunk> detachChunk(const types::Vec2i &coords,
+                                           bool shouldInvalidateCoords = true);
 
-        std::unique_ptr<Chunk> detachChunk(const int x, const int z, const bool shouldInvalidateCoords = true) {
+        std::unique_ptr<Chunk>
+        detachChunk(const int x, const int z,
+                    const bool shouldInvalidateCoords = true) {
             return detachChunk({x, z}, shouldInvalidateCoords);
         };
 
         void removeChunk(const types::Vec2i &coords);
 
-        void removeChunk(const int x, const int z) {
-            removeChunk({x, z});
-        };
+        void removeChunk(const int x, const int z) { removeChunk({x, z}); };
 
         void merge(std::unique_ptr<ChunkContainer> rhs);
 
-        map_t<types::Vec2i, std::unique_ptr<Chunk> > &getChunks() {
+        map_t<types::Vec2i, std::unique_ptr<Chunk>> &getChunks() {
             return mChunks;
         }
 
-        const map_t<types::Vec2i, std::unique_ptr<Chunk> > &getChunks() const {
+        const map_t<types::Vec2i, std::unique_ptr<Chunk>> &getChunks() const {
             return mChunks;
         }
 
@@ -115,11 +115,11 @@ namespace lodestone::level::chunk {
         types::Bounds3i getChunkBounds() const;
 
         ChunkContainer(const ChunkContainer &) = delete;
-        ChunkContainer& operator=(const ChunkContainer&) = delete;
+        ChunkContainer &operator=(const ChunkContainer &) = delete;
 
-    protected:
-        map_t<types::Vec2i, std::unique_ptr<Chunk> > mChunks;
+      protected:
+        map_t<types::Vec2i, std::unique_ptr<Chunk>> mChunks;
     };
-}
+} // namespace lodestone::level::chunk
 
-#endif //LODESTONE_CHUNKCONTAINER_H
+#endif // LODESTONE_CHUNKCONTAINER_H

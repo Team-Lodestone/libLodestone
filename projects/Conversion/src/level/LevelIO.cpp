@@ -3,5 +3,4 @@
 //
 #include "Lodestone.Conversion/level/LevelIO.h"
 
-namespace lodestone::conversion::level {
-}
+namespace lodestone::conversion::level {}

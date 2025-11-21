@@ -8,10 +8,12 @@
 namespace lodestone::conversion::world {
     WorldIORegistry WorldIORegistry::sInstance = WorldIORegistry();
 
-    void WorldIORegistry::registerWorldIO(const lodestone::common::registry::Identifier &id,
-                                          std::unique_ptr<const WorldIO> io) {
+    void WorldIORegistry::registerWorldIO(
+        const lodestone::common::registry::Identifier &id,
+        std::unique_ptr<const WorldIO> io) {
         if (mRegisteredWorldIOs.contains(id))
-            throw std::runtime_error(std::format("WorldIO '{}' is already registered", id));
+            throw std::runtime_error(
+                std::format("WorldIO '{}' is already registered", id));
 
         mRegisteredWorldIOs[id] = std::move(io);
 
@@ -20,10 +22,12 @@ namespace lodestone::conversion::world {
 #endif
     }
 
-    const WorldIO *WorldIORegistry::getWorldIO(const lodestone::common::registry::Identifier &id) const {
-        if (const auto it = mRegisteredWorldIOs.find(id); it != mRegisteredWorldIOs.end())
+    const WorldIO *WorldIORegistry::getWorldIO(
+        const lodestone::common::registry::Identifier &id) const {
+        if (const auto it = mRegisteredWorldIOs.find(id);
+            it != mRegisteredWorldIOs.end())
             return it->second.get();
 
         return nullptr;
     }
-}
+} // namespace lodestone::conversion::world

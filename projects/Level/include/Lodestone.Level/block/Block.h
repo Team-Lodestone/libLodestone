@@ -5,10 +5,10 @@
 #define LODESTONE_BLOCK_H
 #include <string>
 
-#include <Lodestone.Common/string/OperatorStringBuilder.h>
-#include <Lodestone.Common/string/StringSerializable.h>
 #include "Lodestone.Level/material/Material.h"
 #include <Lodestone.Common/registry/Identifier.h>
+#include <Lodestone.Common/string/OperatorStringBuilder.h>
+#include <Lodestone.Common/string/StringSerializable.h>
 
 #include "Lodestone.Level/item/block/BlockItem.h"
 
@@ -16,10 +16,12 @@ namespace lodestone::level::block {
     class BlockState;
 
     class Block : public common::string::StringSerializable {
-    public:
+      public:
         constexpr Block(const lodestone::common::registry::Identifier *id,
-                        const material::Material &material) : mId(id), mMaterial(material) {
-            this->mItem = new lodestone::level::item::block::BlockItem(id, this);
+                        const material::Material &material)
+            : mId(id), mMaterial(material) {
+            this->mItem =
+                new lodestone::level::item::block::BlockItem(id, this);
         };
 
         constexpr ~Block() override = default;
@@ -28,13 +30,9 @@ namespace lodestone::level::block {
             return mId;
         };
 
-        constexpr std::string getIDString() const {
-            return mId->getString();
-        };
+        constexpr std::string getIDString() const { return mId->getString(); };
 
-        constexpr material::Material getMaterial() const {
-            return mMaterial;
-        }
+        constexpr material::Material getMaterial() const { return mMaterial; }
 
         std::string toString() const override {
             return (common::string::OperatorStringBuilder(typeid(*this)))
@@ -47,11 +45,11 @@ namespace lodestone::level::block {
             return mItem;
         }
 
-    private:
+      private:
         const lodestone::common::registry::Identifier *mId;
         const item::block::BlockItem *mItem;
         const material::Material mMaterial;
     };
-}
+} // namespace lodestone::level::block
 
-#endif //LODESTONE_BLOCK_H
+#endif // LODESTONE_BLOCK_H

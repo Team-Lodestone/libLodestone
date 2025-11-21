@@ -20,7 +20,8 @@ namespace lodestone::conversion::block::data {
         return typeid(uint8_t);
     }
 
-    const lodestone::common::registry::Identifier *NumericBlockData::getTypeName() const {
+    const lodestone::common::registry::Identifier *
+    NumericBlockData::getTypeName() const {
         return &identifiers::NUMERIC_BLOCK_DATA;
     }
 
@@ -29,14 +30,17 @@ namespace lodestone::conversion::block::data {
     }
 
     size_t NumericBlockData::hash() const {
-        return std::hash<uint8_t>()(mId) ^ std::hash<uint8_t>()(mData) << 8 ^ (
-                   std::hash<const lodestone::common::registry::Identifier *>()(getTypeName()) << 16);
+        return std::hash<uint8_t>()(mId) ^ std::hash<uint8_t>()(mData) << 8 ^
+               (std::hash<const lodestone::common::registry::Identifier *>()(
+                    getTypeName())
+                << 16);
     }
 
     bool NumericBlockData::equals(const AbstractBlockData *rhs) const {
         if (const auto c = dynamic_cast<const NumericBlockData *>(rhs))
-            return c->mId == mId && c->mData == mData && c->getTypeName() == getTypeName();
+            return c->mId == mId && c->mData == mData &&
+                   c->getTypeName() == getTypeName();
 
         return false;
     }
-}
+} // namespace lodestone::conversion::block::data

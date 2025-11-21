@@ -7,45 +7,52 @@
 
 #include <Lodestone.Common/Defines.h>
 
-#include <gtl/phmap.hpp>
 #include "Lodestone.Level/item/Item.h"
 #include "Lodestone.Level/item/Items.h"
+#include <gtl/phmap.hpp>
 
 namespace lodestone::level::item {
     class LODESTONE_API ItemRegistry {
-    protected:
+      protected:
         ItemRegistry() = default;
 
-    public:
+      public:
 #define REGISTER_ITEM(n) {n, new Item(n)}
 
         static const Item *sDefaultItem;
 
-        static ItemRegistry& getInstance();
+        static ItemRegistry &getInstance();
 
-        void registerItem(const lodestone::common::registry::Identifier *id, const Item *item);
+        void registerItem(const lodestone::common::registry::Identifier *id,
+                          const Item *item);
 
         // couldn't come up with a better name
-        bool registerItemIfNonExistent(const lodestone::common::registry::Identifier *id,
-                                        const Item *item) noexcept;
+        bool registerItemIfNonExistent(
+            const lodestone::common::registry::Identifier *id,
+            const Item *item) noexcept;
 
-        const Item *getItem(const lodestone::common::registry::Identifier *id) const;
+        const Item *
+        getItem(const lodestone::common::registry::Identifier *id) const;
 
-        const Item *operator[](const lodestone::common::registry::Identifier *id) const;
+        const Item *
+        operator[](const lodestone::common::registry::Identifier *id) const;
 
-        map_t<const lodestone::common::registry::Identifier *, const Item *>::iterator begin() {
+        map_t<const lodestone::common::registry::Identifier *,
+              const Item *>::iterator
+        begin() {
             return mItems.begin();
         }
 
-        map_t<const lodestone::common::registry::Identifier *, const Item *>::iterator end() {
+        map_t<const lodestone::common::registry::Identifier *,
+              const Item *>::iterator
+        end() {
             return mItems.end();
         }
 
-    private:
-        map_t<const lodestone::common::registry::Identifier *, const Item *> mItems = {
-            REGISTER_ITEM(&Items::NONE)
-        };
+      private:
+        map_t<const lodestone::common::registry::Identifier *, const Item *>
+            mItems = {REGISTER_ITEM(&Items::NONE)};
     };
-}
+} // namespace lodestone::level::item
 
-#endif //LODESTONE_ITEMREGISTRY_H
+#endif // LODESTONE_ITEMREGISTRY_H

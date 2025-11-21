@@ -6,7 +6,7 @@
 #include "Lodestone.Level/block/properties/EmptyBlockProperties.h"
 
 namespace lodestone::level::chunk::section {
-    EmptySection * EmptySection::getInstance() {
+    EmptySection *EmptySection::getInstance() {
         static EmptySection sInstance;
         return &sInstance;
     }
@@ -19,18 +19,15 @@ namespace lodestone::level::chunk::section {
         return nullptr;
     }
 
-    const uint8_t *EmptySection::getBlockLight() const {
-        return nullptr;
-    }
+    const uint8_t *EmptySection::getBlockLight() const { return nullptr; }
 
-    const uint8_t *EmptySection::getSkyLight() const {
-        return nullptr;
-    }
+    const uint8_t *EmptySection::getSkyLight() const { return nullptr; }
 
-    block::properties::BlockProperties *EmptySection::getBlock(const int x, const int y, const int z) const {
+    block::properties::BlockProperties *
+    EmptySection::getBlock(const int x, const int y, const int z) const {
         return block::properties::EmptyBlockProperties::getInstance();
     }
 
-    void EmptySection::setBlock(block::properties::BlockProperties &&blk, int x, int y, int z) {
-    }
-}
+    void EmptySection::setBlock(block::properties::BlockProperties &&blk, int x,
+                                int y, int z) {}
+} // namespace lodestone::level::chunk::section

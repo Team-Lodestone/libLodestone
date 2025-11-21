@@ -3,5 +3,4 @@
 //
 #include "Lodestone.Conversion/world/WorldIO.h"
 
-namespace lodestone::conversion::world {
-}
+namespace lodestone::conversion::world {}

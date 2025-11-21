@@ -3,24 +3,22 @@
 //
 #ifndef LODESTONE_NAMESPACEDSTRING_H
 #define LODESTONE_NAMESPACEDSTRING_H
-#include <format>
-#include <cstring>
 #include "Lodestone.Common/string/StringSerializable.h"
+#include <cstring>
+#include <format>
 
 // this class required me to upgrade to c++20
 namespace lodestone::common::registry {
     class Identifier : public string::StringSerializable {
-    protected:
-        explicit constexpr Identifier(const char *name) noexcept : mNamespace("lodestone"), mName(name) {
-        };
+      protected:
+        explicit constexpr Identifier(const char *name) noexcept
+            : mNamespace("lodestone"), mName(name) {};
 
-    public:
-        constexpr Identifier(const char *nmsp, const char *name) noexcept : mNamespace(nmsp), mName(name) {
-        };
+      public:
+        constexpr Identifier(const char *nmsp, const char *name) noexcept
+            : mNamespace(nmsp), mName(name) {};
 
-        constexpr const char *getName() const noexcept {
-            return mName;
-        }
+        constexpr const char *getName() const noexcept { return mName; }
 
         constexpr const char *getNamespace() const noexcept {
             return mNamespace;
@@ -30,50 +28,54 @@ namespace lodestone::common::registry {
             return std::string(mNamespace) + ":" + mName;
         }
 
-        constexpr std::string toString() const override {
-            return getString();
-        };
+        constexpr std::string toString() const override { return getString(); };
 
         constexpr bool operator==(const Identifier &rhs) const noexcept {
-            return this->mName == rhs.mName && this->mNamespace == rhs.mNamespace;
+            return this->mName == rhs.mName &&
+                   this->mNamespace == rhs.mNamespace;
         }
 
         constexpr operator std::string() const noexcept override {
             return getString();
         }
 
-        constexpr friend std::ostream &operator<<(std::ostream &os, const Identifier &s) noexcept {
+        constexpr friend std::ostream &
+        operator<<(std::ostream &os, const Identifier &s) noexcept {
             os << s.getString();
             return os;
         }
 
-    private:
+      private:
         const char *mNamespace;
         const char *mName;
     };
-}
+} // namespace lodestone::common::registry
 
-template<>
-struct std::formatter<lodestone::common::registry::Identifier> : formatter<string> {
-    std::format_context::iterator format(const lodestone::common::registry::Identifier &s,
-                                         format_context &c) const {
+template <>
+struct std::formatter<lodestone::common::registry::Identifier>
+    : formatter<string> {
+    std::format_context::iterator
+    format(const lodestone::common::registry::Identifier &s,
+           format_context &c) const {
         return formatter<string>::format(s.getString(), c);
     }
 };
 
 struct IdentifierHasher {
-    size_t operator()(const lodestone::common::registry::Identifier &s) const noexcept {
-        return std::hash<std::string_view>{}(s.getName())
-               ^ (std::hash<std::string_view>{}(s.getNamespace()) << 1);
+    size_t operator()(
+        const lodestone::common::registry::Identifier &s) const noexcept {
+        return std::hash<std::string_view>{}(s.getName()) ^
+               (std::hash<std::string_view>{}(s.getNamespace()) << 1);
     }
 };
 
 struct IdentifierComparator {
-    bool operator()(const lodestone::common::registry::Identifier &lhs,
-                    const lodestone::common::registry::Identifier &rhs) const noexcept {
+    bool operator()(
+        const lodestone::common::registry::Identifier &lhs,
+        const lodestone::common::registry::Identifier &rhs) const noexcept {
         return !std::strcmp(lhs.getNamespace(), rhs.getNamespace()) &&
                !std::strcmp(lhs.getName(), rhs.getName());
     }
 };
 
-#endif //LODESTONE_NAMESPACEDSTRING_H
+#endif // LODESTONE_NAMESPACEDSTRING_H

@@ -11,17 +11,13 @@
 namespace lodestone::conversion::block::data {
     // TODO maybe make this return signed byte
     class NumericBlockData final : public AbstractBlockData {
-    public:
-        constexpr NumericBlockData(const uint8_t id, const uint8_t data) : mId(id), mData(data) {
-        }
+      public:
+        constexpr NumericBlockData(const uint8_t id, const uint8_t data)
+            : mId(id), mData(data) {}
 
-        constexpr uint8_t getId() const {
-            return this->mId;
-        };
+        constexpr uint8_t getId() const { return this->mId; };
 
-        constexpr uint8_t getData() const {
-            return this->mData;
-        };
+        constexpr uint8_t getData() const { return this->mData; };
 
         const void *getIdPtr() const override;
 
@@ -31,7 +27,8 @@ namespace lodestone::conversion::block::data {
 
         const std::type_info &getDataType() const override;
 
-        const lodestone::common::registry::Identifier *getTypeName() const override;
+        const lodestone::common::registry::Identifier *
+        getTypeName() const override;
 
         const std::type_info &getType() const override;
 
@@ -43,10 +40,10 @@ namespace lodestone::conversion::block::data {
             return std::format("NumericBlockData[id={},data={}]", mId, mData);
         };
 
-    private:
+      private:
         const uint8_t mId;
         const uint8_t mData;
     };
-}
+} // namespace lodestone::conversion::block::data
 
-#endif //LODESTONE_NUMERICBLOCKDATA_H
+#endif // LODESTONE_NUMERICBLOCKDATA_H

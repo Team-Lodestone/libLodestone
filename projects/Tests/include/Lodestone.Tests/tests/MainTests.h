@@ -7,7 +7,7 @@
 
 namespace lodestone::tests::test {
     class MainTests : public Test {
-    public:
+      public:
         static void run();
 
         static void readMcrChunk();
@@ -18,6 +18,6 @@ namespace lodestone::tests::test {
 
         static void readMinev2World();
     };
-}
+} // namespace lodestone::tests::test
 
-#endif //LODESTONE_MAINTESTS_H
+#endif // LODESTONE_MAINTESTS_H

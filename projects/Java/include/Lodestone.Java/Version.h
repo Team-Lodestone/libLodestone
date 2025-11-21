@@ -7,7 +7,7 @@
 #include <Lodestone.Common/Defines.h>
 
 namespace lodestone::java {
-    enum LODESTONE_API Version{
+    enum LODESTONE_API Version {
         // Pre-classic (rubydung)
         rd131655,
         rd20090515,
@@ -17,9 +17,10 @@ namespace lodestone::java {
         c0_0_14a,
         c0_0_19a,
         c0_0_20a,
-        c0_26st,// survival test
+        c0_26st, // survival test
         c0_28,
-        c0_30_CPE, // specifically for classic protocol extensions, which adds additional blocks
+        c0_30_CPE, // specifically for classic protocol extensions, which adds
+                   // additional blocks
         // Indev
         in20091223_1457,
         in20100109_1939,
@@ -39,8 +40,9 @@ namespace lodestone::java {
         // Alpha
 
         // Beta
-        b1_3 // todo this should be first version with numeric + metadata block type
+        b1_3 // todo this should be first version with numeric + metadata block
+             // type
     };
 }
 
-#endif //LODESTONE_VERSION_H
+#endif // LODESTONE_VERSION_H

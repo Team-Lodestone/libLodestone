@@ -3,5 +3,4 @@
 //
 #include "Lodestone.Common/Math.h"
 
-namespace lodestone::common {
-}
+namespace lodestone::common {}

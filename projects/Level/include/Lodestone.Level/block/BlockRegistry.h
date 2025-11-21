@@ -7,44 +7,53 @@
 
 #include <Lodestone.Common/Defines.h>
 
-#include <gtl/phmap.hpp>
 #include "Lodestone.Level/block/Block.h"
 #include "Lodestone.Level/block/Blocks.h"
+#include <gtl/phmap.hpp>
 
 namespace lodestone::level::block {
     class LODESTONE_API BlockRegistry {
-    protected:
+      protected:
         BlockRegistry();
 
-    public:
+      public:
 #define REGISTER_BLOCK(n, m) {n, new Block(n, m)}
 #define REGISTER_BLOCK_FUNC(n, m) registerBlock(n, new Block(n, m))
 
         static const Block *sDefaultBlock;
 
-        static BlockRegistry& getInstance();
+        static BlockRegistry &getInstance();
 
-        void registerBlock(const lodestone::common::registry::Identifier *id, const Block *block);
+        void registerBlock(const lodestone::common::registry::Identifier *id,
+                           const Block *block);
 
         // couldn't come up with a better name
-        bool registerBlockIfNonExistent(const lodestone::common::registry::Identifier *id,
-                                        const Block *block) noexcept;
+        bool registerBlockIfNonExistent(
+            const lodestone::common::registry::Identifier *id,
+            const Block *block) noexcept;
 
-        const Block *getBlock(const lodestone::common::registry::Identifier *id) const;
+        const Block *
+        getBlock(const lodestone::common::registry::Identifier *id) const;
 
-        const Block *operator[](const lodestone::common::registry::Identifier *id) const;
+        const Block *
+        operator[](const lodestone::common::registry::Identifier *id) const;
 
-        map_t<const lodestone::common::registry::Identifier *, const Block *>::iterator begin() {
+        map_t<const lodestone::common::registry::Identifier *,
+              const Block *>::iterator
+        begin() {
             return mBlocks.begin();
         }
 
-        map_t<const lodestone::common::registry::Identifier *, const Block *>::iterator end() {
+        map_t<const lodestone::common::registry::Identifier *,
+              const Block *>::iterator
+        end() {
             return mBlocks.end();
         }
 
-    private:
-        map_t<const lodestone::common::registry::Identifier *, const Block *> mBlocks;
+      private:
+        map_t<const lodestone::common::registry::Identifier *, const Block *>
+            mBlocks;
     };
-}
+} // namespace lodestone::level::block
 
-#endif //LODESTONE_BLOCKREGISTRY_H
+#endif // LODESTONE_BLOCKREGISTRY_H

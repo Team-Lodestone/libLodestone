@@ -8,7 +8,11 @@
 
 namespace lodestone::level::block {
     struct Blocks {
-#define ADD_BLOCK(name, id) static constexpr const lodestone::common::registry::Identifier name = lodestone::common::registry::Identifier{"lodestone", id}
+#define ADD_BLOCK(name, id)                                                    \
+    static constexpr const lodestone::common::registry::Identifier name =      \
+        lodestone::common::registry::Identifier {                              \
+        "lodestone", id                                                        \
+    }
 
         // TODO once all blocks are added we should sort them
         ADD_BLOCK(AIR, "air");
@@ -19,29 +23,29 @@ namespace lodestone::level::block {
         ADD_BLOCK(OAK_PLANKS, "oak_planks");
         ADD_BLOCK(OAK_SAPLING, "oak_sapling");
         ADD_BLOCK(BEDROCK, "bedrock");
-        //region LIQUID
+        // region LIQUID
         ADD_BLOCK(FLOWING_WATER, "flowing_water");
         ADD_BLOCK(WATER, "water");
         ADD_BLOCK(WATER_SPAWNER, "water_spawner");
         ADD_BLOCK(FLOWING_LAVA, "flowing_lava");
         ADD_BLOCK(LAVA, "lava");
         ADD_BLOCK(LAVA_SPAWNER, "lava_spawner");
-        //endregion
+        // endregion
         ADD_BLOCK(SAND, "sand");
         ADD_BLOCK(GRAVEL, "gravel");
-        //region ORE
+        // region ORE
         ADD_BLOCK(COAL_ORE, "coal_ore");
         ADD_BLOCK(IRON_ORE, "iron_ore");
         ADD_BLOCK(GOLD_ORE, "gold_ore");
         ADD_BLOCK(LAPIS_ORE, "lapis_ore");
         ADD_BLOCK(REDSTONE_ORE, "redstone_ore");
         ADD_BLOCK(DIAMOND_ORE, "diamond_ore");
-        //endregion
+        // endregion
         ADD_BLOCK(OAK_LOG, "oak_log");
         ADD_BLOCK(OAK_LEAVES, "oak_leaves");
         ADD_BLOCK(SPONGE, "sponge");
         ADD_BLOCK(GLASS, "glass");
-        //region WOOL
+        // region WOOL
         ADD_BLOCK(RED_WOOL, "red_wool");
         ADD_BLOCK(ORANGE_WOOL, "orange_wool");
         ADD_BLOCK(YELLOW_WOOL, "yellow_wool");
@@ -59,13 +63,13 @@ namespace lodestone::level::block {
         ADD_BLOCK(GRAY_WOOL, "gray_wool");
         ADD_BLOCK(LIGHT_GRAY_WOOL, "light_gray_wool");
         ADD_BLOCK(WHITE_WOOL, "white_wool");
-        //endregion
-        //region PLANTS
+        // endregion
+        // region PLANTS
         ADD_BLOCK(DANDELION, "dandelion");
         ADD_BLOCK(POPPY, "poppy");
         ADD_BLOCK(BROWN_MUSHROOM, "brown_mushroom");
         ADD_BLOCK(RED_MUSHROOM, "red_mushroom");
-        //endregion
+        // endregion
         ADD_BLOCK(GOLD_BLOCK, "gold_block");
         ADD_BLOCK(IRON_BLOCK, "iron_block");
         ADD_BLOCK(DOUBLE_SMOOTH_STONE_SLAB, "double_smooth_stone_slab");
@@ -81,14 +85,16 @@ namespace lodestone::level::block {
         ADD_BLOCK(SNOW_LAYER, "snow_layer");
         ADD_BLOCK(FIRE, "fire");
         ADD_BLOCK(ICE, "ice");
-        // todo do we want to add every single wool type? we would have to give unique names to some of them
+        // todo do we want to add every single wool type? we would have to give
+        // unique names to some of them
         ADD_BLOCK(CERAMIC_TILE, "ceramic_tile"); // cpe exclusive
         ADD_BLOCK(MAGMA_BLOCK, "magma_block");
         ADD_BLOCK(QUARTZ_PILLAR, "quartz_pillar");
         ADD_BLOCK(CRATE, "crate"); // cpe exclusive
         ADD_BLOCK(STONE_BRICKS, "stone_bricks");
         ADD_BLOCK(TORCH, "torch");
-        ADD_BLOCK(CHEST, "chest"); // mmm tile entity, how do we want to do this?
+        ADD_BLOCK(CHEST,
+                  "chest"); // mmm tile entity, how do we want to do this?
         ADD_BLOCK(GEAR, "gear");
         ADD_BLOCK(DIAMOND_BLOCK, "diamond_block");
         ADD_BLOCK(CRAFTING_TABLE, "crafting_table");
@@ -120,7 +126,9 @@ namespace lodestone::level::block {
         ADD_BLOCK(SOUL_SAND, "soul_sand");
         ADD_BLOCK(GLOWSTONE, "glowstone");
         ADD_BLOCK(PUMPKIN, "pumpkin");
-        ADD_BLOCK(GLOWING_PUMPKIN, "glowing_pumpkin"); // yes I know it's jack o lantern, but this is simpler to find
+        ADD_BLOCK(GLOWING_PUMPKIN,
+                  "glowing_pumpkin"); // yes I know it's jack o lantern, but
+                                      // this is simpler to find
         ADD_BLOCK(NETHER_PORTAL, "nether_portal");
         ADD_BLOCK(BIRCH_LEAVES, "birch_leaves");
         ADD_BLOCK(BIRCH_LOG, "birch_log");
@@ -133,7 +141,9 @@ namespace lodestone::level::block {
         ADD_BLOCK(REDSTONE_REPEATER, "redstone_repeater");
         ADD_BLOCK(PETRIFIED_OAK_SLAB, "petrified_oak_slab");
         ADD_BLOCK(SANDSTONE_SLAB, "sandstone_slab");
-        ADD_BLOCK(SEAMLESS_STONE_SLAB, "seamless_stone_slab"); // apparently took like 50 metadata values, fun!
+        ADD_BLOCK(SEAMLESS_STONE_SLAB,
+                  "seamless_stone_slab"); // apparently took like 50 metadata
+                                          // values, fun!
         ADD_BLOCK(APRIL_FOOLS_CHEST, "april_fools_chest"); // locked chest
         ADD_BLOCK(BIRCH_SAPLING, "birch_sapling");
         ADD_BLOCK(COBWEB, "cobweb");
@@ -181,6 +191,6 @@ namespace lodestone::level::block {
         ADD_BLOCK(NETHER_BRICK_STAIRS, "nether_brick_stairs");
         ADD_BLOCK(NETHER_WART, "nether_wart");
     };
-}
+} // namespace lodestone::level::block
 
-#endif //LODESTONE_BLOCKS_H
+#endif // LODESTONE_BLOCKS_H

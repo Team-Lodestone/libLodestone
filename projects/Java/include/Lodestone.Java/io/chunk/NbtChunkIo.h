@@ -12,10 +12,13 @@ namespace nbt {
 namespace lodestone::java::io::chunk {
     // TODO once I make common mc project this can be moved
     class NbtChunkIO : public conversion::chunk::ChunkIO {
-        virtual std::unique_ptr<level::chunk::Chunk> read(nbt::tag_compound &chunk, int version) const = 0;
+        virtual std::unique_ptr<level::chunk::Chunk>
+        read(nbt::tag_compound &chunk, int version) const = 0;
 
-        virtual nbt::tag_compound write(level::chunk::Chunk *c, const level::types::Vec2i &coords, int version) const = 0;
+        virtual nbt::tag_compound write(level::chunk::Chunk *c,
+                                        const level::types::Vec2i &coords,
+                                        int version) const = 0;
     };
-}
+} // namespace lodestone::java::io::chunk
 
-#endif //LODESTONE_NBTCHUNKIO_H
+#endif // LODESTONE_NBTCHUNKIO_H
