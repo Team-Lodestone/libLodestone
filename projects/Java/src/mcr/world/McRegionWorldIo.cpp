@@ -27,10 +27,8 @@
 #include <libnbt++/io/ozlibstream.h>
 
 namespace lodestone::java::mcr::world {
-    const lodestone::conversion::level::PlayerIO *
-    McRegionWorldIo::getLevelIO(int version) const {
-        return lodestone::conversion::level::PlayerIORegistry::sInstance
-            .getLevelIO(identifiers::MCREGION);
+    const lodestone::conversion::level::PlayerIO * McRegionWorldIo::getLevelIO(int version) const {
+        return lodestone::conversion::level::LevelIoRegistry::getInstance().getLevelIO(identifiers::MCREGION);
     }
 
     std::unique_ptr<lodestone::level::world::World>
@@ -121,7 +119,7 @@ namespace lodestone::java::mcr::world {
             std::filesystem::is_directory(path / "players")) {
             const java::mcr::player::McRegionPlayerIO *pio =
                 static_cast<const java::mcr::player::McRegionPlayerIO *>(
-                    lodestone::conversion::player::PlayerIORegistry::sInstance
+                    lodestone::conversion::player::PlayerIORegistry::getInstance()
                         .getPlayerIO(java::identifiers::MCREGION));
             for (const auto &f :
                  std::filesystem::directory_iterator(path / "players")) {
@@ -146,7 +144,7 @@ namespace lodestone::java::mcr::world {
 
         const java::mcr::region::McRegionRegionIO *io =
             static_cast<const java::mcr::region::McRegionRegionIO *>(
-                lodestone::conversion::region::RegionIORegistry::sInstance
+                lodestone::conversion::region::RegionIORegistry::getInstance()
                     .getRegionIO(java::identifiers::MCREGION));
 
         int t = 2;
@@ -282,7 +280,7 @@ namespace lodestone::java::mcr::world {
         // Regions
         const java::mcr::region::McRegionRegionIO *io =
             static_cast<const java::mcr::region::McRegionRegionIO *>(
-                lodestone::conversion::region::RegionIORegistry::sInstance
+                lodestone::conversion::region::RegionIORegistry::getInstance()
                     .getRegionIO(java::identifiers::MCREGION));
 
         std::filesystem::path p = path;

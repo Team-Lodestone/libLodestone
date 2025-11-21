@@ -5,8 +5,14 @@
 
 #include <iostream>
 
+#include <Lodestone.Common/Logging.h>
+
 namespace lodestone::conversion::player {
-    PlayerIORegistry PlayerIORegistry::sInstance = PlayerIORegistry();
+
+    PlayerIORegistry &PlayerIORegistry::getInstance() {
+        static PlayerIORegistry sInstance;
+        return sInstance;
+    }
 
     void PlayerIORegistry::registerPlayerIO(
         const lodestone::common::registry::Identifier &id,
@@ -17,9 +23,7 @@ namespace lodestone::conversion::player {
 
         mRegisteredPlayerIOs[id] = std::move(io);
 
-#if CMAKE_BUILD_DEBUG
-        std::cout << "Registered PlayerIO '" << id << "'" << std::endl;
-#endif
+        LOG_DEBUG("Registered PlayerIO '" << id << "'");
     }
 
     const PlayerIO *PlayerIORegistry::getPlayerIO(

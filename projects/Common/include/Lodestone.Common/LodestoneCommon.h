@@ -1,8 +1,8 @@
 //
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
-#ifndef LODESTONE_LODESTONE_H
-#define LODESTONE_LODESTONE_H
+#ifndef LODESTONE_LODESTONECOMMON_H
+#define LODESTONE_LODESTONECOMMON_H
 
 #include "Lodestone.Common/Defines.h"
 
@@ -27,4 +27,4 @@ namespace lodestone::common {
     // clang-format on
 } // namespace lodestone::common
 
-#endif // LODESTONE_LODESTONE_H
+#endif //LODESTONE_LODESTONECOMMON_H

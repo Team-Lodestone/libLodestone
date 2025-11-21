@@ -12,7 +12,7 @@ namespace lodestone::conversion::world {
         WorldIORegistry() = default;
 
       public:
-        static WorldIORegistry sInstance;
+        static WorldIORegistry &getInstance();
 
         void registerWorldIO(const lodestone::common::registry::Identifier &id,
                              std::unique_ptr<const WorldIO> io);

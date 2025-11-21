@@ -7,8 +7,13 @@
 
 #include <Lodestone.Common/registry/Identifier.h>
 
+#include <Lodestone.Common/Logging.h>
+
 namespace lodestone::conversion::region {
-    RegionIORegistry RegionIORegistry::sInstance = RegionIORegistry();
+    RegionIORegistry &RegionIORegistry::getInstance() {
+        static RegionIORegistry sInstance;
+        return sInstance;
+    }
 
     void RegionIORegistry::registerRegionIO(
         const lodestone::common::registry::Identifier &id,
@@ -19,9 +24,7 @@ namespace lodestone::conversion::region {
 
         mRegisteredRegionIOs[id] = std::move(io);
 
-#if CMAKE_BUILD_DEBUG
-        std::cout << "Registered RegionIO '" << id << "'" << std::endl;
-#endif
+        LOG_DEBUG("Registered RegionIO '" << id << "'");
     }
 
     const RegionIO *RegionIORegistry::getRegionIO(

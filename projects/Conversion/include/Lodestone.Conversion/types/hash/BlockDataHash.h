@@ -7,7 +7,7 @@
 
 namespace lodestone::conversion::types::hash {
     struct BlockDataHash {
-        d size_t operator()(
+        size_t operator()(
             const conversion::block::data::AbstractBlockData *blk) const {
             return blk->hash();
         }

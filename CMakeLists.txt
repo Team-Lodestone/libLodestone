@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.30)
 project(Lodestone VERSION 1.0.0)
 
-set(VERSION_SUFFIX "-dev.27") # used for non-stable versions, otherwise blank
+set(VERSION_SUFFIX "-dev.28") # used for non-stable versions, otherwise blank
 set(CMAKE_CXX_STANDARD 20)
 
 option(ENABLE_LINTERS "Enable source linters" ON)
@@ -58,6 +58,7 @@ add_library(ZLIB::ZLIB ALIAS zlibstatic)
 #include_directories(${BIO_SOURCE_DIR})
 
 # PROJECTS
+add_subdirectory(projects/Core)
 add_subdirectory(projects/Tests)
 add_subdirectory(projects/Common)
 add_subdirectory(projects/Level)
@@ -73,12 +74,14 @@ target_link_libraries(Lodestone.Common PRIVATE BIO-Static gtl)
 target_link_libraries(Lodestone.Level PRIVATE BIO-Static gtl)
 target_link_libraries(Lodestone.Conversion PRIVATE BIO-Static gtl)
 target_link_libraries(Lodestone.Java PRIVATE BIO-Static ZLIB::ZLIB gtl)
+target_link_libraries(Lodestone.Core PRIVATE BIO-Static ZLIB::ZLIB gtl)
 
 add_dependencies(Lodestone.Tests LodestoneScripts.CheckIncludePaths)
 add_dependencies(Lodestone.Common LodestoneScripts.CheckIncludePaths)
 add_dependencies(Lodestone.Level LodestoneScripts.CheckIncludePaths)
 add_dependencies(Lodestone.Conversion LodestoneScripts.CheckIncludePaths)
 add_dependencies(Lodestone.Java LodestoneScripts.CheckIncludePaths)
+add_dependencies(Lodestone.Core LodestoneScripts.CheckIncludePaths)
 
 # DEFINITIONS
 target_compile_definitions(Lodestone.Common PUBLIC
@@ -104,6 +107,7 @@ add_custom_target(Lodestone.All ALL DEPENDS
         Lodestone.Conversion
         Lodestone.Tests
         Lodestone.Java
+        Lodestone.Core
 #        Lodestone.Viewer
 )
 

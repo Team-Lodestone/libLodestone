@@ -5,8 +5,13 @@
 
 #include <iostream>
 
+#include <Lodestone.Common/Logging.h>
+
 namespace lodestone::conversion::world {
-    WorldIORegistry WorldIORegistry::sInstance = WorldIORegistry();
+    WorldIORegistry &WorldIORegistry::getInstance() {
+        static WorldIORegistry sInstance;
+        return sInstance;
+    }
 
     void WorldIORegistry::registerWorldIO(
         const lodestone::common::registry::Identifier &id,
@@ -17,9 +22,7 @@ namespace lodestone::conversion::world {
 
         mRegisteredWorldIOs[id] = std::move(io);
 
-#if CMAKE_BUILD_DEBUG
-        std::cout << "Registered WorldIO '" << id << "'" << std::endl;
-#endif
+        LOG_DEBUG("Registered WorldIO '" << id << "'");
     }
 
     const WorldIO *WorldIORegistry::getWorldIO(

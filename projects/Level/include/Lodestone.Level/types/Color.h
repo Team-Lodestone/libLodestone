@@ -7,6 +7,8 @@
 #include <format>
 #include <functional>
 
+#include <Lodestone.Common/string/StringSerializable.h>
+
 namespace lodestone::level::types {
     struct Color : public common::string::StringSerializable {
         unsigned char r, g, b, a;

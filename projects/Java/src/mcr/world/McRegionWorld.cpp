@@ -12,7 +12,7 @@ namespace lodestone::java::mcr::world {
           mIsThundering(false), mThunderTime(0), mLastPlayed(0), mSize(0) {}
 
     const lodestone::conversion::world::WorldIO *McRegionWorld::getIO() {
-        return lodestone::conversion::world::WorldIORegistry::sInstance
+        return lodestone::conversion::world::WorldIORegistry::getInstance()
             .getWorldIO(identifiers::MCREGION);
     }
 

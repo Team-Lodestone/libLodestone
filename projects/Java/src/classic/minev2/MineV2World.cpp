@@ -42,7 +42,7 @@ namespace lodestone::java::classic::minev2 {
     }
 
     const lodestone::conversion::world::WorldIO *MineV2World::getIO() {
-        return lodestone::conversion::world::WorldIORegistry::sInstance
+        return lodestone::conversion::world::WorldIORegistry::getInstance()
             .getWorldIO(identifiers::MINEV2);
     }
 } // namespace lodestone::java::classic::minev2

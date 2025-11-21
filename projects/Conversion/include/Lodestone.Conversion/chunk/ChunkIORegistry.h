@@ -15,7 +15,7 @@ namespace lodestone::conversion::chunk {
         ChunkIORegistry() = default;
 
       public:
-        static ChunkIORegistry sInstance;
+        static ChunkIORegistry &getInstance();
 
         void registerChunkIO(const lodestone::common::registry::Identifier &id,
                              std::unique_ptr<const ChunkIO> io);

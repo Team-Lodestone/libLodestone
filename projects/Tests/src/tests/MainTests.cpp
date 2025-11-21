@@ -41,7 +41,7 @@ namespace lodestone::tests::test {
 
         java::mcr::chunk::McRegionChunkIO *io =
             (java::mcr::chunk::McRegionChunkIO *)
-                lodestone::conversion::chunk::ChunkIORegistry::sInstance
+                lodestone::conversion::chunk::ChunkIORegistry::getInstance()
                     .getChunkIO({"lodestone", "mcregion"});
         std::unique_ptr<level::chunk::Chunk> ch =
             io->read(in, java::Version::b1_3);
@@ -69,7 +69,7 @@ namespace lodestone::tests::test {
 
         java::mcr::region::McRegionRegionIO *io =
             (java::mcr::region::McRegionRegionIO *)
-                lodestone::conversion::region::RegionIORegistry::sInstance
+                lodestone::conversion::region::RegionIORegistry::getInstance()
                     .getRegionIO(java::identifiers::MCREGION);
         std::unique_ptr<level::region::Region> r = io->read(
             in, java::Version::b1_3,
@@ -95,7 +95,7 @@ namespace lodestone::tests::test {
 
         const java::mcr::world::McRegionWorldIo *io =
             (java::mcr::world::McRegionWorldIo *)
-                lodestone::conversion::world::WorldIORegistry::sInstance
+                lodestone::conversion::world::WorldIORegistry::getInstance()
                     .getWorldIO(java::identifiers::MCREGION);
         std::shared_ptr<level::world::World> w =
             io->read(dir, java::Version::b1_3);
@@ -112,7 +112,7 @@ namespace lodestone::tests::test {
         // out.close();
         const java::mcr::region::McRegionRegionIO *r =
             dynamic_cast<const java::mcr::region::McRegionRegionIO *>(
-                lodestone::conversion::region::RegionIORegistry::sInstance
+                lodestone::conversion::region::RegionIORegistry::getInstance()
                     .getRegionIO({"lodestone", "mcregion"}));
 
         OPEN_WRITE_FILE_STREAM(std::format("{}.mcr", name))
@@ -127,7 +127,7 @@ namespace lodestone::tests::test {
 
         const java::classic::minev2::MineV2WorldIO *mv2io =
             (java::classic::minev2::MineV2WorldIO *)
-                lodestone::conversion::world::WorldIORegistry::sInstance
+                lodestone::conversion::world::WorldIORegistry::getInstance()
                     .getWorldIO(java::identifiers::MINEV2);
 
         std::unique_ptr<level::world::World> wld =
@@ -135,7 +135,7 @@ namespace lodestone::tests::test {
 
         const java::mcr::world::McRegionWorldIo *mcrio =
             (java::mcr::world::McRegionWorldIo *)
-                lodestone::conversion::world::WorldIORegistry::sInstance
+                lodestone::conversion::world::WorldIORegistry::getInstance()
                     .getWorldIO(java::identifiers::MCREGION);
 
         mcrio->write(util::OUTPUT_FOLDER / name, wld.get(), java::b1_3);

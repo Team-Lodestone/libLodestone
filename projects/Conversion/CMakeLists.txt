@@ -51,7 +51,7 @@ set(FILES
 
 add_library(Lodestone.Conversion SHARED ${FILES})
 target_include_directories(Lodestone.Conversion
-        PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
+        PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
 target_link_libraries(Lodestone.Conversion PUBLIC Lodestone.Common Lodestone.Level)

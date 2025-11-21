@@ -5,8 +5,13 @@
 
 #include <iostream>
 
+#include <Lodestone.Common/Logging.h>
+
 namespace lodestone::conversion::chunk {
-    ChunkIORegistry ChunkIORegistry::sInstance = ChunkIORegistry();
+    ChunkIORegistry &ChunkIORegistry::getInstance() {
+        static ChunkIORegistry sInstance;
+        return sInstance;
+    }
 
     void ChunkIORegistry::registerChunkIO(
         const lodestone::common::registry::Identifier &id,
@@ -16,10 +21,7 @@ namespace lodestone::conversion::chunk {
                 std::format("ChunkIO '{}' is already registered", id));
 
         mRegisteredChunkIOs[id] = std::move(io);
-
-#if CMAKE_BUILD_DEBUG
-        std::cout << "Registered ChunkIO '" << id << "'" << std::endl;
-#endif
+        LOG_DEBUG("Registered ChunkIO '" << id << "'");
     }
 
     const ChunkIO *ChunkIORegistry::getChunkIO(

@@ -14,7 +14,7 @@ namespace lodestone::level::material {
 
         constexpr const types::Color &getColor() const { return mColor; }
 
-        constexpr std::string toString() const override {
+        std::string toString() const override {
             return "Material[color=" + mColor.toString() + "]";
         };
 

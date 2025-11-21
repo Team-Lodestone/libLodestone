@@ -16,7 +16,7 @@ namespace lodestone::conversion::player {
         PlayerIORegistry() = default;
 
       public:
-        static PlayerIORegistry sInstance;
+        static PlayerIORegistry &getInstance();
 
         void registerPlayerIO(const lodestone::common::registry::Identifier &id,
                               std::unique_ptr<const PlayerIO> io);

@@ -32,8 +32,6 @@ add_executable(Lodestone.Tests ${FILES})
 target_include_directories(Lodestone.Tests
         PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/Lodestone.Tests
 )
 
 target_link_libraries(Lodestone.Tests PRIVATE Lodestone.Level nbt++)

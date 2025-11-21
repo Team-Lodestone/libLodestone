@@ -1,5 +1,7 @@
 #include "Lodestone.Level/item/ItemRegistry.h"
 
+#include <Lodestone.Common/Logging.h>
+
 #if CMAKE_BUILD_DEBUG
 #include <iostream>
 #endif
@@ -22,9 +24,7 @@ namespace lodestone::level::item {
                 std::format("Item '{}' is already registered", *id));
 
         mItems[id] = std::move(item);
-#if CMAKE_BUILD_DEBUG
-        std::cout << "Registered item '" << *id << "'" << std::endl;
-#endif
+        LOG_DEBUG("Registered item '" << *id << "'");
     }
 
     bool ItemRegistry::registerItemIfNonExistent(
@@ -35,9 +35,7 @@ namespace lodestone::level::item {
 
         mItems[id] = std::move(item);
 
-#if CMAKE_BUILD_DEBUG
-        std::cout << "Registered item '" << *id << "'" << std::endl;
-#endif
+        LOG_DEBUG("Registered item '" << *id << "'");
 
         return true;
     }

@@ -57,14 +57,12 @@ FetchContent_MakeAvailable(nbt++)
 
 add_library(Lodestone.Java SHARED ${FILES})
 target_include_directories(Lodestone.Java
-        PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/Lodestone.Java
+        PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
 find_package(OpenMP COMPONENTS C CXX)
 target_link_libraries(Lodestone.Java PRIVATE Lodestone.Level Lodestone.Conversion nbt++)
+target_link_libraries(Lodestone.Java PUBLIC Lodestone.Core)
 #target_link_libraries(Lodestone.Java PRIVATE Lodestone.Common)
 
 option(USE_OPENMP "Use OpenMP" ON)

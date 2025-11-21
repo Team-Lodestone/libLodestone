@@ -15,7 +15,7 @@ namespace lodestone::conversion::region {
         RegionIORegistry() = default;
 
       public:
-        static RegionIORegistry sInstance;
+        static RegionIORegistry &getInstance();
 
         void registerRegionIO(const lodestone::common::registry::Identifier &id,
                               std::unique_ptr<const RegionIO> io);

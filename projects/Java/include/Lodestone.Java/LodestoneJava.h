@@ -7,22 +7,24 @@
 
 #include <Lodestone.Conversion/block/VersionedBlockIO.h>
 
+#include <Lodestone.Core/LodestoneExtension.h>
+
 namespace lodestone::java {
-    class LODESTONE_API LodestoneJava {
-      private:
+    class LODESTONE_API LodestoneJava : public core::LodestoneExtension {
+    private:
         LodestoneJava();
 
-        static LodestoneJava *sInstance;
-
-      public:
+    public:
         static LodestoneJava *getInstance();
 
         static void LODESTONE_API init();
 
         void initBlocks();
 
+        common::registry::Identifier getIdentifier() override;
+
         lodestone::conversion::block::version::VersionedBlockIO io;
     };
-} // namespace lodestone::java
+}
 
-#endif // LODESTONE_MAIN_H
+#endif //LODESTONE_MAIN_H

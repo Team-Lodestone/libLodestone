@@ -9,7 +9,6 @@
 #include <Lodestone.Common/registry/Identifier.h>
 
 namespace lodestone::conversion::block::data {
-    // TODO maybe make this return signed byte
     class NumericBlockData final : public AbstractBlockData {
       public:
         constexpr NumericBlockData(const uint8_t id, const uint8_t data)

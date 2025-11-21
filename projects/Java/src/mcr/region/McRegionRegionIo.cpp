@@ -189,7 +189,7 @@ namespace lodestone::java::mcr::region {
 
     const conversion::chunk::ChunkIO *
     McRegionRegionIO::getChunkIO(int version) const {
-        return conversion::chunk::ChunkIORegistry::sInstance.getChunkIO(
+        return conversion::chunk::ChunkIORegistry::getInstance().getChunkIO(
             identifiers::MCREGION);
     }
 } // namespace lodestone::java::mcr::region
