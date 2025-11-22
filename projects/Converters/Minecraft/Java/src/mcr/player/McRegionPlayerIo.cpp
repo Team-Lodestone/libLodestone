@@ -1,16 +1,16 @@
 //
 // Created by DexrnZacAttack on 11/14/25 using zPc-i2.
 //
-#include "Lodestone.Java/mcr/player/McRegionPlayerIo.h"
+#include "Lodestone.Minecraft.Java/mcr/player/McRegionPlayerIo.h"
 
 #include <Lodestone.Common/io/DataBuffer.h>
 #include <libnbt++/io/stream_reader.h>
 #include <libnbt++/tag_primitive.h>
 
-#include "Lodestone.Java/mcr/player/McRegionPlayer.h"
+#include "Lodestone.Minecraft.Java/mcr/player/McRegionPlayer.h"
 #include <libnbt++/tag_list.h>
 
-namespace lodestone::java::mcr::player {
+namespace lodestone::minecraft::java::mcr::player {
     std::unique_ptr<level::entity::Player>
     McRegionPlayerIO::read(const std::filesystem::path &filename,
                            nbt::tag_compound &player, const int version) const {
@@ -95,4 +95,4 @@ namespace lodestone::java::mcr::player {
     void McRegionPlayerIO::write(lodestone::level::entity::Player *p,
                                  int version, std::ostream &out) const {}
 
-} // namespace lodestone::java::mcr::player
+} // namespace lodestone::minecraft::java::mcr::player

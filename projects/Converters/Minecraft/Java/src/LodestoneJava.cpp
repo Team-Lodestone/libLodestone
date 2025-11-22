@@ -4,14 +4,14 @@
 
 #include <Lodestone.Conversion/level/LevelIORegistry.h>
 
-#include "Lodestone.Java/LodestoneJava.h"
-#include "Lodestone.Java/classic/minev1/MineV1LevelIO.h"
-#include "Lodestone.Java/classic/minev2/MineV2LevelIO.h"
-#include "Lodestone.Java/indev/McLevelLevelIO.h"
+#include "Lodestone.Minecraft.Java/LodestoneJava.h"
+#include "Lodestone.Minecraft.Java/classic/minev1/MineV1LevelIO.h"
+#include "Lodestone.Minecraft.Java/classic/minev2/MineV2LevelIO.h"
+#include "Lodestone.Minecraft.Java/indev/McLevelLevelIO.h"
 
-#include "Lodestone.Java/Identifiers.h"
-#include "Lodestone.Java/Version.h"
-#include "Lodestone.Java/classic/minev2/MineV2WorldIo.h"
+#include "Lodestone.Minecraft.Java/Identifiers.h"
+#include "Lodestone.Minecraft.Java/Version.h"
+#include "Lodestone.Minecraft.Java/classic/minev2/MineV2WorldIo.h"
 #include <Lodestone.Conversion/block/BlockIO.h>
 #include <Lodestone.Conversion/block/VersionedBlockIO.h>
 #include <Lodestone.Conversion/block/data/ClassicBlockData.h>
@@ -22,13 +22,13 @@
 
 #include <Lodestone.Conversion/player/PlayerIORegistry.h>
 
-#include "Lodestone.Java/mcr/chunk/McRegionChunkIo.h"
-#include "Lodestone.Java/mcr/player/McRegionPlayerIo.h"
-#include "Lodestone.Java/mcr/region/McRegionRegionIo.h"
-#include "Lodestone.Java/mcr/world/McRegionWorldIo.h"
+#include "Lodestone.Minecraft.Java/mcr/chunk/McRegionChunkIo.h"
+#include "Lodestone.Minecraft.Java/mcr/player/McRegionPlayerIo.h"
+#include "Lodestone.Minecraft.Java/mcr/region/McRegionRegionIo.h"
+#include "Lodestone.Minecraft.Java/mcr/world/McRegionWorldIo.h"
 #include <Lodestone.Core/Lodestone.h>
 
-namespace lodestone::java {
+namespace lodestone::minecraft::java {
     LodestoneJava::LodestoneJava() {
         this->io = lodestone::conversion::block::version::VersionedBlockIO();
         initBlocks();
@@ -437,7 +437,7 @@ namespace lodestone::java {
             new lodestone::conversion::block::data::NumericBlockData(49, 0));
     }
 
-    common::registry::Identifier LodestoneJava::getIdentifier() {
+    lodestone::common::registry::Identifier LodestoneJava::getIdentifier() {
         return {"lodestone", "java"};
     }
-} // namespace lodestone::java
+} // namespace lodestone::minecraft::java

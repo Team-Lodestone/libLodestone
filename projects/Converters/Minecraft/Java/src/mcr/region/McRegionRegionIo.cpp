@@ -2,7 +2,7 @@
 // Created by DexrnZacAttack on 11/9/25 using zPc-i2.
 //
 
-#include "Lodestone.Java/mcr/region/McRegionRegionIo.h"
+#include "Lodestone.Minecraft.Java/mcr/region/McRegionRegionIo.h"
 
 #include <BinaryIO/BinaryBuffer.h>
 #include <format>
@@ -12,11 +12,11 @@
 #endif
 #include <zlib.h>
 
-#include "Lodestone.Java/Identifiers.h"
-#include "Lodestone.Java/mcr/RegionChunkIndice.h"
-#include "Lodestone.Java/mcr/RegionCompression.h"
-#include "Lodestone.Java/mcr/chunk/McRegionChunk.h"
-#include "Lodestone.Java/mcr/chunk/McRegionChunkIo.h"
+#include "Lodestone.Minecraft.Java/Identifiers.h"
+#include "Lodestone.Minecraft.Java/mcr/RegionChunkIndice.h"
+#include "Lodestone.Minecraft.Java/mcr/RegionCompression.h"
+#include "Lodestone.Minecraft.Java/mcr/chunk/McRegionChunk.h"
+#include "Lodestone.Minecraft.Java/mcr/chunk/McRegionChunkIo.h"
 #include <Lodestone.Conversion/chunk/ChunkIO.h>
 #include <Lodestone.Conversion/chunk/ChunkIORegistry.h>
 #include <Lodestone.Level/region/Region.h>
@@ -25,11 +25,11 @@
 
 #include <libnbt++/io/izlibstream.h>
 
-#include "Lodestone.Java/mcr/region/McRegionRegion.h"
+#include "Lodestone.Minecraft.Java/mcr/region/McRegionRegion.h"
 #include <BinaryIO/stream/BinaryOutputStream.h>
 #include <libnbt++/io/ozlibstream.h>
 
-namespace lodestone::java::mcr::region {
+namespace lodestone::minecraft::java::mcr::region {
     size_t McRegionRegionIO::getSize(lodestone::level::Level *c,
                                      int version) const {
         return 0;
@@ -181,7 +181,7 @@ namespace lodestone::java::mcr::region {
 
                 // write timestamp
                 bos.seek(idx + SECTOR_SIZE);
-                bos.writeBE<int32_t>(common::getCurrentTimeMillis());
+                bos.writeBE<int32_t>(lodestone::common::getCurrentTimeMillis());
 
                 // seek back and write next one
                 bos.seek(sa);
@@ -194,4 +194,4 @@ namespace lodestone::java::mcr::region {
         return conversion::chunk::ChunkIORegistry::getInstance().getChunkIO(
             identifiers::MCREGION);
     }
-} // namespace lodestone::java::mcr::region
+} // namespace lodestone::minecraft::java::mcr::region

@@ -32,7 +32,7 @@ target_include_directories(Lodestone.Tests
 )
 
 target_link_libraries(Lodestone.Tests PRIVATE Lodestone.Level nbt++ BIO)
-target_link_libraries(Lodestone.Tests PRIVATE Lodestone.Java Lodestone.Conversion)
+target_link_libraries(Lodestone.Tests PRIVATE Lodestone.Minecraft.Java Lodestone.Conversion)
 
 # Should we allow for exceptions to throw for debugging
 target_compile_definitions(Lodestone.Tests PRIVATE

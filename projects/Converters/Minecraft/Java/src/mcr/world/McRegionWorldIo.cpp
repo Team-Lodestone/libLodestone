@@ -1,7 +1,7 @@
 //
 // Created by DexrnZacAttack on 11/11/25 using zPc-i2.
 //
-#include "Lodestone.Java/mcr/world/McRegionWorldIo.h"
+#include "Lodestone.Minecraft.Java/mcr/world/McRegionWorldIo.h"
 
 #include <fstream>
 #include <iostream>
@@ -11,8 +11,8 @@
 #include <ranges>
 #include <stack>
 
-#include "Lodestone.Java/Identifiers.h"
-#include "Lodestone.Java/mcr/world/McRegionWorld.h"
+#include "Lodestone.Minecraft.Java/Identifiers.h"
+#include "Lodestone.Minecraft.Java/mcr/world/McRegionWorld.h"
 #include <Lodestone.Conversion/level/LevelIORegistry.h>
 #include <Lodestone.Conversion/region/RegionIORegistry.h>
 #include <libnbt++/io/izlibstream.h>
@@ -21,16 +21,16 @@
 
 #include <Lodestone.Conversion/player/PlayerIORegistry.h>
 
-#include "Lodestone.Java/mcr/chunk/McRegionChunk.h"
-#include "Lodestone.Java/mcr/player/McRegionPlayer.h"
-#include "Lodestone.Java/mcr/player/McRegionPlayerIo.h"
-#include "Lodestone.Java/mcr/region/McRegionRegion.h"
-#include "Lodestone.Java/mcr/region/McRegionRegionIo.h"
+#include "Lodestone.Minecraft.Java/mcr/chunk/McRegionChunk.h"
+#include "Lodestone.Minecraft.Java/mcr/player/McRegionPlayer.h"
+#include "Lodestone.Minecraft.Java/mcr/player/McRegionPlayerIo.h"
+#include "Lodestone.Minecraft.Java/mcr/region/McRegionRegion.h"
+#include "Lodestone.Minecraft.Java/mcr/region/McRegionRegionIo.h"
 #include <libnbt++/io/ozlibstream.h>
 
 #include <Lodestone.Common/Logging.h>
 
-namespace lodestone::java::mcr::world {
+namespace lodestone::minecraft::java::mcr::world {
     const lodestone::conversion::level::PlayerIO *
     McRegionWorldIo::getLevelIO(int version) const {
         return lodestone::conversion::level::LevelIoRegistry::getInstance()
@@ -198,10 +198,10 @@ namespace lodestone::java::mcr::world {
                 dim->setSpawnPos(
                     spawnPos); // in beta, only worlds have the spawn position
                 // get dim (or temp name if conversion unknown)
-                common::registry::Identifier d =
+                lodestone::common::registry::Identifier d =
                     player::McRegionPlayer::dimensionIdToIdentifier(id);
                 if (d == level::world::World::Dimension::UNKNOWN)
-                    d = common::registry::Identifier(
+                    d = lodestone::common::registry::Identifier(
                         "lodestone",
                         ("unknown_dim_" + std::to_string(t)).c_str());
                 world->addLevel(
@@ -328,4 +328,4 @@ namespace lodestone::java::mcr::world {
         // TODO for block states we might be able to make registry that maps
         // fields to bits in data byte per block
     }
-} // namespace lodestone::java::mcr::world
+} // namespace lodestone::minecraft::java::mcr::world

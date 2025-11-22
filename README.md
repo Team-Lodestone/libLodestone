@@ -4,13 +4,16 @@ Provides file type reading, file type writing, and world & format conversion for
 LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE).
 
 ### Libraries
-| Name                                         | Description                                  |
-|----------------------------------------------|----------------------------------------------|
-| [Lodestone.Level](/projects/Level)           | Voxel world engine with dynamic registration |
-| [Lodestone.Conversion](/projects/Conversion) | Conversion base classes & registries         |
-| [Lodestone.Java](/projects/Java)             | Java Edition format converters               |
-| [Lodestone.Common](/projects/Common)         | Common dependencies for all projects         |
-| [Lodestone.Tests](/projects/Tests)           | Tests for our converters                     |
+| Name                                                   | Description                                  |
+|--------------------------------------------------------|----------------------------------------------|
+| [Lodestone.Level](/projects/Libraries/Level)           | Voxel world engine with dynamic registration |
+| [Lodestone.Conversion](/projects/Libraries/Conversion) | Conversion base classes & registries         |
+| [Lodestone.Core](/projects/Libraries/Core)             | Core library, handles converter registration |
+| [Lodestone.Common](/projects/Libraries/Common)         | Common dependencies for all projects         |
+### Converters
+| Name                                                  | Description                       |
+|-------------------------------------------------------|-----------------------------------|
+| [Lodestone.Java](/projects/Converters/Minecraft/Java) | Minecraft: Java Edition Converter |
 
 
 # Roadmap

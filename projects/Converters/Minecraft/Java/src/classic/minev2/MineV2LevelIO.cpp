@@ -1,11 +1,11 @@
 //
 // Created by DexrnZacAttack on 10/16/25 using zPc-i2.
 //
-#include "Lodestone.Java/classic/minev2/MineV2LevelIO.h"
+#include "Lodestone.Minecraft.Java/classic/minev2/MineV2LevelIO.h"
 
 #include <ranges>
 
-#include "Lodestone.Java/LodestoneJava.h"
+#include "Lodestone.Minecraft.Java/LodestoneJava.h"
 #include "Lodestone.Level/FiniteLevel.h"
 #include <Lodestone.Common/Indexing.h>
 #include <Lodestone.Conversion/block/BlockIO.h>
@@ -16,7 +16,7 @@
 
 #include <Lodestone.Common/Math.h>
 
-namespace lodestone::java::classic::minev2 {
+namespace lodestone::minecraft::java::classic::minev2 {
 
     size_t MineV2LevelIO::getSize(level::Level *l, int version) const {
         return 2 + 2 + 2 + l->getBlockCount();
@@ -103,4 +103,4 @@ namespace lodestone::java::classic::minev2 {
             }
         }
     }
-} // namespace lodestone::java::classic::minev2
+} // namespace lodestone::minecraft::java::classic::minev2

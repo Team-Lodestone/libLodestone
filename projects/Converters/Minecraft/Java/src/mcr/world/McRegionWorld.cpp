@@ -1,12 +1,12 @@
 //
 // Created by DexrnZacAttack on 11/11/25 using zPc-i2.
 //
-#include "Lodestone.Java/mcr/world/McRegionWorld.h"
+#include "Lodestone.Minecraft.Java/mcr/world/McRegionWorld.h"
 
-#include "Lodestone.Java/Identifiers.h"
+#include "Lodestone.Minecraft.Java/Identifiers.h"
 #include <Lodestone.Conversion/world/WorldIORegistry.h>
 
-namespace lodestone::java::mcr::world {
+namespace lodestone::minecraft::java::mcr::world {
     McRegionWorld::McRegionWorld(const std::string &name)
         : World(name), mSeed(0), mIsRaining(false), mRainTime(0),
           mIsThundering(false), mThunderTime(0), mLastPlayed(0), mSize(0) {}
@@ -63,4 +63,4 @@ namespace lodestone::java::mcr::world {
     void McRegionWorld::setVersion(const int32_t version) {
         mVersion = version;
     }
-} // namespace lodestone::java::mcr::world
+} // namespace lodestone::minecraft::java::mcr::world

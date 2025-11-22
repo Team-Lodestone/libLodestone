@@ -29,12 +29,13 @@ for paths, dirs, files in os.walk(os.path.abspath("../projects")):
                 if mm and not library_include.fullmatch(mm.group(1)): # check for relative paths (can we automate this without fucking up everything????)
                     errors.append(f"Relative path at {p}:{num}: {ln.strip()}")
                 else: # we do it when there's no errors otherwise the path will be changed the next time it looks at it
-                    if m and f"{m.group(2).lstrip("Lodestone.")}" not in p: # check if all "Lodestone.{otherProj}" exists, replace with <Lodestone.{otherProj}>
+                    # TODO this is slightly broken in that minecraft.common and common are not different from eachother from this script's perspective
+                    if m and f"{m.group(2).lstrip("Lodestone.").replace(".", "/")}" not in p: # check if all "Lodestone.{otherProj}" exists, replace with <Lodestone.{otherProj}>
                         n = f"#include <{m.group(1)}>\n"
                         print(f"Replacing '{ln.strip()}' with '{n.strip()}' in '{p}:{num}'")
                         lines[num-1] = n
 
-                    if nm and f"{nm.group(2).lstrip("Lodestone.")}" in p: # check if all <Lodestone.{currentProj}> exists, replace with "Lodestone.{currentProj}"
+                    if nm and f"{nm.group(2).lstrip("Lodestone.").replace(".", "/")}" in p: # check if all <Lodestone.{currentProj}> exists, replace with "Lodestone.{currentProj}"
                         n = f"#include \"{nm.group(1)}\"\n"
                         print(f"Replacing '{ln.strip()}' with '{n.strip()}' in '{p}:{num}'")
                         lines[num-1] = n

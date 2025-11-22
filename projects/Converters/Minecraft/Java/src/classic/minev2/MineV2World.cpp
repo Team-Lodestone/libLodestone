@@ -1,15 +1,15 @@
 //
 // Created by DexrnZacAttack on 10/16/25 using zPc-i2.
 //
-#include "Lodestone.Java/classic/minev2/MineV2World.h"
+#include "Lodestone.Minecraft.Java/classic/minev2/MineV2World.h"
 
 #include <Lodestone.Common/LodestoneCommon.h>
 
-#include "Lodestone.Java/Identifiers.h"
-#include "Lodestone.Java/classic/minev2/MineV2WorldIo.h"
+#include "Lodestone.Minecraft.Java/Identifiers.h"
+#include "Lodestone.Minecraft.Java/classic/minev2/MineV2WorldIo.h"
 #include <Lodestone.Conversion/world/WorldIORegistry.h>
 
-namespace lodestone::java::classic::minev2 {
+namespace lodestone::minecraft::java::classic::minev2 {
     MineV2World::MineV2World(const std::string &name, const std::string &author)
         : World(name), mAuthor(author),
           mCreationTime(common::getCurrentTimeMillis()) {}
@@ -45,4 +45,4 @@ namespace lodestone::java::classic::minev2 {
         return lodestone::conversion::world::WorldIORegistry::getInstance()
             .getWorldIO(identifiers::MINEV2);
     }
-} // namespace lodestone::java::classic::minev2
+} // namespace lodestone::minecraft::java::classic::minev2

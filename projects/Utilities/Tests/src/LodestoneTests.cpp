@@ -3,7 +3,7 @@
 #include <ostream>
 
 #include <Lodestone.Common/LodestoneCommon.h>
-#include <Lodestone.Java/LodestoneJava.h>
+#include <Lodestone.Minecraft.Java/LodestoneJava.h>
 
 #include "Lodestone.Tests/tests/MainTests.h"
 #include "Lodestone.Tests/util.h"
@@ -211,7 +211,7 @@
 // const int d) {
 //     const std::unique_ptr<lodestone::conversion::block::version::BlockIO> io
 //     =
-//             lodestone::java::LodestoneJava::getInstance()->io.getIo(lodestone::java::rd131655);
+//             lodestone::minecraft::java::LodestoneJava::getInstance()->io.getIo(lodestone::minecraft::java::rd131655);
 //     for (int x = 0; x < w; x++) {
 //         for (int y = 0; y < h; y++) {
 //             for (int z = 0; z < d; z++) {
@@ -238,10 +238,10 @@
 // libLCE) int mainOld() {
 //     std::cout << lodestone::lodestone_get_library_string() << std::endl;
 //
-//     lodestone::java::LodestoneJava::init();
+//     lodestone::minecraft::java::LodestoneJava::init();
 //
 //     std::unique_ptr<lodestone::conversion::block::version::BlockIO> io =
-//             lodestone::java::LodestoneJava::getInstance()->io.getIo(lodestone::java::Version::rd20090515);
+//             lodestone::minecraft::java::LodestoneJava::getInstance()->io.getIo(lodestone::minecraft::java::Version::rd20090515);
 //     // for (auto [fst, snd]: io->getFromInternalConversionMap()) {
 //     //     std::cout << fst << " -> " << static_cast<int>(*static_cast<const
 //     uint8_t *>(snd->getIdPtr())) << std::endl;
@@ -253,25 +253,25 @@
 //     }
 //
 //     // for (const auto &i:
-//     lodestone::java::LodestoneJava::sIo.getFromInternalConversionMap() |
+//     lodestone::minecraft::java::LodestoneJava::sIo.getFromInternalConversionMap() |
 //     std::views::keys) {
 //     //     std::cout << "frominternal->name: " << i << std::endl;
 //     // }
 //     //
 //     // for (const auto &i:
-//     lodestone::java::LodestoneJava::sIo.getFromInternalConversionMap() |
+//     lodestone::minecraft::java::LodestoneJava::sIo.getFromInternalConversionMap() |
 //     std::views::values) {
 //     //     std::cout << "frominternal->id: " << i->getId() << std::endl;
 //     // }
 //     //
 //     // for (const auto &i:
-//     lodestone::java::LodestoneJava::sIo.getToInternalConversionMap() |
+//     lodestone::minecraft::java::LodestoneJava::sIo.getToInternalConversionMap() |
 //     std::views::keys) {
 //     //     std::cout << "tointernal->id: " << i->getId() << std::endl;
 //     // }
 //     //
 //     // for (const auto i:
-//     lodestone::java::LodestoneJava::sIo.getDefaultDataMap() |
+//     lodestone::minecraft::java::LodestoneJava::sIo.getDefaultDataMap() |
 //     std::views::keys) {
 //     //     std::cout << "datamap: " << i << std::endl;
 //     // }
@@ -323,12 +323,12 @@
 //         lodestone::conversion::world::WorldIORegistry::sInstance.getWorldIO({"lodestone",
 //         "minev2"}));
 //     std::ofstream o("minev2.mine.out", std::ios::binary);
-//     lodestone::java::classic::minev2::MineV2World *w = new
-//     lodestone::java::classic::minev2::MineV2World(
+//     lodestone::minecraft::java::classic::minev2::MineV2World *w = new
+//     lodestone::minecraft::java::classic::minev2::MineV2World(
 //         std::unique_ptr<lodestone::level::Level>(level), "New World", "h");
 //     o.write(reinterpret_cast<const char *>(l2->write(w,
-//     lodestone::java::rd131655)),
-//             l2->getSize(w, lodestone::java::rd131655));
+//     lodestone::minecraft::java::rd131655)),
+//             l2->getSize(w, lodestone::minecraft::java::rd131655));
 //     o.close();
 //
 //     std::filesystem::create_directories("heightmaps/bitmaps");
@@ -353,7 +353,7 @@ int main(int argc, char **argv) {
     LOG_INFO(lodestone::common::lodestone_get_library_string());
     LOG_INFO(bio::bio_get_library_string());
 
-    lodestone::java::LodestoneJava::init();
+    lodestone::minecraft::java::LodestoneJava::init();
 
     std::filesystem::create_directories(lodestone::tests::util::INPUT_FOLDER);
     std::filesystem::create_directories(lodestone::tests::util::OUTPUT_FOLDER);

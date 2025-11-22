@@ -3,7 +3,7 @@
 //
 #include "Lodestone.Tests/tests/MainTests.h"
 
-#include <Lodestone.Java/classic/minev2/options/MineV2WorldWriteOptions.h>
+#include <Lodestone.Minecraft.Java/classic/minev2/options/MineV2WorldWriteOptions.h>
 
 #include <fstream>
 
@@ -12,19 +12,19 @@
 #include <Lodestone.Conversion/region/RegionIORegistry.h>
 #include <Lodestone.Conversion/world/FileWorldIo.h>
 #include <Lodestone.Conversion/world/WorldIORegistry.h>
-#include <Lodestone.Java/Identifiers.h>
-#include <Lodestone.Java/Version.h>
-#include <Lodestone.Java/classic/minev2/MineV2World.h>
-#include <Lodestone.Java/mcr/chunk/McRegionChunkIo.h>
-#include <Lodestone.Java/mcr/region/McRegionRegionIo.h>
-#include <Lodestone.Java/mcr/world/McRegionWorld.h>
-#include <Lodestone.Java/mcr/world/McRegionWorldIo.h>
+#include <Lodestone.Minecraft.Java/Identifiers.h>
+#include <Lodestone.Minecraft.Java/Version.h>
+#include <Lodestone.Minecraft.Java/classic/minev2/MineV2World.h>
+#include <Lodestone.Minecraft.Java/mcr/chunk/McRegionChunkIo.h>
+#include <Lodestone.Minecraft.Java/mcr/region/McRegionRegionIo.h>
+#include <Lodestone.Minecraft.Java/mcr/world/McRegionWorld.h>
+#include <Lodestone.Minecraft.Java/mcr/world/McRegionWorldIo.h>
 #include <Lodestone.Level/Level.h>
 
-#include <Lodestone.Java/mcr/chunk/McRegionChunk.h>
-#include <Lodestone.Java/mcr/region/McRegionRegion.h>
+#include <Lodestone.Minecraft.Java/mcr/chunk/McRegionChunk.h>
+#include <Lodestone.Minecraft.Java/mcr/region/McRegionRegion.h>
 
-#include <Lodestone.Java/classic/minev2/MineV2WorldIo.h>
+#include <Lodestone.Minecraft.Java/classic/minev2/MineV2WorldIo.h>
 
 namespace lodestone::tests::test {
     void MainTests::run() {
@@ -41,12 +41,12 @@ namespace lodestone::tests::test {
     void MainTests::readMcrChunk() {
         OPEN_FILE_STREAM("mcregion_chunk.dat", c);
 
-        java::mcr::chunk::McRegionChunkIO *io =
-            (java::mcr::chunk::McRegionChunkIO *)
+        minecraft::java::mcr::chunk::McRegionChunkIO *io =
+            (minecraft::java::mcr::chunk::McRegionChunkIO *)
                 lodestone::conversion::chunk::ChunkIORegistry::getInstance()
                     .getChunkIO({"lodestone", "mcregion"});
         std::unique_ptr<level::chunk::Chunk> ch =
-            io->read(in, java::Version::b1_3);
+            io->read(in, minecraft::java::Version::b1_3);
 
         level::Level *level = new level::Level();
         level->addChunk(std::move(ch));
@@ -56,38 +56,38 @@ namespace lodestone::tests::test {
         //     lodestone::conversion::world::FileWorldIO *>(
         //     lodestone::conversion::world::WorldIORegistry::sInstance.getWorldIO({"lodestone",
         //     "minev2"}));
-        // lodestone::java::classic::minev2::MineV2World *w = new
-        // lodestone::java::classic::minev2::MineV2World(
+        // lodestone::minecraft::minecraft::java::classic::minev2::MineV2World *w = new
+        // lodestone::minecraft::minecraft::java::classic::minev2::MineV2World(
         //     std::unique_ptr<lodestone::level::Level>(level), "New World",
         //     "h");
         // WRITE_FILE("minev2.mine.out", reinterpret_cast<const
-        // char*>(l2->write(w, lodestone::java::c0_0_12a)),
-        //            l2->getSize(w, lodestone::java::c0_0_12a));
+        // char*>(l2->write(w, lodestone::minecraft::minecraft::java::c0_0_12a)),
+        //            l2->getSize(w, lodestone::minecraft::minecraft::java::c0_0_12a));
     }
 
     void MainTests::readMcrFile() {
         std::string name("r.0.0.omnibeta");
         OPEN_FILE_STREAM(std::format("{}.mcr", name), c);
 
-        java::mcr::region::McRegionRegionIO *io =
-            (java::mcr::region::McRegionRegionIO *)
+        minecraft::java::mcr::region::McRegionRegionIO *io =
+            (minecraft::java::mcr::region::McRegionRegionIO *)
                 lodestone::conversion::region::RegionIORegistry::getInstance()
-                    .getRegionIO(java::identifiers::MCREGION);
+                    .getRegionIO(minecraft::java::identifiers::MCREGION);
         std::unique_ptr<level::region::Region> r = io->read(
-            in, java::Version::b1_3,
-            java::mcr::region::McRegionRegion::getCoordsFromFilename(name));
+            in, minecraft::java::Version::b1_3,
+            minecraft::java::mcr::region::McRegionRegion::getCoordsFromFilename(name));
 
         // const lodestone::conversion::world::FileWorldIO *l2 =
         // dynamic_cast<const
         //     lodestone::conversion::world::FileWorldIO *>(
         //     lodestone::conversion::world::WorldIORegistry::sInstance.getWorldIO({"lodestone",
         //     "minev2"}));
-        // lodestone::java::classic::minev2::MineV2World *w = new
-        // lodestone::java::classic::minev2::MineV2World(
+        // lodestone::minecraft::minecraft::java::classic::minev2::MineV2World *w = new
+        // lodestone::minecraft::minecraft::java::classic::minev2::MineV2World(
         //     std::move(r), "New World", "h");
         //
         // OPEN_WRITE_FILE_STREAM(std::format("{}.dat", name))
-        // l2->write(w, lodestone::java::c0_28, out);
+        // l2->write(w, lodestone::minecraft::minecraft::java::c0_28, out);
         // out.close();
     }
 
@@ -95,12 +95,12 @@ namespace lodestone::tests::test {
         std::string name("omnibeta");
         std::filesystem::path dir(util::INPUT_FOLDER / name);
 
-        const java::mcr::world::McRegionWorldIo *io =
-            (java::mcr::world::McRegionWorldIo *)
+        const minecraft::java::mcr::world::McRegionWorldIo *io =
+            (minecraft::java::mcr::world::McRegionWorldIo *)
                 lodestone::conversion::world::WorldIORegistry::getInstance()
-                    .getWorldIO(java::identifiers::MCREGION);
+                    .getWorldIO(minecraft::java::identifiers::MCREGION);
         std::shared_ptr<level::world::World> w =
-            io->read(dir, java::Version::b1_3, {});
+            io->read(dir, minecraft::java::Version::b1_3, {});
 
         std::cout << "done now writing" << std::endl;
 
@@ -110,15 +110,15 @@ namespace lodestone::tests::test {
         // "minev2"}));
         //
         // OPEN_WRITE_FILE_STREAM(std::format("{}.dat", name))
-        // l2->write(w.get(), lodestone::java::c0_28, out);
+        // l2->write(w.get(), lodestone::minecraft::minecraft::java::c0_28, out);
         // out.close();
-        const java::mcr::region::McRegionRegionIO *r =
-            dynamic_cast<const java::mcr::region::McRegionRegionIO *>(
+        const minecraft::java::mcr::region::McRegionRegionIO *r =
+            dynamic_cast<const minecraft::java::mcr::region::McRegionRegionIO *>(
                 lodestone::conversion::region::RegionIORegistry::getInstance()
                     .getRegionIO({"lodestone", "mcregion"}));
 
         OPEN_WRITE_FILE_STREAM(std::format("{}.mcr", name))
-        r->write(w.get()->getDefaultLevel(), lodestone::java::b1_3, {0, 0},
+        r->write(w.get()->getDefaultLevel(), lodestone::minecraft::java::b1_3, {0, 0},
                  out);
         out.close();
     }
@@ -127,21 +127,21 @@ namespace lodestone::tests::test {
         std::string name("ProjectLodestoneTestWorld");
         OPEN_FILE_STREAM(std::format("{}.mine", name), c);
 
-        const java::classic::minev2::MineV2WorldIO *mv2io =
-            (java::classic::minev2::MineV2WorldIO *)
+        const minecraft::java::classic::minev2::MineV2WorldIO *mv2io =
+            (minecraft::java::classic::minev2::MineV2WorldIO *)
                 lodestone::conversion::world::WorldIORegistry::getInstance()
-                    .getWorldIO(java::identifiers::MINEV2);
+                    .getWorldIO(minecraft::java::identifiers::MINEV2);
 
         std::unique_ptr<level::world::World> wld =
-            mv2io->read(in, lodestone::java::c0_28, {});
+            mv2io->read(in, lodestone::minecraft::java::c0_28, {});
 
-        const java::mcr::world::McRegionWorldIo *mcrio =
-            (java::mcr::world::McRegionWorldIo *)
+        const minecraft::java::mcr::world::McRegionWorldIo *mcrio =
+            (minecraft::java::mcr::world::McRegionWorldIo *)
                 lodestone::conversion::world::WorldIORegistry::getInstance()
-                    .getWorldIO(java::identifiers::MCREGION);
+                    .getWorldIO(minecraft::java::identifiers::MCREGION);
 
-        mcrio->write(util::OUTPUT_FOLDER / name, wld.get(), java::b1_3,
-                     java::classic::minev2::options::MineV2WorldWriteOptions{});
+        mcrio->write(util::OUTPUT_FOLDER / name, wld.get(), minecraft::java::b1_3,
+                     minecraft::java::classic::minev2::options::MineV2WorldWriteOptions{});
     }
 
 } // namespace lodestone::tests::test

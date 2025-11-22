@@ -1,11 +1,11 @@
 //
 // Created by DexrnZacAttack on 10/15/25 using zPc-i2.
 //
-#include "Lodestone.Java/classic/minev1/MineV1LevelIO.h"
+#include "Lodestone.Minecraft.Java/classic/minev1/MineV1LevelIO.h"
 
 #include <ranges>
 
-#include "Lodestone.Java/LodestoneJava.h"
+#include "Lodestone.Minecraft.Java/LodestoneJava.h"
 #include "Lodestone.Level/FiniteLevel.h"
 #include <Lodestone.Common/Indexing.h>
 #include <Lodestone.Conversion/block/BlockIO.h>
@@ -14,7 +14,7 @@
 #include <BinaryIO/stream/BinaryInputStream.h>
 #include <BinaryIO/stream/BinaryOutputStream.h>
 
-namespace lodestone::java::classic::minev1 {
+namespace lodestone::minecraft::java::classic::minev1 {
 
     size_t MineV1LevelIO::getSize(level::Level *l, int version) const {
         return WIDTH * HEIGHT * DEPTH;
@@ -85,4 +85,4 @@ namespace lodestone::java::classic::minev1 {
             }
         }
     }
-} // namespace lodestone::java::classic::minev1
+} // namespace lodestone::minecraft::java::classic::minev1

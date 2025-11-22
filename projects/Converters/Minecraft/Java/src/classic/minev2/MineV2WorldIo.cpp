@@ -1,22 +1,22 @@
 //
 // Created by DexrnZacAttack on 11/2/25 using zPc-i2.
 //
-#include "Lodestone.Java/classic/minev2/MineV2WorldIo.h"
+#include "Lodestone.Minecraft.Java/classic/minev2/MineV2WorldIo.h"
 
-#include "Lodestone.Java/Identifiers.h"
-#include "Lodestone.Java/Version.h"
-#include "Lodestone.Java/classic/minev2/MineV2LevelIO.h"
-#include "Lodestone.Java/classic/minev2/MineV2World.h"
+#include "Lodestone.Minecraft.Java/Identifiers.h"
+#include "Lodestone.Minecraft.Java/Version.h"
+#include "Lodestone.Minecraft.Java/classic/minev2/MineV2LevelIO.h"
+#include "Lodestone.Minecraft.Java/classic/minev2/MineV2World.h"
 #include <BinaryIO/BinaryBuffer.h>
 #include <Lodestone.Conversion/level/LevelIORegistry.h>
 
 #include <BinaryIO/stream/BinaryInputStream.h>
 #include <BinaryIO/stream/BinaryOutputStream.h>
 
-#include "Lodestone.Java/classic/minev2/MineV2LevelIO.h"
-#include "Lodestone.Java/classic/minev2/options/MineV2WorldWriteOptions.h"
+#include "Lodestone.Minecraft.Java/classic/minev2/MineV2LevelIO.h"
+#include "Lodestone.Minecraft.Java/classic/minev2/options/MineV2WorldWriteOptions.h"
 
-namespace lodestone::java::classic::minev2 {
+namespace lodestone::minecraft::java::classic::minev2 {
     size_t MineV2WorldIO::getSize(level::world::World *w,
                                   const int version) const {
         size_t s = sizeof(uint32_t) // signature
@@ -106,4 +106,4 @@ namespace lodestone::java::classic::minev2 {
         lio->write(w->getLevel(writeOptions->level), version, bos.getStream());
         // todo: VERSION STUFF
     }
-} // namespace lodestone::java::classic::minev2
+} // namespace lodestone::minecraft::java::classic::minev2

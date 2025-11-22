@@ -1,9 +1,9 @@
 //
 // Created by DexrnZacAttack on 11/11/25 using zPc-i2.
 //
-#include "Lodestone.Java/mcr/region/McRegionRegion.h"
+#include "Lodestone.Minecraft.Java/mcr/region/McRegionRegion.h"
 
-namespace lodestone::java::mcr::region {
+namespace lodestone::minecraft::java::mcr::region {
     std::string McRegionRegion::getFilename() const {
         return std::format("r.{}.{}.mcr", this->mCoords.x, this->mCoords.z);
     }
@@ -26,4 +26,4 @@ namespace lodestone::java::mcr::region {
 
         return coords;
     }
-} // namespace lodestone::java::mcr::region
+} // namespace lodestone::minecraft::java::mcr::region

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.30)
-project(Lodestone.Converters.Minecraft)
+project(Lodestone.Minecraft)
 
 set(NBT_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 FetchContent_Declare(
@@ -10,10 +10,12 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(nbt++)
 
 # PROJECTS
+add_subdirectory(Common)
 add_subdirectory(Java)
 
 add_custom_target(Lodestone.Minecraft ALL DEPENDS
-        Lodestone.Java
+        Lodestone.Minecraft.Java
+        Lodestone.Minecraft.Common
 )
 
 
