@@ -46,3 +46,6 @@
 /projects/Tests/input
 /projects/Tests/output
 cmake-**
+/projects/Utilities/Tests/input
+/projects/Utilities/Viewer
+/projects/Utilities/Tests/output
