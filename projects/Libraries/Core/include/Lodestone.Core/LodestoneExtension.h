@@ -10,7 +10,9 @@ namespace lodestone::core {
       public:
         virtual ~LodestoneExtension() = default;
 
+        // CHANGING VTABLE ORDER MAY BREAK OLDER LIBRARY BUILDS.
         virtual common::registry::Identifier getIdentifier() = 0;
+        virtual std::string getVersion() = 0;
     };
 } // namespace lodestone::core
 

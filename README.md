@@ -11,9 +11,9 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
 | [Lodestone.Core](/projects/Libraries/Core)             | Core library, handles converter registration |
 | [Lodestone.Common](/projects/Libraries/Common)         | Common dependencies for all projects         |
 ### Converters
-| Name                                                  | Description                       |
-|-------------------------------------------------------|-----------------------------------|
-| [Lodestone.Java](/projects/Converters/Minecraft/Java) | Minecraft: Java Edition Converter |
+| Name                                                            | Description                       |
+|-----------------------------------------------------------------|-----------------------------------|
+| [Lodestone.Minecraft.Java](/projects/Converters/Minecraft/Java) | Minecraft: Java Edition Converter |
 
 
 # Roadmap
@@ -42,20 +42,7 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
         - [ ] Tile Entities
     - [ ] Block Material Map (for the world map image generation)
 ### Formats
-- [ ] Java
-    - [ ] Classic
-        - [X] .Mine V1
-        - [X] .Mine V2
-        - [ ] .Mine V3
-        - [ ] ClassicWorld (CW)
-        - [ ] [MCGalaxy](https://github.com/ClassiCube/MCGalaxy) Level (LVL)
-    - [ ] Indev (MCLevel)
-    - [ ] Infdev 20100624 (Zone File Format)
-    - [ ] Infdev/Alpha (Alpha Save Format)
-    - [X] McRegion
-    - [ ] Anvil
-    - [ ] 1.13+ Anvil
-    - [ ] 1.18+ Anvil
+- [ ] [Java](/projects/Converters/Minecraft/Java/README.md)
 - [ ] LCE
     - [ ] V11
     - [ ] V12

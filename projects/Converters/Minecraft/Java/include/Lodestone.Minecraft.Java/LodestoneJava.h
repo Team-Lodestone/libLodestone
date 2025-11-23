@@ -21,9 +21,10 @@ namespace lodestone::minecraft::java {
 
         void initBlocks();
 
-        lodestone::common::registry::Identifier getIdentifier() override;
-
         lodestone::conversion::block::version::VersionedBlockIO io;
+
+        lodestone::common::registry::Identifier getIdentifier() override;
+        std::string getVersion() override;
     };
 } // namespace lodestone::minecraft::java
 

@@ -302,19 +302,19 @@
 //
 //     // for (int x = 0; x < 48; x++) {
 //     //     auto b =
-//     lodestone::level::block::state::BlockState(lodestone::level::block::Blocks::DIRT);
+//     lodestone::level::block::state::BlockState(lodestone::minecraft::common::block::Blocks::DIRT);
 //     //     level->setBlockCreate(&b, x, 0, 0);
 //     // }
 //     //
 //     // for (int y = 0; y < 48; y++) {
 //     //     auto b =
-//     lodestone::level::block::state::BlockState(lodestone::level::block::Blocks::STONE);
+//     lodestone::level::block::state::BlockState(lodestone::minecraft::common::block::Blocks::STONE);
 //     //     level->setBlockCreate(&b, 0, y, 0);
 //     // }
 //     //
 //     // for (int z = 0; z < 48; z++) {
 //     //     auto b =
-//     lodestone::level::block::state::BlockState(lodestone::level::block::Blocks::COBBLESTONE);
+//     lodestone::level::block::state::BlockState(lodestone::minecraft::common::block::Blocks::COBBLESTONE);
 //     //     level->setBlockCreate(&b, 0, 0, z);
 //     // }
 //

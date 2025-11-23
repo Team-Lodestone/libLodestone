@@ -19,7 +19,7 @@ namespace lodestone::core {
             throw std::runtime_error(
                 "Tried to register extension with id that already exists.");
 
-        LOG_DEBUG(std::format("Registered extension '{}'", id.getString()));
+        LOG_DEBUG(std::format("Registered extension '{}' v{}", id.getString(), ext->getVersion()));
         mExtensions.emplace(id, ext);
     }
 

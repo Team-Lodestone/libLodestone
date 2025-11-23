@@ -10,6 +10,9 @@ set(FILES
         src/player/MinecraftPlayer.cpp
         include/Lodestone.Minecraft.Common/player/MinecraftPlayer.h
         include/Lodestone.Minecraft.Common/Identifiers.h
+        src/LodestoneMinecraftCommon.cpp
+        include/Lodestone.Minecraft.Common/LodestoneMinecraftCommon.h
+        include/Lodestone.Minecraft.Common/block/Blocks.h
 )
 
 add_library(Lodestone.Minecraft.Common OBJECT ${FILES})
