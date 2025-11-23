@@ -5,8 +5,10 @@
 #define LODESTONE_MCREGIONWORLD_H
 #include <Lodestone.Level/world/World.h>
 
+#include <Lodestone.Minecraft.Common/world/MinecraftWorld.h>
+
 namespace lodestone::minecraft::java::mcr::world {
-    class McRegionWorld final : public level::world::World {
+    class McRegionWorld final : public common::world::MinecraftWorld {
       public:
         explicit McRegionWorld(const std::string &name);
 
@@ -16,12 +18,6 @@ namespace lodestone::minecraft::java::mcr::world {
         }
 
         const lodestone::conversion::world::WorldIO *getIO() override;
-
-        int64_t getSeed() const;
-        void setSeed(int64_t seed);
-
-        int64_t getTime() const;
-        void setTime(const int64_t time);
 
         bool isRaining() const;
         void setIsRaining(bool isRaining);
@@ -35,27 +31,15 @@ namespace lodestone::minecraft::java::mcr::world {
         int getThunderTime() const;
         void setThunderTime(int thunderTime);
 
-        int64_t getLastPlayed() const;
-        void setLastPlayed(int64_t lastPlayed);
-
-        int64_t getSize() const;
-        void setSize(int64_t size);
-
         int32_t getVersion() const;
         void setVersion(const int32_t version);
 
       private:
-        int64_t mSeed;
-
-        int64_t mTime;
-
         bool mIsRaining;
         int mRainTime;
         bool mIsThundering;
         int mThunderTime;
 
-        int64_t mLastPlayed;
-        int64_t mSize; // shouldnt this be dynamic?
         int32_t mVersion;
     };
 } // namespace lodestone::minecraft::java::mcr::world

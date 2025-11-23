@@ -15,9 +15,9 @@ set(FILES
         include/Lodestone.Common/string/StringSerializable.h
         src/io/DataBuffer.cpp
         include/Lodestone.Common/io/DataBuffer.h
-        src/Math.cpp
-        include/Lodestone.Common/Math.h
-        include/Lodestone.Common/Logging.h
+        src/util/Math.cpp
+        include/Lodestone.Common/util/Math.h
+        include/Lodestone.Common/util/Logging.h
 )
 
 add_library(Lodestone.Common OBJECT ${FILES})

@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-#include <Lodestone.Common/Logging.h>
+#include <Lodestone.Common/util/Logging.h>
 
 namespace lodestone::conversion::level {
     LevelIoRegistry &LevelIoRegistry::getInstance() {

@@ -11,7 +11,7 @@
 #include "Lodestone.Minecraft.Java/mcr/chunk/McRegionChunkIo.h"
 #include "Lodestone.Minecraft.Java/mcr/player/McRegionPlayer.h"
 #include "Lodestone.Minecraft.Java/mcr/player/McRegionPlayerIo.h"
-#include <Lodestone.Common/Logging.h>
+#include <Lodestone.Common/util/Logging.h>
 #include <Lodestone.Conversion/Identifiers.h>
 #include <Lodestone.Conversion/chunk/ChunkIORegistry.h>
 #include <Lodestone.Conversion/player/PlayerIORegistry.h>

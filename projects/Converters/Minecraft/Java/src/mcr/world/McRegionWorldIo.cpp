@@ -28,7 +28,7 @@
 #include "Lodestone.Minecraft.Java/mcr/region/McRegionRegionIo.h"
 #include <libnbt++/io/ozlibstream.h>
 
-#include <Lodestone.Common/Logging.h>
+#include <Lodestone.Common/util/Logging.h>
 
 namespace lodestone::minecraft::java::mcr::world {
     const lodestone::conversion::level::PlayerIO *
@@ -113,9 +113,6 @@ namespace lodestone::minecraft::java::mcr::world {
 
             int64_t lastPlayed = data["LastPlayed"].get().as<nbt::tag_long>();
             w->setLastPlayed(lastPlayed);
-
-            int64_t size = data["SizeOnDisk"].get().as<nbt::tag_long>();
-            w->setSize(size);
 
             LOG_DEBUG(w->toString());
             world = std::move(w);

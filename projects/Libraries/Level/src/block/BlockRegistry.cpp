@@ -1,7 +1,7 @@
 #include "Lodestone.Level/block/BlockRegistry.h"
 
 #include "Lodestone.Level/item/ItemRegistry.h"
-#include <Lodestone.Common/Logging.h>
+#include <Lodestone.Common/util/Logging.h>
 
 #if CMAKE_BUILD_DEBUG
 #include <iostream>

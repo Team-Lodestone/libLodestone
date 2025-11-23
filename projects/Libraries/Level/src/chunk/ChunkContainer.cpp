@@ -7,9 +7,9 @@
 
 #include "Lodestone.Level/chunk/LevelChunk.h"
 #include "Lodestone.Level/types/Bounds3.h"
-#include <Lodestone.Common/Math.h>
+#include <Lodestone.Common/util/Math.h>
 
-#include <Lodestone.Common/Logging.h>
+#include <Lodestone.Common/util/Logging.h>
 
 namespace lodestone::level::chunk {
     bool ChunkContainer::hasChunk(const types::Vec2i &coords) const {
@@ -148,8 +148,8 @@ namespace lodestone::level::chunk {
         return {minX,
                 minY,
                 minZ,
-                common::Math::ceilDiv(maxX - minX + 1, 1),
-                common::Math::ceilDiv(maxY - minY + 1, 1),
-                common::Math::ceilDiv(maxZ - minZ + 1, 1)};
+                common::util::Math::ceilDiv(maxX - minX + 1, 1),
+                common::util::Math::ceilDiv(maxY - minY + 1, 1),
+                common::util::Math::ceilDiv(maxZ - minZ + 1, 1)};
     }
 } // namespace lodestone::level::chunk

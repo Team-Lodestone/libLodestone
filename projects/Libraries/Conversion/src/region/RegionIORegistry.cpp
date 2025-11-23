@@ -7,7 +7,7 @@
 
 #include <Lodestone.Common/registry/Identifier.h>
 
-#include <Lodestone.Common/Logging.h>
+#include <Lodestone.Common/util/Logging.h>
 
 namespace lodestone::conversion::region {
     RegionIORegistry &RegionIORegistry::getInstance() {

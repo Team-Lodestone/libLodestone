@@ -13,6 +13,8 @@ set(FILES
         src/LodestoneMinecraftCommon.cpp
         include/Lodestone.Minecraft.Common/LodestoneMinecraftCommon.h
         include/Lodestone.Minecraft.Common/block/Blocks.h
+        src/world/MinecraftWorld.cpp
+        include/Lodestone.Minecraft.Common/world/MinecraftWorld.h
 )
 
 add_library(Lodestone.Minecraft.Common OBJECT ${FILES})
