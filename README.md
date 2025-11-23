@@ -4,13 +4,16 @@ Provides file type reading, file type writing, and world & format conversion for
 LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE).
 
 ### Libraries
-| Name                                         | Description                                  |
-|----------------------------------------------|----------------------------------------------|
-| [Lodestone.Level](/projects/Level)           | Voxel world engine with dynamic registration |
-| [Lodestone.Conversion](/projects/Conversion) | Conversion base classes & registries         |
-| [Lodestone.Java](/projects/Java)             | Java Edition format converters               |
-| [Lodestone.Common](/projects/Common)         | Common dependencies for all projects         |
-| [Lodestone.Tests](/projects/Tests)           | Tests for our converters                     |
+| Name                                                   | Description                                  |
+|--------------------------------------------------------|----------------------------------------------|
+| [Lodestone.Level](/projects/Libraries/Level)           | Voxel world engine with dynamic registration |
+| [Lodestone.Conversion](/projects/Libraries/Conversion) | Conversion base classes & registries         |
+| [Lodestone.Core](/projects/Libraries/Core)             | Core library, handles converter registration |
+| [Lodestone.Common](/projects/Libraries/Common)         | Common dependencies for all projects         |
+### Converters
+| Name                                                            | Description                       |
+|-----------------------------------------------------------------|-----------------------------------|
+| [Lodestone.Minecraft.Java](/projects/Converters/Minecraft/Java) | Minecraft: Java Edition Converter |
 
 
 # Roadmap
@@ -39,20 +42,7 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
         - [ ] Tile Entities
     - [ ] Block Material Map (for the world map image generation)
 ### Formats
-- [ ] Java
-    - [ ] Classic
-        - [X] .Mine V1
-        - [X] .Mine V2
-        - [ ] .Mine V3
-        - [ ] ClassicWorld (CW)
-        - [ ] [MCGalaxy](https://github.com/ClassiCube/MCGalaxy) Level (LVL)
-    - [ ] Indev (MCLevel)
-    - [ ] Infdev 20100624 (Zone File Format)
-    - [ ] Infdev/Alpha (Alpha Save Format)
-    - [X] McRegion
-    - [ ] Anvil
-    - [ ] 1.13+ Anvil
-    - [ ] 1.18+ Anvil
+- [ ] [Java](/projects/Converters/Minecraft/Java/README.md)
 - [ ] LCE
     - [ ] V11
     - [ ] V12
