@@ -13,6 +13,9 @@
 #include <BinaryIO/stream/BinaryInputStream.h>
 #include <BinaryIO/stream/BinaryOutputStream.h>
 
+#include "Lodestone.Java/classic/minev2/MineV2LevelIO.h"
+#include "Lodestone.Java/classic/minev2/options/MineV2WorldWriteOptions.h"
+
 namespace lodestone::java::classic::minev2 {
     size_t MineV2WorldIO::getSize(level::world::World *w,
                                   const int version) const {
@@ -40,8 +43,10 @@ namespace lodestone::java::classic::minev2 {
             .getLevelIO(identifiers::MINEV2);
     }
 
-    std::unique_ptr<lodestone::level::world::World>
-    MineV2WorldIO::read(std::istream &in, int version, const conversion::world::options::AbstractWorldReadOptions &options) const {
+    std::unique_ptr<lodestone::level::world::World> MineV2WorldIO::read(
+        std::istream &in, int version,
+        const conversion::world::options::AbstractWorldReadOptions &options)
+        const {
         bio::stream::BinaryInputStream bis(in);
 
         const uint32_t sig = bis.readBE<uint32_t>();
@@ -64,9 +69,13 @@ namespace lodestone::java::classic::minev2 {
         return std::make_unique<MineV2World>(std::move(unique), name, author);
     }
 
-    void MineV2WorldIO::write(lodestone::level::world::World *w, int version,
-                              std::ostream &out, const conversion::world::options::AbstractWorldWriteOptions &options) const {
-        const options::MineV2WorldWriteOptions *writeOptions = dynamic_cast<const options::MineV2WorldWriteOptions *>(&options);
+    void MineV2WorldIO::write(
+        lodestone::level::world::World *w, int version, std::ostream &out,
+        const conversion::world::options::AbstractWorldWriteOptions &options)
+        const {
+        const options::MineV2WorldWriteOptions *writeOptions = dynamic_cast<
+            const java::classic::minev2::options::MineV2WorldWriteOptions *>(
+            &options);
 
         options::MineV2WorldWriteOptions def{};
         if (!writeOptions)

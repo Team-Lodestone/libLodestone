@@ -11,6 +11,7 @@
 
 #include "Lodestone.Java/Identifiers.h"
 #include "Lodestone.Java/Version.h"
+#include "Lodestone.Java/alpha/world/AlphaWorldIo.h"
 #include "Lodestone.Java/classic/minev2/MineV2WorldIo.h"
 #include <Lodestone.Conversion/block/BlockIO.h>
 #include <Lodestone.Conversion/block/VersionedBlockIO.h>
@@ -22,6 +23,7 @@
 
 #include <Lodestone.Conversion/player/PlayerIORegistry.h>
 
+#include "Lodestone.Java/alpha/player/AlphaPlayerIo.h"
 #include "Lodestone.Java/mcr/chunk/McRegionChunkIo.h"
 #include "Lodestone.Java/mcr/player/McRegionPlayerIo.h"
 #include "Lodestone.Java/mcr/region/McRegionRegionIo.h"
@@ -54,6 +56,15 @@ namespace lodestone::java {
         lodestone::conversion::level::LevelIoRegistry::getInstance()
             .registerLevelIO(identifiers::MCLEVEL,
                              std::make_unique<indev::McLevelLevelIO>());
+
+        // alpha
+        lodestone::conversion::world::WorldIORegistry::getInstance()
+            .registerWorldIO(identifiers::ALPHA,
+                             std::make_unique<alpha::world::AlphaWorldIo>());
+
+        lodestone::conversion::player::PlayerIORegistry::getInstance()
+            .registerPlayerIO(identifiers::ALPHA,
+                              std::make_unique<alpha::player::AlphaPlayerIO>());
 
         // mcr
         lodestone::conversion::chunk::ChunkIORegistry::getInstance()

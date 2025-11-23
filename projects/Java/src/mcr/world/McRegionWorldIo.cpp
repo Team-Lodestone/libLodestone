@@ -35,9 +35,10 @@ namespace lodestone::java::mcr::world {
             .getLevelIO(identifiers::MCREGION);
     }
 
-    std::unique_ptr<lodestone::level::world::World>
-    McRegionWorldIo::read(const std::filesystem::path &path,
-                          int version, const conversion::world::options::AbstractWorldReadOptions &options) const {
+    std::unique_ptr<lodestone::level::world::World> McRegionWorldIo::read(
+        const std::filesystem::path &path, int version,
+        const conversion::world::options::AbstractWorldReadOptions &options)
+        const {
         if (!std::filesystem::exists(path))
             return nullptr;
 
@@ -223,9 +224,11 @@ namespace lodestone::java::mcr::world {
         return world;
     }
 
-    void McRegionWorldIo::write(const std::filesystem::path &path,
-                                lodestone::level::world::World *w,
-                                int version, const conversion::world::options::AbstractWorldWriteOptions &options) const {
+    void McRegionWorldIo::write(
+        const std::filesystem::path &path, lodestone::level::world::World *w,
+        int version,
+        const conversion::world::options::AbstractWorldWriteOptions &options)
+        const {
         if (!exists(path))
             std::filesystem::create_directories(path);
         if (!std::filesystem::is_directory(path))

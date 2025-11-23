@@ -38,6 +38,15 @@ set(FILES
         include/Lodestone.Java/mcr/player/McRegionPlayerIo.h
         include/Lodestone.Java/io/chunk/NbtChunkIo.h
         include/Lodestone.Java/classic/minev2/options/MineV2WorldWriteOptions.h
+        include/Lodestone.Java/alpha/world/AlphaWorld.h
+        src/alpha/world/AlphaWorld.cpp
+        src/alpha/world/AlphaWorldIo.cpp
+        include/Lodestone.Java/alpha/world/AlphaWorldIo.h
+        src/classic/minev2/options/MineV2WorldWriteOptions.cpp
+        src/alpha/player/AlphaPlayer.cpp
+        include/Lodestone.Java/alpha/player/AlphaPlayer.h
+        src/alpha/player/AlphaPlayerIo.cpp
+        include/Lodestone.Java/alpha/player/AlphaPlayerIo.h
 )
 
 # NBT
