@@ -40,6 +40,15 @@ set(FILES
         src/mcr/player/McRegionPlayerIo.cpp
         include/Lodestone.Minecraft.Java/mcr/player/McRegionPlayerIo.h
         include/Lodestone.Minecraft.Java/classic/minev2/options/MineV2WorldWriteOptions.h
+        include/Lodestone.Minecraft.Java/alpha/world/AlphaWorld.h
+        src/alpha/world/AlphaWorld.cpp
+        src/alpha/world/AlphaWorldIo.cpp
+        include/Lodestone.Minecraft.Java/alpha/world/AlphaWorldIo.h
+        src/alpha/player/AlphaPlayer.cpp
+        include/Lodestone.Minecraft.Java/alpha/player/AlphaPlayer.h
+        src/alpha/player/AlphaPlayerIo.cpp
+        include/Lodestone.Minecraft.Java/alpha/player/AlphaPlayerIo.h
+        src/classic/minev2/options/MineV2WorldWriteOptions.cpp
 )
 
 add_library(Lodestone.Minecraft.Java SHARED ${FILES})

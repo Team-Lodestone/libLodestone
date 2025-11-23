@@ -26,6 +26,8 @@
 
 #include <Lodestone.Minecraft.Java/classic/minev2/MineV2WorldIo.h>
 
+#include <Lodestone.Minecraft.Java/alpha/world/AlphaWorldIo.h>
+
 namespace lodestone::tests::test {
     void MainTests::run() {
         ADD_TEST(READ_MCR_CHUNK, readMcrChunk, util::types::MAIN,
@@ -36,6 +38,8 @@ namespace lodestone::tests::test {
                  "Read McRegion World");
         ADD_TEST(READ_MINEV2_WORLD, readMinev2World, util::types::MAIN,
                  "Read Classic .mine v2 World");
+        ADD_TEST(READ_ALPHA_WORLD, readAlphaWorld, util::types::MAIN,
+                 "Read Alpha World");
     }
 
     void MainTests::readMcrChunk() {
@@ -141,7 +145,43 @@ namespace lodestone::tests::test {
                     .getWorldIO(minecraft::java::identifiers::MCREGION);
 
         mcrio->write(util::OUTPUT_FOLDER / name, wld.get(), minecraft::java::b1_3,
-                     minecraft::java::classic::minev2::options::MineV2WorldWriteOptions{});
+                     minecraft::java::classic::minev2::options::MineV2WorldWriteOptions{
+                         level::world::World::Dimension::OVERWORLD});
+    }
+
+    void MainTests::readAlphaWorld() {
+        std::string name("alphaworld");
+        std::filesystem::path dir(util::INPUT_FOLDER / name);
+
+        const minecraft::java::alpha::world::AlphaWorldIo *io =
+            static_cast<const minecraft::java::alpha::world::AlphaWorldIo *>(
+                lodestone::conversion::world::WorldIORegistry::getInstance()
+                    .getWorldIO(minecraft::java::identifiers::ALPHA));
+
+        std::shared_ptr<level::world::World> w =
+            io->read(dir, minecraft::java::Version::b1_3, {});
+
+        std::cout << "done now writing" << std::endl;
+
+        const lodestone::conversion::world::FileWorldIO *l2 =
+            dynamic_cast<const lodestone::conversion::world::FileWorldIO *>(
+                lodestone::conversion::world::WorldIORegistry::getInstance()
+                    .getWorldIO({"lodestone", "minev2"}));
+        {
+            OPEN_WRITE_FILE_STREAM(std::format("{}_overworld.dat", name))
+            l2->write(w.get(), lodestone::minecraft::java::c0_28, out,
+                      minecraft::java::classic::minev2::options::MineV2WorldWriteOptions{
+                          level::world::World::Dimension::OVERWORLD});
+            out.close();
+        }
+
+        {
+            OPEN_WRITE_FILE_STREAM(std::format("{}_nether.dat", name))
+            l2->write(w.get(), lodestone::minecraft::java::c0_28, out,
+                      minecraft::java::classic::minev2::options::MineV2WorldWriteOptions{
+                          level::world::World::Dimension::NETHER});
+            out.close();
+        }
     }
 
 } // namespace lodestone::tests::test

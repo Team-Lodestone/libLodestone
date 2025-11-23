@@ -5,32 +5,31 @@
 #include <Lodestone.Conversion/level/LevelIORegistry.h>
 
 #include "Lodestone.Minecraft.Java/LodestoneJava.h"
+#include "Lodestone.Minecraft.Java/Identifiers.h"
 #include "Lodestone.Minecraft.Java/classic/minev1/MineV1LevelIO.h"
 #include "Lodestone.Minecraft.Java/classic/minev2/MineV2LevelIO.h"
 #include "Lodestone.Minecraft.Java/indev/McLevelLevelIO.h"
 
-#include "Lodestone.Minecraft.Java/Identifiers.h"
-#include "Lodestone.Minecraft.Java/Version.h"
-#include "Lodestone.Minecraft.Java/classic/minev2/MineV2WorldIo.h"
-#include <Lodestone.Conversion/block/BlockIO.h>
-#include <Lodestone.Conversion/block/VersionedBlockIO.h>
-#include <Lodestone.Conversion/block/data/ClassicBlockData.h>
-#include <Lodestone.Conversion/block/data/NumericBlockData.h>
-#include <Lodestone.Conversion/chunk/ChunkIORegistry.h>
-#include <Lodestone.Conversion/region/RegionIORegistry.h>
-#include <Lodestone.Conversion/world/WorldIORegistry.h>
-
-#include <Lodestone.Conversion/player/PlayerIORegistry.h>
-
-#include "Lodestone.Minecraft.Java/mcr/chunk/McRegionChunkIo.h"
-#include "Lodestone.Minecraft.Java/mcr/player/McRegionPlayerIo.h"
-#include "Lodestone.Minecraft.Java/mcr/region/McRegionRegionIo.h"
-#include "Lodestone.Minecraft.Java/mcr/world/McRegionWorldIo.h"
 #include <Lodestone.Core/Lodestone.h>
 
 #include <Lodestone.Minecraft.Common/LodestoneMinecraftCommon.h>
 
 #include <Lodestone.Minecraft.Common/block/Blocks.h>
+
+#include <Lodestone.Conversion/block/data/ClassicBlockData.h>
+#include <Lodestone.Conversion/block/data/NumericBlockData.h>
+#include <Lodestone.Conversion/chunk/ChunkIORegistry.h>
+#include <Lodestone.Conversion/player/PlayerIORegistry.h>
+#include <Lodestone.Conversion/region/RegionIORegistry.h>
+#include <Lodestone.Conversion/world/WorldIORegistry.h>
+#include "Lodestone.Minecraft.Java/Version.h"
+#include "Lodestone.Minecraft.Java/alpha/player/AlphaPlayerIo.h"
+#include "Lodestone.Minecraft.Java/alpha/world/AlphaWorldIo.h"
+#include "Lodestone.Minecraft.Java/mcr/chunk/McRegionChunkIo.h"
+#include "Lodestone.Minecraft.Java/mcr/player/McRegionPlayerIo.h"
+#include "Lodestone.Minecraft.Java/mcr/region/McRegionRegionIo.h"
+#include "Lodestone.Minecraft.Java/mcr/world/McRegionWorldIo.h"
+#include "Lodestone.Minecraft.Java/classic/minev2/MineV2WorldIo.h"
 
 namespace lodestone::minecraft::java {
     LodestoneJava::LodestoneJava() {
@@ -58,6 +57,15 @@ namespace lodestone::minecraft::java {
         lodestone::conversion::level::LevelIoRegistry::getInstance()
             .registerLevelIO(identifiers::MCLEVEL,
                              std::make_unique<indev::McLevelLevelIO>());
+
+        // alpha
+        lodestone::conversion::world::WorldIORegistry::getInstance()
+            .registerWorldIO(identifiers::ALPHA,
+                             std::make_unique<alpha::world::AlphaWorldIo>());
+
+        lodestone::conversion::player::PlayerIORegistry::getInstance()
+            .registerPlayerIO(identifiers::ALPHA,
+                              std::make_unique<alpha::player::AlphaPlayerIO>());
 
         // mcr
         lodestone::conversion::chunk::ChunkIORegistry::getInstance()

@@ -74,10 +74,10 @@ namespace lodestone::minecraft::java::classic::minev2 {
         const conversion::world::options::AbstractWorldWriteOptions &options)
         const {
         const options::MineV2WorldWriteOptions *writeOptions = dynamic_cast<
-            const java::classic::minev2::options::MineV2WorldWriteOptions *>(
+            const options::MineV2WorldWriteOptions *>(
             &options);
 
-        options::MineV2WorldWriteOptions def{};
+        const options::MineV2WorldWriteOptions def{};
         if (!writeOptions)
             writeOptions = &def;
 
