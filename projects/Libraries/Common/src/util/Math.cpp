@@ -7,7 +7,5 @@ namespace lodestone::common::util {
     std::random_device Math::rd;
     std::mt19937_64 Math::rand(rd());
 
-    unsigned long Math::random() {
-        return rand();
-    }
-}
+    unsigned long Math::random() { return rand(); }
+} // namespace lodestone::common::util

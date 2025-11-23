@@ -7,6 +7,5 @@
 #include <Lodestone.Level/world/World.h>
 
 namespace lodestone::minecraft::java::alpha::player {
-    AlphaPlayer::AlphaPlayer(const std::string &name)
-        : MinecraftPlayer(name) {}
+    AlphaPlayer::AlphaPlayer(const std::string &name) : MinecraftPlayer(name) {}
 } // namespace lodestone::minecraft::java::alpha::player

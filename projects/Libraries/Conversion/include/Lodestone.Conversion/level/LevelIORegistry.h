@@ -8,7 +8,8 @@
 #include "Lodestone.Conversion/level/LevelIO.h"
 
 namespace lodestone::conversion::level {
-    // TODO It might be a good idea to require library class instance for registering these IO classes
+    // TODO It might be a good idea to require library class instance for
+    // registering these IO classes
     /** Creates chunks based on registered chunk IO classes */
     class LODESTONE_API LevelIoRegistry {
       protected:

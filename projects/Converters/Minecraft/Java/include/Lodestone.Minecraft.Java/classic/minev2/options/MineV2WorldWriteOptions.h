@@ -19,6 +19,6 @@ namespace lodestone::minecraft::java::classic::minev2::options {
         common::registry::Identifier level =
             lodestone::level::world::World::Dimension::OVERWORLD;
     };
-} // namespace lodestone::java::classic::minev2::options
+} // namespace lodestone::minecraft::java::classic::minev2::options
 
 #endif // LODESTONE_MINEV2WORLDWRITEOPTIONS_H

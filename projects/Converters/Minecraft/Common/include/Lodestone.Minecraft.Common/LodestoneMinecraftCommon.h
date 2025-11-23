@@ -6,9 +6,9 @@
 
 namespace lodestone::minecraft::common {
     class LodestoneMinecraftCommon {
-    public:
+      public:
         static void initBlocks();
     };
-}
+} // namespace lodestone::minecraft::common
 
 #endif // LODESTONE_LODESTONEMINECRAFTCOMMON_H

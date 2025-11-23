@@ -253,20 +253,20 @@
 //     }
 //
 //     // for (const auto &i:
-//     lodestone::minecraft::java::LodestoneJava::sIo.getFromInternalConversionMap() |
-//     std::views::keys) {
+//     lodestone::minecraft::java::LodestoneJava::sIo.getFromInternalConversionMap()
+//     | std::views::keys) {
 //     //     std::cout << "frominternal->name: " << i << std::endl;
 //     // }
 //     //
 //     // for (const auto &i:
-//     lodestone::minecraft::java::LodestoneJava::sIo.getFromInternalConversionMap() |
-//     std::views::values) {
+//     lodestone::minecraft::java::LodestoneJava::sIo.getFromInternalConversionMap()
+//     | std::views::values) {
 //     //     std::cout << "frominternal->id: " << i->getId() << std::endl;
 //     // }
 //     //
 //     // for (const auto &i:
-//     lodestone::minecraft::java::LodestoneJava::sIo.getToInternalConversionMap() |
-//     std::views::keys) {
+//     lodestone::minecraft::java::LodestoneJava::sIo.getToInternalConversionMap()
+//     | std::views::keys) {
 //     //     std::cout << "tointernal->id: " << i->getId() << std::endl;
 //     // }
 //     //

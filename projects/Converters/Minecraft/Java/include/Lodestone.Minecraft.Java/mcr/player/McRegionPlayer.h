@@ -24,10 +24,11 @@ namespace lodestone::minecraft::java::mcr::player {
 
         static const lodestone::common::registry::Identifier &
         dimensionIdToIdentifier(int id);
-        static int
-        identifierToDimensionId(const lodestone::common::registry::Identifier &str);
+        static int identifierToDimensionId(
+            const lodestone::common::registry::Identifier &str);
 
         const lodestone::common::registry::Identifier *getType() const override;
+
       private:
         bool mIsSleeping;
         short mSleepTimer;

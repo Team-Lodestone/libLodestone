@@ -8,7 +8,7 @@
 
 namespace lodestone::minecraft::common::player {
     class MinecraftPlayer : public level::entity::Player {
-    public:
+      public:
         explicit MinecraftPlayer(const std::string &name);
 
         const std::string &getId() const override;
@@ -41,7 +41,8 @@ namespace lodestone::minecraft::common::player {
 
         std::string getWorldName() const;
 
-        void setDimension(const lodestone::common::registry::Identifier &dimension);
+        void
+        setDimension(const lodestone::common::registry::Identifier &dimension);
 
         bool isOnGround() const;
 
@@ -54,7 +55,8 @@ namespace lodestone::minecraft::common::player {
         const level::container::ItemContainer &getArmor() const;
 
         const lodestone::common::registry::Identifier *getType() const override;
-    private:
+
+      private:
         std::string mName;
         level::types::Vec3i mSpawnPos{0, 0, 0};
 
@@ -75,6 +77,6 @@ namespace lodestone::minecraft::common::player {
         level::container::ItemContainer mArmor =
             level::container::ItemContainer(4);
     };
-}
+} // namespace lodestone::minecraft::common::player
 
 #endif // LODESTONE_MINECRAFTPLAYER_H

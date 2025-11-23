@@ -10,7 +10,7 @@ Minecraft: Java Edition converter
     - [ ] [MCGalaxy](https://github.com/ClassiCube/MCGalaxy) Level (LVL)
 - [ ] Indev (MCLevel)
 - [ ] Infdev 20100624 (Zone File Format)
-- [ ] Infdev/Alpha (Alpha Save Format)
+- [X] Infdev/Alpha (Alpha Save Format)
 - [X] McRegion
 - [ ] Anvil
 - [ ] 1.13+ Anvil

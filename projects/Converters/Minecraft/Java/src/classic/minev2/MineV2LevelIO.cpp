@@ -5,8 +5,8 @@
 
 #include <ranges>
 
-#include "Lodestone.Minecraft.Java/LodestoneJava.h"
 #include "Lodestone.Level/FiniteLevel.h"
+#include "Lodestone.Minecraft.Java/LodestoneJava.h"
 #include <Lodestone.Common/Indexing.h>
 #include <Lodestone.Conversion/block/BlockIO.h>
 #include <Lodestone.Conversion/block/data/ClassicBlockData.h>
@@ -34,9 +34,9 @@ namespace lodestone::minecraft::java::classic::minev2 {
             std::make_unique<level::FiniteLevel>(level::types::Bounds2i{
                 {0, 0},
                 {common::util::Math::ceilDiv(CHUNK_IDX(width) - 1,
-                                       common::constants::CHUNK_WIDTH),
+                                             common::constants::CHUNK_WIDTH),
                  common::util::Math::ceilDiv(CHUNK_IDX(depth) - 1,
-                                       common::constants::CHUNK_DEPTH)}});
+                                             common::constants::CHUNK_DEPTH)}});
 
         const std::unique_ptr<lodestone::conversion::block::version::BlockIO>
             bio = LodestoneJava::getInstance()->io.getIo(version);

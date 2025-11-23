@@ -86,9 +86,11 @@ namespace lodestone::tests::util {
     func(__VA_ARGS__)
 
     const std::filesystem::path INPUT_FOLDER =
-        std::filesystem::weakly_canonical("../../../../projects/Utilities/Tests/input");
+        std::filesystem::weakly_canonical(
+            "../../../../projects/Utilities/Tests/input");
     const std::filesystem::path OUTPUT_FOLDER =
-        std::filesystem::weakly_canonical("../../../../projects/Utilities/Tests/output");
+        std::filesystem::weakly_canonical(
+            "../../../../projects/Utilities/Tests/output");
 
     namespace types {
         static constexpr const char *const MAIN = "main";

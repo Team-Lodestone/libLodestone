@@ -62,7 +62,7 @@ namespace lodestone::level::block::properties {
         constexpr std::string toString() const override {
             if (this->mBlock)
                 return std::format("BlockProperties[block={}]",
-                               mBlock->getID()->getString());
+                                   mBlock->getID()->getString());
 
             return "BlockProperties";
         };

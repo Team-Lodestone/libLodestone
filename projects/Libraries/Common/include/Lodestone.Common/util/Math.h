@@ -18,6 +18,6 @@ namespace lodestone::common::util {
 
         static unsigned long random();
     };
-} // namespace lodestone::common
+} // namespace lodestone::common::util
 
 #endif // LODESTONE_MATH_H

@@ -73,9 +73,8 @@ namespace lodestone::minecraft::java::classic::minev2 {
         lodestone::level::world::World *w, int version, std::ostream &out,
         const conversion::world::options::AbstractWorldWriteOptions &options)
         const {
-        const options::MineV2WorldWriteOptions *writeOptions = dynamic_cast<
-            const options::MineV2WorldWriteOptions *>(
-            &options);
+        const options::MineV2WorldWriteOptions *writeOptions =
+            dynamic_cast<const options::MineV2WorldWriteOptions *>(&options);
 
         const options::MineV2WorldWriteOptions def{};
         if (!writeOptions)

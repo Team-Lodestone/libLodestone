@@ -6,8 +6,9 @@
 #include "Lodestone.Common/util/Math.h"
 
 namespace lodestone::minecraft::common::world {
-    MinecraftWorld::MinecraftWorld(const std::string &name) : World(name), mSeed(lodestone::common::util::Math::random()), mLastPlayed(0), mTime(0) {
-    }
+    MinecraftWorld::MinecraftWorld(const std::string &name)
+        : World(name), mSeed(lodestone::common::util::Math::random()),
+          mLastPlayed(0), mTime(0) {}
 
     int64_t MinecraftWorld::getSeed() const { return this->mSeed; }
 
@@ -22,4 +23,4 @@ namespace lodestone::minecraft::common::world {
     int64_t MinecraftWorld::getTime() const { return this->mTime; }
 
     void MinecraftWorld::setTime(const int64_t time) { this->mTime = time; }
-}
+} // namespace lodestone::minecraft::common::world

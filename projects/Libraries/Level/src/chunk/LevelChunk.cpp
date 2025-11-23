@@ -8,20 +8,23 @@
 namespace lodestone::level::chunk {
     LevelChunk::LevelChunk(const int height) {
         this->mSections = std::vector<std::unique_ptr<section::Section>>(
-            common::util::Math::ceilDiv(height, common::constants::SECTION_HEIGHT));
+            common::util::Math::ceilDiv(height,
+                                        common::constants::SECTION_HEIGHT));
     }
 
     LevelChunk::LevelChunk(const int height, const types::Vec2i &coords)
         : Chunk(coords) {
         this->mSections = std::vector<std::unique_ptr<section::Section>>(
-            common::util::Math::ceilDiv(height, common::constants::SECTION_HEIGHT));
+            common::util::Math::ceilDiv(height,
+                                        common::constants::SECTION_HEIGHT));
     }
 
     LevelChunk::LevelChunk(const int height, ChunkContainer *container,
                            const types::Vec2i &coords)
         : Chunk(container, coords) {
         this->mSections = std::vector<std::unique_ptr<section::Section>>(
-            common::util::Math::ceilDiv(height, common::constants::SECTION_HEIGHT));
+            common::util::Math::ceilDiv(height,
+                                        common::constants::SECTION_HEIGHT));
     }
 
     int LevelChunk::getChunkHeight() const { return mSections.size(); }

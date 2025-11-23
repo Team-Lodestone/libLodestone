@@ -4,8 +4,8 @@
 
 #include <Lodestone.Conversion/level/LevelIORegistry.h>
 
-#include "Lodestone.Minecraft.Java/LodestoneJava.h"
 #include "Lodestone.Minecraft.Java/Identifiers.h"
+#include "Lodestone.Minecraft.Java/LodestoneJava.h"
 #include "Lodestone.Minecraft.Java/classic/minev1/MineV1LevelIO.h"
 #include "Lodestone.Minecraft.Java/classic/minev2/MineV2LevelIO.h"
 #include "Lodestone.Minecraft.Java/indev/McLevelLevelIO.h"
@@ -16,20 +16,20 @@
 
 #include <Lodestone.Minecraft.Common/block/Blocks.h>
 
+#include "Lodestone.Minecraft.Java/Version.h"
+#include "Lodestone.Minecraft.Java/alpha/player/AlphaPlayerIo.h"
+#include "Lodestone.Minecraft.Java/alpha/world/AlphaWorldIo.h"
+#include "Lodestone.Minecraft.Java/classic/minev2/MineV2WorldIo.h"
+#include "Lodestone.Minecraft.Java/mcr/chunk/McRegionChunkIo.h"
+#include "Lodestone.Minecraft.Java/mcr/player/McRegionPlayerIo.h"
+#include "Lodestone.Minecraft.Java/mcr/region/McRegionRegionIo.h"
+#include "Lodestone.Minecraft.Java/mcr/world/McRegionWorldIo.h"
 #include <Lodestone.Conversion/block/data/ClassicBlockData.h>
 #include <Lodestone.Conversion/block/data/NumericBlockData.h>
 #include <Lodestone.Conversion/chunk/ChunkIORegistry.h>
 #include <Lodestone.Conversion/player/PlayerIORegistry.h>
 #include <Lodestone.Conversion/region/RegionIORegistry.h>
 #include <Lodestone.Conversion/world/WorldIORegistry.h>
-#include "Lodestone.Minecraft.Java/Version.h"
-#include "Lodestone.Minecraft.Java/alpha/player/AlphaPlayerIo.h"
-#include "Lodestone.Minecraft.Java/alpha/world/AlphaWorldIo.h"
-#include "Lodestone.Minecraft.Java/mcr/chunk/McRegionChunkIo.h"
-#include "Lodestone.Minecraft.Java/mcr/player/McRegionPlayerIo.h"
-#include "Lodestone.Minecraft.Java/mcr/region/McRegionRegionIo.h"
-#include "Lodestone.Minecraft.Java/mcr/world/McRegionWorldIo.h"
-#include "Lodestone.Minecraft.Java/classic/minev2/MineV2WorldIo.h"
 
 namespace lodestone::minecraft::java {
     LodestoneJava::LodestoneJava() {
@@ -171,22 +171,26 @@ namespace lodestone::minecraft::java {
             Version::c0_0_20a, &minecraft::common::block::Blocks::YELLOW_WOOL,
             new lodestone::conversion::block::data::ClassicBlockData(23));
         io.registerBlock(
-            Version::c0_0_20a, &minecraft::common::block::Blocks::CHARTREUSE_WOOL,
+            Version::c0_0_20a,
+            &minecraft::common::block::Blocks::CHARTREUSE_WOOL,
             new lodestone::conversion::block::data::ClassicBlockData(24));
         io.registerBlock(
             Version::c0_0_20a, &minecraft::common::block::Blocks::LIME_WOOL,
             new lodestone::conversion::block::data::ClassicBlockData(25));
         io.registerBlock(
-            Version::c0_0_20a, &minecraft::common::block::Blocks::SPRING_GREEN_WOOL,
+            Version::c0_0_20a,
+            &minecraft::common::block::Blocks::SPRING_GREEN_WOOL,
             new lodestone::conversion::block::data::ClassicBlockData(26));
         io.registerBlock(
             Version::c0_0_20a, &minecraft::common::block::Blocks::CYAN_WOOL,
             new lodestone::conversion::block::data::ClassicBlockData(27));
         io.registerBlock(
-            Version::c0_0_20a, &minecraft::common::block::Blocks::LIGHT_BLUE_WOOL,
+            Version::c0_0_20a,
+            &minecraft::common::block::Blocks::LIGHT_BLUE_WOOL,
             new lodestone::conversion::block::data::ClassicBlockData(28));
         io.registerBlock(
-            Version::c0_0_20a, &minecraft::common::block::Blocks::ULTRAMARINE_WOOL,
+            Version::c0_0_20a,
+            &minecraft::common::block::Blocks::ULTRAMARINE_WOOL,
             new lodestone::conversion::block::data::ClassicBlockData(29));
         io.registerBlock(
             Version::c0_0_20a, &minecraft::common::block::Blocks::PURPLE_WOOL,
@@ -204,7 +208,8 @@ namespace lodestone::minecraft::java {
             Version::c0_0_20a, &minecraft::common::block::Blocks::GRAY_WOOL,
             new lodestone::conversion::block::data::ClassicBlockData(34));
         io.registerBlock(
-            Version::c0_0_20a, &minecraft::common::block::Blocks::LIGHT_GRAY_WOOL,
+            Version::c0_0_20a,
+            &minecraft::common::block::Blocks::LIGHT_GRAY_WOOL,
             new lodestone::conversion::block::data::ClassicBlockData(35));
         io.registerBlock(
             Version::c0_0_20a, &minecraft::common::block::Blocks::WHITE_WOOL,
@@ -216,7 +221,8 @@ namespace lodestone::minecraft::java {
             Version::c0_0_20a, &minecraft::common::block::Blocks::POPPY,
             new lodestone::conversion::block::data::ClassicBlockData(38));
         io.registerBlock(
-            Version::c0_0_20a, &minecraft::common::block::Blocks::BROWN_MUSHROOM,
+            Version::c0_0_20a,
+            &minecraft::common::block::Blocks::BROWN_MUSHROOM,
             new lodestone::conversion::block::data::ClassicBlockData(39));
         io.registerBlock(
             Version::c0_0_20a, &minecraft::common::block::Blocks::RED_MUSHROOM,
@@ -228,10 +234,12 @@ namespace lodestone::minecraft::java {
             Version::c0_26st, &minecraft::common::block::Blocks::IRON_BLOCK,
             new lodestone::conversion::block::data::ClassicBlockData(42));
         io.registerBlock(
-            Version::c0_26st, &minecraft::common::block::Blocks::DOUBLE_SMOOTH_STONE_SLAB,
+            Version::c0_26st,
+            &minecraft::common::block::Blocks::DOUBLE_SMOOTH_STONE_SLAB,
             new lodestone::conversion::block::data::ClassicBlockData(43));
         io.registerBlock(
-            Version::c0_26st, &minecraft::common::block::Blocks::SMOOTH_STONE_SLAB,
+            Version::c0_26st,
+            &minecraft::common::block::Blocks::SMOOTH_STONE_SLAB,
             new lodestone::conversion::block::data::ClassicBlockData(44));
         io.registerBlock(
             Version::c0_26st, &minecraft::common::block::Blocks::BRICKS,
@@ -243,14 +251,16 @@ namespace lodestone::minecraft::java {
             Version::c0_26st, &minecraft::common::block::Blocks::BOOKSHELF,
             new lodestone::conversion::block::data::ClassicBlockData(47));
         io.registerBlock(
-            Version::c0_26st, &minecraft::common::block::Blocks::MOSSY_COBBLESTONE,
+            Version::c0_26st,
+            &minecraft::common::block::Blocks::MOSSY_COBBLESTONE,
             new lodestone::conversion::block::data::ClassicBlockData(48));
         io.registerBlock(
             Version::c0_28, &minecraft::common::block::Blocks::OBSIDIAN,
             new lodestone::conversion::block::data::ClassicBlockData(49));
         // CPE specific
         io.registerBlock(
-            Version::c0_30_CPE, &minecraft::common::block::Blocks::COBBLESTONE_SLAB,
+            Version::c0_30_CPE,
+            &minecraft::common::block::Blocks::COBBLESTONE_SLAB,
             new lodestone::conversion::block::data::ClassicBlockData(50));
         io.registerBlock(
             Version::c0_30_CPE, &minecraft::common::block::Blocks::ROPE,
@@ -274,7 +284,8 @@ namespace lodestone::minecraft::java {
             Version::c0_30_CPE, &minecraft::common::block::Blocks::MAGMA_BLOCK,
             new lodestone::conversion::block::data::ClassicBlockData(62));
         io.registerBlock(
-            Version::c0_30_CPE, &minecraft::common::block::Blocks::QUARTZ_PILLAR,
+            Version::c0_30_CPE,
+            &minecraft::common::block::Blocks::QUARTZ_PILLAR,
             new lodestone::conversion::block::data::ClassicBlockData(63));
         io.registerBlock(
             Version::c0_30_CPE, &minecraft::common::block::Blocks::CRATE,
@@ -286,20 +297,24 @@ namespace lodestone::minecraft::java {
         // Remove the cpe specific blocks because they didn't exist here
         io.removeBlock(Version::in20091223_1457,
                        &minecraft::common::block::Blocks::COBBLESTONE_SLAB);
-        io.removeBlock(Version::in20091223_1457, &minecraft::common::block::Blocks::ROPE);
+        io.removeBlock(Version::in20091223_1457,
+                       &minecraft::common::block::Blocks::ROPE);
         io.removeBlock(Version::in20091223_1457,
                        &minecraft::common::block::Blocks::SANDSTONE);
         io.removeBlock(Version::in20091223_1457,
                        &minecraft::common::block::Blocks::SNOW_LAYER);
-        io.removeBlock(Version::in20091223_1457, &minecraft::common::block::Blocks::FIRE);
-        io.removeBlock(Version::in20091223_1457, &minecraft::common::block::Blocks::ICE);
+        io.removeBlock(Version::in20091223_1457,
+                       &minecraft::common::block::Blocks::FIRE);
+        io.removeBlock(Version::in20091223_1457,
+                       &minecraft::common::block::Blocks::ICE);
         io.removeBlock(Version::in20091223_1457,
                        &minecraft::common::block::Blocks::CERAMIC_TILE);
         io.removeBlock(Version::in20091223_1457,
                        &minecraft::common::block::Blocks::MAGMA_BLOCK);
         io.removeBlock(Version::in20091223_1457,
                        &minecraft::common::block::Blocks::QUARTZ_PILLAR);
-        io.removeBlock(Version::in20091223_1457, &minecraft::common::block::Blocks::CRATE);
+        io.removeBlock(Version::in20091223_1457,
+                       &minecraft::common::block::Blocks::CRATE);
         io.removeBlock(Version::in20091223_1457,
                        &minecraft::common::block::Blocks::STONE_BRICKS);
 
@@ -310,10 +325,12 @@ namespace lodestone::minecraft::java {
             Version::in20100109_1939, &minecraft::common::block::Blocks::FIRE,
             new lodestone::conversion::block::data::ClassicBlockData(51));
         io.registerBlock(
-            Version::in20100114, &minecraft::common::block::Blocks::WATER_SPAWNER,
+            Version::in20100114,
+            &minecraft::common::block::Blocks::WATER_SPAWNER,
             new lodestone::conversion::block::data::ClassicBlockData(52));
         io.registerBlock(
-            Version::in20100122_2251, &minecraft::common::block::Blocks::LAVA_SPAWNER,
+            Version::in20100122_2251,
+            &minecraft::common::block::Blocks::LAVA_SPAWNER,
             new lodestone::conversion::block::data::ClassicBlockData(53));
         io.registerBlock(
             Version::in20100124_2119, &minecraft::common::block::Blocks::CHEST,
@@ -322,19 +339,23 @@ namespace lodestone::minecraft::java {
             Version::in20100128_2200, &minecraft::common::block::Blocks::GEAR,
             new lodestone::conversion::block::data::ClassicBlockData(55));
         io.registerBlock(
-            Version::in20100128_2200, &minecraft::common::block::Blocks::DIAMOND_ORE,
+            Version::in20100128_2200,
+            &minecraft::common::block::Blocks::DIAMOND_ORE,
             new lodestone::conversion::block::data::ClassicBlockData(56));
         io.registerBlock(
-            Version::in20100128_2200, &minecraft::common::block::Blocks::DIAMOND_BLOCK,
+            Version::in20100128_2200,
+            &minecraft::common::block::Blocks::DIAMOND_BLOCK,
             new lodestone::conversion::block::data::ClassicBlockData(57));
         io.registerBlock(
-            Version::in20100129_2332, &minecraft::common::block::Blocks::CRAFTING_TABLE,
+            Version::in20100129_2332,
+            &minecraft::common::block::Blocks::CRAFTING_TABLE,
             new lodestone::conversion::block::data::ClassicBlockData(58));
         io.registerBlock(
             Version::in20100206_2034, &minecraft::common::block::Blocks::WHEAT,
             new lodestone::conversion::block::data::ClassicBlockData(59));
         io.registerBlock(
-            Version::in20100206_2034, &minecraft::common::block::Blocks::FARMLAND,
+            Version::in20100206_2034,
+            &minecraft::common::block::Blocks::FARMLAND,
             new lodestone::conversion::block::data::ClassicBlockData(60));
         io.registerBlock(
             Version::in20100219, &minecraft::common::block::Blocks::FURNACE,
@@ -428,7 +449,8 @@ namespace lodestone::minecraft::java {
             Version::b1_3, &minecraft::common::block::Blocks::IRON_BLOCK,
             new lodestone::conversion::block::data::NumericBlockData(42, 0));
         io.registerBlock(
-            Version::b1_3, &minecraft::common::block::Blocks::DOUBLE_SMOOTH_STONE_SLAB,
+            Version::b1_3,
+            &minecraft::common::block::Blocks::DOUBLE_SMOOTH_STONE_SLAB,
             new lodestone::conversion::block::data::NumericBlockData(43, 0));
         io.registerBlock(
             Version::b1_3, &minecraft::common::block::Blocks::SMOOTH_STONE_SLAB,
@@ -454,7 +476,5 @@ namespace lodestone::minecraft::java {
         return {"lodestone", "java"};
     }
 
-    std::string LodestoneJava::getVersion() {
-        return LODESTONE_JAVA_VERSION;
-    }
+    std::string LodestoneJava::getVersion() { return LODESTONE_JAVA_VERSION; }
 } // namespace lodestone::minecraft::java

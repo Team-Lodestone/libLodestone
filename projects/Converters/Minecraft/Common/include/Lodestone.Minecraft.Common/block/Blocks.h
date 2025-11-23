@@ -182,6 +182,6 @@ namespace lodestone::minecraft::common::block {
         ADD_BLOCK(NETHER_BRICK_STAIRS, "nether_brick_stairs");
         ADD_BLOCK(NETHER_WART, "nether_wart");
     };
-} // namespace lodestone::level::block
+} // namespace lodestone::minecraft::common::block
 
 #endif // LODESTONE_MINECRAFT_COMMON_BLOCKS_H

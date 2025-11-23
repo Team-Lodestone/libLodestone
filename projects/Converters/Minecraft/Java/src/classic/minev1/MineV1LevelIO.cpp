@@ -5,8 +5,8 @@
 
 #include <ranges>
 
-#include "Lodestone.Minecraft.Java/LodestoneJava.h"
 #include "Lodestone.Level/FiniteLevel.h"
+#include "Lodestone.Minecraft.Java/LodestoneJava.h"
 #include <Lodestone.Common/Indexing.h>
 #include <Lodestone.Conversion/block/BlockIO.h>
 #include <Lodestone.Conversion/block/data/ClassicBlockData.h>

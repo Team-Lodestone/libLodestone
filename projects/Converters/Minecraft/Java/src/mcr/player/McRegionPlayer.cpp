@@ -7,8 +7,8 @@
 #include <Lodestone.Level/world/World.h>
 
 namespace lodestone::minecraft::java::mcr::player {
-    McRegionPlayer::McRegionPlayer(const std::string &name) : MinecraftPlayer(name), mIsSleeping(false), mSleepTimer(0) {
-    }
+    McRegionPlayer::McRegionPlayer(const std::string &name)
+        : MinecraftPlayer(name), mIsSleeping(false), mSleepTimer(0) {}
 
     short McRegionPlayer::getSleepTimer() const { return mSleepTimer; }
 
@@ -51,7 +51,8 @@ namespace lodestone::minecraft::java::mcr::player {
                                : 0x7FFFFFFF;
     }
 
-    const lodestone::common::registry::Identifier *McRegionPlayer::getType() const {
+    const lodestone::common::registry::Identifier *
+    McRegionPlayer::getType() const {
         return &identifiers::MCREGION;
     }
 } // namespace lodestone::minecraft::java::mcr::player

@@ -3,13 +3,13 @@
 //
 #include "Lodestone.Minecraft.Common/player/MinecraftPlayer.h"
 
-#include <Lodestone.Level/world/World.h>
 #include "Lodestone.Minecraft.Common/Identifiers.h"
+#include <Lodestone.Level/world/World.h>
 
 namespace lodestone::minecraft::common::player {
     MinecraftPlayer::MinecraftPlayer(const std::string &name)
-        : mName(name), mDeathTime(0),
-          mHurtTime(0), mAttackTime(0), mFireTime(0), mBreathingTime(0),
+        : mName(name), mDeathTime(0), mHurtTime(0), mAttackTime(0),
+          mFireTime(0), mBreathingTime(0),
           mDimension(level::world::World::Dimension::OVERWORLD),
           mFallDistance(0) {}
 
@@ -22,8 +22,8 @@ namespace lodestone::minecraft::common::player {
     void MinecraftPlayer::setSpawnPos(const level::types::Vec3i &spawnPos) {
         mSpawnPos = spawnPos;
     }
-    
-        short MinecraftPlayer::getDeathTime() const { return mDeathTime; }
+
+    short MinecraftPlayer::getDeathTime() const { return mDeathTime; }
 
     void MinecraftPlayer::setDeathTime(const short deathTime) {
         mDeathTime = deathTime;
@@ -53,7 +53,8 @@ namespace lodestone::minecraft::common::player {
         mBreathingTime = breathingTime;
     }
 
-    const lodestone::common::registry::Identifier &MinecraftPlayer::getDimension() const {
+    const lodestone::common::registry::Identifier &
+    MinecraftPlayer::getDimension() const {
         return mDimension;
     }
 
@@ -107,7 +108,8 @@ namespace lodestone::minecraft::common::player {
         return mArmor;
     }
 
-    const lodestone::common::registry::Identifier *MinecraftPlayer::getType() const {
+    const lodestone::common::registry::Identifier *
+    MinecraftPlayer::getType() const {
         return &identifiers::MINECRAFT_COMMON;
     }
-}
+} // namespace lodestone::minecraft::common::player

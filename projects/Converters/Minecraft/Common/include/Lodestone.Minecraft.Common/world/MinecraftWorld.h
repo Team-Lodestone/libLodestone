@@ -7,7 +7,7 @@
 
 namespace lodestone::minecraft::common::world {
     class MinecraftWorld : public level::world::World {
-    public:
+      public:
         explicit MinecraftWorld(const std::string &name);
 
         int64_t getSeed() const;
@@ -19,11 +19,11 @@ namespace lodestone::minecraft::common::world {
         int64_t getTime() const;
         void setTime(int64_t time);
 
-    protected:
+      protected:
         int64_t mSeed = 0;
         int64_t mLastPlayed = 0;
         int64_t mTime = 0;
     };
-}
+} // namespace lodestone::minecraft::common::world
 
 #endif // LODESTONE_MINECRAFTWORLD_H

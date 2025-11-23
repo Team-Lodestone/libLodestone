@@ -6,7 +6,7 @@
 
 namespace lodestone::conversion::world::options {
     class AbstractWorldReadOptions {
-    public:
+      public:
         virtual ~AbstractWorldReadOptions() = default;
     };
 } // namespace lodestone::conversion::world::options

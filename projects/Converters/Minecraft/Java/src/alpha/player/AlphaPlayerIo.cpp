@@ -41,8 +41,8 @@ namespace lodestone::minecraft::java::alpha::player {
         p->setFireTime(player["Fire"]);
         p->setHurtTime(player["HurtTime"]);
         p->setAttackTime(player["AttackTime"]);
-        p->setDimension(
-            mcr::player::McRegionPlayer::dimensionIdToIdentifier(player["Dimension"]));
+        p->setDimension(mcr::player::McRegionPlayer::dimensionIdToIdentifier(
+            player["Dimension"]));
         p->setFallDistance(player["FallDistance"]);
 
         // TODO inventory
