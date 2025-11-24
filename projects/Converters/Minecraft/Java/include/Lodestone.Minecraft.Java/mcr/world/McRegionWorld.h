@@ -8,7 +8,7 @@
 #include <Lodestone.Minecraft.Common/world/MinecraftWorld.h>
 
 namespace lodestone::minecraft::java::mcr::world {
-    class McRegionWorld final : public common::world::MinecraftWorld {
+    class McRegionWorld : public common::world::MinecraftWorld {
       public:
         explicit McRegionWorld(const std::string &name);
 

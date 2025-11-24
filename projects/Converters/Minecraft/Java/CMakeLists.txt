@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION VERSION 3.30)
-project(Lodestone.Minecraft.Java VERSION 1.0.0)
+project(Lodestone.Minecraft.Java VERSION 1.0.1)
 
-set(VERSION_SUFFIX "") # used for non-stable versions, otherwise blank
+set(VERSION_SUFFIX "-dev.0") # used for non-stable versions, otherwise blank
 set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -49,6 +49,10 @@ set(FILES
         src/alpha/player/AlphaPlayerIo.cpp
         include/Lodestone.Minecraft.Java/alpha/player/AlphaPlayerIo.h
         src/classic/minev2/options/MineV2WorldWriteOptions.cpp
+        include/Lodestone.Minecraft.Java/anvil/jungle/chunk/JungleAnvilChunk.h
+        src/anvil/jungle/chunk/JungleAnvilChunkIo.cpp
+        include/Lodestone.Minecraft.Java/anvil/jungle/chunk/JungleAnvilChunkIo.h
+        src/anvil/jungle/chunk/JungleAnvilChunkIo.cpp
 )
 
 add_library(Lodestone.Minecraft.Java SHARED ${FILES})

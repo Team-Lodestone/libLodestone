@@ -48,9 +48,7 @@ namespace lodestone::minecraft::java::mcr::chunk {
                         continue; // this skips us having to convert the block
 #endif
 
-                    const uint8_t d = data[idx];
-                    const uint8_t dat =
-                        ((idx / 2) % 2 == 0) ? (d >> 4) & 0x0F : d & 0x0F;
+                    const uint8_t d = GET_NIBBLE(data, idx);
 
                     level::block::properties::BlockProperties b =
                         io->convertBlockToInternal(

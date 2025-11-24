@@ -42,6 +42,8 @@ set(FILES
         include/Lodestone.Conversion/types/hash/BlockDataHash.h
         include/Lodestone.Conversion/world/options/AbstractWorldWriteOptions.h
         include/Lodestone.Conversion/world/options/AbstractWorldReadOptions.h
+        src/block/data/ExtendedNumericBlockData.cpp
+        include/Lodestone.Conversion/block/data/ExtendedNumericBlockData.h
 )
 
 add_library(Lodestone.Conversion SHARED ${FILES})

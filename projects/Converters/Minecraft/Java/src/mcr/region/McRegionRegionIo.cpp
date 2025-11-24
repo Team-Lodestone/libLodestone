@@ -85,6 +85,7 @@ namespace lodestone::minecraft::java::mcr::region {
 
             bool fail = false;
             switch (compression) {
+            case GZip:
             case Zlib: {
                 zlib::izlibstream strm(bis.getStream());
                 std::unique_ptr<chunk::McRegionChunk> c = CAST_UNIQUE_PTR(
