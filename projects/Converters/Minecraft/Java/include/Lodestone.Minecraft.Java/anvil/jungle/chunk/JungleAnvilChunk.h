@@ -12,12 +12,12 @@ namespace lodestone::minecraft::java::anvil::jungle::chunk {
             : LevelChunk(256), mLastUpdate(lastUpdate) {}
 
         explicit JungleAnvilChunk(const level::types::Vec2i &coords,
-                               const int64_t lastUpdate = 0)
+                                  const int64_t lastUpdate = 0)
             : LevelChunk(256, coords), mLastUpdate(lastUpdate) {}
 
         JungleAnvilChunk(level::chunk::ChunkContainer *container,
-                      const level::types::Vec2i &coords,
-                      const int64_t lastUpdate = 0)
+                         const level::types::Vec2i &coords,
+                         const int64_t lastUpdate = 0)
             : LevelChunk(256, container, coords), mLastUpdate(lastUpdate) {}
 
         std::string toString() const override {
@@ -32,6 +32,6 @@ namespace lodestone::minecraft::java::anvil::jungle::chunk {
         // TODO tileticks
         int64_t mLastUpdate = 0;
     };
-} // namespace lodestone::minecraft::java::mcr::chunk
+} // namespace lodestone::minecraft::java::anvil::jungle::chunk
 
 #endif // LODESTONE_JUNGLEANVILCHUNK_H

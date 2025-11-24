@@ -7,6 +7,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(FILES
         include/Lodestone.Minecraft.Common/io/chunk/NbtChunkIo.h
+        include/Lodestone.Minecraft.Common/io/player/NbtPlayerIo.h
         src/player/MinecraftPlayer.cpp
         include/Lodestone.Minecraft.Common/player/MinecraftPlayer.h
         include/Lodestone.Minecraft.Common/Identifiers.h

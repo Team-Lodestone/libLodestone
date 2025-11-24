@@ -3,19 +3,22 @@
 //
 #ifndef LODESTONE_ALPHAPLAYERIO_H
 #define LODESTONE_ALPHAPLAYERIO_H
+#include <Lodestone.Minecraft.Common/io/player/NbtPlayerIo.h>
+
 #include <Lodestone.Conversion/player/PlayerIO.h>
 #include <libnbt++/tag_compound.h>
 
 #include <Lodestone.Level/world/World.h>
 
 namespace lodestone::minecraft::java::alpha::player {
-    class AlphaPlayerIO : public lodestone::conversion::player::PlayerIO {
+    class AlphaPlayerIO : public common::io::player::NbtPlayerIO {
       public:
         std::unique_ptr<level::entity::Player>
         read(const std::filesystem::path &filename, nbt::tag_compound &player,
-             int version) const;
+             int version) const override;
 
-        nbt::tag_compound write(level::entity::Player &c) const;
+        nbt::tag_compound write(level::entity::Player *p,
+                                int version) const override;
 
         size_t getSize(level::entity::Player *c, int version) const override;
 
@@ -28,4 +31,4 @@ namespace lodestone::minecraft::java::alpha::player {
     };
 } // namespace lodestone::minecraft::java::alpha::player
 
-#endif // LODESTONE_MCREGIONPLAYERIO_H
+#endif // LODESTONE_ALPHAPLAYERIO_H

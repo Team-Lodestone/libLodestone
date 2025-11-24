@@ -15,3 +15,8 @@ Minecraft: Java Edition converter
 - [ ] Anvil
 - [ ] 1.13+ Anvil
 - [ ] 1.18+ Anvil
+
+## Credits
+ - [libNBT++](https://github.com/Team-Lodestone/libnbtplusplus)
+   - forked from [PrismLauncher/libnbtplusplus](https://github.com/Team-Lodestone/libnbtplusplus)
+ - [BaseX](https://github.com/Kronuz/base-x)

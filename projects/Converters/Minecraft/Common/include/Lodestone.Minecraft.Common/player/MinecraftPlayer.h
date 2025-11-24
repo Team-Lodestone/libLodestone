@@ -44,8 +44,6 @@ namespace lodestone::minecraft::common::player {
         void
         setDimension(const lodestone::common::registry::Identifier &dimension);
 
-        bool isOnGround() const;
-
         float getFallDistance() const;
 
         void setFallDistance(const float fallDistance);

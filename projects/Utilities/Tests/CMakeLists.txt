@@ -49,7 +49,8 @@ target_compile_definitions(Lodestone.Tests PRIVATE
         READ_MCR_CHUNK=false
         READ_MCR_FILE=false
         READ_MINEV2_WORLD=false
-        READ_ALPHA_WORLD=true
+        READ_ALPHA_WORLD=false
+        WRITE_ALPHA_WORLD=true
 )
 
 setupLinter(Lodestone.Tests)

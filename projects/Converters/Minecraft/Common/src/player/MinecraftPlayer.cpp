@@ -71,28 +71,6 @@ namespace lodestone::minecraft::common::player {
         this->mDimension = dimension;
     }
 
-    bool MinecraftPlayer::isOnGround() const {
-        level::Level *lvl = this->getLevel();
-        if (lvl == nullptr || !this->mPosition.has_value())
-            return false;
-
-        double t;
-        // if there's no fraction then we know the player is standing ON the
-        // block This however will NOT work with blocks that have alt AABBs, as
-        // the fraction most definitely won't be 0. but it should suffice for
-        // most cases.
-        //
-        // Additionally, we don't check for collision, but this *probably* won't
-        // be an issue as the game will reset it afterward anyway.
-        if (std::modf(this->mPosition->y, &t) == 0 &&
-            lvl->getBlock(this->mPosition->x, this->mPosition->y - 1,
-                          this->mPosition->z)
-                    ->getBlock() != level::block::BlockRegistry::sDefaultBlock)
-            return true;
-
-        return false;
-    }
-
     float MinecraftPlayer::getFallDistance() const { return mFallDistance; }
 
     void MinecraftPlayer::setFallDistance(const float fallDistance) {

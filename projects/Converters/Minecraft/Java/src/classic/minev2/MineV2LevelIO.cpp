@@ -33,10 +33,12 @@ namespace lodestone::minecraft::java::classic::minev2 {
         std::unique_ptr<level::FiniteLevel> l =
             std::make_unique<level::FiniteLevel>(level::types::Bounds2i{
                 {0, 0},
-                {common::util::Math::ceilDiv(CHUNK_IDX(width) - 1,
-                                             common::constants::CHUNK_WIDTH),
-                 common::util::Math::ceilDiv(CHUNK_IDX(depth) - 1,
-                                             common::constants::CHUNK_DEPTH)}});
+                {common::util::Math::ceilDiv(
+                     CHUNK_IDX(width) - 1,
+                     CHUNK_IDX(common::constants::CHUNK_WIDTH)),
+                 common::util::Math::ceilDiv(
+                     CHUNK_IDX(depth) - 1,
+                     CHUNK_IDX(common::constants::CHUNK_DEPTH))}});
 
         const std::unique_ptr<lodestone::conversion::block::version::BlockIO>
             bio = LodestoneJava::getInstance()->io.getIo(version);

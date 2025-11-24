@@ -30,6 +30,7 @@ namespace lodestone::level::entity {
         bool isInLevel() const;
 
         virtual void respawn(bool inDefaultLevel = true);
+        bool isOnGround() const;
 
       protected:
         /** Sets the player's level

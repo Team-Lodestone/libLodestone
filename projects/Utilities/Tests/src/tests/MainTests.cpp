@@ -40,6 +40,8 @@ namespace lodestone::tests::test {
                  "Read Classic .mine v2 World");
         ADD_TEST(READ_ALPHA_WORLD, readAlphaWorld, util::types::MAIN,
                  "Read Alpha World");
+        ADD_TEST(WRITE_ALPHA_WORLD, writeAlphaWorld, util::types::MAIN,
+                 "Write Alpha World");
     }
 
     void MainTests::readMcrChunk() {
@@ -190,6 +192,27 @@ namespace lodestone::tests::test {
                               level::world::World::Dimension::NETHER});
             out.close();
         }
+    }
+
+    void MainTests::writeAlphaWorld() {
+        std::string name("13a_03-level_greffen");
+        OPEN_FILE_STREAM(std::format("{}.mine", name), c);
+
+        const minecraft::java::classic::minev2::MineV2WorldIO *mv2io =
+            (minecraft::java::classic::minev2::MineV2WorldIO *)
+                conversion::world::WorldIORegistry::getInstance()
+                    .getWorldIO(minecraft::java::identifiers::MINEV2);
+
+        std::unique_ptr<level::world::World> wld =
+            mv2io->read(in, minecraft::java::c0_30_CPE, {});
+
+        const minecraft::java::alpha::world::AlphaWorldIo *converter =
+            (minecraft::java::alpha::world::AlphaWorldIo *)
+                conversion::world::WorldIORegistry::getInstance()
+                    .getWorldIO(minecraft::java::identifiers::ALPHA);
+
+        converter->write(util::OUTPUT_FOLDER / name, wld.get(),
+                         minecraft::java::b1_3, {});
     }
 
 } // namespace lodestone::tests::test

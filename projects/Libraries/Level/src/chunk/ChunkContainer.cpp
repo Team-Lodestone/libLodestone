@@ -19,11 +19,11 @@ namespace lodestone::level::chunk {
     chunk::Chunk *ChunkContainer::createChunk(const types::Vec2i &coords,
                                               const int height) {
         if (hasChunk(coords))
-            throw new std::runtime_error(
+            throw std::runtime_error(
                 "Attempted to place a chunk where there already was one");
         if (!isChunkInBounds(coords))
-            throw new std::runtime_error("Attempted to place a chunk past the "
-                                         "bounds of the ChunkContainer");
+            throw std::runtime_error("Attempted to place a chunk past the "
+                                     "bounds of the ChunkContainer");
 
         std::unique_ptr<chunk::LevelChunk> ch =
             std::make_unique<chunk::LevelChunk>(height);

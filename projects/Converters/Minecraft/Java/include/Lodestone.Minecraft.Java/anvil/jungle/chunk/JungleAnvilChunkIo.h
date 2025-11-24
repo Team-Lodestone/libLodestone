@@ -31,6 +31,6 @@ namespace lodestone::minecraft::java::anvil::jungle::chunk {
                    const level::types::Vec2i &coords, int version,
                    std::ostream &out) const override;
     };
-} // namespace lodestone::minecraft::java::mcr::chunk
+} // namespace lodestone::minecraft::java::anvil::jungle::chunk
 
 #endif // LODESTONE_JUNGLEANVILCHUNKIO_H

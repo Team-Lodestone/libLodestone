@@ -6,10 +6,13 @@
 #include "Lodestone.Conversion/block/data/AbstractBlockData.h"
 
 namespace lodestone::conversion::block::data {
-    // Early anvil added block id support for ids ranging from 0-4096, this was determined by an extra 4 bits stored in parallel with each section's block array
+    // Early anvil added block id support for ids ranging from 0-4096, this was
+    // determined by an extra 4 bits stored in parallel with each section's
+    // block array
     class ExtendedNumericBlockData : public AbstractBlockData {
-    public:
-        constexpr ExtendedNumericBlockData(const uint16_t id, const uint8_t data)
+      public:
+        constexpr ExtendedNumericBlockData(const uint16_t id,
+                                           const uint8_t data)
             : mId(id), mData(data) {}
 
         constexpr uint16_t getId() const { return this->mId; };
@@ -34,13 +37,14 @@ namespace lodestone::conversion::block::data {
         bool equals(const AbstractBlockData *rhs) const override;
 
         constexpr std::string toString() const override {
-            return std::format("ExtendedNumericBlockData[id={},data={}]", mId, mData);
+            return std::format("ExtendedNumericBlockData[id={},data={}]", mId,
+                               mData);
         };
 
-    private:
+      private:
         const uint16_t mId;
         const uint8_t mData;
     };
-}
+} // namespace lodestone::conversion::block::data
 
 #endif // LODESTONE_EXTENDEDNUMERICBLOCKDATA_H

@@ -4,13 +4,9 @@
 #include "Lodestone.Conversion/block/data/ExtendedNumericBlockData.h"
 
 namespace lodestone::conversion::block::data {
-    const void *ExtendedNumericBlockData::getIdPtr() const {
-        return &mId;
-    }
+    const void *ExtendedNumericBlockData::getIdPtr() const { return &mId; }
 
-    const void *ExtendedNumericBlockData::getDataPtr() const {
-        return &mData;
-    }
+    const void *ExtendedNumericBlockData::getDataPtr() const { return &mData; }
 
     const std::type_info &ExtendedNumericBlockData::getIdType() const {
         return typeid(uint8_t);
@@ -43,4 +39,4 @@ namespace lodestone::conversion::block::data {
 
         return false;
     }
-}
+} // namespace lodestone::conversion::block::data

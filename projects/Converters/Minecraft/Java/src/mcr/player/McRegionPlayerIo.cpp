@@ -61,16 +61,16 @@ namespace lodestone::minecraft::java::mcr::player {
                                          static_cast<double>(motion[2])});
 
         p->setHealth(static_cast<short>(player["Health"]));
-        p->setSleepTimer(player["SleepTimer"]);
-        p->setBreathingTime(player["Air"]);
-        p->setDeathTime(player["DeathTime"]);
-        p->setFireTime(player["Fire"]);
-        p->setHurtTime(player["HurtTime"]);
-        p->setAttackTime(player["AttackTime"]);
-        p->setDimension(
-            McRegionPlayer::dimensionIdToIdentifier(player["Dimension"]));
-        p->setSleeping(static_cast<int8_t>(player["Sleeping"]));
-        p->setFallDistance(player["FallDistance"]);
+        p->setSleepTimer(player["SleepTimer"].as<nbt::tag_short>());
+        p->setBreathingTime(player["Air"].as<nbt::tag_short>());
+        p->setDeathTime(player["DeathTime"].as<nbt::tag_short>());
+        p->setFireTime(player["Fire"].as<nbt::tag_short>());
+        p->setHurtTime(player["HurtTime"].as<nbt::tag_short>());
+        p->setAttackTime(player["AttackTime"].as<nbt::tag_short>());
+        p->setDimension(McRegionPlayer::dimensionIdToIdentifier(
+            player["Dimension"].as<nbt::tag_int>()));
+        p->setSleeping(player["Sleeping"].as<nbt::tag_byte>());
+        p->setFallDistance(player["FallDistance"].as<nbt::tag_short>());
 
         // TODO inventory
 

@@ -10,12 +10,13 @@
 #include "Lodestone.Minecraft.Java/mcr/chunk/McRegionChunk.h"
 #include "Lodestone.Minecraft.Java/mcr/chunk/McRegionChunkIo.h"
 #include "Lodestone.Minecraft.Java/mcr/player/McRegionPlayer.h"
-#include "Lodestone.Minecraft.Java/mcr/player/McRegionPlayerIo.h"
+#include <libnbt++/io/ozlibstream.h>
+
 #include <Lodestone.Common/util/Logging.h>
-#include <Lodestone.Conversion/Identifiers.h>
 #include <Lodestone.Conversion/chunk/ChunkIORegistry.h>
 #include <Lodestone.Conversion/player/PlayerIORegistry.h>
 
+#include <base_x.hh>
 #include <libnbt++/io/izlibstream.h>
 #include <libnbt++/io/stream_reader.h>
 #include <libnbt++/nbt_tags.h>
@@ -24,12 +25,12 @@
 #include <iostream>
 
 namespace lodestone::minecraft::java::alpha::world {
-    const lodestone::conversion::level::PlayerIO *
+    const conversion::level::PlayerIO *
     AlphaWorldIo::getLevelIO(int version) const {
         return nullptr;
     }
 
-    std::unique_ptr<lodestone::level::world::World> AlphaWorldIo::read(
+    std::unique_ptr<level::world::World> AlphaWorldIo::read(
         const std::filesystem::path &path, int version,
         const conversion::world::options::AbstractWorldReadOptions &options)
         const {
@@ -92,10 +93,10 @@ namespace lodestone::minecraft::java::alpha::world {
 
         if (std::filesystem::exists(path / "players") &&
             std::filesystem::is_directory(path / "players")) {
-            const java::alpha::player::AlphaPlayerIO *pio = static_cast<
-                const java::alpha::player::AlphaPlayerIO *>(
-                lodestone::conversion::player::PlayerIORegistry::getInstance()
-                    .getPlayerIO(java::identifiers::ALPHA));
+            const player::AlphaPlayerIO *pio =
+                static_cast<const player::AlphaPlayerIO *>(
+                    conversion::player::PlayerIORegistry::getInstance()
+                        .getPlayerIO(identifiers::ALPHA));
             for (const auto &f :
                  std::filesystem::directory_iterator(path / "players")) {
                 if (!std::filesystem::is_regular_file(f))
@@ -121,7 +122,7 @@ namespace lodestone::minecraft::java::alpha::world {
         const mcr::chunk::McRegionChunkIO *chunkIo =
             dynamic_cast<const mcr::chunk::McRegionChunkIO *>(
                 conversion::chunk::ChunkIORegistry::getInstance().getChunkIO(
-                    java::identifiers::MCREGION));
+                    identifiers::MCREGION));
         for (auto [id, pth] : dims) {
             level::Level *dim = new level::Level();
             LOG_DEBUG("Reading " << dim->toString());
@@ -182,9 +183,96 @@ namespace lodestone::minecraft::java::alpha::world {
         return world;
     }
     void AlphaWorldIo::write(
-        const std::filesystem::path &path, lodestone::level::world::World *w,
-        int version,
+        const std::filesystem::path &path, level::world::World *w, int version,
         const conversion::world::options::AbstractWorldWriteOptions &options)
-        const {}
+        const {
+
+        if (!std::filesystem::exists(path)) {
+            std::filesystem::create_directories(path);
+        }
+
+        // Create level.dat
+        {
+            std::ofstream ofs(path / "level.dat", std::ifstream::binary);
+            zlib::ozlibstream strm(ofs, Z_DEFAULT_COMPRESSION, true);
+
+            nbt::io::stream_writer writer(strm);
+            nbt::tag_compound root{};
+            nbt::tag_compound data{};
+
+            if (auto *world = dynamic_cast<AlphaWorld *>(w)) {
+                data["LastPlayed"] = world->getLastPlayed();
+                data["RandomSeed"] = world->getSeed();
+
+                // TODO: Write default player tag here
+
+                level::types::Vec3i sp =
+                    world->getDefaultLevel()->getSpawnPos();
+                data["SpawnX"] = sp.x;
+                data["SpawnY"] = sp.y;
+                data["SpawnZ"] = sp.z;
+
+                data["Time"] = world->getTime();
+            } else {
+                data["LastPlayed"] = static_cast<int64_t>(0L);
+                data["RandomSeed"] = static_cast<int64_t>(
+                    -343522682); // "North Carolina".hashCode();
+
+                // TODO:: Default player tag here
+
+                data["SpawnX"] = 0;
+                data["SpawnY"] = 64;
+                data["SpawnZ"] = 0;
+
+                data["Time"] = static_cast<int64_t>(0L);
+            }
+
+            data["SizeOnDisk"] = static_cast<int64_t>(0);
+
+            root["Data"] = std::move(data);
+            writer.write_tag("", root);
+        }
+
+        // Create chunk folders and output chunks (base36)
+        const BaseX &b36 = Base36::base36();
+
+        const java::mcr::chunk::McRegionChunkIO *io =
+            static_cast<const java::mcr::chunk::McRegionChunkIO *>(
+                lodestone::conversion::chunk::ChunkIORegistry::getInstance()
+                    .getChunkIO(java::identifiers::MCREGION));
+
+        std::filesystem::path p = path;
+
+        int i = 2; // for writing other dims
+        for (auto &[id, lvl] : w->getLevels()) {
+            if (const int dim =
+                    mcr::player::McRegionPlayer::identifierToDimensionId(id);
+                dim != 0) {
+                const int d = dim == 0x7FFFFFFF ? i : dim;
+                if (d != 0)
+                    p = path / ("DIM" + std::to_string(d));
+            }
+            i++;
+
+            // loop over level chunks here
+            for (auto &[coords, chunk] : lvl->getChunks()) {
+                // notch what were you on please I need to know
+                // I want some of it
+                std::string fX = b36.encode(coords.x % 64);
+                std::string fZ = b36.encode(coords.z % 64);
+
+                std::filesystem::path chunkOut = p / fX / fZ;
+                if (!std::filesystem::exists(chunkOut)) {
+                    std::filesystem::create_directories(chunkOut);
+                }
+
+                std::string cf = "c." + b36.encode(coords.x) + "." +
+                                 b36.encode(coords.z) + ".dat";
+                std::ofstream ofs(chunkOut / cf, std::ofstream::binary);
+                zlib::ozlibstream ozs(ofs, Z_DEFAULT_COMPRESSION, true);
+                io->write(chunk.get(), coords, version, ozs);
+            }
+        }
+    }
 
 } // namespace lodestone::minecraft::java::alpha::world

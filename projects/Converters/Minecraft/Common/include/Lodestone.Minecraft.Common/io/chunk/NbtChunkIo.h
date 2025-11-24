@@ -10,7 +10,6 @@ namespace nbt {
 }
 
 namespace lodestone::minecraft::common::io::chunk {
-    // TODO once I make common mc project this can be moved
     class NbtChunkIO : public conversion::chunk::ChunkIO {
         virtual std::unique_ptr<level::chunk::Chunk>
         read(nbt::tag_compound &chunk, int version) const = 0;
