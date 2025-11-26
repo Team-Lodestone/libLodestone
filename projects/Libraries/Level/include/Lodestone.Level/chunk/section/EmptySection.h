@@ -5,7 +5,9 @@
 #define LODESTONE_EMPTYSECTION_H
 
 #include "Lodestone.Level/block/properties/BlockProperties.h"
+#include "Lodestone.Level/chunk/section/LevelSection.h"
 #include "Lodestone.Level/chunk/section/Section.h"
+#include "Lodestone.Level/types/EmptyNibbleArray.h"
 
 namespace lodestone::level::chunk::section {
     /** Immutable section, used in place of returning empty/null LevelSection */
@@ -17,15 +19,21 @@ namespace lodestone::level::chunk::section {
 
         const block::properties::BlockProperties *getBlocks() override;
 
-        const uint8_t *getBlockLight() const override;
+        types::NibbleArray getBlockLight() const override;
 
-        const uint8_t *getSkyLight() const override;
+        types::NibbleArray getSkyLight() const override;
 
         block::properties::BlockProperties *
         getBlock(const int x, const int y, const int z) const override;
 
         void setBlock(block::properties::BlockProperties &&blk, int x, int y,
                       int z) override;
+
+      private:
+        types::EmptyNibbleArray mEmptyNibbleArray = types::EmptyNibbleArray(
+            common::constants::CHUNK_WIDTH * common::constants::SECTION_HEIGHT *
+                common::constants::CHUNK_DEPTH,
+            4);
     };
 } // namespace lodestone::level::chunk::section
 

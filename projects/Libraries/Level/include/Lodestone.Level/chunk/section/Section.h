@@ -3,7 +3,7 @@
 //
 #ifndef LODESTONE_SECTION_H
 #define LODESTONE_SECTION_H
-#include <cstdint>
+#include "Lodestone.Level/types/NibbleArray.h"
 
 namespace lodestone::level::block {
     namespace properties {
@@ -20,9 +20,9 @@ namespace lodestone::level::chunk::section {
 
         virtual const block::properties::BlockProperties *getBlocks() = 0;
 
-        virtual const uint8_t *getBlockLight() const = 0;
+        virtual types::NibbleArray getBlockLight() const = 0;
 
-        virtual const uint8_t *getSkyLight() const = 0;
+        virtual types::NibbleArray getSkyLight() const = 0;
 
         virtual block::properties::BlockProperties *
         getBlock(const int x, const int y, const int z) const = 0;

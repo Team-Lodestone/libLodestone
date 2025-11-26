@@ -8,6 +8,7 @@
 
 #include "Lodestone.Level/block/properties/BlockProperties.h"
 #include "Lodestone.Level/chunk/section/Section.h"
+#include "Lodestone.Level/types/NibbleArray.h"
 
 namespace lodestone::level::chunk::section {
     class LevelSection : public Section {
@@ -15,9 +16,9 @@ namespace lodestone::level::chunk::section {
         LevelSection();
         ~LevelSection() override;
 
-        const uint8_t *getBlockLight() const override;
+        types::NibbleArray getBlockLight() const override;
 
-        const uint8_t *getSkyLight() const override;
+        types::NibbleArray getSkyLight() const override;
 
         block::properties::BlockProperties *getBlock(int x, int y,
                                                      int z) const override;
@@ -37,14 +38,14 @@ namespace lodestone::level::chunk::section {
         // TODO: we could also calculate lighting for blocks, could have a map
         // of xyz -> Block specifically for light blocks
 
-        uint8_t *mBlockLight = new uint8_t[(common::constants::CHUNK_WIDTH *
-                                            common::constants::SECTION_HEIGHT *
-                                            common::constants::CHUNK_DEPTH) /
-                                           2]();
-        uint8_t *mSkyLight = new uint8_t[(common::constants::CHUNK_WIDTH *
-                                          common::constants::SECTION_HEIGHT *
-                                          common::constants::CHUNK_DEPTH) /
-                                         2]();
+        types::NibbleArray mBlockLight = types::NibbleArray(
+            common::constants::CHUNK_WIDTH * common::constants::SECTION_HEIGHT *
+                common::constants::CHUNK_DEPTH,
+            4);
+        types::NibbleArray mSkyLight = types::NibbleArray(
+            common::constants::CHUNK_WIDTH * common::constants::SECTION_HEIGHT *
+                common::constants::CHUNK_DEPTH,
+            4);
         const char **mBiomes =
             new const char *[common::constants::CHUNK_WIDTH *
                              common::constants::CHUNK_DEPTH]();

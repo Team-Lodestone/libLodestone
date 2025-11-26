@@ -4,21 +4,20 @@
 #include "Lodestone.Level/chunk/section/LevelSection.h"
 
 #include <Lodestone.Common/Indexing.h>
-#include <iostream>
 
 namespace lodestone::level::chunk::section {
     LevelSection::LevelSection() {}
 
     LevelSection::~LevelSection() {
-        delete[] mSkyLight;
-        delete[] mBlockLight;
         delete[] mBiomes;
         delete[] mBlocks;
     }
 
-    const uint8_t *LevelSection::getBlockLight() const { return mBlockLight; }
+    types::NibbleArray LevelSection::getBlockLight() const {
+        return mBlockLight;
+    }
 
-    const uint8_t *LevelSection::getSkyLight() const { return mSkyLight; }
+    types::NibbleArray LevelSection::getSkyLight() const { return mSkyLight; }
 
     block::properties::BlockProperties *
     LevelSection::getBlock(const int x, const int y, const int z) const {
