@@ -34,7 +34,8 @@ namespace lodestone::minecraft::java::mcregion::world {
         int32_t getVersion() const;
         void setVersion(const int32_t version);
 
-        std::shared_ptr<level::properties::AbstractProperty> getProperty(const std::string &name) override;
+        std::shared_ptr<level::properties::AbstractProperty>
+        getProperty(const std::string &name) override;
 
       private:
         /** Whether it's currently raining in the world
@@ -57,7 +58,7 @@ namespace lodestone::minecraft::java::mcregion::world {
         int mThunderTime;
 
         /** The world version
-         * 
+         *
          * @prop version
          */
         int32_t mVersion;

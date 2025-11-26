@@ -19,7 +19,8 @@ namespace lodestone::minecraft::common::world {
         int64_t getTime() const;
         void setTime(int64_t time);
 
-        std::shared_ptr<level::properties::AbstractProperty> getProperty(const std::string &name) override;
+        std::shared_ptr<level::properties::AbstractProperty>
+        getProperty(const std::string &name) override;
 
       protected:
         int64_t mSeed = 0;

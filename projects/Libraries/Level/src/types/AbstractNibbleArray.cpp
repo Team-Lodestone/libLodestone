@@ -3,5 +3,4 @@
 //
 #include "Lodestone.Level/types/AbstractNibbleArray.h"
 
-namespace lodestone::level::types {
-}
+namespace lodestone::level::types {}

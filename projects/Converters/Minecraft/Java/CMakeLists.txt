@@ -55,17 +55,9 @@ set(FILES
         src/anvil/jungle/chunk/JungleAnvilChunkIo.cpp
 )
 
-FetchContent_Declare(
-        BaseX
-        GIT_REPOSITORY https://github.com/Kronuz/base-x
-        GIT_TAG master
-)
-FetchContent_MakeAvailable(BaseX)
-
 add_library(Lodestone.Minecraft.Java SHARED ${FILES})
 target_include_directories(Lodestone.Minecraft.Java
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        ${basex_SOURCE_DIR}
 )
 
 find_package(OpenMP COMPONENTS C CXX)

@@ -11,15 +11,12 @@ namespace lodestone::level::types {
         this->mBits = bits;
     }
 
-    NibbleArray::NibbleArray(uint8_t *data,
-                             const int bits) {
+    NibbleArray::NibbleArray(uint8_t *data, const int bits) {
         this->mData = data;
         this->mBits = bits;
     }
 
-    NibbleArray::~NibbleArray() {
-        delete this->mData;
-    }
+    NibbleArray::~NibbleArray() { delete this->mData; }
 
     int NibbleArray::getIndex(const int x, const int y, const int z) const {
         return y << (this->mBits + 4) | z << this->mBits | x;
@@ -45,7 +42,7 @@ namespace lodestone::level::types {
             this->mData[mask] = this->mData[mask] & 0xF0 | value & 0xF;
         }
         this->mData[mask] = this->mData[mask] & 0xF | (value & 0xF)
-                                                        << this->mBits;
+                                                          << this->mBits;
     }
 
 } // namespace lodestone::level::types

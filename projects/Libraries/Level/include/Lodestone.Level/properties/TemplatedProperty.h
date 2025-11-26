@@ -16,14 +16,11 @@ namespace lodestone::level::properties {
             return &identifiers::properties::TEMPLATED_PROPERTY;
         };
 
-        constexpr const T &getValue() const {
-            return value;
-        };
+        constexpr const T &getValue() const { return value; };
 
-        constexpr operator const T &() const {
-            return value;
-        }
-    private:
+        constexpr operator const T &() const { return value; }
+
+      private:
         T value;
     };
 } // namespace lodestone::level::properties

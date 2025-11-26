@@ -10,9 +10,15 @@
 
 namespace lodestone::level::properties {
     class ReflectiveProperties {
-    public:
+      public:
         // oh no nfts
-#define ADD_PROPERTY(n, f, t) case n##_hash: return (typeid(t) == typeid(f)) ? std::make_shared<lodestone::level::properties::TemplatedProperty<t>>(f) : nullptr
+#define ADD_PROPERTY(n, f, t)                                                  \
+    case n##_hash:                                                             \
+        return (typeid(t) == typeid(f))                                        \
+                   ? std::make_shared<                                         \
+                         lodestone::level::properties::TemplatedProperty<t>>(  \
+                         f)                                                    \
+                   : nullptr
 
         virtual ~ReflectiveProperties() = default;
 
@@ -23,8 +29,9 @@ namespace lodestone::level::properties {
          * @property name The name of the property to get
          * @returns The property if present, otherwise nullptr.
          */
-        virtual std::shared_ptr<level::properties::AbstractProperty> getProperty(const std::string &name) = 0;
+        virtual std::shared_ptr<level::properties::AbstractProperty>
+        getProperty(const std::string &name) = 0;
     };
-}
+} // namespace lodestone::level::properties
 
 #endif // LODESTONE_REFLECTIVEPROPERTIES_H

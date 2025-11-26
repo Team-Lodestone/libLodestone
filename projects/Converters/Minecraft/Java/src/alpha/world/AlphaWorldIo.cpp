@@ -13,10 +13,10 @@
 #include <libnbt++/io/ozlibstream.h>
 
 #include <Lodestone.Common/util/Logging.h>
+#include <Lodestone.Common/util/Math.h>
 #include <Lodestone.Conversion/chunk/ChunkIORegistry.h>
 #include <Lodestone.Conversion/player/PlayerIORegistry.h>
 
-#include <base_x.hh>
 #include <libnbt++/io/izlibstream.h>
 #include <libnbt++/io/stream_reader.h>
 #include <libnbt++/nbt_tags.h>
@@ -144,8 +144,9 @@ namespace lodestone::minecraft::java::alpha::world {
                 std::ifstream ifs(file, std::ifstream::binary);
                 zlib::izlibstream strm(ifs);
 
-                std::unique_ptr<mcregion::chunk::McRegionChunk> c = CAST_UNIQUE_PTR(
-                    mcregion::chunk::McRegionChunk, chunkIo->read(strm, version));
+                std::unique_ptr<mcregion::chunk::McRegionChunk> c =
+                    CAST_UNIQUE_PTR(mcregion::chunk::McRegionChunk,
+                                    chunkIo->read(strm, version));
 
                 LOG_DEBUG(file.string());
                 LOG_DEBUG(c->toString());
@@ -202,10 +203,21 @@ namespace lodestone::minecraft::java::alpha::world {
 
             // Not the cleanest solution, but it definitely works.
             auto lastPlayed = w->getProperty("lastPlayed");
-            data["LastPlayed"] = lastPlayed ? lastPlayed->as<level::properties::TemplatedProperty<int64_t &>>()->getValue() : static_cast<int64_t>(0);
+            data["LastPlayed"] =
+                lastPlayed
+                    ? lastPlayed
+                          ->as<
+                              level::properties::TemplatedProperty<int64_t &>>()
+                          ->getValue()
+                    : static_cast<int64_t>(0);
 
             auto seed = w->getProperty("seed");
-            data["RandomSeed"] = seed ? seed->as<level::properties::TemplatedProperty<int64_t &>>()->getValue() : static_cast<int64_t>(0);
+            data["RandomSeed"] =
+                seed
+                    ? seed->as<
+                              level::properties::TemplatedProperty<int64_t &>>()
+                          ->getValue()
+                    : static_cast<int64_t>(0);
 
             // TODO: Write default player tag here
 
@@ -215,7 +227,12 @@ namespace lodestone::minecraft::java::alpha::world {
             data["SpawnZ"] = sp.z;
 
             auto time = w->getProperty("time");
-            data["Time"] = time ? time->as<level::properties::TemplatedProperty<int64_t &>>()->getValue() : static_cast<int64_t>(0);
+            data["Time"] =
+                time
+                    ? time->as<
+                              level::properties::TemplatedProperty<int64_t &>>()
+                          ->getValue()
+                    : static_cast<int64_t>(0);
 
             data["SizeOnDisk"] = static_cast<int64_t>(0);
 
@@ -224,8 +241,6 @@ namespace lodestone::minecraft::java::alpha::world {
         }
 
         // Create chunk folders and output chunks (base36)
-        const BaseX &b36 = Base36::base36();
-
         const java::mcregion::chunk::McRegionChunkIO *io =
             static_cast<const java::mcregion::chunk::McRegionChunkIO *>(
                 lodestone::conversion::chunk::ChunkIORegistry::getInstance()
@@ -236,7 +251,8 @@ namespace lodestone::minecraft::java::alpha::world {
         int i = 2; // for writing other dims
         for (auto &[id, lvl] : w->getLevels()) {
             if (const int dim =
-                    mcregion::player::McRegionPlayer::identifierToDimensionId(id);
+                    mcregion::player::McRegionPlayer::identifierToDimensionId(
+                        id);
                 dim != 0) {
                 const int d = dim == 0x7FFFFFFF ? i : dim;
                 if (d != 0)
@@ -246,21 +262,21 @@ namespace lodestone::minecraft::java::alpha::world {
 
             // loop over level chunks here
             for (auto &[coords, chunk] : lvl->getChunks()) {
-                // notch what were you on please I need to know
-                // I NEED whatever it is
-                int tX = (coords.x < 0 ? coords.x + 256 : coords.x);
-                int tZ = (coords.z < 0 ? coords.z + 256 : coords.z);
+                int tX = coords.x;
+                int tZ = coords.z;
 
-                std::string fX = b36.encode(tX & 63);
-                std::string fZ = b36.encode(tZ & 63);
+                std::string fX = lodestone::common::util::Math::base36(tX & 63);
+                std::string fZ = lodestone::common::util::Math::base36(tZ & 63);
 
                 std::filesystem::path chunkOut = p / fX / fZ;
                 if (!std::filesystem::exists(chunkOut)) {
                     std::filesystem::create_directories(chunkOut);
                 }
 
-                std::string cf = "c." + b36.encode(tX) + "." +
-                                 b36.encode(tZ) + ".dat";
+                std::string cX = lodestone::common::util::Math::base36(tX);
+                std::string cZ = lodestone::common::util::Math::base36(tZ);
+
+                std::string cf = "c." + cX + "." + cZ + ".dat";
                 std::ofstream ofs(chunkOut / cf, std::ofstream::binary);
                 zlib::ozlibstream ozs(ofs, Z_DEFAULT_COMPRESSION, true);
                 io->write(chunk.get(), coords, version, ozs);

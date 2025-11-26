@@ -6,6 +6,7 @@
 #include "Lodestone.Level/properties/TemplatedProperty.h"
 
 template <typename T>
-using OptionalTemplatedProperty = lodestone::level::properties::TemplatedProperty<std::optional<T>>;
+using OptionalTemplatedProperty =
+    lodestone::level::properties::TemplatedProperty<std::optional<T>>;
 
 #endif // LODESTONE_OPTIONALTEMPLATEDPROPERTY_H

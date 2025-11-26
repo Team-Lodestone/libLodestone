@@ -82,10 +82,10 @@ namespace lodestone::tests::test {
             (minecraft::java::mcregion::region::McRegionRegionIO *)
                 lodestone::conversion::region::RegionIORegistry::getInstance()
                     .getRegionIO(minecraft::java::identifiers::MCREGION);
-        std::unique_ptr<level::region::Region> r = io->read(
-            in, minecraft::java::Version::b1_3,
-            minecraft::java::mcregion::region::McRegionRegion::getCoordsFromFilename(
-                name));
+        std::unique_ptr<level::region::Region> r =
+            io->read(in, minecraft::java::Version::b1_3,
+                     minecraft::java::mcregion::region::McRegionRegion::
+                         getCoordsFromFilename(name));
 
         // const lodestone::conversion::world::FileWorldIO *l2 =
         // dynamic_cast<const
@@ -123,20 +123,22 @@ namespace lodestone::tests::test {
         // OPEN_WRITE_FILE_STREAM(std::format("{}.dat", name))
         // l2->write(w.get(), lodestone::minecraft::minecraft::java::c0_28,
         // out); out.close();
-        // const minecraft::java::mcregion::region::McRegionRegionIO *r = dynamic_cast<
+        // const minecraft::java::mcregion::region::McRegionRegionIO *r =
+        // dynamic_cast<
         //     const minecraft::java::mcregion::region::McRegionRegionIO *>(
         //     lodestone::conversion::region::RegionIORegistry::getInstance()
         //         .getRegionIO({"lodestone", "mcregion"}));
         //
         // OPEN_WRITE_FILE_STREAM(std::format("{}.mcr", name))
-        // r->write(w.get()->getDefaultLevel(), lodestone::minecraft::java::b1_3,
+        // r->write(w.get()->getDefaultLevel(),
+        // lodestone::minecraft::java::b1_3,
         //          {0, 0}, out);
         // out.close();
 
         const minecraft::java::alpha::world::AlphaWorldIo *converter =
-    (minecraft::java::alpha::world::AlphaWorldIo *)
-        conversion::world::WorldIORegistry::getInstance()
-            .getWorldIO(minecraft::java::identifiers::ALPHA);
+            (minecraft::java::alpha::world::AlphaWorldIo *)
+                conversion::world::WorldIORegistry::getInstance()
+                    .getWorldIO(minecraft::java::identifiers::ALPHA);
 
         converter->write(util::OUTPUT_FOLDER / name, w.get(),
                          minecraft::java::b1_3, {});

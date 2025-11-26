@@ -10,7 +10,8 @@
 #include "Lodestone.Level/properties/ReflectiveProperties.h"
 
 namespace lodestone::level::entity {
-    class LODESTONE_API Player : public Entity, public properties::ReflectiveProperties {
+    class LODESTONE_API Player : public Entity,
+                                 public properties::ReflectiveProperties {
       public:
         /** Can return a UUID, player name, or other depending on the version */
         virtual const std::string &getId() const = 0;
@@ -33,7 +34,8 @@ namespace lodestone::level::entity {
         virtual void respawn(bool inDefaultLevel = true);
         bool isOnGround() const;
 
-        std::shared_ptr<level::properties::AbstractProperty> getProperty(const std::string &name) override;
+        std::shared_ptr<level::properties::AbstractProperty>
+        getProperty(const std::string &name) override;
 
       protected:
         /** Sets the player's level

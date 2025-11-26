@@ -48,14 +48,17 @@ namespace lodestone::minecraft::java::mcregion::world {
         mVersion = version;
     }
 
-    std::shared_ptr<level::properties::AbstractProperty> McRegionWorld::getProperty(const std::string &name) {
-        switch (lodestone::common::util::Math::fnv1a64(name.data(), name.length())) {
+    std::shared_ptr<level::properties::AbstractProperty>
+    McRegionWorld::getProperty(const std::string &name) {
+        switch (lodestone::common::util::Math::fnv1a64(name.data(),
+                                                       name.length())) {
             ADD_PROPERTY("raining", mIsRaining, bool &);
             ADD_PROPERTY("rainTime", mRainTime, int32_t &);
             ADD_PROPERTY("thundering", mIsThundering, bool &);
             ADD_PROPERTY("thunderTime", mThunderTime, int32_t &);
             ADD_PROPERTY("version", mVersion, int32_t &);
-            default: return MinecraftWorld::getProperty(name);
+        default:
+            return MinecraftWorld::getProperty(name);
         }
     }
 } // namespace lodestone::minecraft::java::mcregion::world

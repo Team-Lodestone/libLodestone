@@ -54,7 +54,8 @@ namespace lodestone::minecraft::common::player {
 
         const lodestone::common::registry::Identifier *getType() const override;
 
-        std::shared_ptr<level::properties::AbstractProperty> getProperty(const std::string &name) override;
+        std::shared_ptr<level::properties::AbstractProperty>
+        getProperty(const std::string &name) override;
 
       private:
         /** The player's name

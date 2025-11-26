@@ -16,7 +16,8 @@ namespace lodestone::conversion::world {
 }
 
 namespace lodestone::level::world {
-    class World : public lodestone::common::string::StringSerializable, public properties::ReflectiveProperties {
+    class World : public lodestone::common::string::StringSerializable,
+                  public properties::ReflectiveProperties {
       public:
         class Dimension {
             // just a class full of constants for now
@@ -108,7 +109,8 @@ namespace lodestone::level::world {
             movePlayerToWorld(std::move(it->second), world);
         }
 
-        std::shared_ptr<level::properties::AbstractProperty> getProperty(const std::string &name) override;
+        std::shared_ptr<level::properties::AbstractProperty>
+        getProperty(const std::string &name) override;
 
       protected:
         /** World name */

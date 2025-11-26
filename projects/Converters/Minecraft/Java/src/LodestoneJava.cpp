@@ -69,8 +69,9 @@ namespace lodestone::minecraft::java {
 
         // mcr
         lodestone::conversion::chunk::ChunkIORegistry::getInstance()
-            .registerChunkIO(identifiers::MCREGION,
-                             std::make_unique<mcregion::chunk::McRegionChunkIO>());
+            .registerChunkIO(
+                identifiers::MCREGION,
+                std::make_unique<mcregion::chunk::McRegionChunkIO>());
 
         lodestone::conversion::region::RegionIORegistry::getInstance()
             .registerRegionIO(
@@ -78,8 +79,9 @@ namespace lodestone::minecraft::java {
                 std::make_unique<mcregion::region::McRegionRegionIO>());
 
         lodestone::conversion::world::WorldIORegistry::getInstance()
-            .registerWorldIO(identifiers::MCREGION,
-                             std::make_unique<mcregion::world::McRegionWorldIo>());
+            .registerWorldIO(
+                identifiers::MCREGION,
+                std::make_unique<mcregion::world::McRegionWorldIo>());
 
         lodestone::conversion::player::PlayerIORegistry::getInstance()
             .registerPlayerIO(

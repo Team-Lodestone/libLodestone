@@ -58,11 +58,14 @@ namespace lodestone::minecraft::java::mcregion::player {
         return &identifiers::MCREGION;
     }
 
-    std::shared_ptr<level::properties::AbstractProperty> McRegionPlayer::getProperty(const std::string &name) {
-        switch (lodestone::common::util::Math::fnv1a64(name.data(), name.length())) {
+    std::shared_ptr<level::properties::AbstractProperty>
+    McRegionPlayer::getProperty(const std::string &name) {
+        switch (lodestone::common::util::Math::fnv1a64(name.data(),
+                                                       name.length())) {
             ADD_PROPERTY("sleepTimer", mSleepTimer, short &);
             ADD_PROPERTY("sleeping", mIsSleeping, bool &);
-            default: return MinecraftPlayer::getProperty(name);
+        default:
+            return MinecraftPlayer::getProperty(name);
         }
     }
 } // namespace lodestone::minecraft::java::mcregion::player

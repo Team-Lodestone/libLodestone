@@ -19,6 +19,7 @@ namespace lodestone::level::types {
         int getIndex(int x, int y, int z) const override;
         int getNibble(int x, int y, int z) const override;
         void setNibble(int x, int y, int z, int value) override;
+
       private:
         /**
          * Indexed by YZX

@@ -6,13 +6,13 @@
 
 namespace lodestone::level::types {
     class AbstractNibbleArray {
-    public:
+      public:
         virtual ~AbstractNibbleArray() = default;
-        
+
         virtual int getIndex(int x, int y, int z) const = 0;
         virtual int getNibble(int x, int y, int z) const = 0;
         virtual void setNibble(int x, int y, int z, int value) = 0;
     };
-}
+} // namespace lodestone::level::types
 
 #endif // LODESTONE_ABSTRACTNIBBLEARRAY_H
