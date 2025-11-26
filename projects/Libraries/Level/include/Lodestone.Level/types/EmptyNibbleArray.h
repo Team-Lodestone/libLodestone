@@ -6,14 +6,16 @@
 #include "Lodestone.Level/types/NibbleArray.h"
 
 namespace lodestone::level::types {
-    class EmptyNibbleArray : public NibbleArray {
-      public:
-        EmptyNibbleArray(const int length, const int bits)
-            : NibbleArray(length, bits) {}
+    class EmptyNibbleArray : public AbstractNibbleArray {
+      protected:
+        EmptyNibbleArray() = default;
 
-      private:
-        int getNibble(int x, int y, int z);
-        void setNibble(int x, int y, int z, int value);
+      public:
+        static EmptyNibbleArray *getInstance();
+
+        int getIndex(int x, int y, int z) const override;
+        int getNibble(int x, int y, int z) const override;
+        void setNibble(int x, int y, int z, int value) override;
     };
 } // namespace lodestone::level::types
 

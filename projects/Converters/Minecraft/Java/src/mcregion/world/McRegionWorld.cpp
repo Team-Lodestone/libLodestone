@@ -1,12 +1,14 @@
 //
 // Created by DexrnZacAttack on 11/11/25 using zPc-i2.
 //
-#include "Lodestone.Minecraft.Java/mcr/world/McRegionWorld.h"
+#include "Lodestone.Minecraft.Java/mcregion/world/McRegionWorld.h"
 
 #include "Lodestone.Minecraft.Java/Identifiers.h"
 #include <Lodestone.Conversion/world/WorldIORegistry.h>
 
-namespace lodestone::minecraft::java::mcr::world {
+#include <Lodestone.Common/util/Math.h>
+
+namespace lodestone::minecraft::java::mcregion::world {
     McRegionWorld::McRegionWorld(const std::string &name)
         : MinecraftWorld(name), mIsRaining(false), mRainTime(0),
           mIsThundering(false), mThunderTime(0) {}
@@ -45,4 +47,15 @@ namespace lodestone::minecraft::java::mcr::world {
     void McRegionWorld::setVersion(const int32_t version) {
         mVersion = version;
     }
-} // namespace lodestone::minecraft::java::mcr::world
+
+    std::shared_ptr<level::properties::AbstractProperty> McRegionWorld::getProperty(const std::string &name) {
+        switch (lodestone::common::util::Math::fnv1a64(name.data(), name.length())) {
+            ADD_PROPERTY("raining", mIsRaining, bool &);
+            ADD_PROPERTY("rainTime", mRainTime, int32_t &);
+            ADD_PROPERTY("thundering", mIsThundering, bool &);
+            ADD_PROPERTY("thunderTime", mThunderTime, int32_t &);
+            ADD_PROPERTY("version", mVersion, int32_t &);
+            default: return MinecraftWorld::getProperty(name);
+        }
+    }
+} // namespace lodestone::minecraft::java::mcregion::world

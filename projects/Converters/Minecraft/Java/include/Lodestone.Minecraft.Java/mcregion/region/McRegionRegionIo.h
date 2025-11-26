@@ -10,13 +10,11 @@
 #include <Lodestone.Level/region/Region.h>
 #include <Lodestone.Level/types/Vec2.h>
 
-namespace lodestone::minecraft::java::mcr::region {
+namespace lodestone::minecraft::java::mcregion::region {
     class McRegionRegionIO : public lodestone::conversion::region::RegionIO {
       public:
         static constexpr int CHUNK_COUNT = 1024;
         static constexpr int SECTOR_SIZE = 4096;
-
-        size_t getSize(lodestone::level::Level *c, int version) const override;
 
         std::unique_ptr<lodestone::level::region::Region>
         read(std::istream &in, int version,
@@ -32,6 +30,6 @@ namespace lodestone::minecraft::java::mcr::region {
         const conversion::chunk::ChunkIO *
         getChunkIO(int version) const override;
     };
-} // namespace lodestone::minecraft::java::mcr::region
+} // namespace lodestone::minecraft::java::mcregion::region
 
 #endif // LODESTONE_MCREGIONREGIONIO_H

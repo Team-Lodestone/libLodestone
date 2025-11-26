@@ -9,13 +9,14 @@
 
 #include "Lodestone.Level/Level.h"
 #include "Lodestone.Level/entity/Player.h"
+#include "Lodestone.Level/properties/ReflectiveProperties.h"
 
 namespace lodestone::conversion::world {
     class WorldIO;
 }
 
 namespace lodestone::level::world {
-    class World : public lodestone::common::string::StringSerializable {
+    class World : public lodestone::common::string::StringSerializable, public properties::ReflectiveProperties {
       public:
         class Dimension {
             // just a class full of constants for now
@@ -63,7 +64,8 @@ namespace lodestone::level::world {
                 ->toString();
         };
 
-        std::string getName() const { return mName; }
+        std::string getName() const;
+        void setName(const std::string &n);
 
         virtual const lodestone::conversion::world::WorldIO *getIO();
 
@@ -106,7 +108,10 @@ namespace lodestone::level::world {
             movePlayerToWorld(std::move(it->second), world);
         }
 
+        std::shared_ptr<level::properties::AbstractProperty> getProperty(const std::string &name) override;
+
       protected:
+        /** World name */
         std::string mName;
 
         /** Levels

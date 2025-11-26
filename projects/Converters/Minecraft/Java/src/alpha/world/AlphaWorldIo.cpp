@@ -7,9 +7,9 @@
 #include "Lodestone.Minecraft.Java/Identifiers.h"
 #include "Lodestone.Minecraft.Java/alpha/player/AlphaPlayerIo.h"
 #include "Lodestone.Minecraft.Java/alpha/world/AlphaWorld.h"
-#include "Lodestone.Minecraft.Java/mcr/chunk/McRegionChunk.h"
-#include "Lodestone.Minecraft.Java/mcr/chunk/McRegionChunkIo.h"
-#include "Lodestone.Minecraft.Java/mcr/player/McRegionPlayer.h"
+#include "Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunk.h"
+#include "Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunkIo.h"
+#include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayer.h"
 #include <libnbt++/io/ozlibstream.h>
 
 #include <Lodestone.Common/util/Logging.h>
@@ -25,7 +25,7 @@
 #include <iostream>
 
 namespace lodestone::minecraft::java::alpha::world {
-    const conversion::level::PlayerIO *
+    const conversion::level::LevelIO *
     AlphaWorldIo::getLevelIO(int version) const {
         return nullptr;
     }
@@ -119,8 +119,8 @@ namespace lodestone::minecraft::java::alpha::world {
         }
 
         int t = 2;
-        const mcr::chunk::McRegionChunkIO *chunkIo =
-            dynamic_cast<const mcr::chunk::McRegionChunkIO *>(
+        const mcregion::chunk::McRegionChunkIO *chunkIo =
+            dynamic_cast<const mcregion::chunk::McRegionChunkIO *>(
                 conversion::chunk::ChunkIORegistry::getInstance().getChunkIO(
                     identifiers::MCREGION));
         for (auto [id, pth] : dims) {
@@ -144,8 +144,8 @@ namespace lodestone::minecraft::java::alpha::world {
                 std::ifstream ifs(file, std::ifstream::binary);
                 zlib::izlibstream strm(ifs);
 
-                std::unique_ptr<mcr::chunk::McRegionChunk> c = CAST_UNIQUE_PTR(
-                    mcr::chunk::McRegionChunk, chunkIo->read(strm, version));
+                std::unique_ptr<mcregion::chunk::McRegionChunk> c = CAST_UNIQUE_PTR(
+                    mcregion::chunk::McRegionChunk, chunkIo->read(strm, version));
 
                 LOG_DEBUG(file.string());
                 LOG_DEBUG(c->toString());
@@ -154,7 +154,7 @@ namespace lodestone::minecraft::java::alpha::world {
             }
 
             lodestone::common::registry::Identifier d =
-                mcr::player::McRegionPlayer::dimensionIdToIdentifier(id);
+                mcregion::player::McRegionPlayer::dimensionIdToIdentifier(id);
             if (d == level::world::World::Dimension::UNKNOWN)
                 d = lodestone::common::registry::Identifier(
                     "lodestone", ("unknown_dim_" + std::to_string(t)).c_str());
@@ -168,8 +168,8 @@ namespace lodestone::minecraft::java::alpha::world {
         // move players to correct level otherwise they're stuck at correct
         // coords in diff level
         for (const auto &[name, plr] : world->getPlayers()) {
-            const mcr::player::McRegionPlayer *p =
-                dynamic_cast<mcr::player::McRegionPlayer *>(plr.get());
+            const mcregion::player::McRegionPlayer *p =
+                dynamic_cast<mcregion::player::McRegionPlayer *>(plr.get());
             if (!p)
                 continue;
 
@@ -200,32 +200,22 @@ namespace lodestone::minecraft::java::alpha::world {
             nbt::tag_compound root{};
             nbt::tag_compound data{};
 
-            if (auto *world = dynamic_cast<AlphaWorld *>(w)) {
-                data["LastPlayed"] = world->getLastPlayed();
-                data["RandomSeed"] = world->getSeed();
+            // Not the cleanest solution, but it definitely works.
+            auto lastPlayed = w->getProperty("lastPlayed");
+            data["LastPlayed"] = lastPlayed ? lastPlayed->as<level::properties::TemplatedProperty<int64_t &>>()->getValue() : static_cast<int64_t>(0);
 
-                // TODO: Write default player tag here
+            auto seed = w->getProperty("seed");
+            data["RandomSeed"] = seed ? seed->as<level::properties::TemplatedProperty<int64_t &>>()->getValue() : static_cast<int64_t>(0);
 
-                level::types::Vec3i sp =
-                    world->getDefaultLevel()->getSpawnPos();
-                data["SpawnX"] = sp.x;
-                data["SpawnY"] = sp.y;
-                data["SpawnZ"] = sp.z;
+            // TODO: Write default player tag here
 
-                data["Time"] = world->getTime();
-            } else {
-                data["LastPlayed"] = static_cast<int64_t>(0L);
-                data["RandomSeed"] = static_cast<int64_t>(
-                    -343522682); // "North Carolina".hashCode();
+            level::types::Vec3i sp = w->getDefaultLevel()->getSpawnPos();
+            data["SpawnX"] = sp.x;
+            data["SpawnY"] = sp.y;
+            data["SpawnZ"] = sp.z;
 
-                // TODO:: Default player tag here
-
-                data["SpawnX"] = 0;
-                data["SpawnY"] = 64;
-                data["SpawnZ"] = 0;
-
-                data["Time"] = static_cast<int64_t>(0L);
-            }
+            auto time = w->getProperty("time");
+            data["Time"] = time ? time->as<level::properties::TemplatedProperty<int64_t &>>()->getValue() : static_cast<int64_t>(0);
 
             data["SizeOnDisk"] = static_cast<int64_t>(0);
 
@@ -236,8 +226,8 @@ namespace lodestone::minecraft::java::alpha::world {
         // Create chunk folders and output chunks (base36)
         const BaseX &b36 = Base36::base36();
 
-        const java::mcr::chunk::McRegionChunkIO *io =
-            static_cast<const java::mcr::chunk::McRegionChunkIO *>(
+        const java::mcregion::chunk::McRegionChunkIO *io =
+            static_cast<const java::mcregion::chunk::McRegionChunkIO *>(
                 lodestone::conversion::chunk::ChunkIORegistry::getInstance()
                     .getChunkIO(java::identifiers::MCREGION));
 
@@ -246,7 +236,7 @@ namespace lodestone::minecraft::java::alpha::world {
         int i = 2; // for writing other dims
         for (auto &[id, lvl] : w->getLevels()) {
             if (const int dim =
-                    mcr::player::McRegionPlayer::identifierToDimensionId(id);
+                    mcregion::player::McRegionPlayer::identifierToDimensionId(id);
                 dim != 0) {
                 const int d = dim == 0x7FFFFFFF ? i : dim;
                 if (d != 0)
@@ -257,17 +247,20 @@ namespace lodestone::minecraft::java::alpha::world {
             // loop over level chunks here
             for (auto &[coords, chunk] : lvl->getChunks()) {
                 // notch what were you on please I need to know
-                // I want some of it
-                std::string fX = b36.encode(coords.x % 64);
-                std::string fZ = b36.encode(coords.z % 64);
+                // I NEED whatever it is
+                int tX = (coords.x < 0 ? coords.x + 256 : coords.x);
+                int tZ = (coords.z < 0 ? coords.z + 256 : coords.z);
+
+                std::string fX = b36.encode(tX & 63);
+                std::string fZ = b36.encode(tZ & 63);
 
                 std::filesystem::path chunkOut = p / fX / fZ;
                 if (!std::filesystem::exists(chunkOut)) {
                     std::filesystem::create_directories(chunkOut);
                 }
 
-                std::string cf = "c." + b36.encode(coords.x) + "." +
-                                 b36.encode(coords.z) + ".dat";
+                std::string cf = "c." + b36.encode(tX) + "." +
+                                 b36.encode(tZ) + ".dat";
                 std::ofstream ofs(chunkOut / cf, std::ofstream::binary);
                 zlib::ozlibstream ozs(ofs, Z_DEFAULT_COMPRESSION, true);
                 io->write(chunk.get(), coords, version, ozs);

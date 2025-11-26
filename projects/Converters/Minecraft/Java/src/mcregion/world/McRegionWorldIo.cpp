@@ -1,7 +1,7 @@
 //
 // Created by DexrnZacAttack on 11/11/25 using zPc-i2.
 //
-#include "Lodestone.Minecraft.Java/mcr/world/McRegionWorldIo.h"
+#include "Lodestone.Minecraft.Java/mcregion/world/McRegionWorldIo.h"
 
 #include <fstream>
 #include <iostream>
@@ -12,7 +12,7 @@
 #include <stack>
 
 #include "Lodestone.Minecraft.Java/Identifiers.h"
-#include "Lodestone.Minecraft.Java/mcr/world/McRegionWorld.h"
+#include "Lodestone.Minecraft.Java/mcregion/world/McRegionWorld.h"
 #include <Lodestone.Conversion/level/LevelIORegistry.h>
 #include <Lodestone.Conversion/region/RegionIORegistry.h>
 #include <libnbt++/io/izlibstream.h>
@@ -21,17 +21,17 @@
 
 #include <Lodestone.Conversion/player/PlayerIORegistry.h>
 
-#include "Lodestone.Minecraft.Java/mcr/chunk/McRegionChunk.h"
-#include "Lodestone.Minecraft.Java/mcr/player/McRegionPlayer.h"
-#include "Lodestone.Minecraft.Java/mcr/player/McRegionPlayerIo.h"
-#include "Lodestone.Minecraft.Java/mcr/region/McRegionRegion.h"
-#include "Lodestone.Minecraft.Java/mcr/region/McRegionRegionIo.h"
+#include "Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunk.h"
+#include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayer.h"
+#include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayerIo.h"
+#include "Lodestone.Minecraft.Java/mcregion/region/McRegionRegion.h"
+#include "Lodestone.Minecraft.Java/mcregion/region/McRegionRegionIo.h"
 #include <libnbt++/io/ozlibstream.h>
 
 #include <Lodestone.Common/util/Logging.h>
 
-namespace lodestone::minecraft::java::mcr::world {
-    const lodestone::conversion::level::PlayerIO *
+namespace lodestone::minecraft::java::mcregion::world {
+    const lodestone::conversion::level::LevelIO *
     McRegionWorldIo::getLevelIO(int version) const {
         return lodestone::conversion::level::LevelIoRegistry::getInstance()
             .getLevelIO(identifiers::MCREGION);
@@ -121,8 +121,8 @@ namespace lodestone::minecraft::java::mcr::world {
 
         if (std::filesystem::exists(path / "players") &&
             std::filesystem::is_directory(path / "players")) {
-            const java::mcr::player::McRegionPlayerIO *pio = static_cast<
-                const java::mcr::player::McRegionPlayerIO *>(
+            const java::mcregion::player::McRegionPlayerIO *pio = static_cast<
+                const java::mcregion::player::McRegionPlayerIO *>(
                 lodestone::conversion::player::PlayerIORegistry::getInstance()
                     .getPlayerIO(java::identifiers::MCREGION));
             for (const auto &f :
@@ -146,8 +146,8 @@ namespace lodestone::minecraft::java::mcr::world {
             }
         }
 
-        const java::mcr::region::McRegionRegionIO *io =
-            static_cast<const java::mcr::region::McRegionRegionIO *>(
+        const java::mcregion::region::McRegionRegionIO *io =
+            static_cast<const java::mcregion::region::McRegionRegionIO *>(
                 lodestone::conversion::region::RegionIORegistry::getInstance()
                     .getRegionIO(java::identifiers::MCREGION));
 
@@ -284,8 +284,8 @@ namespace lodestone::minecraft::java::mcr::world {
             nbt.write_tag("", root);
         }
         // Regions
-        const java::mcr::region::McRegionRegionIO *io =
-            static_cast<const java::mcr::region::McRegionRegionIO *>(
+        const java::mcregion::region::McRegionRegionIO *io =
+            static_cast<const java::mcregion::region::McRegionRegionIO *>(
                 lodestone::conversion::region::RegionIORegistry::getInstance()
                     .getRegionIO(java::identifiers::MCREGION));
 
@@ -325,4 +325,4 @@ namespace lodestone::minecraft::java::mcr::world {
         // TODO for block states we might be able to make registry that maps
         // fields to bits in data byte per block
     }
-} // namespace lodestone::minecraft::java::mcr::world
+} // namespace lodestone::minecraft::java::mcregion::world

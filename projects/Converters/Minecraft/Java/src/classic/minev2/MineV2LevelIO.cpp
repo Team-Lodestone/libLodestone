@@ -18,10 +18,6 @@
 
 namespace lodestone::minecraft::java::classic::minev2 {
 
-    size_t MineV2LevelIO::getSize(level::Level *l, int version) const {
-        return 2 + 2 + 2 + l->getBlockCount();
-    }
-
     std::unique_ptr<lodestone::level::Level>
     MineV2LevelIO::read(std::istream &in, const int version) const {
         bio::stream::BinaryInputStream bis(in);

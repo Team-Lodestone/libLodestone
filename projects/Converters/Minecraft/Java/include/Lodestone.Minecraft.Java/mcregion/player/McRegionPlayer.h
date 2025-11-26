@@ -8,7 +8,7 @@
 
 #include <Lodestone.Minecraft.Common/player/MinecraftPlayer.h>
 
-namespace lodestone::minecraft::java::mcr::player {
+namespace lodestone::minecraft::java::mcregion::player {
     // TODO make minecraft project that has common player data
     class McRegionPlayer final : public common::player::MinecraftPlayer {
       public:
@@ -29,10 +29,12 @@ namespace lodestone::minecraft::java::mcr::player {
 
         const lodestone::common::registry::Identifier *getType() const override;
 
+        std::shared_ptr<level::properties::AbstractProperty> getProperty(const std::string &name) override;
+
       private:
         bool mIsSleeping;
         short mSleepTimer;
     };
-} // namespace lodestone::minecraft::java::mcr::player
+} // namespace lodestone::minecraft::java::mcregion::player
 
 #endif // LODESTONE_MCREGIONPLAYER_H

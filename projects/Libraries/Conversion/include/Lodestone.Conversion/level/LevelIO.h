@@ -10,21 +10,17 @@
 #include "Lodestone.Conversion/world/options/AbstractWorldWriteOptions.h"
 
 namespace lodestone::conversion::level {
-    class LODESTONE_API PlayerIO {
+    class LODESTONE_API LevelIO {
       public:
-        virtual ~PlayerIO() = default;
+        virtual ~LevelIO() = default;
 
-        /** Reads data into a new Level */
+        /** Creates a new Level from data in the given input stream */
         virtual std::unique_ptr<lodestone::level::Level>
         read(std::istream &in, int version) const = 0;
 
-        /** Writes a level to data */
+        /** Writes a Level to the given output stream */
         virtual void write(lodestone::level::Level *l, int version,
                            std::ostream &out) const = 0;
-
-        /** Gets the size of the level in bytes */
-        virtual size_t getSize(lodestone::level::Level *l,
-                               int version) const = 0;
     };
 } // namespace lodestone::conversion::level
 

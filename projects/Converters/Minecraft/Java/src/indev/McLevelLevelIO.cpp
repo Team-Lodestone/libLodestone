@@ -11,8 +11,6 @@ namespace lodestone::minecraft::java::indev {
 
     void McLevelLevelIO::write(level::Level &l, nbt::tag_compound &out) const {}
 
-    size_t McLevelLevelIO::getSize(level::Level *l, int version) const {}
-
     std::unique_ptr<lodestone::level::Level>
     McLevelLevelIO::read(std::istream &in, int version) const {}
 

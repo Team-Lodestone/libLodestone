@@ -6,11 +6,11 @@
 #include <Lodestone.Conversion/world/DirectoryWorldIo.h>
 #include <filesystem>
 
-namespace lodestone::minecraft::java::mcr::world {
+namespace lodestone::minecraft::java::mcregion::world {
     class McRegionWorldIo
         : public lodestone::conversion::world::DirectoryWorldIO {
       public:
-        const lodestone::conversion::level::PlayerIO *
+        const lodestone::conversion::level::LevelIO *
         getLevelIO(int version) const override;
 
         std::unique_ptr<lodestone::level::world::World>
@@ -23,6 +23,6 @@ namespace lodestone::minecraft::java::mcr::world {
                    const conversion::world::options::AbstractWorldWriteOptions
                        &options) const override;
     };
-} // namespace lodestone::minecraft::java::mcr::world
+} // namespace lodestone::minecraft::java::mcregion::world
 
 #endif // LODESTONE_MCREGIONWORLDIO_H

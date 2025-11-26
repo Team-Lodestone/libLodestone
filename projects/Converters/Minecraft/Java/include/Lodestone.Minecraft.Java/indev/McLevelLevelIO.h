@@ -7,7 +7,7 @@
 #include <libnbt++/nbt_tags.h>
 
 namespace lodestone::minecraft::java::indev {
-    class McLevelLevelIO : public lodestone::conversion::level::PlayerIO {
+    class McLevelLevelIO : public lodestone::conversion::level::LevelIO {
       public:
         /** Creates a Level from a mclevel Map compound tag */
         std::unique_ptr<level::Level> read(nbt::tag_compound *map) const;
@@ -17,8 +17,6 @@ namespace lodestone::minecraft::java::indev {
 
         /** Writes a level to a given NBT compound tag */
         void write(level::Level &l, nbt::tag_compound &out) const;
-
-        size_t getSize(level::Level *l, int version) const override;
 
         std::unique_ptr<lodestone::level::Level>
         read(std::istream &in, int version) const override;

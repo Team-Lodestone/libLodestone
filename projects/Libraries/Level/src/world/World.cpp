@@ -39,6 +39,14 @@ namespace lodestone::level::world {
         return mLevels.contains(id);
     }
 
+    std::string World::getName() const {
+        return mName;
+    }
+
+    void World::setName(const std::string &n) {
+        this->mName = n;
+    }
+
     const lodestone::conversion::world::WorldIO *World::getIO() {
         return nullptr;
     }
@@ -112,6 +120,10 @@ namespace lodestone::level::world {
 
         removePlayer(player->getId());
         world->addPlayer(std::move(player));
+    }
+
+    std::shared_ptr<level::properties::AbstractProperty> World::getProperty(const std::string &name) {
+        return nullptr;
     }
 
     const map_t<std::string, std::unique_ptr<entity::Player>> &

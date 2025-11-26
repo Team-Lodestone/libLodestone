@@ -97,7 +97,7 @@ namespace lodestone::level::chunk {
 
         const std::optional<types::Vec2i> &getCoords();
 
-        void setCoords(const types::Vec2i &coords);
+        void setCoords(const std::optional<types::Vec2i> &coords);
 
         void invalidateCoords();
 

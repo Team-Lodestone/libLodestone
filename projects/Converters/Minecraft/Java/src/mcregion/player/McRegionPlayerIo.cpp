@@ -1,16 +1,16 @@
 //
 // Created by DexrnZacAttack on 11/14/25 using zPc-i2.
 //
-#include "Lodestone.Minecraft.Java/mcr/player/McRegionPlayerIo.h"
+#include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayerIo.h"
 
 #include <Lodestone.Common/io/DataBuffer.h>
 #include <libnbt++/io/stream_reader.h>
 #include <libnbt++/tag_primitive.h>
 
-#include "Lodestone.Minecraft.Java/mcr/player/McRegionPlayer.h"
+#include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayer.h"
 #include <libnbt++/tag_list.h>
 
-namespace lodestone::minecraft::java::mcr::player {
+namespace lodestone::minecraft::java::mcregion::player {
     std::unique_ptr<level::entity::Player>
     McRegionPlayerIO::read(const std::filesystem::path &filename,
                            nbt::tag_compound &player, const int version) const {
@@ -79,9 +79,6 @@ namespace lodestone::minecraft::java::mcr::player {
 
     nbt::tag_compound McRegionPlayerIO::write(level::entity::Player &c) const {}
 
-    size_t McRegionPlayerIO::getSize(level::entity::Player *c,
-                                     int version) const {}
-
     std::unique_ptr<lodestone::level::entity::Player>
     McRegionPlayerIO::read(const std::filesystem::path &filename,
                            std::istream &in, int version) const {
@@ -95,4 +92,4 @@ namespace lodestone::minecraft::java::mcr::player {
     void McRegionPlayerIO::write(lodestone::level::entity::Player *p,
                                  int version, std::ostream &out) const {}
 
-} // namespace lodestone::minecraft::java::mcr::player
+} // namespace lodestone::minecraft::java::mcregion::player

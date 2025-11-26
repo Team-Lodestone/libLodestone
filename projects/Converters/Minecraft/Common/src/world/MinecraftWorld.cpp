@@ -23,4 +23,13 @@ namespace lodestone::minecraft::common::world {
     int64_t MinecraftWorld::getTime() const { return this->mTime; }
 
     void MinecraftWorld::setTime(const int64_t time) { this->mTime = time; }
+
+    std::shared_ptr<level::properties::AbstractProperty> MinecraftWorld::getProperty(const std::string &name) {
+        switch (lodestone::common::util::Math::fnv1a64(name.data(), name.length())) {
+            ADD_PROPERTY("seed", mSeed, int64_t &);
+            ADD_PROPERTY("lastPlayed", mLastPlayed, int64_t &);
+            ADD_PROPERTY("time", mTime, int64_t &);
+            default: return World::getProperty(name);
+        }
+    }
 } // namespace lodestone::minecraft::common::world

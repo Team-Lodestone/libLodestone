@@ -8,7 +8,7 @@
 
 #include <Lodestone.Level/world/World.h>
 
-namespace lodestone::minecraft::java::mcr::player {
+namespace lodestone::minecraft::java::mcregion::player {
     class McRegionPlayerIO : public lodestone::conversion::player::PlayerIO {
       public:
         std::unique_ptr<level::entity::Player>
@@ -17,8 +17,6 @@ namespace lodestone::minecraft::java::mcr::player {
 
         nbt::tag_compound write(level::entity::Player &c) const;
 
-        size_t getSize(level::entity::Player *c, int version) const override;
-
         std::unique_ptr<lodestone::level::entity::Player>
         read(const std::filesystem::path &filename, std::istream &in,
              int version) const override;
@@ -26,6 +24,6 @@ namespace lodestone::minecraft::java::mcr::player {
         void write(lodestone::level::entity::Player *p, int version,
                    std::ostream &out) const override;
     };
-} // namespace lodestone::minecraft::java::mcr::player
+} // namespace lodestone::minecraft::java::mcregion::player
 
 #endif // LODESTONE_MCREGIONPLAYERIO_H

@@ -4,6 +4,7 @@
 #include "Lodestone.Level/chunk/Chunk.h"
 
 #include "Lodestone.Level/chunk/ChunkContainer.h"
+#include "Lodestone.Level/properties/TemplatedProperty.h"
 
 namespace lodestone::level::chunk {
     Chunk::Chunk() {
@@ -64,7 +65,7 @@ namespace lodestone::level::chunk {
 
     const std::optional<types::Vec2i> &Chunk::getCoords() { return mCoords; }
 
-    void Chunk::setCoords(const types::Vec2i &coords) {
+    void Chunk::setCoords(const std::optional<types::Vec2i> &coords) {
         mCoords = std::move(coords);
     }
 

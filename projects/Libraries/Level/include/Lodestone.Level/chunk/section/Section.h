@@ -20,9 +20,13 @@ namespace lodestone::level::chunk::section {
 
         virtual const block::properties::BlockProperties *getBlocks() = 0;
 
-        virtual types::NibbleArray getBlockLight() const = 0;
+        virtual types::AbstractNibbleArray *getBlockLight() = 0;
 
-        virtual types::NibbleArray getSkyLight() const = 0;
+        virtual types::AbstractNibbleArray *getSkyLight() = 0;
+
+        virtual void setBlockLight(int x, int y, int z, uint8_t l) = 0;
+
+        virtual void setSkyLight(int x, int y, int z, uint8_t l) = 0;
 
         virtual block::properties::BlockProperties *
         getBlock(const int x, const int y, const int z) const = 0;

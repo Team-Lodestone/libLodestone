@@ -92,4 +92,8 @@ namespace lodestone::level::entity {
 
         return false;
     }
+
+    std::shared_ptr<level::properties::AbstractProperty> Player::getProperty(const std::string &name) {
+        return nullptr;
+    }
 } // namespace lodestone::level::entity

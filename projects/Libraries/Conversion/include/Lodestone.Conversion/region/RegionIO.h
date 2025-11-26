@@ -14,19 +14,15 @@ namespace lodestone::conversion::region {
       public:
         virtual ~RegionIO() = default;
 
-        /** Reads data into a new Region */
+        /** Creates a new Region from data in the given input stream */
         virtual std::unique_ptr<lodestone::level::region::Region>
         read(std::istream &in, int version,
              const lodestone::level::types::Vec2i &coords) const = 0;
 
-        /** Writes a region to data */
+        /** Writes a 512*512 to the given output stream */
         virtual void write(lodestone::level::Level *c, int version,
                            const lodestone::level::types::Vec2i &coords,
                            std::ostream &out) const = 0;
-
-        /** Gets the size of the region in bytes */
-        virtual size_t getSize(lodestone::level::Level *c,
-                               int version) const = 0;
 
         virtual const chunk::ChunkIO *getChunkIO(int version) const = 0;
     };

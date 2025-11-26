@@ -10,21 +10,15 @@
 namespace lodestone::conversion::world {
     class LODESTONE_API FileWorldIO : public WorldIO {
       public:
-        // TODO: this should read from VFS
-        /** Reads data into a new World */
+        /** Creates a new World from data in the given input stream */
         virtual std::unique_ptr<lodestone::level::world::World>
         read(std::istream &in, int version,
              const options::AbstractWorldReadOptions &options) const = 0;
 
-        // TODO: this *should* write to a VFS
-        /** Writes a world to data */
+        /** Writes a World to the given output stream */
         virtual void
         write(lodestone::level::world::World *w, int version, std::ostream &out,
               const options::AbstractWorldWriteOptions &options) const = 0;
-
-        /** Gets the size of the world in bytes */
-        virtual size_t getSize(lodestone::level::world::World *w,
-                               int version) const = 0;
     };
 } // namespace lodestone::conversion::world
 

@@ -5,7 +5,7 @@
 #define LODESTONE_MCREGIONCHUNK_H
 #include <Lodestone.Level/chunk/LevelChunk.h>
 
-namespace lodestone::minecraft::java::mcr::chunk {
+namespace lodestone::minecraft::java::mcregion::chunk {
     class McRegionChunk final : public level::chunk::LevelChunk {
       public:
         explicit McRegionChunk(const int64_t lastUpdate = 0)
@@ -31,6 +31,6 @@ namespace lodestone::minecraft::java::mcr::chunk {
       private:
         int64_t mLastUpdate = 0;
     };
-} // namespace lodestone::minecraft::java::mcr::chunk
+} // namespace lodestone::minecraft::java::mcregion::chunk
 
 #endif // LODESTONE_MCREGIONCHUNK_H

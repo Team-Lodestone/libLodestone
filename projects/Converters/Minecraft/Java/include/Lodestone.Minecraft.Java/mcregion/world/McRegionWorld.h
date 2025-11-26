@@ -7,7 +7,7 @@
 
 #include <Lodestone.Minecraft.Common/world/MinecraftWorld.h>
 
-namespace lodestone::minecraft::java::mcr::world {
+namespace lodestone::minecraft::java::mcregion::world {
     class McRegionWorld : public common::world::MinecraftWorld {
       public:
         explicit McRegionWorld(const std::string &name);
@@ -34,14 +34,34 @@ namespace lodestone::minecraft::java::mcr::world {
         int32_t getVersion() const;
         void setVersion(const int32_t version);
 
+        std::shared_ptr<level::properties::AbstractProperty> getProperty(const std::string &name) override;
+
       private:
+        /** Whether it's currently raining in the world
+         *
+         * @prop raining
+         */
         bool mIsRaining;
+        /**
+         * @prop rainTime
+         */
         int mRainTime;
+        /** Whether it's currently a thunderstorm in the world
+         *
+         * @prop thundering
+         */
         bool mIsThundering;
+        /**
+         * @prop thunderTime
+         */
         int mThunderTime;
 
+        /** The world version
+         * 
+         * @prop version
+         */
         int32_t mVersion;
     };
-} // namespace lodestone::minecraft::java::mcr::world
+} // namespace lodestone::minecraft::java::mcregion::world
 
 #endif // LODESTONE_MCREGIONWORLD_H

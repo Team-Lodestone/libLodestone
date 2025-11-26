@@ -6,7 +6,7 @@
 
 #include "Lodestone.Minecraft.Java/LodestoneJava.h"
 #include "Lodestone.Minecraft.Java/anvil/jungle/chunk/JungleAnvilChunk.h"
-#include "Lodestone.Minecraft.Java/mcr/chunk/McRegionChunk.h"
+#include "Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunk.h"
 #include <Lodestone.Common/Indexing.h>
 #include <Lodestone.Conversion/block/data/ExtendedNumericBlockData.h>
 
@@ -89,11 +89,6 @@ namespace lodestone::minecraft::java::anvil::jungle::chunk {
                               const level::types::Vec2i &coords,
                               int version) const {
         // TODO!
-    }
-
-    size_t JungleAnvilChunkIO::getSize(level::chunk::Chunk *c,
-                                       int version) const {
-        return 0;
     }
 
     std::unique_ptr<lodestone::level::chunk::Chunk>

@@ -20,25 +20,25 @@ set(FILES
         include/Lodestone.Minecraft.Java/Version.h
         src/classic/minev2/MineV2WorldIo.cpp
         include/Lodestone.Minecraft.Java/classic/minev2/MineV2WorldIo.h
-        src/mcr/chunk/McRegionChunkIo.cpp
-        include/Lodestone.Minecraft.Java/mcr/chunk/McRegionChunkIo.h
-        src/mcr/chunk/McRegionChunk.cpp
-        include/Lodestone.Minecraft.Java/mcr/chunk/McRegionChunk.h
-        src/mcr/region/McRegionRegionIo.cpp
-        include/Lodestone.Minecraft.Java/mcr/region/McRegionRegionIo.h
-        include/Lodestone.Minecraft.Java/mcr/RegionChunkIndice.h
-        include/Lodestone.Minecraft.Java/mcr/RegionCompression.h
+        src/mcregion/chunk/McRegionChunkIo.cpp
+        include/Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunkIo.h
+        src/mcregion/chunk/McRegionChunk.cpp
+        include/Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunk.h
+        src/mcregion/region/McRegionRegionIo.cpp
+        include/Lodestone.Minecraft.Java/mcregion/region/McRegionRegionIo.h
+        include/Lodestone.Minecraft.Java/mcregion/RegionChunkIndice.h
+        include/Lodestone.Minecraft.Java/mcregion/RegionCompression.h
         include/Lodestone.Minecraft.Java/Identifiers.h
-        src/mcr/world/McRegionWorldIo.cpp
-        include/Lodestone.Minecraft.Java/mcr/world/McRegionWorldIo.h
-        src/mcr/world/McRegionWorld.cpp
-        include/Lodestone.Minecraft.Java/mcr/world/McRegionWorld.h
-        src/mcr/region/McRegionRegion.cpp
-        include/Lodestone.Minecraft.Java/mcr/region/McRegionRegion.h
-        src/mcr/player/McRegionPlayer.cpp
-        include/Lodestone.Minecraft.Java/mcr/player/McRegionPlayer.h
-        src/mcr/player/McRegionPlayerIo.cpp
-        include/Lodestone.Minecraft.Java/mcr/player/McRegionPlayerIo.h
+        src/mcregion/world/McRegionWorldIo.cpp
+        include/Lodestone.Minecraft.Java/mcregion/world/McRegionWorldIo.h
+        src/mcregion/world/McRegionWorld.cpp
+        include/Lodestone.Minecraft.Java/mcregion/world/McRegionWorld.h
+        src/mcregion/region/McRegionRegion.cpp
+        include/Lodestone.Minecraft.Java/mcregion/region/McRegionRegion.h
+        src/mcregion/player/McRegionPlayer.cpp
+        include/Lodestone.Minecraft.Java/mcregion/player/McRegionPlayer.h
+        src/mcregion/player/McRegionPlayerIo.cpp
+        include/Lodestone.Minecraft.Java/mcregion/player/McRegionPlayerIo.h
         include/Lodestone.Minecraft.Java/classic/minev2/options/MineV2WorldWriteOptions.h
         include/Lodestone.Minecraft.Java/alpha/world/AlphaWorld.h
         src/alpha/world/AlphaWorld.cpp

@@ -1,8 +1,8 @@
 //
 // Created by DexrnZacAttack on 11/20/25 using zPc-i2.
 //
-#ifndef LODESTONE_ABSTRACTWORLDIOOPTIONS_H
-#define LODESTONE_ABSTRACTWORLDIOOPTIONS_H
+#ifndef LODESTONE_ABSTRACTWORLDWRITEOPTIONS_H
+#define LODESTONE_ABSTRACTWORLDWRITEOPTIONS_H
 
 namespace lodestone::conversion::world::options {
     struct AbstractWorldWriteOptions {
@@ -10,4 +10,4 @@ namespace lodestone::conversion::world::options {
     };
 } // namespace lodestone::conversion::world::options
 
-#endif // LODESTONE_ABSTRACTWORLDIOOPTIONS_H
+#endif // LODESTONE_ABSTRACTWORLDWRITEOPTIONS_H

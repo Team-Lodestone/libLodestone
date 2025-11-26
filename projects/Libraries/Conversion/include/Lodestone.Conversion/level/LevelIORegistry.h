@@ -19,14 +19,14 @@ namespace lodestone::conversion::level {
         static LevelIoRegistry &getInstance();
 
         void registerLevelIO(const lodestone::common::registry::Identifier &id,
-                             std::unique_ptr<const PlayerIO> io);
+                             std::unique_ptr<const LevelIO> io);
 
-        const PlayerIO *
+        const LevelIO *
         getLevelIO(const lodestone::common::registry::Identifier &id) const;
 
       private:
         map_t<lodestone::common::registry::Identifier,
-              std::unique_ptr<const PlayerIO>, IdentifierHasher,
+              std::unique_ptr<const LevelIO>, IdentifierHasher,
               IdentifierComparator>
             mRegisteredLevelIOs;
     };

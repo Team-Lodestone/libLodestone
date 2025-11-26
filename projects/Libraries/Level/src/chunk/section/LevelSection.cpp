@@ -13,11 +13,19 @@ namespace lodestone::level::chunk::section {
         delete[] mBlocks;
     }
 
-    types::NibbleArray LevelSection::getBlockLight() const {
-        return mBlockLight;
+    types::AbstractNibbleArray *LevelSection::getBlockLight() {
+        return &mBlockLight;
     }
 
-    types::NibbleArray LevelSection::getSkyLight() const { return mSkyLight; }
+    types::AbstractNibbleArray *LevelSection::getSkyLight() { return &mSkyLight; }
+
+    void LevelSection::setBlockLight(const int x, const int y, const int z, const uint8_t l) {
+        this->mBlockLight.setNibble(x, y, z, l & 0xF);
+    }
+
+    void LevelSection::setSkyLight(const int x, const int y, const int z, const uint8_t l) {
+        this->mSkyLight.setNibble(x, y, z, l & 0xF);
+    }
 
     block::properties::BlockProperties *
     LevelSection::getBlock(const int x, const int y, const int z) const {

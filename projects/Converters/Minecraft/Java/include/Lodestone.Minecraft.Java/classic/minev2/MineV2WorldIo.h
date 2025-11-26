@@ -12,9 +12,7 @@ namespace lodestone::minecraft::java::classic::minev2 {
       public:
         static constexpr uint32_t SIGNATURE = 0x271BB788;
 
-        size_t getSize(level::world::World *w, int version) const override;
-
-        const lodestone::conversion::level::PlayerIO *
+        const lodestone::conversion::level::LevelIO *
         getLevelIO(int version) const override;
 
         std::unique_ptr<lodestone::level::world::World>

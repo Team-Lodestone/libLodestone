@@ -1,12 +1,14 @@
 //
 // Created by DexrnZacAttack on 11/14/25 using zPc-i2.
 //
-#include "Lodestone.Minecraft.Java/mcr/player/McRegionPlayer.h"
+#include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayer.h"
 
 #include "Lodestone.Minecraft.Java/Identifiers.h"
 #include <Lodestone.Level/world/World.h>
 
-namespace lodestone::minecraft::java::mcr::player {
+#include <Lodestone.Common/util/Math.h>
+
+namespace lodestone::minecraft::java::mcregion::player {
     McRegionPlayer::McRegionPlayer(const std::string &name)
         : MinecraftPlayer(name), mIsSleeping(false), mSleepTimer(0) {}
 
@@ -55,4 +57,12 @@ namespace lodestone::minecraft::java::mcr::player {
     McRegionPlayer::getType() const {
         return &identifiers::MCREGION;
     }
-} // namespace lodestone::minecraft::java::mcr::player
+
+    std::shared_ptr<level::properties::AbstractProperty> McRegionPlayer::getProperty(const std::string &name) {
+        switch (lodestone::common::util::Math::fnv1a64(name.data(), name.length())) {
+            ADD_PROPERTY("sleepTimer", mSleepTimer, short &);
+            ADD_PROPERTY("sleeping", mIsSleeping, bool &);
+            default: return MinecraftPlayer::getProperty(name);
+        }
+    }
+} // namespace lodestone::minecraft::java::mcregion::player

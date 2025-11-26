@@ -75,6 +75,11 @@ set(FILES
         include/Lodestone.Level/types/NibbleArray.h
         include/Lodestone.Level/types/EmptyNibbleArray.h
         src/types/EmptyNibbleArray.cpp
+        include/Lodestone.Level/properties/ReflectiveProperties.h
+        include/Lodestone.Level/properties/OptionalTemplatedProperty.h
+        src/properties/ReflectiveProperties.cpp
+        src/types/AbstractNibbleArray.cpp
+        include/Lodestone.Level/types/AbstractNibbleArray.h
 )
 
 # if (CMAKE_BUILD_TYPE STREQUAL "Debug")

@@ -22,8 +22,6 @@ namespace lodestone::minecraft::java::anvil::jungle::chunk {
                                 const level::types::Vec2i &coords,
                                 int version) const override;
 
-        size_t getSize(level::chunk::Chunk *c, int version) const override;
-
         std::unique_ptr<lodestone::level::chunk::Chunk>
         read(std::istream &in, int version) const override;
 

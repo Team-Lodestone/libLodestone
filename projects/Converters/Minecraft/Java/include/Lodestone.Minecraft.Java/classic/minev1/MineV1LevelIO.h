@@ -6,13 +6,11 @@
 #include <Lodestone.Conversion/level/LevelIO.h>
 
 namespace lodestone::minecraft::java::classic::minev1 {
-    class MineV1LevelIO : public lodestone::conversion::level::PlayerIO {
+    class MineV1LevelIO : public lodestone::conversion::level::LevelIO {
       public:
         static constexpr int WIDTH = 256;
         static constexpr int HEIGHT = 64;
         static constexpr int DEPTH = 256;
-
-        size_t getSize(level::Level *l, int version) const override;
 
         std::unique_ptr<lodestone::level::Level>
         read(std::istream &in, int version) const override;

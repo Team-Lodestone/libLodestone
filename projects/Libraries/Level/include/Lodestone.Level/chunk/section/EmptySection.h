@@ -19,21 +19,19 @@ namespace lodestone::level::chunk::section {
 
         const block::properties::BlockProperties *getBlocks() override;
 
-        types::NibbleArray getBlockLight() const override;
+        types::AbstractNibbleArray *getBlockLight() override;
 
-        types::NibbleArray getSkyLight() const override;
+        types::AbstractNibbleArray *getSkyLight() override;
+
+        void setBlockLight(int x, int y, int z, uint8_t l) override;
+
+        void setSkyLight(int x, int y, int z, uint8_t l) override;
 
         block::properties::BlockProperties *
         getBlock(const int x, const int y, const int z) const override;
 
         void setBlock(block::properties::BlockProperties &&blk, int x, int y,
                       int z) override;
-
-      private:
-        types::EmptyNibbleArray mEmptyNibbleArray = types::EmptyNibbleArray(
-            common::constants::CHUNK_WIDTH * common::constants::SECTION_HEIGHT *
-                common::constants::CHUNK_DEPTH,
-            4);
     };
 } // namespace lodestone::level::chunk::section
 

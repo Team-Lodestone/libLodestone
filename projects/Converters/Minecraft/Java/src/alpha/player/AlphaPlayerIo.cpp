@@ -8,7 +8,7 @@
 #include "Lodestone.Minecraft.Java/alpha/player/AlphaPlayer.h"
 #include <libnbt++/nbt_tags.h>
 
-#include "Lodestone.Minecraft.Java/mcr/player/McRegionPlayer.h"
+#include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayer.h"
 
 namespace lodestone::minecraft::java::alpha::player {
     std::unique_ptr<level::entity::Player>
@@ -39,7 +39,7 @@ namespace lodestone::minecraft::java::alpha::player {
         p->setFireTime(player["Fire"].as<nbt::tag_short>());
         p->setHurtTime(player["HurtTime"].as<nbt::tag_short>());
         p->setAttackTime(player["AttackTime"].as<nbt::tag_short>());
-        p->setDimension(mcr::player::McRegionPlayer::dimensionIdToIdentifier(
+        p->setDimension(mcregion::player::McRegionPlayer::dimensionIdToIdentifier(
             player["Dimension"].as<nbt::tag_int>()));
         p->setFallDistance(player["FallDistance"].as<nbt::tag_int>());
 
@@ -64,34 +64,30 @@ namespace lodestone::minecraft::java::alpha::player {
 
         out["Health"] = p->getHealth();
 
-        if (const auto *plr = dynamic_cast<AlphaPlayer *>(p)) {
-            out["Air"] = plr->getBreathingTime();
-            out["DeathTime"] = plr->getDeathTime();
-            out["Fire"] = plr->getFireTime();
-            out["HurtTime"] = plr->getHurtTime();
-            out["AttackTime"] = plr->getAttackTime();
-            out["Dimension"] =
-                mcr::player::McRegionPlayer::identifierToDimensionId(
-                    lodestone::common::registry::Identifier(
-                        plr->getDimension()));
-            out["FallDistance"] = plr->getFallDistance();
-        } else {
-            out["Air"] = static_cast<short>(300);
-            out["DeathTime"] = static_cast<short>(0);
-            out["Fire"] = static_cast<short>(-20);
-            out["HurtTime"] = static_cast<short>(0);
-            out["AttackTime"] = static_cast<short>(0);
-            out["Dimension"] = 0;
-            out["FallDistance"] = 0;
-        }
+        auto air = p->getProperty("breathingTime");
+        out["Air"] = air ? air->as<level::properties::TemplatedProperty<short &>>()->getValue() : static_cast<short>(300);
+
+        auto deathTime = p->getProperty("deathTime");
+        out["DeathTime"] = deathTime ? deathTime->as<level::properties::TemplatedProperty<short &>>()->getValue() : static_cast<short>(0);
+
+        auto fire = p->getProperty("fireTime");
+        out["Fire"] = fire ? fire->as<level::properties::TemplatedProperty<short &>>()->getValue() : static_cast<short>(-20);
+
+        auto hurtTime = p->getProperty("hurtTime");
+        out["HurtTime"] = hurtTime ? hurtTime->as<level::properties::TemplatedProperty<short &>>()->getValue() : static_cast<short>(0);
+
+        auto attackTime = p->getProperty("attackTime");
+        out["AttackTime"] = attackTime ? attackTime->as<level::properties::TemplatedProperty<short &>>()->getValue() : static_cast<short>(0);
+
+        auto dimension = p->getProperty("dimension");
+        out["Dimension"] = mcregion::player::McRegionPlayer::identifierToDimensionId(dimension ? dimension->as<level::properties::TemplatedProperty<lodestone::common::registry::Identifier &>>()->getValue() : level::world::World::Dimension::OVERWORLD);
+
+        auto fallDistance = p->getProperty("fallDistance");
+        out["FallDistance"] = fallDistance ? fallDistance->as<level::properties::TemplatedProperty<short &>>()->getValue() : static_cast<short>(0);
 
         out["OnGround"] = p->isOnGround();
 
         return out;
-    }
-
-    size_t AlphaPlayerIO::getSize(level::entity::Player *c, int version) const {
-        return 0;
     }
 
     std::unique_ptr<level::entity::Player>

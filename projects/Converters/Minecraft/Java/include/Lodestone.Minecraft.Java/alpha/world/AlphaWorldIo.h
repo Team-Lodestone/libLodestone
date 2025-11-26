@@ -10,7 +10,7 @@ namespace lodestone::minecraft::java::alpha::world {
 
     class AlphaWorldIo final : public conversion::world::DirectoryWorldIO {
       public:
-        const lodestone::conversion::level::PlayerIO *
+        const lodestone::conversion::level::LevelIO *
         getLevelIO(int version) const override;
 
         std::unique_ptr<lodestone::level::world::World>

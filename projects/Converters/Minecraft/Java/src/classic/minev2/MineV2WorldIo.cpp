@@ -17,27 +17,7 @@
 #include "Lodestone.Minecraft.Java/classic/minev2/options/MineV2WorldWriteOptions.h"
 
 namespace lodestone::minecraft::java::classic::minev2 {
-    size_t MineV2WorldIO::getSize(level::world::World *w,
-                                  const int version) const {
-        size_t s = sizeof(uint32_t) // signature
-                   + sizeof(char) + sizeof(uint16_t) + w->getName().length() +
-                   sizeof(uint16_t);
-
-        if (MineV2World *mv2 = dynamic_cast<MineV2World *>(w))
-            s += mv2->getAuthor().length();
-        else
-            s += strlen("Player");
-
-        s += sizeof(uint64_t);
-
-        const MineV2LevelIO *lio =
-            dynamic_cast<const MineV2LevelIO *>(getLevelIO(version));
-        s += lio->getSize(w->getDefaultLevel(), version);
-
-        return s;
-    }
-
-    const lodestone::conversion::level::PlayerIO *
+    const lodestone::conversion::level::LevelIO *
     MineV2WorldIO::getLevelIO(int version) const {
         return lodestone::conversion::level::LevelIoRegistry::getInstance()
             .getLevelIO(identifiers::MINEV2);

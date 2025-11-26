@@ -1,7 +1,7 @@
 //
 // Created by DexrnZacAttack on 11/8/25 using zPc-i2.
 //
-#include "Lodestone.Minecraft.Java/mcr/chunk/McRegionChunkIo.h"
+#include "Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunkIo.h"
 
 #include <iostream>
 
@@ -13,11 +13,11 @@
 #include <libnbt++/tag_array.h>
 #include <libnbt++/tag_primitive.h>
 
-#include "Lodestone.Minecraft.Java/mcr/chunk/McRegionChunk.h"
+#include "Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunk.h"
 #include <Lodestone.Common/Indexing.h>
 #include <libnbt++/tag_list.h>
 
-namespace lodestone::minecraft::java::mcr::chunk {
+namespace lodestone::minecraft::java::mcregion::chunk {
     std::unique_ptr<level::chunk::Chunk>
     McRegionChunkIO::read(nbt::tag_compound &chunk, const int version) const {
         const int32_t x = chunk["xPos"].get().as<nbt::tag_int>().get();
@@ -167,10 +167,6 @@ namespace lodestone::minecraft::java::mcr::chunk {
         return root;
     }
 
-    size_t McRegionChunkIO::getSize(level::chunk::Chunk *c, int version) const {
-        return 0;
-    }
-
     std::unique_ptr<lodestone::level::chunk::Chunk>
     McRegionChunkIO::read(std::istream &in, const int version) const {
         nbt::io::stream_reader streamReader =
@@ -189,4 +185,4 @@ namespace lodestone::minecraft::java::mcr::chunk {
 
         w.write_tag("", write(c, coords, version));
     }
-} // namespace lodestone::minecraft::java::mcr::chunk
+} // namespace lodestone::minecraft::java::mcregion::chunk

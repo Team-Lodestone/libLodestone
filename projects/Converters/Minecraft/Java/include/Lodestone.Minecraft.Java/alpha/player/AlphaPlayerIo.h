@@ -20,8 +20,6 @@ namespace lodestone::minecraft::java::alpha::player {
         nbt::tag_compound write(level::entity::Player *p,
                                 int version) const override;
 
-        size_t getSize(level::entity::Player *c, int version) const override;
-
         std::unique_ptr<lodestone::level::entity::Player>
         read(const std::filesystem::path &filename, std::istream &in,
              int version) const override;

@@ -20,10 +20,10 @@
 #include "Lodestone.Minecraft.Java/alpha/player/AlphaPlayerIo.h"
 #include "Lodestone.Minecraft.Java/alpha/world/AlphaWorldIo.h"
 #include "Lodestone.Minecraft.Java/classic/minev2/MineV2WorldIo.h"
-#include "Lodestone.Minecraft.Java/mcr/chunk/McRegionChunkIo.h"
-#include "Lodestone.Minecraft.Java/mcr/player/McRegionPlayerIo.h"
-#include "Lodestone.Minecraft.Java/mcr/region/McRegionRegionIo.h"
-#include "Lodestone.Minecraft.Java/mcr/world/McRegionWorldIo.h"
+#include "Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunkIo.h"
+#include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayerIo.h"
+#include "Lodestone.Minecraft.Java/mcregion/region/McRegionRegionIo.h"
+#include "Lodestone.Minecraft.Java/mcregion/world/McRegionWorldIo.h"
 #include <Lodestone.Conversion/block/data/ClassicBlockData.h>
 #include <Lodestone.Conversion/block/data/NumericBlockData.h>
 #include <Lodestone.Conversion/chunk/ChunkIORegistry.h>
@@ -70,21 +70,21 @@ namespace lodestone::minecraft::java {
         // mcr
         lodestone::conversion::chunk::ChunkIORegistry::getInstance()
             .registerChunkIO(identifiers::MCREGION,
-                             std::make_unique<mcr::chunk::McRegionChunkIO>());
+                             std::make_unique<mcregion::chunk::McRegionChunkIO>());
 
         lodestone::conversion::region::RegionIORegistry::getInstance()
             .registerRegionIO(
                 identifiers::MCREGION,
-                std::make_unique<mcr::region::McRegionRegionIO>());
+                std::make_unique<mcregion::region::McRegionRegionIO>());
 
         lodestone::conversion::world::WorldIORegistry::getInstance()
             .registerWorldIO(identifiers::MCREGION,
-                             std::make_unique<mcr::world::McRegionWorldIo>());
+                             std::make_unique<mcregion::world::McRegionWorldIo>());
 
         lodestone::conversion::player::PlayerIORegistry::getInstance()
             .registerPlayerIO(
                 identifiers::MCREGION,
-                std::make_unique<mcr::player::McRegionPlayerIO>());
+                std::make_unique<mcregion::player::McRegionPlayerIO>());
     }
 
     LodestoneJava *LodestoneJava::getInstance() {

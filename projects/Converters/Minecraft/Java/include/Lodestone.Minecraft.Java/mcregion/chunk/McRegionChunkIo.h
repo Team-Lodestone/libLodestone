@@ -8,7 +8,7 @@
 
 #include <Lodestone.Minecraft.Common/io/chunk/NbtChunkIo.h>
 
-namespace lodestone::minecraft::java::mcr::chunk {
+namespace lodestone::minecraft::java::mcregion::chunk {
     // TODO we can probably make all of these take an Options class and read
     // that
     class McRegionChunkIO : public common::io::chunk::NbtChunkIO {
@@ -24,8 +24,6 @@ namespace lodestone::minecraft::java::mcr::chunk {
                                 const level::types::Vec2i &coords,
                                 int version) const override;
 
-        size_t getSize(level::chunk::Chunk *c, int version) const override;
-
         std::unique_ptr<lodestone::level::chunk::Chunk>
         read(std::istream &in, int version) const override;
 
@@ -33,6 +31,6 @@ namespace lodestone::minecraft::java::mcr::chunk {
                    const level::types::Vec2i &coords, int version,
                    std::ostream &out) const override;
     };
-} // namespace lodestone::minecraft::java::mcr::chunk
+} // namespace lodestone::minecraft::java::mcregion::chunk
 
 #endif // LODESTONE_MCREGIONCHUNKIO_H

@@ -6,6 +6,8 @@
 #include "Lodestone.Minecraft.Common/Identifiers.h"
 #include <Lodestone.Level/world/World.h>
 
+#include "Lodestone.Common/util/Math.h"
+
 namespace lodestone::minecraft::common::player {
     MinecraftPlayer::MinecraftPlayer(const std::string &name)
         : mName(name), mDeathTime(0), mHurtTime(0), mAttackTime(0),
@@ -90,4 +92,22 @@ namespace lodestone::minecraft::common::player {
     MinecraftPlayer::getType() const {
         return &identifiers::MINECRAFT_COMMON;
     }
+
+    std::shared_ptr<level::properties::AbstractProperty> MinecraftPlayer::getProperty(const std::string &name) {
+        switch (lodestone::common::util::Math::fnv1a64(name.data(), name.length())) {
+            ADD_PROPERTY("name", mName, std::string &);
+            ADD_PROPERTY("spawnPos", mSpawnPos, level::types::Vec3i &);
+            ADD_PROPERTY("deathTime", mDeathTime, short &);
+            ADD_PROPERTY("hurtTime", mHurtTime, short &);
+            ADD_PROPERTY("attackTime", mAttackTime, short &);
+            ADD_PROPERTY("fireTime", mFireTime, short &);
+            ADD_PROPERTY("breathingTime", mBreathingTime, short &);
+            ADD_PROPERTY("dimension", mDimension, lodestone::common::registry::Identifier &);
+            ADD_PROPERTY("fallDistance", mFallDistance, float &);
+            ADD_PROPERTY("inventory", mInventory, level::container::ItemContainer &);
+            ADD_PROPERTY("armor", mArmor, level::container::ItemContainer &);
+            default: return Player::getProperty(name);
+        }
+    }
+
 } // namespace lodestone::minecraft::common::player

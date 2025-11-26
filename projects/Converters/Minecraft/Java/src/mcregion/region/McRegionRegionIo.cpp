@@ -2,7 +2,7 @@
 // Created by DexrnZacAttack on 11/9/25 using zPc-i2.
 //
 
-#include "Lodestone.Minecraft.Java/mcr/region/McRegionRegionIo.h"
+#include "Lodestone.Minecraft.Java/mcregion/region/McRegionRegionIo.h"
 
 #include <BinaryIO/BinaryBuffer.h>
 #include <format>
@@ -13,10 +13,10 @@
 #include <zlib.h>
 
 #include "Lodestone.Minecraft.Java/Identifiers.h"
-#include "Lodestone.Minecraft.Java/mcr/RegionChunkIndice.h"
-#include "Lodestone.Minecraft.Java/mcr/RegionCompression.h"
-#include "Lodestone.Minecraft.Java/mcr/chunk/McRegionChunk.h"
-#include "Lodestone.Minecraft.Java/mcr/chunk/McRegionChunkIo.h"
+#include "Lodestone.Minecraft.Java/mcregion/RegionChunkIndice.h"
+#include "Lodestone.Minecraft.Java/mcregion/RegionCompression.h"
+#include "Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunk.h"
+#include "Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunkIo.h"
 #include <Lodestone.Conversion/chunk/ChunkIO.h>
 #include <Lodestone.Conversion/chunk/ChunkIORegistry.h>
 #include <Lodestone.Level/region/Region.h>
@@ -25,15 +25,11 @@
 
 #include <libnbt++/io/izlibstream.h>
 
-#include "Lodestone.Minecraft.Java/mcr/region/McRegionRegion.h"
+#include "Lodestone.Minecraft.Java/mcregion/region/McRegionRegion.h"
 #include <BinaryIO/stream/BinaryOutputStream.h>
 #include <libnbt++/io/ozlibstream.h>
 
-namespace lodestone::minecraft::java::mcr::region {
-    size_t McRegionRegionIO::getSize(lodestone::level::Level *c,
-                                     int version) const {
-        return 0;
-    }
+namespace lodestone::minecraft::java::mcregion::region {
 
     std::unique_ptr<lodestone::level::region::Region>
     McRegionRegionIO::read(std::istream &in, const int version,
@@ -195,4 +191,4 @@ namespace lodestone::minecraft::java::mcr::region {
         return conversion::chunk::ChunkIORegistry::getInstance().getChunkIO(
             identifiers::MCREGION);
     }
-} // namespace lodestone::minecraft::java::mcr::region
+} // namespace lodestone::minecraft::java::mcregion::region

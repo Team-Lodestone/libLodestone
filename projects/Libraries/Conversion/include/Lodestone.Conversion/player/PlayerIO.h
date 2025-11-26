@@ -12,18 +12,14 @@ namespace lodestone::conversion::player {
       public:
         virtual ~PlayerIO() = default;
 
-        /** Reads data into a new Player */
+        /** Creates a new Player from data in the given input stream */
         virtual std::unique_ptr<lodestone::level::entity::Player>
         read(const std::filesystem::path &filename, std::istream &in,
              int version) const = 0;
 
-        /** Writes a Player to data */
+        /** Writes a Player to the given output stream */
         virtual void write(lodestone::level::entity::Player *p, int version,
                            std::ostream &out) const = 0;
-
-        /** Gets the size of the Player in bytes */
-        virtual size_t getSize(lodestone::level::entity::Player *p,
-                               int version) const = 0;
     };
 } // namespace lodestone::conversion::player
 

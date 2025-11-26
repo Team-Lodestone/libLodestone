@@ -16,9 +16,13 @@ namespace lodestone::level::chunk::section {
         LevelSection();
         ~LevelSection() override;
 
-        types::NibbleArray getBlockLight() const override;
+        types::AbstractNibbleArray *getBlockLight() override;
 
-        types::NibbleArray getSkyLight() const override;
+        types::AbstractNibbleArray *getSkyLight() override;
+
+        void setBlockLight(int x, int y, int z, uint8_t l) override;
+
+        void setSkyLight(int x, int y, int z, uint8_t l) override;
 
         block::properties::BlockProperties *getBlock(int x, int y,
                                                      int z) const override;

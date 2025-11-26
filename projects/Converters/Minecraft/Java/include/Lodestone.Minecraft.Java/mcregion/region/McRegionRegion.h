@@ -5,7 +5,7 @@
 #define LODESTONE_MCREGIONREGION_H
 #include <Lodestone.Level/region/Region.h>
 
-namespace lodestone::minecraft::java::mcr::region {
+namespace lodestone::minecraft::java::mcregion::region {
     class McRegionRegion final : public level::region::Region {
       public:
         explicit McRegionRegion(const level::types::Vec2i &coords)
@@ -15,6 +15,6 @@ namespace lodestone::minecraft::java::mcr::region {
         static level::types::Vec2i
         getCoordsFromFilename(const std::string &name);
     };
-} // namespace lodestone::minecraft::java::mcr::region
+} // namespace lodestone::minecraft::java::mcregion::region
 
 #endif // LODESTONE_MCREGIONREGION_H

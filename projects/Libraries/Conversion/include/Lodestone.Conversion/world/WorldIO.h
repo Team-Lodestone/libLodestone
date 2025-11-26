@@ -12,7 +12,7 @@ namespace lodestone::conversion::world {
         virtual ~WorldIO() = default;
 
         /** Gets the corresponding LevelIO */
-        virtual const lodestone::conversion::level::PlayerIO *
+        virtual const lodestone::conversion::level::LevelIO *
         getLevelIO(int version) const = 0;
     };
 } // namespace lodestone::conversion::world
