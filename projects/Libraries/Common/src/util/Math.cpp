@@ -3,6 +3,9 @@
 //
 #include "Lodestone.Common/util/Math.h"
 
+#include <algorithm>
+#include <ranges>
+
 namespace lodestone::common::util {
     std::random_device Math::sRd;
     std::mt19937_64 Math::sRand(sRd());

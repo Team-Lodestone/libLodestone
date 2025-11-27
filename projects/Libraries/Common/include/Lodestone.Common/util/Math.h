@@ -32,6 +32,10 @@ namespace lodestone::common::util {
             return h;
         }
 
+        static constexpr uint64_t fnv1a64(const std::string &s) {
+            return fnv1a64(s.data(), s.length());
+        }
+
         /** Gets a random number
          *
          * @return A random number

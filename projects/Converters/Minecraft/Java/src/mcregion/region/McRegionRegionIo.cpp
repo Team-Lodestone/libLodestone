@@ -121,7 +121,7 @@ namespace lodestone::minecraft::java::mcregion::region {
                 int cx = minX + x;
                 int cz = minZ + z;
 
-                size_t idx = ((cx % 32) + (cz % 32) * 32) * 4;
+                size_t idx = ((cx & 31) + (cz & 31) * 32) * 4;
 
                 // get our chunk
                 level::chunk::Chunk *ch = c->getChunk(cx, cz);

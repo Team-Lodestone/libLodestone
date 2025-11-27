@@ -3,6 +3,8 @@
 //
 #include "Lodestone.Tests/tests/MainTests.h"
 
+#include <Lodestone.Minecraft.Java/anvil/jungle/world/JungleAnvilWorldIo.h>
+
 #include <Lodestone.Minecraft.Java/anvil/jungle/region/JungleAnvilRegion.h>
 #include <Lodestone.Minecraft.Java/anvil/jungle/region/JungleAnvilRegionIo.h>
 
@@ -49,30 +51,23 @@ namespace lodestone::tests::test {
                  "Write Alpha World");
     }
     void MainTests::readAnvilWorld() {
-        std::string name("r.0.-1");
-        OPEN_FILE_STREAM("AnvilWorld" / "region" / std::format("{}.mca", name),
-                         c);
+        const std::string name("AnvilWorld");
+        const std::filesystem::path dir(util::INPUT_FOLDER / name);
 
-        auto io = static_cast<const minecraft::java::anvil::jungle::region::
-                                  JungleAnvilRegionIO *>(
-            conversion::region::RegionIORegistry::getInstance().getRegionIO(
+        const auto *io = static_cast<
+            const minecraft::java::anvil::jungle::world::JungleAnvilWorldIo *>(
+            conversion::world::WorldIORegistry::getInstance().getWorldIO(
                 minecraft::java::identifiers::ANVIL_JUNGLE));
-        std::unique_ptr<level::region::Region> r =
-            io->read(in, minecraft::java::Version::r1_2_1,
-                     minecraft::java::anvil::jungle::region::JungleAnvilRegion::
-                         getCoordsFromFilename(name));
+        const std::shared_ptr w =
+            io->read(dir, minecraft::java::Version::r1_2_1, {});
 
-        // world
-        level::world::World w("New World");
-        w.addLevel(level::world::World::Dimension::OVERWORLD, std::move(r));
+        const auto converter = static_cast<
+            const minecraft::java::mcregion::world::McRegionWorldIo *>(
+            conversion::world::WorldIORegistry::getInstance().getWorldIO(
+                minecraft::java::identifiers::MCREGION));
 
-        const minecraft::java::alpha::world::AlphaWorldIo *converter =
-            (minecraft::java::alpha::world::AlphaWorldIo *)
-                conversion::world::WorldIORegistry::getInstance()
-                    .getWorldIO(minecraft::java::identifiers::ALPHA);
-
-        converter->write(util::OUTPUT_FOLDER / name, &w, minecraft::java::b1_3,
-                         {});
+        converter->write(util::OUTPUT_FOLDER / name, w.get(),
+                         minecraft::java::b1_3, {});
     }
 
     void MainTests::readMcrChunk() {

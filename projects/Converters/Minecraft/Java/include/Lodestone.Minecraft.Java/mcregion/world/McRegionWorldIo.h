@@ -22,6 +22,15 @@ namespace lodestone::minecraft::java::mcregion::world {
                    lodestone::level::world::World *w, int version,
                    const conversion::world::options::AbstractWorldWriteOptions
                        &options) const override;
+
+        const lodestone::conversion::chunk::ChunkIO *
+        getChunkIO(int version) const override;
+
+        const lodestone::conversion::region::RegionIO *
+        getRegionIO(int version) const override;
+
+        const lodestone::conversion::player::PlayerIO *
+        getPlayerIO(int version) const override;
     };
 } // namespace lodestone::minecraft::java::mcregion::world
 

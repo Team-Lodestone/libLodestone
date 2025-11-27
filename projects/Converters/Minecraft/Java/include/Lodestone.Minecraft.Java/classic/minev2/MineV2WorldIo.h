@@ -24,6 +24,15 @@ namespace lodestone::minecraft::java::classic::minev2 {
                    std::ostream &out,
                    const conversion::world::options::AbstractWorldWriteOptions
                        &options) const override;
+
+        const lodestone::conversion::chunk::ChunkIO *
+        getChunkIO(int version) const override;
+
+        const lodestone::conversion::region::RegionIO *
+        getRegionIO(int version) const override;
+
+        const lodestone::conversion::player::PlayerIO *
+        getPlayerIO(int version) const override;
     };
 } // namespace lodestone::minecraft::java::classic::minev2
 

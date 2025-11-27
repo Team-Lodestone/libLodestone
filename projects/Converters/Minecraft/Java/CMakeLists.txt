@@ -54,6 +54,12 @@ set(FILES
         src/anvil/jungle/region/JungleAnvilRegion.cpp
         include/Lodestone.Minecraft.Java/anvil/jungle/region/JungleAnvilRegionIo.h
         src/anvil/jungle/region/JungleAnvilRegionIo.cpp
+        src/anvil/jungle/world/JungleAnvilWorld.cpp
+        include/Lodestone.Minecraft.Java/anvil/jungle/world/JungleAnvilWorld.h
+        src/anvil/jungle/world/JungleAnvilWorldIo.cpp
+        include/Lodestone.Minecraft.Java/anvil/jungle/world/JungleAnvilWorldIo.h
+        include/Lodestone.Minecraft.Java/GeneratorTypes.h
+        src/GeneratorTypes.cpp
 )
 
 add_library(Lodestone.Minecraft.Java SHARED ${FILES})

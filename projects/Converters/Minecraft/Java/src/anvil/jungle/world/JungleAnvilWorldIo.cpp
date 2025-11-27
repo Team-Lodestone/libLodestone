@@ -1,46 +1,42 @@
 //
-// Created by DexrnZacAttack on 11/11/25 using zPc-i2.
+// Created by Zero on 11/26/25.
 //
-#include "Lodestone.Minecraft.Java/mcregion/world/McRegionWorldIo.h"
 
-#include <fstream>
-#include <iostream>
-#ifdef USE_OPENMP
-#include <omp.h>
-#endif
+#include "Lodestone.Minecraft.Java/anvil/jungle/world/JungleAnvilWorldIo.h"
+
 #include <Lodestone.Conversion/chunk/ChunkIORegistry.h>
 
-#include <ranges>
-#include <stack>
+#include <libnbt++/io/ozlibstream.h>
+
+#include <Lodestone.Common/util/Logging.h>
+#include <Lodestone.Conversion/player/PlayerIORegistry.h>
+#include <Lodestone.Conversion/region/RegionIORegistry.h>
+#include <Lodestone.Level/region/Region.h>
 
 #include "Lodestone.Minecraft.Java/Identifiers.h"
-#include "Lodestone.Minecraft.Java/mcregion/world/McRegionWorld.h"
-#include <Lodestone.Conversion/level/LevelIORegistry.h>
-#include <Lodestone.Conversion/region/RegionIORegistry.h>
-#include <libnbt++/io/izlibstream.h>
-#include <libnbt++/io/stream_reader.h>
-#include <libnbt++/nbt_tags.h>
-
-#include <Lodestone.Conversion/player/PlayerIORegistry.h>
-
-#include "Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunk.h"
-#include "Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunkIo.h"
+#include "Lodestone.Minecraft.Java/anvil/jungle/chunk/JungleAnvilChunkIo.h"
+#include "Lodestone.Minecraft.Java/anvil/jungle/region/JungleAnvilRegionIo.h"
+#include "Lodestone.Minecraft.Java/anvil/jungle/world/JungleAnvilWorld.h"
 #include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayer.h"
 #include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayerIo.h"
 #include "Lodestone.Minecraft.Java/mcregion/region/McRegionRegion.h"
 #include "Lodestone.Minecraft.Java/mcregion/region/McRegionRegionIo.h"
-#include <libnbt++/io/ozlibstream.h>
+#include <libnbt++/io/izlibstream.h>
+#include <libnbt++/io/stream_reader.h>
+#include <libnbt++/nbt_tags.h>
 
-#include <Lodestone.Common/util/Logging.h>
+#include <Lodestone.Conversion/level/LevelIORegistry.h>
+#include <fstream>
+#include <iostream>
 
-namespace lodestone::minecraft::java::mcregion::world {
-    const lodestone::conversion::level::LevelIO *
-    McRegionWorldIo::getLevelIO(int version) const {
-        return lodestone::conversion::level::LevelIoRegistry::getInstance()
-            .getLevelIO(identifiers::MCREGION);
+namespace lodestone::minecraft::java::anvil::jungle::world {
+    const conversion::level::LevelIO *
+    JungleAnvilWorldIo::getLevelIO(int version) const {
+        return conversion::level::LevelIoRegistry::getInstance().getLevelIO(
+            identifiers::ANVIL_JUNGLE);
     }
 
-    std::unique_ptr<lodestone::level::world::World> McRegionWorldIo::read(
+    std::unique_ptr<level::world::World> JungleAnvilWorldIo::read(
         const std::filesystem::path &path, int version,
         const conversion::world::options::AbstractWorldReadOptions &options)
         const {
@@ -64,15 +60,14 @@ namespace lodestone::minecraft::java::mcregion::world {
             dims.emplace(i, d.path());
         }
 
-        // if (std::filesystem::exists(path / "DIM1")) dims.emplace(1, path /
-        // "DIM1"); // TODO we can probably just regex our way out of this if
-        // (std::filesystem::exists(path / "DIM-1")) dims.emplace(-1, path /
-        // "DIM-1");
-
         level::types::Vec3i spawnPos = {0, 64, 0};
         std::unique_ptr<level::world::World> world =
             std::make_unique<level::world::World>();
         if (std::filesystem::exists(path / "level.dat")) {
+            // TODO we can get DataVersion later and check for fields depending
+            // on it another way is to just try to get fields and if they dont
+            // exist then Too Bad.
+
             std::ifstream dat(path / "level.dat", std::ios::binary);
             zlib::izlibstream strm(dat);
 
@@ -83,8 +78,8 @@ namespace lodestone::minecraft::java::mcregion::world {
                 (tag.get()->at("Data").as<nbt::tag_compound>());
 
             std::string name = data["LevelName"].get().as<nbt::tag_string>();
-            std::unique_ptr<McRegionWorld> w =
-                std::make_unique<McRegionWorld>(name);
+            std::unique_ptr<JungleAnvilWorld> w =
+                std::make_unique<JungleAnvilWorld>(name);
 
             // todo handle player tag
 
@@ -124,9 +119,8 @@ namespace lodestone::minecraft::java::mcregion::world {
 
         if (std::filesystem::exists(path / "players") &&
             std::filesystem::is_directory(path / "players")) {
-            const player::McRegionPlayerIO *pio =
-                static_cast<const player::McRegionPlayerIO *>(
-                    getPlayerIO(version));
+            auto pio = static_cast<const mcregion::player::McRegionPlayerIO *>(
+                getPlayerIO(version));
             for (const auto &f :
                  std::filesystem::directory_iterator(path / "players")) {
                 if (!std::filesystem::is_regular_file(f))
@@ -148,8 +142,8 @@ namespace lodestone::minecraft::java::mcregion::world {
             }
         }
 
-        const region::McRegionRegionIO *io =
-            static_cast<const region::McRegionRegionIO *>(getRegionIO(version));
+        auto *io = static_cast<const region::JungleAnvilRegionIO *>(
+            getRegionIO(version));
 
         int t = 2;
         // do I need to call exists?
@@ -174,11 +168,11 @@ namespace lodestone::minecraft::java::mcregion::world {
                      std::filesystem::directory_iterator(pth / "region")) {
 #endif
                     if (!std::filesystem::is_regular_file(f) ||
-                        f.path().extension() != ".mcr")
+                        f.path().extension() != ".mca")
                         continue;
 
                     level::types::Vec2i coords =
-                        region::McRegionRegion::getCoordsFromFilename(
+                        mcregion::region::McRegionRegion::getCoordsFromFilename(
                             f.path().filename().string());
 
                     std::ifstream ifs(f.path(), std::ifstream::binary);
@@ -196,11 +190,13 @@ namespace lodestone::minecraft::java::mcregion::world {
                     spawnPos); // in beta, only worlds have the spawn position
                 // get dim (or temp name if conversion unknown)
                 lodestone::common::registry::Identifier d =
-                    player::McRegionPlayer::dimensionIdToIdentifier(id);
+                    mcregion::player::McRegionPlayer::dimensionIdToIdentifier(
+                        id);
                 if (d == level::world::World::Dimension::UNKNOWN)
                     d = lodestone::common::registry::Identifier(
                         "lodestone",
                         ("unknown_dim_" + std::to_string(t)).c_str());
+
                 world->addLevel(
                     d, std::unique_ptr<level::Level>(
                            dim)); // todo move dimension id shit to world
@@ -211,8 +207,8 @@ namespace lodestone::minecraft::java::mcregion::world {
         // move players to correct level otherwise they're stuck at correct
         // coords in diff level
         for (const auto &[name, plr] : world->getPlayers()) {
-            const player::McRegionPlayer *p =
-                dynamic_cast<player::McRegionPlayer *>(plr.get());
+            const mcregion::player::McRegionPlayer *p =
+                dynamic_cast<mcregion::player::McRegionPlayer *>(plr.get());
             if (!p)
                 continue;
 
@@ -223,7 +219,7 @@ namespace lodestone::minecraft::java::mcregion::world {
         return world;
     }
 
-    void McRegionWorldIo::write(
+    void JungleAnvilWorldIo::write(
         const std::filesystem::path &path, level::world::World *w, int version,
         const conversion::world::options::AbstractWorldWriteOptions &options)
         const {
@@ -245,6 +241,8 @@ namespace lodestone::minecraft::java::mcregion::world {
             nbt::tag_compound data{};
 
             data["LevelName"] = w->getName();
+            // TODO we need to figure out what fields were added in what
+            // versions and read them accordingly.
 
             // int spawnX = data["SpawnX"].get().as<nbt::tag_int>();
             // int spawnY = data["SpawnY"].get().as<nbt::tag_int>();
@@ -283,17 +281,17 @@ namespace lodestone::minecraft::java::mcregion::world {
             nbt.write_tag("", root);
         }
         // Regions
-        const java::mcregion::region::McRegionRegionIO *io =
-            static_cast<const java::mcregion::region::McRegionRegionIO *>(
-                lodestone::conversion::region::RegionIORegistry::getInstance()
-                    .getRegionIO(java::identifiers::MCREGION));
+        auto *io =
+            static_cast<const anvil::jungle::region::JungleAnvilRegionIO *>(
+                getRegionIO(version));
 
         std::filesystem::path p = path;
 
         int i = 2; // for writing other dims
         for (auto &[id, lvl] : w->getLevels()) {
             if (const int dim =
-                    player::McRegionPlayer::identifierToDimensionId(id);
+                    mcregion::player::McRegionPlayer::identifierToDimensionId(
+                        id);
                 dim != 0) {
                 const int d = dim == 0x7FFFFFFF ? i : dim;
                 p = path / ("DIM" + std::to_string(d));
@@ -324,25 +322,25 @@ namespace lodestone::minecraft::java::mcregion::world {
         // TODO for block states we might be able to make registry that maps
         // fields to bits in data byte per block
     }
-
     const conversion::chunk::ChunkIO *
-    McRegionWorldIo::getChunkIO(int version) const {
-        return static_cast<const chunk::McRegionChunkIO *>(
+    JungleAnvilWorldIo::getChunkIO(int version) const {
+        return static_cast<const chunk::JungleAnvilChunkIO *>(
             conversion::chunk::ChunkIORegistry::getInstance().getChunkIO(
-                identifiers::MCREGION));
+                identifiers::ANVIL_JUNGLE));
     }
 
     const conversion::region::RegionIO *
-    McRegionWorldIo::getRegionIO(int version) const {
-        return static_cast<const region::McRegionRegionIO *>(
+    JungleAnvilWorldIo::getRegionIO(int version) const {
+        return static_cast<const region::JungleAnvilRegionIO *>(
             conversion::region::RegionIORegistry::getInstance().getRegionIO(
-                identifiers::MCREGION));
+                identifiers::ANVIL_JUNGLE));
     }
 
     const conversion::player::PlayerIO *
-    McRegionWorldIo::getPlayerIO(int version) const {
-        return static_cast<const player::McRegionPlayerIO *>(
+    JungleAnvilWorldIo::getPlayerIO(int version) const {
+        return static_cast<const mcregion::player::McRegionPlayerIO *>(
             conversion::player::PlayerIORegistry::getInstance().getPlayerIO(
-                identifiers::MCREGION));
+                identifiers::ANVIL_JUNGLE));
     }
-} // namespace lodestone::minecraft::java::mcregion::world
+
+} // namespace lodestone::minecraft::java::anvil::jungle::world

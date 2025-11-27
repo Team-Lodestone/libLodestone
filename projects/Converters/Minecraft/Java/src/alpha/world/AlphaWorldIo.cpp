@@ -283,5 +283,23 @@ namespace lodestone::minecraft::java::alpha::world {
             }
         }
     }
+    const conversion::chunk::ChunkIO *
+    AlphaWorldIo::getChunkIO(int version) const {
+        return static_cast<const mcregion::chunk::McRegionChunkIO *>(
+            conversion::chunk::ChunkIORegistry::getInstance().getChunkIO(
+                identifiers::MCREGION));
+    }
+
+    const conversion::region::RegionIO *
+    AlphaWorldIo::getRegionIO(int version) const {
+        return nullptr;
+    }
+
+    const conversion::player::PlayerIO *
+    AlphaWorldIo::getPlayerIO(int version) const {
+        return static_cast<const player::AlphaPlayerIO *>(
+            conversion::player::PlayerIORegistry::getInstance().getPlayerIO(
+                identifiers::ALPHA));
+    }
 
 } // namespace lodestone::minecraft::java::alpha::world
