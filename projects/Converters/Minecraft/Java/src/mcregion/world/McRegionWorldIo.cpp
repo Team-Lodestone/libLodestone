@@ -246,38 +246,39 @@ namespace lodestone::minecraft::java::mcregion::world {
 
             data["LevelName"] = w->getName();
 
-            // int spawnX = data["SpawnX"].get().as<nbt::tag_int>();
-            // int spawnY = data["SpawnY"].get().as<nbt::tag_int>();
-            // int spawnZ = data["SpawnZ"].get().as<nbt::tag_int>();
-            // spawnPos = {spawnX, spawnY, spawnZ};
-            //
-            // int64_t time = data["Time"].get().as<nbt::tag_long>();
-            // w->setTime(time);
-            //
-            // int rainTime = data["rainTime"].get().as<nbt::tag_int>();
-            // int thunderTime = data["thunderTime"].get().as<nbt::tag_int>();
-            //
-            // w->setRainTime(rainTime);
-            // w->setThunderTime(thunderTime);
-            //
-            // bool raining = data["raining"].get().as<nbt::tag_byte>();
-            // bool thundering = data["thundering"].get().as<nbt::tag_byte>();
-            //
-            // w->setIsRaining(raining);
-            // w->setIsThundering(thundering);
-            //
-            // int64_t seed = data["RandomSeed"].get().as<nbt::tag_long>();
-            // w->setSeed(seed);
-            //
-            // int ver = data["version"].get().as<nbt::tag_int>();
-            // w->setVersion(ver);
-            //
-            // int64_t lastPlayed =
-            // data["LastPlayed"].get().as<nbt::tag_long>();
-            // w->setLastPlayed(lastPlayed);
-            //
-            // int64_t size = data["SizeOnDisk"].get().as<nbt::tag_long>();
-            // w->setSize(size);
+            auto lastPlayed = w->getProperty("lastPlayed");
+            data["LastPlayed"] =
+                lastPlayed
+                    ? lastPlayed
+                          ->as<
+                              level::properties::TemplatedProperty<int64_t &>>()
+                          ->getValue()
+                    : static_cast<int64_t>(0);
+
+            auto seed = w->getProperty("seed");
+            data["RandomSeed"] =
+                seed
+                    ? seed->as<
+                              level::properties::TemplatedProperty<int64_t &>>()
+                          ->getValue()
+                    : static_cast<int64_t>(0);
+
+            // TODO: Write default player tag here
+
+            level::types::Vec3i sp = w->getDefaultLevel()->getSpawnPos();
+            data["SpawnX"] = sp.x;
+            data["SpawnY"] = sp.y;
+            data["SpawnZ"] = sp.z;
+
+            auto time = w->getProperty("time");
+            data["Time"] =
+                time
+                    ? time->as<
+                              level::properties::TemplatedProperty<int64_t &>>()
+                          ->getValue()
+                    : static_cast<int64_t>(0);
+
+            data["SizeOnDisk"] = static_cast<int64_t>(0);
 
             root.emplace<nbt::tag_compound>("Data", data);
             nbt.write_tag("", root);
