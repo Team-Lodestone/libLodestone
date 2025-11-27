@@ -58,8 +58,7 @@ namespace lodestone::tests::test {
             const minecraft::java::anvil::jungle::world::JungleAnvilWorldIo *>(
             conversion::world::WorldIORegistry::getInstance().getWorldIO(
                 minecraft::java::identifiers::ANVIL_JUNGLE));
-        const std::shared_ptr w =
-            io->read(dir, minecraft::java::Version::r1_2_1, {});
+        const auto w = io->read(dir, minecraft::java::Version::r1_2_1, {});
 
         const auto converter = static_cast<
             const minecraft::java::mcregion::world::McRegionWorldIo *>(

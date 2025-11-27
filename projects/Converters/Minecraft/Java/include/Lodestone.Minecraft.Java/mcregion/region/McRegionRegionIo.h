@@ -24,7 +24,7 @@ namespace lodestone::minecraft::java::mcregion::region {
         // into a Region. The coords are enough information to correctly write
         // the chunks
         void write(lodestone::level::Level *c, int version,
-                   const lodestone::level::types::Vec2i &coords,
+                   const lodestone::level::types::Vec2i &regionCoords,
                    std::ostream &out) const override;
 
         const conversion::chunk::ChunkIO *

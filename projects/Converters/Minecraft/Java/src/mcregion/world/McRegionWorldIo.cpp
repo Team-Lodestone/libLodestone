@@ -283,10 +283,8 @@ namespace lodestone::minecraft::java::mcregion::world {
             nbt.write_tag("", root);
         }
         // Regions
-        const java::mcregion::region::McRegionRegionIO *io =
-            static_cast<const java::mcregion::region::McRegionRegionIO *>(
-                lodestone::conversion::region::RegionIORegistry::getInstance()
-                    .getRegionIO(java::identifiers::MCREGION));
+        auto io =
+            static_cast<const region::McRegionRegionIO *>(getRegionIO(version));
 
         std::filesystem::path p = path;
 
@@ -295,8 +293,8 @@ namespace lodestone::minecraft::java::mcregion::world {
             if (const int dim =
                     player::McRegionPlayer::identifierToDimensionId(id);
                 dim != 0) {
-                const int d = dim == 0x7FFFFFFF ? i : dim;
-                p = path / ("DIM" + std::to_string(d));
+                p = path /
+                    ("DIM" + std::to_string(dim == 0x7FFFFFFF ? i : dim));
             }
             i++;
 
@@ -306,8 +304,8 @@ namespace lodestone::minecraft::java::mcregion::world {
 
             level::types::Bounds3i bounds = lvl->getChunkBounds();
 
-            for (int rx = bounds.min.x; rx < bounds.max.x; rx += 32 * 32) {
-                for (int rz = bounds.min.z; rz < bounds.max.z; rz += 32 * 32) {
+            for (int rx = bounds.min.x >> 5; rx < bounds.max.x >> 5; rx++) {
+                for (int rz = bounds.min.z >> 5; rz < bounds.max.z >> 5; rz++) {
                     std::ofstream o(r / ("r." + std::to_string(rx) + "." +
                                          std::to_string(rz) + ".mcr"));
 

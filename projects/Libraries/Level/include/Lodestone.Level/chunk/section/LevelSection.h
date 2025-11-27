@@ -13,7 +13,7 @@
 namespace lodestone::level::chunk::section {
     class LevelSection : public Section {
       public:
-        LevelSection();
+        LevelSection() = default;
         ~LevelSection() override;
 
         types::AbstractNibbleArray *getBlockLight() override;

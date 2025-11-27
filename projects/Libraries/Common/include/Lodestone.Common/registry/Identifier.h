@@ -7,6 +7,8 @@
 #include <cstring>
 #include <format>
 
+#include "Lodestone.Common/util/Math.h"
+
 // this class required me to upgrade to c++20
 namespace lodestone::common::registry {
     class Identifier : public string::StringSerializable {
@@ -31,8 +33,9 @@ namespace lodestone::common::registry {
         constexpr std::string toString() const override { return getString(); };
 
         constexpr bool operator==(const Identifier &rhs) const noexcept {
-            return this->mName == rhs.mName &&
-                   this->mNamespace == rhs.mNamespace;
+            return util::Math::strcmpConstexpr(this->mName, rhs.mName) &&
+                   util::Math::strcmpConstexpr(this->mNamespace,
+                                               rhs.mNamespace);
         }
 
         constexpr operator std::string() const noexcept override {

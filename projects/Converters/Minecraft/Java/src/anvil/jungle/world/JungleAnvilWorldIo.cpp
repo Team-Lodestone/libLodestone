@@ -157,8 +157,9 @@ namespace lodestone::minecraft::java::anvil::jungle::world {
 #ifdef USE_OPENMP
                 std::vector<std::filesystem::directory_entry> e;
                 for (auto &f :
-                     std::filesystem::directory_iterator(pth / "region"))
+                     std::filesystem::directory_iterator(pth / "region")) {
                     e.push_back(f);
+                }
 
 #pragma omp parallel for
                 for (size_t i = 0; i < e.size(); ++i) {
@@ -192,6 +193,7 @@ namespace lodestone::minecraft::java::anvil::jungle::world {
                 lodestone::common::registry::Identifier d =
                     mcregion::player::McRegionPlayer::dimensionIdToIdentifier(
                         id);
+
                 if (d == level::world::World::Dimension::UNKNOWN)
                     d = lodestone::common::registry::Identifier(
                         "lodestone",
@@ -287,14 +289,14 @@ namespace lodestone::minecraft::java::anvil::jungle::world {
 
         std::filesystem::path p = path;
 
-        int i = 2; // for writing other dims
+        int i = 2;
         for (auto &[id, lvl] : w->getLevels()) {
             if (const int dim =
                     mcregion::player::McRegionPlayer::identifierToDimensionId(
                         id);
                 dim != 0) {
-                const int d = dim == 0x7FFFFFFF ? i : dim;
-                p = path / ("DIM" + std::to_string(d));
+                p = path /
+                    ("DIM" + std::to_string(dim == 0x7FFFFFFF ? i : dim));
             }
             i++;
 

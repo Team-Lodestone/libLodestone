@@ -130,7 +130,7 @@ namespace lodestone::level::chunk {
         block::properties::BlockProperties **mBlockmap =
             new block::properties::BlockProperties
                 *[common::constants::CHUNK_WIDTH *
-                  common::constants::CHUNK_DEPTH]{};
+                  common::constants::CHUNK_DEPTH] {};
 
         // map_t<Vec3i, TileEntity> mTileEntities;
         // map_t<Vec3i, Entity> mEntities;

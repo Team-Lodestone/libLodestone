@@ -72,7 +72,7 @@ target_link_libraries(Lodestone.Minecraft.Java PRIVATE Lodestone.Level Lodestone
 target_link_libraries(Lodestone.Minecraft.Java PUBLIC Lodestone.Core Lodestone.Minecraft.Common)
 
 option(USE_OPENMP "Use OpenMP" ON)
-if (USE_OPENMP STREQUAL ON AND OpenMP_CXX_FOUND AND OpenMP_C_FOUND)
+if (USE_OPENMP STREQUAL ON AND OpenMP_CXX_FOUND AND OpenMP_C_FOUND AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Using OpenMP")
     target_link_libraries(Lodestone.Minecraft.Java PRIVATE OpenMP::OpenMP_CXX)
     target_compile_definitions(Lodestone.Minecraft.Java PRIVATE USE_OPENMP)
