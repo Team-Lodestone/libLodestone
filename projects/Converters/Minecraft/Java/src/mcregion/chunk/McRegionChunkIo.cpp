@@ -29,6 +29,11 @@ namespace lodestone::minecraft::java::mcregion::chunk {
         const int8_t *data =
             chunk["Data"].get().as<nbt::tag_byte_array>().get().data();
 
+        const int8_t *skyLight =
+            chunk["SkyLight"].get().as<nbt::tag_byte_array>().get().data();
+        const int8_t *blockLight =
+            chunk["BlockLight"].get().as<nbt::tag_byte_array>().get().data();
+
         std::unique_ptr<McRegionChunk> c = std::make_unique<McRegionChunk>(
             level::types::Vec2i(x, z), lastUpdate);
 
@@ -61,6 +66,14 @@ namespace lodestone::minecraft::java::mcregion::chunk {
                     if (b.getBlock() !=
                         level::block::BlockRegistry::sDefaultBlock)
                         c->McRegionChunk::setBlock(std::move(b), cx, cy, cz);
+
+                    if (level::chunk::section::Section *s =
+                            c->getSection(cy >> 4)) {
+                        s->getBlockLight()->setNibble(
+                            cx, cy & 15, cz, GET_NIBBLE(skyLight, idx));
+                        s->getSkyLight()->setNibble(
+                            cx, cy & 15, cz, GET_NIBBLE(blockLight, idx));
+                    }
                 }
             }
         }
@@ -117,8 +130,10 @@ namespace lodestone::minecraft::java::mcregion::chunk {
 #endif
                         uint8_t id = 0;
                         uint8_t dat = 0;
+#ifndef USE_RISKY_OPTIMIZATIONS
                         if (b->getBlock() !=
                             level::block::BlockRegistry::sDefaultBlock) {
+#endif
                             if (const lodestone::conversion::block::data::
                                     NumericBlockData *bl =
                                         bio->convertBlockFromInternal(b)
@@ -128,7 +143,9 @@ namespace lodestone::minecraft::java::mcregion::chunk {
                                 id = bl->getId();
                                 dat = bl->getData();
                             }
+#ifndef USE_RISKY_OPTIMIZATIONS
                         }
+#endif
 
                         blockData[idx] = id;
 
@@ -137,14 +154,15 @@ namespace lodestone::minecraft::java::mcregion::chunk {
                     }
 #endif
 
-                    // TODO we can readd lighting once we actually have support
-                    // for it in our chunks
-                    SET_NIBBLE(
-                        skyLightData, idx,
-                        15); // TODO get/set methods in Section for lighting
+                    level::chunk::section::Section *s = c->getSection(cy >> 4);
+
+                    SET_NIBBLE(skyLightData, idx,
+                               s ? s->getSkyLight()->getNibble(cx, cy & 15, cz)
+                                 : 15);
                     SET_NIBBLE(
                         blockLightData, idx,
-                        15); // TODO get/set methods in Section for lighting
+                        s ? s->getBlockLight()->getNibble(cx, cy & 15, cz)
+                          : 15);
                 }
 
                 heightMapData[INDEX_YX(cx, cz, CHUNK_WIDTH)] =

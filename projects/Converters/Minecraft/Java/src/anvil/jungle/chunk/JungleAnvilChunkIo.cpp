@@ -36,6 +36,17 @@ namespace lodestone::minecraft::java::anvil::jungle::chunk {
                 section["Data"].get().as<nbt::tag_byte_array>().get().data();
             const int8_t *add = nullptr;
 
+            const int8_t *skyLight = section["SkyLight"]
+                                         .get()
+                                         .as<nbt::tag_byte_array>()
+                                         .get()
+                                         .data();
+            const int8_t *blockLight = section["BlockLight"]
+                                           .get()
+                                           .as<nbt::tag_byte_array>()
+                                           .get()
+                                           .data();
+
             if (section.has_key("Add"))
                 add =
                     section["Add"].get().as<nbt::tag_byte_array>().get().data();
@@ -70,12 +81,21 @@ namespace lodestone::minecraft::java::anvil::jungle::chunk {
                                         bb,
                                         0)); // TODO metadata (maybe MetadataIO
                                              // or
-                        // BlockPropertyIO?)
+                        // BlockPropertyIO
 
                         if (b.getBlock() !=
-                            level::block::BlockRegistry::sDefaultBlock)
+                            level::block::BlockRegistry::sDefaultBlock) {
                             c->JungleAnvilChunk::setBlock(std::move(b), cx,
                                                           lsy + cy, cz);
+                        }
+
+                        if (level::chunk::section::Section *sec =
+                                c->getSection(cy >> 4)) {
+                            sec->getBlockLight()->setNibble(
+                                cx, cy, cz, GET_NIBBLE(skyLight, idx));
+                            sec->getSkyLight()->setNibble(
+                                cx, cy, cz, GET_NIBBLE(blockLight, idx));
+                        }
                     }
                 }
             }
@@ -93,12 +113,11 @@ namespace lodestone::minecraft::java::anvil::jungle::chunk {
 
     std::unique_ptr<lodestone::level::chunk::Chunk>
     JungleAnvilChunkIO::read(std::istream &in, const int version) const {
-        nbt::io::stream_reader streamReader =
-            nbt::io::stream_reader(in, endian::big);
+        auto streamReader = nbt::io::stream_reader(in, endian::big);
 
         auto [name, root] = streamReader.read_compound();
         nbt::tag_compound &level =
-            (root.get()->at("Level").as<nbt::tag_compound>());
+            root.get()->at("Level").as<nbt::tag_compound>();
         return read(level, version);
     }
 

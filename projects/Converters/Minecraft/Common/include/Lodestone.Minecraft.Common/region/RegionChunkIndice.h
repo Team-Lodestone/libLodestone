@@ -4,12 +4,12 @@
 #ifndef LODESTONE_REGIONCHUNKINFO_H
 #define LODESTONE_REGIONCHUNKINFO_H
 
-namespace lodestone::minecraft::java::mcregion {
+namespace lodestone::minecraft::common::region {
     struct RegionChunkIndice {
         uint32_t offset;
         uint8_t size;
         int32_t timestamp;
     };
-} // namespace lodestone::minecraft::java::mcregion
+} // namespace lodestone::minecraft::common::region
 
 #endif // LODESTONE_REGIONCHUNKINFO_H

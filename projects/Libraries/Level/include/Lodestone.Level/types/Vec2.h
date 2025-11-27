@@ -4,6 +4,9 @@
 #ifndef LODESTONE_VEC2I_H
 #define LODESTONE_VEC2I_H
 
+#include <Lodestone.Common/string/StringSerializable.h>
+#include <format>
+
 namespace lodestone::level::types {
     template <typename T>
     struct Vec2 final : common::string::StringSerializable {

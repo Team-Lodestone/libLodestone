@@ -16,6 +16,8 @@ set(FILES
         include/Lodestone.Minecraft.Common/block/Blocks.h
         src/world/MinecraftWorld.cpp
         include/Lodestone.Minecraft.Common/world/MinecraftWorld.h
+        include/Lodestone.Minecraft.Common/region/RegionChunkIndice.h
+        include/Lodestone.Minecraft.Common/region/RegionCompression.h
 )
 
 add_library(Lodestone.Minecraft.Common OBJECT ${FILES})

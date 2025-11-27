@@ -4,7 +4,7 @@
 #ifndef LODESTONE_REGIONCOMPRESSION_H
 #define LODESTONE_REGIONCOMPRESSION_H
 
-namespace lodestone::minecraft::java::mcregion {
+namespace lodestone::minecraft::common::region {
     enum RegionCompression : signed char {
         GZip = 1,
         Zlib = 2,

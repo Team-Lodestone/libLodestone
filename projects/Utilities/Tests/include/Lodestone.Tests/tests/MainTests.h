@@ -10,6 +10,8 @@ namespace lodestone::tests::test {
       public:
         static void run();
 
+        static void readAnvilWorld();
+
         static void readMcrChunk();
 
         static void readMcrFile();

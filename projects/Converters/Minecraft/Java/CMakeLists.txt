@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION VERSION 3.30)
-project(Lodestone.Minecraft.Java VERSION 1.0.1)
+project(Lodestone.Minecraft.Java VERSION 1.0.2)
 
 set(VERSION_SUFFIX "-dev.0") # used for non-stable versions, otherwise blank
 set(CMAKE_CXX_STANDARD 20)
@@ -26,8 +26,6 @@ set(FILES
         include/Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunk.h
         src/mcregion/region/McRegionRegionIo.cpp
         include/Lodestone.Minecraft.Java/mcregion/region/McRegionRegionIo.h
-        include/Lodestone.Minecraft.Java/mcregion/RegionChunkIndice.h
-        include/Lodestone.Minecraft.Java/mcregion/RegionCompression.h
         include/Lodestone.Minecraft.Java/Identifiers.h
         src/mcregion/world/McRegionWorldIo.cpp
         include/Lodestone.Minecraft.Java/mcregion/world/McRegionWorldIo.h
@@ -52,7 +50,10 @@ set(FILES
         include/Lodestone.Minecraft.Java/anvil/jungle/chunk/JungleAnvilChunk.h
         src/anvil/jungle/chunk/JungleAnvilChunkIo.cpp
         include/Lodestone.Minecraft.Java/anvil/jungle/chunk/JungleAnvilChunkIo.h
-        src/anvil/jungle/chunk/JungleAnvilChunkIo.cpp
+        include/Lodestone.Minecraft.Java/anvil/jungle/region/JungleAnvilRegion.h
+        src/anvil/jungle/region/JungleAnvilRegion.cpp
+        include/Lodestone.Minecraft.Java/anvil/jungle/region/JungleAnvilRegionIo.h
+        src/anvil/jungle/region/JungleAnvilRegionIo.cpp
 )
 
 add_library(Lodestone.Minecraft.Java SHARED ${FILES})

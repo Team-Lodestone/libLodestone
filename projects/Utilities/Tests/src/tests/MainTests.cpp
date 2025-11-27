@@ -3,6 +3,9 @@
 //
 #include "Lodestone.Tests/tests/MainTests.h"
 
+#include <Lodestone.Minecraft.Java/anvil/jungle/region/JungleAnvilRegion.h>
+#include <Lodestone.Minecraft.Java/anvil/jungle/region/JungleAnvilRegionIo.h>
+
 #include <Lodestone.Minecraft.Java/classic/minev2/options/MineV2WorldWriteOptions.h>
 
 #include <fstream>
@@ -30,6 +33,8 @@
 
 namespace lodestone::tests::test {
     void MainTests::run() {
+        ADD_TEST(READ_ANVIL_WORLD, readAnvilWorld, util::types::MAIN,
+                 "Read Anvil World");
         ADD_TEST(READ_MCR_CHUNK, readMcrChunk, util::types::MAIN,
                  "Read McRegion Chunk");
         ADD_TEST(READ_MCR_FILE, readMcrFile, util::types::MAIN,
@@ -42,6 +47,32 @@ namespace lodestone::tests::test {
                  "Read Alpha World");
         ADD_TEST(WRITE_ALPHA_WORLD, writeAlphaWorld, util::types::MAIN,
                  "Write Alpha World");
+    }
+    void MainTests::readAnvilWorld() {
+        std::string name("r.0.-1");
+        OPEN_FILE_STREAM("AnvilWorld" / "region" / std::format("{}.mca", name),
+                         c);
+
+        auto io = static_cast<const minecraft::java::anvil::jungle::region::
+                                  JungleAnvilRegionIO *>(
+            conversion::region::RegionIORegistry::getInstance().getRegionIO(
+                minecraft::java::identifiers::ANVIL_JUNGLE));
+        std::unique_ptr<level::region::Region> r =
+            io->read(in, minecraft::java::Version::r1_2_1,
+                     minecraft::java::anvil::jungle::region::JungleAnvilRegion::
+                         getCoordsFromFilename(name));
+
+        // world
+        level::world::World w("New World");
+        w.addLevel(level::world::World::Dimension::OVERWORLD, std::move(r));
+
+        const minecraft::java::alpha::world::AlphaWorldIo *converter =
+            (minecraft::java::alpha::world::AlphaWorldIo *)
+                conversion::world::WorldIORegistry::getInstance()
+                    .getWorldIO(minecraft::java::identifiers::ALPHA);
+
+        converter->write(util::OUTPUT_FOLDER / name, &w, minecraft::java::b1_3,
+                         {});
     }
 
     void MainTests::readMcrChunk() {

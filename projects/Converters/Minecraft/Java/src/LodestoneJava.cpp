@@ -6,9 +6,11 @@
 
 #include "Lodestone.Minecraft.Java/Identifiers.h"
 #include "Lodestone.Minecraft.Java/LodestoneJava.h"
+
 #include "Lodestone.Minecraft.Java/classic/minev1/MineV1LevelIO.h"
 #include "Lodestone.Minecraft.Java/classic/minev2/MineV2LevelIO.h"
 #include "Lodestone.Minecraft.Java/indev/McLevelLevelIO.h"
+#include <Lodestone.Conversion/block/data/ExtendedNumericBlockData.h>
 
 #include <Lodestone.Core/Lodestone.h>
 
@@ -19,6 +21,8 @@
 #include "Lodestone.Minecraft.Java/Version.h"
 #include "Lodestone.Minecraft.Java/alpha/player/AlphaPlayerIo.h"
 #include "Lodestone.Minecraft.Java/alpha/world/AlphaWorldIo.h"
+#include "Lodestone.Minecraft.Java/anvil/jungle/chunk/JungleAnvilChunkIo.h"
+#include "Lodestone.Minecraft.Java/anvil/jungle/region/JungleAnvilRegionIo.h"
 #include "Lodestone.Minecraft.Java/classic/minev2/MineV2WorldIo.h"
 #include "Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunkIo.h"
 #include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayerIo.h"
@@ -87,6 +91,18 @@ namespace lodestone::minecraft::java {
             .registerPlayerIO(
                 identifiers::MCREGION,
                 std::make_unique<mcregion::player::McRegionPlayerIO>());
+
+        // anvil
+        // jungle (1.2.1-1.12.2)
+        lodestone::conversion::chunk::ChunkIORegistry::getInstance()
+            .registerChunkIO(
+                identifiers::ANVIL_JUNGLE,
+                std::make_unique<anvil::jungle::chunk::JungleAnvilChunkIO>());
+
+        lodestone::conversion::region::RegionIORegistry::getInstance()
+            .registerRegionIO(
+                identifiers::ANVIL_JUNGLE,
+                std::make_unique<anvil::jungle::region::JungleAnvilRegionIO>());
     }
 
     LodestoneJava *LodestoneJava::getInstance() {
@@ -472,6 +488,147 @@ namespace lodestone::minecraft::java {
         io.registerBlock(
             Version::b1_3, &minecraft::common::block::Blocks::OBSIDIAN,
             new lodestone::conversion::block::data::NumericBlockData(49, 0));
+        // ID FORMAT CHANGE #2
+
+        io.registerBlock(
+            Version::r1_2_1, &level::block::Blocks::AIR,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                0, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::STONE,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                1, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::GRASS_BLOCK,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                2, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::DIRT,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                3, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::COBBLESTONE,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                4, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::OAK_PLANKS,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                5, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::OAK_SAPLING,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                6, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::BEDROCK,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                7, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::FLOWING_WATER,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                8, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::WATER,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                9, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::FLOWING_LAVA,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                10, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::LAVA,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                11, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::SAND,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                12, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::GRAVEL,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                13, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::GOLD_ORE,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                14, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::IRON_ORE,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                15, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::COAL_ORE,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                16, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::OAK_LOG,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                17, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::OAK_LEAVES,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                18, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::SPONGE,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                19, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::GLASS,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                20, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::DANDELION,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                37, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::POPPY,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                38, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::BROWN_MUSHROOM,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                39, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::RED_MUSHROOM,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                40, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::GOLD_BLOCK,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                41, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::IRON_BLOCK,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                42, 0));
+        io.registerBlock(
+            Version::r1_2_1,
+            &minecraft::common::block::Blocks::DOUBLE_SMOOTH_STONE_SLAB,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                43, 0));
+        io.registerBlock(
+            Version::r1_2_1,
+            &minecraft::common::block::Blocks::SMOOTH_STONE_SLAB,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                44, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::BRICKS,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                45, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::TNT,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                46, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::BOOKSHELF,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                47, 0));
+        io.registerBlock(
+            Version::r1_2_1,
+            &minecraft::common::block::Blocks::MOSSY_COBBLESTONE,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                48, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::OBSIDIAN,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(
+                49, 0));
     }
 
     lodestone::common::registry::Identifier LodestoneJava::getIdentifier() {

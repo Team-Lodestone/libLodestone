@@ -10,11 +10,12 @@
 #ifdef USE_OPENMP
 #include <omp.h>
 #endif
+#include <Lodestone.Minecraft.Common/region/RegionChunkIndice.h>
+#include <Lodestone.Minecraft.Common/region/RegionCompression.h>
+
 #include <zlib.h>
 
 #include "Lodestone.Minecraft.Java/Identifiers.h"
-#include "Lodestone.Minecraft.Java/mcregion/RegionChunkIndice.h"
-#include "Lodestone.Minecraft.Java/mcregion/RegionCompression.h"
 #include "Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunk.h"
 #include "Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunkIo.h"
 #include <Lodestone.Conversion/chunk/ChunkIO.h>
@@ -42,7 +43,7 @@ namespace lodestone::minecraft::java::mcregion::region {
         std::unique_ptr<lodestone::level::region::Region> region =
             std::make_unique<McRegionRegion>(coords);
 
-        std::vector<RegionChunkIndice> locations;
+        std::vector<common::region::RegionChunkIndice> locations;
         locations.reserve(CHUNK_COUNT);
 
         uint8_t *locs = new uint8_t[CHUNK_COUNT * 4];
@@ -71,35 +72,21 @@ namespace lodestone::minecraft::java::mcregion::region {
             bis.seek(loc.offset * SECTOR_SIZE);
 
             uint32_t len = bis.readBE<uint32_t>();
-            RegionCompression compression =
-                static_cast<RegionCompression>(bis.readByte());
+            common::region::RegionCompression compression =
+                static_cast<common::region::RegionCompression>(bis.readByte());
 
             if (compression == 0)
                 continue;
 
-            uint32_t chunkSize = loc.size * SECTOR_SIZE;
-
-            bool fail = false;
             switch (compression) {
-            case GZip:
-            case Zlib: {
+            case common::region::GZip:
+            case common::region::Zlib: {
                 zlib::izlibstream strm(bis.getStream());
                 std::unique_ptr<chunk::McRegionChunk> c = CAST_UNIQUE_PTR(
                     chunk::McRegionChunk, chunkIo->read(strm, version));
                 region->addChunk(std::move(c));
 
                 break;
-            }
-            case Custom: {
-                const uint16_t l = bis.readBE<uint16_t>();
-                std::string name =
-                    bis.readString(l); // who cares about mutf8 :trolley:
-
-                // don't throw as we can keep going
-                std::cerr << std::format("Unsupported compression type '{}'",
-                                         name)
-                          << std::endl;
-                continue;
             }
             default:
                 std::cerr << std::format("Unsupported compression type '{}'",
@@ -144,8 +131,8 @@ namespace lodestone::minecraft::java::mcregion::region {
                 // get the position BEFORE we write the chunk
                 const size_t s = bos.getPosition();
 
-                bos.writeLE<int32_t>(0); // size (temp)
-                bos.writeByte(Zlib);     // compression
+                bos.writeLE<int32_t>(0);             // size (temp)
+                bos.writeByte(common::region::Zlib); // compression
 
                 // create z stream
                 zlib::ozlibstream zs(bos.getStream());

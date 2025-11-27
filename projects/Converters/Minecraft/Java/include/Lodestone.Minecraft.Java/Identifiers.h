@@ -16,6 +16,8 @@ namespace lodestone::minecraft::java::identifiers {
         "lodestone", "alpha"};
     static constexpr lodestone::common::registry::Identifier MCREGION = {
         "lodestone", "mcregion"};
+    static constexpr lodestone::common::registry::Identifier ANVIL_JUNGLE = {
+        "lodestone", "anvil_jungle"};
 } // namespace lodestone::minecraft::java::identifiers
 
 #endif // LODESTONE_NAMESPACES_H

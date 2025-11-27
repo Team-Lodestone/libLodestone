@@ -40,8 +40,11 @@ namespace lodestone::minecraft::java {
         // Alpha
 
         // Beta
-        b1_3 // todo this should be first version with numeric + metadata block
-             // type
+        b1_3, // todo this should be first version with numeric + metadata block
+              // type
+
+        // Release
+        r1_2_1 // Anvil Extended block ids
     };
 }
 
