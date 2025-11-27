@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.30)
 project(Lodestone)
 
-include(${CMAKE_SOURCE_DIR}/script/cmake/linting.cmake)
+include(${CMAKE_SOURCE_DIR}/scripts/cmake/linting.cmake)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DCMAKE_BUILD_DEBUG)
