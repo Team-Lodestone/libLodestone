@@ -23,6 +23,7 @@
 #include "Lodestone.Minecraft.Java/alpha/world/AlphaWorldIo.h"
 #include "Lodestone.Minecraft.Java/anvil/jungle/chunk/JungleAnvilChunkIo.h"
 #include "Lodestone.Minecraft.Java/anvil/jungle/region/JungleAnvilRegionIo.h"
+#include "Lodestone.Minecraft.Java/anvil/jungle/world/JungleAnvilWorldIo.h"
 #include "Lodestone.Minecraft.Java/classic/minev2/MineV2WorldIo.h"
 #include "Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunkIo.h"
 #include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayerIo.h"
@@ -103,6 +104,10 @@ namespace lodestone::minecraft::java {
             .registerRegionIO(
                 identifiers::ANVIL_JUNGLE,
                 std::make_unique<anvil::jungle::region::JungleAnvilRegionIO>());
+
+        conversion::world::WorldIORegistry::getInstance().registerWorldIO(
+            identifiers::ANVIL_JUNGLE,
+            std::make_unique<anvil::jungle::world::JungleAnvilWorldIo>());
     }
 
     LodestoneJava *LodestoneJava::getInstance() {

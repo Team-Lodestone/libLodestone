@@ -6,8 +6,6 @@
 #include <Lodestone.Common/Indexing.h>
 
 namespace lodestone::level::chunk::section {
-    LevelSection::LevelSection() {}
-
     LevelSection::~LevelSection() {
         delete[] mBiomes;
         delete[] mBlocks;

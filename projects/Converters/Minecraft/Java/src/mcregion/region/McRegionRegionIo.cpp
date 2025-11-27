@@ -99,29 +99,27 @@ namespace lodestone::minecraft::java::mcregion::region {
         return region;
     }
 
-    void McRegionRegionIO::write(lodestone::level::Level *c, const int version,
-                                 const lodestone::level::types::Vec2i &coords,
-                                 std::ostream &out) const {
+    void
+    McRegionRegionIO::write(lodestone::level::Level *c, const int version,
+                            const lodestone::level::types::Vec2i &regionCoords,
+                            std::ostream &out) const {
         bio::stream::BinaryOutputStream bos(out);
 
-        const chunk::McRegionChunkIO *chunkIo =
-            dynamic_cast<const chunk::McRegionChunkIO *>(getChunkIO(version));
+        auto *chunkIo =
+            static_cast<const chunk::McRegionChunkIO *>(getChunkIO(version));
 
         bos.fill(0, (4 * 1024) * 2);
-
-        const int minX = coords.x << 5;
-        const int minZ = coords.z << 5;
 
         // since this is such pain with a stream
         // although doing it like this is messy, I would like to refactor this
         // sometime. TODO
-        for (char x = 0; x < 16; x++) {
-            for (char z = 0; z < 16; z++) {
+        for (char x = 0; x < 32; x++) {
+            for (char z = 0; z < 32; z++) {
                 // get chunk coords
-                int cx = minX + x;
-                int cz = minZ + z;
+                int cx = regionCoords.x * 32 + x;
+                int cz = regionCoords.z * 32 + z;
 
-                size_t idx = ((cx % 32) + (cz % 32) * 32) * 4;
+                const size_t idx = ((cx & 31) + (cz & 31) * 32) * 4;
 
                 // get our chunk
                 level::chunk::Chunk *ch = c->getChunk(cx, cz);

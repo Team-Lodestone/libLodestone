@@ -36,6 +36,7 @@ namespace lodestone::minecraft::java::anvil::jungle::chunk {
                 section["Data"].get().as<nbt::tag_byte_array>().get().data();
             const int8_t *add = nullptr;
 
+            // todo handle when lighting doesn't exist
             const int8_t *skyLight = section["SkyLight"]
                                          .get()
                                          .as<nbt::tag_byte_array>()
@@ -54,7 +55,6 @@ namespace lodestone::minecraft::java::anvil::jungle::chunk {
             const int8_t sy = section["Y"].get().as<nbt::tag_byte>();
             const int lsy = sy * 16;
             // TODO lighting and entities
-
             for (int cy = 0; cy < 16; cy++) {
                 for (int cz = 0; cz < CHUNK_DEPTH; cz++) {
                     for (int cx = 0; cx < CHUNK_WIDTH; cx++) {

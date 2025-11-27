@@ -32,6 +32,10 @@ namespace lodestone::common::util {
             return h;
         }
 
+        static constexpr uint64_t fnv1a64(const std::string &s) {
+            return fnv1a64(s.data(), s.length());
+        }
+
         /** Gets a random number
          *
          * @return A random number
@@ -44,6 +48,16 @@ namespace lodestone::common::util {
          * @return String of base36 of value
          */
         static std::string base36(int value);
+
+        static constexpr bool strcmpConstexpr(const char *rhs,
+                                              const char *lhs) {
+            while (*rhs || *lhs) {
+                if (*rhs++ != *lhs++)
+                    return false;
+            }
+
+            return true;
+        }
     };
 } // namespace lodestone::common::util
 

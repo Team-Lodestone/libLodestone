@@ -17,16 +17,15 @@ namespace lodestone::level::block {
 
     class Block : public common::string::StringSerializable {
       public:
-        constexpr Block(const lodestone::common::registry::Identifier *id,
+        constexpr Block(const common::registry::Identifier *id,
                         const material::Material &material)
             : mId(id), mMaterial(material) {
-            this->mItem =
-                new lodestone::level::item::block::BlockItem(id, this);
+            this->mItem = new item::block::BlockItem(id, this);
         };
 
         constexpr ~Block() override = default;
 
-        constexpr const lodestone::common::registry::Identifier *getID() const {
+        constexpr const common::registry::Identifier *getID() const {
             return mId;
         };
 
@@ -35,7 +34,7 @@ namespace lodestone::level::block {
         constexpr material::Material getMaterial() const { return mMaterial; }
 
         std::string toString() const override {
-            return (common::string::OperatorStringBuilder(typeid(*this)))
+            return common::string::OperatorStringBuilder(typeid(*this))
                 .addField("id", *mId)
                 ->addField("material", mMaterial.toString())
                 ->toString();

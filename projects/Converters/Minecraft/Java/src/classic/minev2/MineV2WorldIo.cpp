@@ -85,4 +85,19 @@ namespace lodestone::minecraft::java::classic::minev2 {
         lio->write(w->getLevel(writeOptions->level), version, bos.getStream());
         // todo: VERSION STUFF
     }
+
+    const lodestone::conversion::chunk::ChunkIO *
+    MineV2WorldIO::getChunkIO(int version) const {
+        return nullptr;
+    }
+
+    const lodestone::conversion::region::RegionIO *
+    MineV2WorldIO::getRegionIO(int version) const {
+        return nullptr;
+    }
+
+    const lodestone::conversion::player::PlayerIO *
+    MineV2WorldIO::getPlayerIO(int version) const {
+        return nullptr;
+    }
 } // namespace lodestone::minecraft::java::classic::minev2

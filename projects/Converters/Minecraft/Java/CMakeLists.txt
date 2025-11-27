@@ -54,6 +54,12 @@ set(FILES
         src/anvil/jungle/region/JungleAnvilRegion.cpp
         include/Lodestone.Minecraft.Java/anvil/jungle/region/JungleAnvilRegionIo.h
         src/anvil/jungle/region/JungleAnvilRegionIo.cpp
+        src/anvil/jungle/world/JungleAnvilWorld.cpp
+        include/Lodestone.Minecraft.Java/anvil/jungle/world/JungleAnvilWorld.h
+        src/anvil/jungle/world/JungleAnvilWorldIo.cpp
+        include/Lodestone.Minecraft.Java/anvil/jungle/world/JungleAnvilWorldIo.h
+        include/Lodestone.Minecraft.Java/GeneratorTypes.h
+        src/GeneratorTypes.cpp
 )
 
 add_library(Lodestone.Minecraft.Java SHARED ${FILES})
@@ -66,7 +72,7 @@ target_link_libraries(Lodestone.Minecraft.Java PRIVATE Lodestone.Level Lodestone
 target_link_libraries(Lodestone.Minecraft.Java PUBLIC Lodestone.Core Lodestone.Minecraft.Common)
 
 option(USE_OPENMP "Use OpenMP" ON)
-if (USE_OPENMP STREQUAL ON AND OpenMP_CXX_FOUND AND OpenMP_C_FOUND)
+if (USE_OPENMP STREQUAL ON AND OpenMP_CXX_FOUND AND OpenMP_C_FOUND AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Using OpenMP")
     target_link_libraries(Lodestone.Minecraft.Java PRIVATE OpenMP::OpenMP_CXX)
     target_compile_definitions(Lodestone.Minecraft.Java PRIVATE USE_OPENMP)
