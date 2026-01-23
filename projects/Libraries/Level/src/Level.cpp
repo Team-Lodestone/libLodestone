@@ -7,7 +7,7 @@
 #include <limits.h>
 #include <random>
 
-#include "Lodestone.Level/block/properties/EmptyBlockProperties.h"
+#include "Lodestone.Level/block/properties/ImmutableBlockProperties.h"
 #include "Lodestone.Level/chunk/LevelChunk.h"
 #include <Lodestone.Common/Indexing.h>
 
@@ -15,7 +15,7 @@ namespace lodestone::level {
 #pragma region Blocks
     bool Level::isChunkInBounds(const types::Vec2i &coords) { return true; }
 
-    block::properties::BlockProperties *Level::getBlock(const signed_size_t x,
+    const block::properties::BlockProperties &Level::getBlock(const signed_size_t x,
                                                         const signed_size_t y,
                                                         const signed_size_t z) {
         if (const chunk::Chunk *c = getChunk(CHUNK_IDX(x), CHUNK_IDX(z)))
@@ -23,7 +23,7 @@ namespace lodestone::level {
                 CHUNK_LOCAL_IDX(x, common::constants::CHUNK_WIDTH), y,
                 CHUNK_LOCAL_IDX(z, common::constants::CHUNK_DEPTH));
 
-        return block::properties::EmptyBlockProperties::getInstance();
+        return *block::properties::ImmutableBlockProperties::getInstance();
     }
 
     void Level::setBlock(block::properties::BlockProperties &&blk,
@@ -104,7 +104,7 @@ namespace lodestone::level {
 #pragma endregion
 
 #pragma region Blockmap
-    const block::properties::BlockProperties *
+    const block::properties::BlockProperties &
     Level::getBlockmapBlockAt(const signed_size_t x,
                               const signed_size_t z) const {
         if (const chunk::Chunk *c = getChunk(CHUNK_IDX(x), CHUNK_IDX(z)))
@@ -112,10 +112,10 @@ namespace lodestone::level {
                 CHUNK_LOCAL_IDX(x, common::constants::CHUNK_WIDTH),
                 CHUNK_LOCAL_IDX(z, common::constants::CHUNK_DEPTH));
 
-        return block::properties::EmptyBlockProperties::getInstance();
+        return *block::properties::ImmutableBlockProperties::getInstance();
     }
 
-    void Level::setBlockmapBlockAt(block::properties::BlockProperties *b,
+    void Level::setBlockmapBlockAt(const block::properties::BlockProperties &b,
                                    const signed_size_t x,
                                    const signed_size_t z) {
         if (chunk::Chunk *c = getChunk(CHUNK_IDX(x), CHUNK_IDX(z)))
@@ -124,7 +124,7 @@ namespace lodestone::level {
                 CHUNK_LOCAL_IDX(z, common::constants::CHUNK_DEPTH));
     }
 
-    void Level::setBlockmapBlockAtCreate(block::properties::BlockProperties *b,
+    void Level::setBlockmapBlockAtCreate(const block::properties::BlockProperties &b,
                                          const signed_size_t x,
                                          const signed_size_t z,
                                          const int height) {

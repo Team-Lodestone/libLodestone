@@ -93,23 +93,30 @@ namespace lodestone::minecraft::common::player {
         return &identifiers::MINECRAFT_COMMON;
     }
 
+    const Abilities &MinecraftPlayer::getAbilities() const {
+        return mAbilities;
+    }
+
+    void MinecraftPlayer::setAbilities(const Abilities &abilities) {
+        mAbilities = abilities;
+    }
+
     std::shared_ptr<level::properties::AbstractProperty>
     MinecraftPlayer::getProperty(const std::string &name) {
         switch (lodestone::common::util::Math::fnv1a64(name.data(),
                                                        name.length())) {
-            ADD_PROPERTY("name", mName, std::string &);
-            ADD_PROPERTY("spawnPos", mSpawnPos, level::types::Vec3i &);
-            ADD_PROPERTY("deathTime", mDeathTime, short &);
-            ADD_PROPERTY("hurtTime", mHurtTime, short &);
-            ADD_PROPERTY("attackTime", mAttackTime, short &);
-            ADD_PROPERTY("fireTime", mFireTime, short &);
-            ADD_PROPERTY("breathingTime", mBreathingTime, short &);
-            ADD_PROPERTY("dimension", mDimension,
-                         lodestone::common::registry::Identifier &);
-            ADD_PROPERTY("fallDistance", mFallDistance, float &);
-            ADD_PROPERTY("inventory", mInventory,
-                         level::container::ItemContainer &);
-            ADD_PROPERTY("armor", mArmor, level::container::ItemContainer &);
+            ADD_FIELD_PROPERTY("name", mName);
+            ADD_FIELD_PROPERTY("spawnPos", mSpawnPos);
+            ADD_FIELD_PROPERTY("deathTime", mDeathTime);
+            ADD_FIELD_PROPERTY("hurtTime", mHurtTime);
+            ADD_FIELD_PROPERTY("attackTime", mAttackTime);
+            ADD_FIELD_PROPERTY("fireTime", mFireTime);
+            ADD_FIELD_PROPERTY("breathingTime", mBreathingTime);
+            ADD_FIELD_PROPERTY("dimension", mDimension);
+            ADD_FIELD_PROPERTY("fallDistance", mFallDistance);
+            ADD_FIELD_PROPERTY("inventory", mInventory);
+            ADD_FIELD_PROPERTY("armor", mArmor);
+            ADD_FIELD_PROPERTY("abilities", mAbilities);
         default:
             return Player::getProperty(name);
         }

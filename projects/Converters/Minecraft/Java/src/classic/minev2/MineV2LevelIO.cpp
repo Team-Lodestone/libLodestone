@@ -82,15 +82,15 @@ namespace lodestone::minecraft::java::classic::minev2 {
         for (int y = 0; y < h; y++) {
             for (int z = 0; z < d; z++) {
                 for (int x = 0; x < w; x++) {
-                    const level::block::properties::BlockProperties *b =
+                    const level::block::properties::BlockProperties &b =
                         l->getBlock(x + min.x, y + min.y, z + min.z);
 
                     uint8_t v = 0;
-                    if (b->getBlock() !=
+                    if (b.getBlock() !=
                         level::block::BlockRegistry::sDefaultBlock) {
                         if (const lodestone::conversion::block::data::
                                 AbstractBlockData *bl =
-                                    bio->convertBlockFromInternal(b))
+                                    bio->convertBlockFromInternal(&b))
                             v = bl->as<lodestone::conversion::block::data::
                                            ClassicBlockData>()
                                     ->getId();

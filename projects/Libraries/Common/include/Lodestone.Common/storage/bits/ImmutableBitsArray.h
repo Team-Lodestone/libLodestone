@@ -3,15 +3,15 @@
 //
 #ifndef LODESTONE_EMPTYNIBBLEARRAY_H
 #define LODESTONE_EMPTYNIBBLEARRAY_H
-#include "Lodestone.Level/types/NibbleArray.h"
+#include "Lodestone.Common/storage/bits/AbstractBitsArray.h"
 
-namespace lodestone::level::types {
-    class EmptyNibbleArray : public AbstractNibbleArray {
+namespace lodestone::common::storage::bits {
+    class ImmutableBitsArray : public AbstractBitsArray {
       protected:
-        EmptyNibbleArray() = default;
+        ImmutableBitsArray() = default;
 
       public:
-        static EmptyNibbleArray *getInstance();
+        static ImmutableBitsArray *getInstance();
 
         int getIndex(int x, int y, int z) const override;
         int getNibble(int x, int y, int z) const override;

@@ -52,11 +52,11 @@ namespace lodestone::minecraft::java::mcregion::world {
     McRegionWorld::getProperty(const std::string &name) {
         switch (lodestone::common::util::Math::fnv1a64(name.data(),
                                                        name.length())) {
-            ADD_PROPERTY("raining", mIsRaining, bool &);
-            ADD_PROPERTY("rainTime", mRainTime, int32_t &);
-            ADD_PROPERTY("thundering", mIsThundering, bool &);
-            ADD_PROPERTY("thunderTime", mThunderTime, int32_t &);
-            ADD_PROPERTY("version", mVersion, int32_t &);
+            ADD_FIELD_PROPERTY("raining", mIsRaining);
+            ADD_FIELD_PROPERTY("rainTime", mRainTime);
+            ADD_FIELD_PROPERTY("thundering", mIsThundering);
+            ADD_FIELD_PROPERTY("thunderTime", mThunderTime);
+            ADD_FIELD_PROPERTY("version", mVersion);
         default:
             return MinecraftWorld::getProperty(name);
         }

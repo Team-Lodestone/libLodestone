@@ -5,7 +5,7 @@ class StringSerializablePrinter:
         self.val = val
     def to_string(self):
         try:
-            return str(gdb.parse_and_eval(f"((lodestone::common::string::StringSerializable*){int(self.val.address)})->toString()")) # jank?
+            return str(gdb.parse_and_eval(f"if ((lodestone::common::string::StringSerializable*){int(self.val.address)}) ((lodestone::common::string::StringSerializable*){int(self.val.address)})->toString()")) # jank?
         except Exception as ex:
             print("tostring", ex)
             return None

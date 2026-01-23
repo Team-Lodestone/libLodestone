@@ -18,7 +18,9 @@ namespace lodestone::level::block {
 
       public:
 #define REGISTER_BLOCK(n, m) {n, new Block(n, m)}
+#define REGISTER_DERIVED_BLOCK(n, m, f) {n, new f(n, m)}
 #define REGISTER_BLOCK_FUNC(n, m) registerBlock(n, new Block(n, m))
+#define REGISTER_DERIVED_BLOCK_FUNC(n, m, f) registerBlock(n, new f(n, m))
 
         static const Block *sDefaultBlock;
 

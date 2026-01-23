@@ -7,27 +7,29 @@
 #include "Lodestone.Level/block/properties/BlockProperties.h"
 #include "Lodestone.Level/chunk/section/LevelSection.h"
 #include "Lodestone.Level/chunk/section/Section.h"
-#include "Lodestone.Level/types/EmptyNibbleArray.h"
+#include <Lodestone.Common/storage/bits/ImmutableBitsArray.h>
 
 namespace lodestone::level::chunk::section {
     /** Immutable section, used in place of returning empty/null LevelSection */
-    class EmptySection : public Section {
+    class ImmutableSection : public Section {
+    private:
+        static const common::storage::palette::PalletizedStorage<block::properties::BlockProperties> EMPTY_STORAGE;
       public:
-        static EmptySection *getInstance();
+        static ImmutableSection *getInstance();
 
         SectionType getType() override;
 
-        const block::properties::BlockProperties *getBlocks() override;
+        const common::storage::palette::PalletizedStorage<block::properties::BlockProperties> &getStorage() override;
 
-        types::AbstractNibbleArray *getBlockLight() override;
+        lodestone::common::storage::bits::AbstractBitsArray *getBlockLight() override;
 
-        types::AbstractNibbleArray *getSkyLight() override;
+        lodestone::common::storage::bits::AbstractBitsArray *getSkyLight() override;
 
         void setBlockLight(int x, int y, int z, uint8_t l) override;
 
         void setSkyLight(int x, int y, int z, uint8_t l) override;
 
-        block::properties::BlockProperties *
+        const block::properties::BlockProperties &
         getBlock(const int x, const int y, const int z) const override;
 
         void setBlock(block::properties::BlockProperties &&blk, int x, int y,

@@ -62,15 +62,15 @@ namespace lodestone::minecraft::java::classic::minev1 {
         for (int y = 0; y < HEIGHT; y++) {
             for (int z = 0; z < DEPTH; z++) {
                 for (int x = 0; x < WIDTH; x++) {
-                    const level::block::properties::BlockProperties *b =
+                    const level::block::properties::BlockProperties &b =
                         l->getBlock(x, y, z);
 
                     uint8_t v = 0;
-                    if (b->getBlock() !=
+                    if (b.getBlock() !=
                         level::block::BlockRegistry::sDefaultBlock) {
                         const lodestone::conversion::block::data::
                             AbstractBlockData *bd =
-                                io->convertBlockFromInternal(b);
+                                io->convertBlockFromInternal(&b);
                         v = (bd->as<lodestone::conversion::block::data::
                                         ClassicBlockData>())
                                 ->getId();

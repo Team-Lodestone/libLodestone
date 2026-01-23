@@ -6,6 +6,8 @@
 #include <Lodestone.Level/container/ItemContainer.h>
 #include <Lodestone.Level/entity/Player.h>
 
+#include "Lodestone.Minecraft.Common/player/Abilities.h"
+
 namespace lodestone::minecraft::common::player {
     class MinecraftPlayer : public level::entity::Player {
       public:
@@ -54,7 +56,10 @@ namespace lodestone::minecraft::common::player {
 
         const lodestone::common::registry::Identifier *getType() const override;
 
-        std::shared_ptr<level::properties::AbstractProperty>
+        const Abilities &getAbilities() const;
+
+        void setAbilities(const Abilities &abilities);
+         std::shared_ptr<level::properties::AbstractProperty>
         getProperty(const std::string &name) override;
 
       private:
@@ -101,6 +106,9 @@ namespace lodestone::minecraft::common::player {
          * @prop fallDistance
          */
         float mFallDistance;
+
+        /** The player's abilities */
+        Abilities mAbilities;
 
         /** The player's inventory
          *

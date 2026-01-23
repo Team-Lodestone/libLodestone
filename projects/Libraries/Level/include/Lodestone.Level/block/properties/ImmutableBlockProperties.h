@@ -1,18 +1,18 @@
 //
 // Created by DexrnZacAttack on 11/15/25 using zPc-i2.
 //
-#ifndef LODESTONE_EMPTYBLOCKPROPERTIES_H
-#define LODESTONE_EMPTYBLOCKPROPERTIES_H
+#ifndef LODESTONE_ImmutableBlockProperties_H
+#define LODESTONE_ImmutableBlockProperties_H
 #include "Lodestone.Level/block/properties/BlockProperties.h"
 
 namespace lodestone::level::block::properties {
     /** Block properties type that cannot be written to  */
-    class EmptyBlockProperties : public BlockProperties {
+    class ImmutableBlockProperties : public BlockProperties {
       private:
-        EmptyBlockProperties();
+        ImmutableBlockProperties();
 
       public:
-        static EmptyBlockProperties *getInstance();
+        static ImmutableBlockProperties *getInstance();
 
         bool hasProperty(const std::string &id) const override;
 
@@ -34,4 +34,4 @@ namespace lodestone::level::block::properties {
     };
 } // namespace lodestone::level::block::properties
 
-#endif // LODESTONE_EMPTYBLOCKPROPERTIES_H
+#endif // LODESTONE_ImmutableBlockProperties_H

@@ -87,7 +87,7 @@ namespace lodestone::level::entity {
         if (std::modf(this->mPosition->y, &t) == 0 &&
             lvl->getBlock(this->mPosition->x, this->mPosition->y - 1,
                           this->mPosition->z)
-                    ->getBlock() != level::block::BlockRegistry::sDefaultBlock)
+                    .getBlock() != level::block::BlockRegistry::sDefaultBlock)
             return true;
 
         return false;

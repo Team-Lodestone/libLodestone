@@ -4,10 +4,10 @@
 #ifndef LODESTONE_ABSTRACTNIBBLEARRAY_H
 #define LODESTONE_ABSTRACTNIBBLEARRAY_H
 
-namespace lodestone::level::types {
-    class AbstractNibbleArray {
+namespace lodestone::common::storage::bits {
+    class AbstractBitsArray {
       public:
-        virtual ~AbstractNibbleArray() = default;
+        virtual ~AbstractBitsArray() = default;
 
         virtual int getIndex(int x, int y, int z) const = 0;
         virtual int getNibble(int x, int y, int z) const = 0;

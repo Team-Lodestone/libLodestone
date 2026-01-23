@@ -3,7 +3,8 @@
 //
 #ifndef LODESTONE_SECTION_H
 #define LODESTONE_SECTION_H
-#include "Lodestone.Level/types/NibbleArray.h"
+#include <Lodestone.Common/storage/palette/PalletizedStorage.h>
+#include <Lodestone.Common/storage/bits/BitsArray.h>
 
 namespace lodestone::level::block {
     namespace properties {
@@ -18,17 +19,17 @@ namespace lodestone::level::chunk::section {
 
         enum class SectionType { LevelSection, EmptySection };
 
-        virtual const block::properties::BlockProperties *getBlocks() = 0;
+        virtual const common::storage::palette::PalletizedStorage<block::properties::BlockProperties> &getStorage() = 0;
 
-        virtual types::AbstractNibbleArray *getBlockLight() = 0;
+        virtual lodestone::common::storage::bits::AbstractBitsArray *getBlockLight() = 0;
 
-        virtual types::AbstractNibbleArray *getSkyLight() = 0;
+        virtual lodestone::common::storage::bits::AbstractBitsArray *getSkyLight() = 0;
 
         virtual void setBlockLight(int x, int y, int z, uint8_t l) = 0;
 
         virtual void setSkyLight(int x, int y, int z, uint8_t l) = 0;
 
-        virtual block::properties::BlockProperties *
+        virtual const block::properties::BlockProperties &
         getBlock(const int x, const int y, const int z) const = 0;
 
         virtual void setBlock(block::properties::BlockProperties &&blk, int x,

@@ -6,15 +6,15 @@
 #include "Lodestone.Level/chunk/Chunk.h"
 
 namespace lodestone::level::chunk {
-    class EmptyChunk : public Chunk {
+    class ImmutableChunk : public Chunk {
       public:
-        static EmptyChunk *getInstance();
+        static ImmutableChunk *getInstance();
 
-        EmptyChunk() : Chunk() {}
+        ImmutableChunk() : Chunk() {}
 
-        explicit EmptyChunk(const types::Vec2i &coords) : Chunk(coords) {}
+        explicit ImmutableChunk(const types::Vec2i &coords) : Chunk(coords) {}
 
-        EmptyChunk(ChunkContainer *container, const types::Vec2i &coords)
+        ImmutableChunk(ChunkContainer *container, const types::Vec2i &coords)
             : Chunk(container, coords) {}
 
         void calculateHeightmap() override;
@@ -23,7 +23,7 @@ namespace lodestone::level::chunk {
 
         section::Section *getSection(int y) const override;
 
-        block::properties::BlockProperties *getBlock(int x, int y,
+        const block::properties::BlockProperties &getBlock(int x, int y,
                                                      int z) const override;
 
         section::Section *getSectionCreate(int y) override;
@@ -38,7 +38,7 @@ namespace lodestone::level::chunk {
 
         void calculateBlockmap() override;
 
-        void setBlockmapBlockAt(block::properties::BlockProperties *h, int x,
+        void setBlockmapBlockAt(const block::properties::BlockProperties &h, int x,
                                 int z) override;
 
         void calculateMaps() override;

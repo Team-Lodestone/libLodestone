@@ -122,10 +122,10 @@ namespace lodestone::minecraft::java::mcregion::chunk {
                 for (int cy = 0; cy < CHUNK_HEIGHT; cy++) {
                     const size_t idx =
                         INDEX_XZY(cx, cy, cz, CHUNK_HEIGHT, CHUNK_DEPTH);
-                    const level::block::properties::BlockProperties *b =
+                    const level::block::properties::BlockProperties &b =
                         c->getBlock(cx, cy, cz);
 #ifdef USE_RISKY_OPTIMIZATIONS
-                    if (b->getBlock() !=
+                    if (b.getBlock() !=
                         level::block::BlockRegistry::sDefaultBlock) {
 #endif
                         uint8_t id = 0;
@@ -136,7 +136,7 @@ namespace lodestone::minecraft::java::mcregion::chunk {
 #endif
                             if (const lodestone::conversion::block::data::
                                     NumericBlockData *bl =
-                                        bio->convertBlockFromInternal(b)
+                                        bio->convertBlockFromInternal(&b)
                                             ->as<
                                                 lodestone::conversion::block::
                                                     data::NumericBlockData>()) {

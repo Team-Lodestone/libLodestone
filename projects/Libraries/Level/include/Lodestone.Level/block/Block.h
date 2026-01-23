@@ -44,6 +44,14 @@ namespace lodestone::level::block {
             return mItem;
         }
 
+        constexpr virtual bool isTransparent() const {
+            return false;
+        }
+
+        constexpr virtual bool heightmapShouldIgnore() const {
+            return false;
+        }
+
       private:
         const lodestone::common::registry::Identifier *mId;
         const item::block::BlockItem *mItem;

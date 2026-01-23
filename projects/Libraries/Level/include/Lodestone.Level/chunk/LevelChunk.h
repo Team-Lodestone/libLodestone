@@ -44,7 +44,7 @@ namespace lodestone::level::chunk {
 
         void calculateMapsAtColumn(int x, int z, int height) override;
 
-        block::properties::BlockProperties *
+        const block::properties::BlockProperties &
         getBlock(const int x, const int y, const int z) const override;
 
         void setBlock(block::properties::BlockProperties &&blk, int x, int y,

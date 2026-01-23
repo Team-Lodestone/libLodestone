@@ -49,8 +49,7 @@ namespace lodestone::common::util {
          */
         static std::string base36(int value);
 
-        static constexpr bool strcmpConstexpr(const char *rhs,
-                                              const char *lhs) {
+        static constexpr bool strcmpConstexpr(const char *rhs, const char *lhs) {
             while (*rhs || *lhs) {
                 if (*rhs++ != *lhs++)
                     return false;

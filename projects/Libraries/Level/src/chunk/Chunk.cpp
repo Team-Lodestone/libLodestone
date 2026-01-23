@@ -3,6 +3,7 @@
 //
 #include "Lodestone.Level/chunk/Chunk.h"
 
+#include "Lodestone.Level/block/properties/ImmutableBlockProperties.h"
 #include "Lodestone.Level/chunk/ChunkContainer.h"
 #include "Lodestone.Level/properties/TemplatedProperty.h"
 
@@ -12,7 +13,7 @@ namespace lodestone::level::chunk {
         for (int x = 0; x < lodestone::common::constants::CHUNK_WIDTH *
                                 common::constants::CHUNK_DEPTH;
              ++x) {
-            mBlockmap[x] = new block::properties::BlockProperties();
+            mBlockmap[x] = *block::properties::ImmutableBlockProperties::getInstance();
         }
     }
 
@@ -38,8 +39,8 @@ namespace lodestone::level::chunk {
 
     const int16_t *Chunk::getHeightmap() const { return mHeightmap; }
 
-    const block::properties::BlockProperties **Chunk::getBlockmap() const {
-        return const_cast<const block::properties::BlockProperties **>(
+    const block::properties::BlockProperties *Chunk::getBlockmap() const {
+        return const_cast<const block::properties::BlockProperties *>(
             mBlockmap);
     }
 
@@ -51,12 +52,12 @@ namespace lodestone::level::chunk {
         mHeightmap[z * common::constants::CHUNK_WIDTH + x] = h;
     }
 
-    const block::properties::BlockProperties *
+    const block::properties::BlockProperties &
     Chunk::getBlockmapBlockAt(const int x, const int z) const {
         return mBlockmap[z * common::constants::CHUNK_WIDTH + x];
     }
 
-    void Chunk::setBlockmapBlockAt(block::properties::BlockProperties *b,
+    void Chunk::setBlockmapBlockAt(const block::properties::BlockProperties &b,
                                    const int x, const int z) {
         mBlockmap[z * common::constants::CHUNK_WIDTH + x] = b;
     }

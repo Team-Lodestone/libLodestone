@@ -11,12 +11,11 @@
 namespace lodestone::level::properties {
     class ReflectiveProperties {
       public:
-        // oh no nfts
-#define ADD_PROPERTY(n, f, t)                                                  \
+#define ADD_FIELD_PROPERTY(n, f)                                                  \
     case n##_hash:                                                             \
-        return (typeid(t) == typeid(f))                                        \
+        return (typeid(decltype(f)&) == typeid(f))                                        \
                    ? std::make_shared<                                         \
-                         lodestone::level::properties::TemplatedProperty<t>>(  \
+                         lodestone::level::properties::TemplatedProperty<decltype(f)&>>(  \
                          f)                                                    \
                    : nullptr
 

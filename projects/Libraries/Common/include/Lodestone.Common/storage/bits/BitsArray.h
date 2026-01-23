@@ -6,15 +6,15 @@
 #define LODESTONE_NIBBLEARRAY_H
 #include <cstdint>
 
-#include "Lodestone.Level/types/AbstractNibbleArray.h"
+#include "Lodestone.Common/storage/bits/AbstractBitsArray.h"
 
-namespace lodestone::level::types {
+namespace lodestone::common::storage::bits {
 
-    class NibbleArray : public AbstractNibbleArray {
+    class BitsArray : public AbstractBitsArray {
       public:
-        NibbleArray(int length, int bits);
-        NibbleArray(uint8_t *data, int bits);
-        ~NibbleArray() override;
+        BitsArray(int length, int bits);
+        BitsArray(uint8_t *data, int bits);
+        ~BitsArray() override;
 
         int getIndex(int x, int y, int z) const override;
         int getNibble(int x, int y, int z) const override;

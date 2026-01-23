@@ -3,6 +3,8 @@
 #include "Lodestone.Level/item/ItemRegistry.h"
 #include <Lodestone.Common/util/Logging.h>
 
+#include "Lodestone.Level/block/blocks/AirBlock.h"
+
 #if CMAKE_BUILD_DEBUG
 #include <iostream>
 #endif
@@ -14,7 +16,7 @@ namespace lodestone::level::block {
         getInstance().getBlock(&Blocks::AIR);
 
     BlockRegistry::BlockRegistry() {
-        REGISTER_BLOCK_FUNC(&Blocks::AIR, material::Material({0, 0, 0, 0}));
+        REGISTER_DERIVED_BLOCK_FUNC(&Blocks::AIR, material::Material({0, 0, 0, 0}), blocks::AirBlock);
     }
 
     BlockRegistry &BlockRegistry::getInstance() {

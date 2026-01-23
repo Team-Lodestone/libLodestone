@@ -1,41 +1,43 @@
 //
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
-#include "Lodestone.Level/chunk/section/EmptySection.h"
+#include "Lodestone.Level/chunk/section/ImmutableSection.h"
 #include "Lodestone.Level/block/properties/BlockProperties.h"
-#include "Lodestone.Level/block/properties/EmptyBlockProperties.h"
+#include "Lodestone.Level/block/properties/ImmutableBlockProperties.h"
 
 namespace lodestone::level::chunk::section {
-    EmptySection *EmptySection::getInstance() {
-        static EmptySection sInstance;
+    const common::storage::palette::PalletizedStorage<block::properties::BlockProperties> ImmutableSection::EMPTY_STORAGE = common::storage::palette::PalletizedStorage<block::properties::BlockProperties>(0, *block::properties::ImmutableBlockProperties::getInstance());
+
+    ImmutableSection *ImmutableSection::getInstance() {
+        static ImmutableSection sInstance;
         return &sInstance;
     }
 
-    Section::SectionType EmptySection::getType() {
+    Section::SectionType ImmutableSection::getType() {
         return SectionType::EmptySection;
     }
 
-    const block::properties::BlockProperties *EmptySection::getBlocks() {
-        return nullptr;
+    const common::storage::palette::PalletizedStorage<block::properties::BlockProperties> &ImmutableSection::getStorage() {
+        return ImmutableSection::EMPTY_STORAGE;
     }
 
-    types::AbstractNibbleArray *EmptySection::getBlockLight() {
-        return types::EmptyNibbleArray::getInstance();
+    lodestone::common::storage::bits::AbstractBitsArray *ImmutableSection::getBlockLight() {
+        return common::storage::bits::ImmutableBitsArray::getInstance();
     }
 
-    types::AbstractNibbleArray *EmptySection::getSkyLight() {
-        return types::EmptyNibbleArray::getInstance();
+    lodestone::common::storage::bits::AbstractBitsArray *ImmutableSection::getSkyLight() {
+        return common::storage::bits::ImmutableBitsArray::getInstance();
     }
 
-    void EmptySection::setBlockLight(int x, int y, int z, uint8_t l) {}
+    void ImmutableSection::setBlockLight(int x, int y, int z, uint8_t l) {}
 
-    void EmptySection::setSkyLight(int x, int y, int z, uint8_t l) {}
+    void ImmutableSection::setSkyLight(int x, int y, int z, uint8_t l) {}
 
-    block::properties::BlockProperties *
-    EmptySection::getBlock(const int x, const int y, const int z) const {
-        return block::properties::EmptyBlockProperties::getInstance();
+    const block::properties::BlockProperties &
+    ImmutableSection::getBlock(const int x, const int y, const int z) const {
+        return *block::properties::ImmutableBlockProperties::getInstance();
     }
 
-    void EmptySection::setBlock(block::properties::BlockProperties &&blk, int x,
+    void ImmutableSection::setBlock(block::properties::BlockProperties &&blk, int x,
                                 int y, int z) {}
 } // namespace lodestone::level::chunk::section

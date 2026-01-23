@@ -2,27 +2,26 @@
 // Created by Zero on 11/25/25.
 //
 
-#include "Lodestone.Level/types/NibbleArray.h"
+#include "Lodestone.Common/storage/bits/BitsArray.h"
 
-namespace lodestone::level::types {
-
-    NibbleArray::NibbleArray(const int length, const int bits) {
+namespace lodestone::common::storage::bits {
+    BitsArray::BitsArray(const int length, const int bits) {
         this->mData = new uint8_t[length >> 1]{};
         this->mBits = bits;
     }
 
-    NibbleArray::NibbleArray(uint8_t *data, const int bits) {
+    BitsArray::BitsArray(uint8_t *data, const int bits) {
         this->mData = data;
         this->mBits = bits;
     }
 
-    NibbleArray::~NibbleArray() { delete this->mData; }
+    BitsArray::~BitsArray() { delete this->mData; }
 
-    int NibbleArray::getIndex(const int x, const int y, const int z) const {
+    int BitsArray::getIndex(const int x, const int y, const int z) const {
         return y << (this->mBits + 4) | z << this->mBits | x;
     }
 
-    int NibbleArray::getNibble(const int x, const int y, const int z) const {
+    int BitsArray::getNibble(const int x, const int y, const int z) const {
         const int index = getIndex(x, y, z);
 
         if ((index & 1) == 0) {
@@ -32,7 +31,7 @@ namespace lodestone::level::types {
         return this->mData[index >> 1] >> this->mBits & 0xF;
     }
 
-    void NibbleArray::setNibble(const int x, const int y, const int z,
+    void BitsArray::setNibble(const int x, const int y, const int z,
                                 const int value) {
         const int index = getIndex(x, y, z);
 

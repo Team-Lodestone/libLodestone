@@ -26,7 +26,7 @@ set(FILES
         src/block/properties/BlockProperties.cpp
         include/Lodestone.Level/block/properties/BlockProperties.h
         src/chunk/section/EmptySection.cpp
-        include/Lodestone.Level/chunk/section/EmptySection.h
+        include/Lodestone.Level/chunk/section/ImmutableSection.h
         src/chunk/section/Section.cpp
         include/Lodestone.Level/chunk/section/Section.h
         include/Lodestone.Level/chunk/section/LevelSection.h
@@ -36,7 +36,7 @@ set(FILES
         src/chunk/LevelChunk.cpp
         include/Lodestone.Level/chunk/LevelChunk.h
         src/chunk/EmptyChunk.cpp
-        include/Lodestone.Level/chunk/EmptyChunk.h
+        include/Lodestone.Level/chunk/ImmutableChunk.h
 
         src/world/World.cpp
         include/Lodestone.Level/world/World.h
@@ -69,17 +69,12 @@ set(FILES
         include/Lodestone.Level/Identifiers.h
         include/Lodestone.Level/properties/TemplatedProperty.h
         include/Lodestone.Level/item/Items.h
-        src/block/properties/EmptyBlockProperties.cpp
-        include/Lodestone.Level/block/properties/EmptyBlockProperties.h
-        src/types/NibbleArray.cpp
-        include/Lodestone.Level/types/NibbleArray.h
-        include/Lodestone.Level/types/EmptyNibbleArray.h
-        src/types/EmptyNibbleArray.cpp
+        src/block/properties/ImmutableBlockProperties.cpp
+        include/Lodestone.Level/block/properties/ImmutableBlockProperties.h
         include/Lodestone.Level/properties/ReflectiveProperties.h
-        include/Lodestone.Level/properties/OptionalTemplatedProperty.h
         src/properties/ReflectiveProperties.cpp
-        src/types/AbstractNibbleArray.cpp
-        include/Lodestone.Level/types/AbstractNibbleArray.h
+        include/Lodestone.Level/block/blocks/TranslucentBlock.h
+        include/Lodestone.Level/block/blocks/AirBlock.h
 )
 
 # if (CMAKE_BUILD_TYPE STREQUAL "Debug")

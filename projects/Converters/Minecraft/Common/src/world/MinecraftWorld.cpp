@@ -28,9 +28,9 @@ namespace lodestone::minecraft::common::world {
     MinecraftWorld::getProperty(const std::string &name) {
         switch (lodestone::common::util::Math::fnv1a64(name.data(),
                                                        name.length())) {
-            ADD_PROPERTY("seed", mSeed, int64_t &);
-            ADD_PROPERTY("lastPlayed", mLastPlayed, int64_t &);
-            ADD_PROPERTY("time", mTime, int64_t &);
+            ADD_FIELD_PROPERTY("seed", mSeed);
+            ADD_FIELD_PROPERTY("lastPlayed", mLastPlayed);
+            ADD_FIELD_PROPERTY("time", mTime);
         default:
             return World::getProperty(name);
         }

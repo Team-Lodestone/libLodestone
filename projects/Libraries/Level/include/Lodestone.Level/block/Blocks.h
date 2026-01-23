@@ -11,9 +11,10 @@ namespace lodestone::level::block {
 #define ADD_BLOCK(name, id)                                                    \
     static constexpr const lodestone::common::registry::Identifier name =      \
         lodestone::common::registry::Identifier {                              \
-        "lodestone", id                                                        \
+        "lodestone", "block/" id                                               \
     }
 
+        // todo we can replace with builtin EMPTY block since Air might not be what we want across games
         ADD_BLOCK(AIR, "air");
     };
 } // namespace lodestone::level::block

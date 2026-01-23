@@ -62,8 +62,8 @@ namespace lodestone::minecraft::java::mcregion::player {
     McRegionPlayer::getProperty(const std::string &name) {
         switch (lodestone::common::util::Math::fnv1a64(name.data(),
                                                        name.length())) {
-            ADD_PROPERTY("sleepTimer", mSleepTimer, short &);
-            ADD_PROPERTY("sleeping", mIsSleeping, bool &);
+            ADD_FIELD_PROPERTY("sleepTimer", mSleepTimer);
+            ADD_FIELD_PROPERTY("sleeping", mIsSleeping);
         default:
             return MinecraftPlayer::getProperty(name);
         }

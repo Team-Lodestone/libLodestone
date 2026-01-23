@@ -6,9 +6,11 @@
 
 #include <Lodestone.Common/Constants.h>
 
+#include <Lodestone.Common/storage/palette/PalletizedStorage.h>
 #include "Lodestone.Level/block/properties/BlockProperties.h"
+#include "Lodestone.Level/block/properties/ImmutableBlockProperties.h"
 #include "Lodestone.Level/chunk/section/Section.h"
-#include "Lodestone.Level/types/NibbleArray.h"
+#include <Lodestone.Common/storage/bits/BitsArray.h>
 
 namespace lodestone::level::chunk::section {
     class LevelSection : public Section {
@@ -16,37 +18,36 @@ namespace lodestone::level::chunk::section {
         LevelSection() = default;
         ~LevelSection() override;
 
-        types::AbstractNibbleArray *getBlockLight() override;
+        lodestone::common::storage::bits::AbstractBitsArray *getBlockLight() override;
 
-        types::AbstractNibbleArray *getSkyLight() override;
+        lodestone::common::storage::bits::AbstractBitsArray *getSkyLight() override;
 
         void setBlockLight(int x, int y, int z, uint8_t l) override;
 
         void setSkyLight(int x, int y, int z, uint8_t l) override;
 
-        block::properties::BlockProperties *getBlock(int x, int y,
+        const block::properties::BlockProperties &getBlock(int x, int y,
                                                      int z) const override;
 
         void setBlock(block::properties::BlockProperties &&blk, int x, int y,
                       int z) override;
 
-        const block::properties::BlockProperties *getBlocks() override;
+        const common::storage::palette::PalletizedStorage<block::properties::BlockProperties> &getStorage() override;
 
         SectionType getType() override;
 
       private:
-        block::properties::BlockProperties *mBlocks = new block::properties::
-            BlockProperties[common::constants::CHUNK_WIDTH *
-                            common::constants::SECTION_HEIGHT *
-                            common::constants::CHUNK_DEPTH]();
+        common::storage::palette::PalletizedStorage<block::properties::BlockProperties> mBlocks = common::storage::palette::PalletizedStorage<block::properties::BlockProperties>(common::constants::CHUNK_WIDTH *
+                                                                                                                                                                common::constants::SECTION_HEIGHT *
+                                                                                                                                                                common::constants::CHUNK_DEPTH, *block::properties::ImmutableBlockProperties::getInstance());
         // TODO: we could also calculate lighting for blocks, could have a map
         // of xyz -> Block specifically for light blocks
 
-        types::NibbleArray mBlockLight = types::NibbleArray(
+        common::storage::bits::BitsArray mBlockLight = common::storage::bits::BitsArray(
             common::constants::CHUNK_WIDTH * common::constants::SECTION_HEIGHT *
                 common::constants::CHUNK_DEPTH,
             4);
-        types::NibbleArray mSkyLight = types::NibbleArray(
+        common::storage::bits::BitsArray mSkyLight = common::storage::bits::BitsArray(
             common::constants::CHUNK_WIDTH * common::constants::SECTION_HEIGHT *
                 common::constants::CHUNK_DEPTH,
             4);

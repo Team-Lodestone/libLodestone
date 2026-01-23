@@ -8,7 +8,7 @@
 #include <Lodestone.Common/Constants.h>
 
 #include "Lodestone.Level/block/BlockRegistry.h"
-#include "Lodestone.Level/chunk/section/EmptySection.h"
+#include "Lodestone.Level/chunk/section/ImmutableSection.h"
 #include "Lodestone.Level/types/Vec2.h"
 
 namespace lodestone::level::chunk {
@@ -64,9 +64,9 @@ namespace lodestone::level::chunk {
 
         virtual const int16_t *getHeightmap() const;
 
-        virtual const block::properties::BlockProperties **getBlockmap() const;
+        virtual const block::properties::BlockProperties *getBlockmap() const;
 
-        virtual block::properties::BlockProperties *getBlock(int x, int y,
+        virtual const block::properties::BlockProperties &getBlock(int x, int y,
                                                              int z) const = 0;
 
         /** Sets a block at the given X, Y, and Z coordinates.
@@ -87,10 +87,10 @@ namespace lodestone::level::chunk {
 
         virtual void setHeightAt(int16_t h, int x, int z);
 
-        virtual const block::properties::BlockProperties *
+        virtual const block::properties::BlockProperties &
         getBlockmapBlockAt(int x, int z) const;
 
-        virtual void setBlockmapBlockAt(block::properties::BlockProperties *b,
+        virtual void setBlockmapBlockAt(const block::properties::BlockProperties &b,
                                         int x, int z);
 
         bool hasCoords() const;
@@ -127,9 +127,8 @@ namespace lodestone::level::chunk {
          *
          * Each x and z coord corresponds to the topmost block's state
          */
-        block::properties::BlockProperties **mBlockmap =
-            new block::properties::BlockProperties
-                *[common::constants::CHUNK_WIDTH *
+        block::properties::BlockProperties *mBlockmap =
+            new block::properties::BlockProperties[common::constants::CHUNK_WIDTH *
                   common::constants::CHUNK_DEPTH] {};
 
         // map_t<Vec3i, TileEntity> mTileEntities;
