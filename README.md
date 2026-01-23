@@ -21,7 +21,7 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
 - [X] World Engine
     - [X] Chunked Level
       - [X] Chunk Sections
-      - [ ] Palettes (for memory usage)
+      - [X] Palettes (for memory usage)
     - [ ] Lighting calculation (maybe?)
     - [ ] Biomes
     - [ ] POI/Structure system
