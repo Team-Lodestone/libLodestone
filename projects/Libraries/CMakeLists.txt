@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.30)
 project(Lodestone VERSION 1.0.0)
 
-set(PROJECT_VERSION_PRE_RELEASE "-dev.36") # used for non-stable versions, otherwise blank
+set(PROJECT_VERSION_DEV 37) # used for dev versions, otherwise blank
 set(CMAKE_CXX_STANDARD 20)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -54,14 +54,36 @@ add_subdirectory(Common)
 add_subdirectory(Level)
 add_subdirectory(Conversion)
 
+set(VERSIONS
+        MAJOR
+        MINOR
+        PATCH
+        DEV
+)
+
+foreach(k IN LISTS VERSIONS)
+    if (DEFINED PROJECT_VERSION_${k})
+        target_compile_definitions(Lodestone.Common PUBLIC
+                LODESTONE_${k}_VERSION=${PROJECT_VERSION_${k}}
+        )
+    else()
+        target_compile_definitions(Lodestone.Common PUBLIC
+                LODESTONE_${k}_VERSION=-1
+        )
+    endif()
+endforeach ()
+
+if (DEFINED PROJECT_VERSION_DEV)
+    set(PROJECT_VERSION_SUFFIX -dev.${PROJECT_VERSION_DEV})
+endif()
+
 # DEFINITIONS
 target_compile_definitions(Lodestone.Common PUBLIC
         LODESTONE_BUILD_TYPE="${CMAKE_BUILD_TYPE}"
         LODESTONE_COMPILER_NAME="${CMAKE_CXX_COMPILER_ID}"
         LODESTONE_PLATFORM_NAME="${CMAKE_SYSTEM_NAME}"
         LODESTONE_PLATFORM_ARCH="${CMAKE_SYSTEM_PROCESSOR}"
-        LODESTONE_VERSION="${PROJECT_VERSION}${PROJECT_VERSION_PRE_RELEASE}"
-        LODESTONE_RC_VERSION=${PROJECT_VERSION_MAJOR},${PROJECT_VERSION_MINOR},${PROJECT_VERSION_PATCH}
+        LODESTONE_VERSION="${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}${PROJECT_VERSION_SUFFIX}"
 )
 
 add_custom_target(Lodestone.Libraries ALL DEPENDS

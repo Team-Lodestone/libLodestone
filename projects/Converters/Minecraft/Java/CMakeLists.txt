@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION VERSION 3.30)
-project(Lodestone.Minecraft.Java VERSION 1.2.0)
+project(Lodestone.Minecraft.Java VERSION 1.2.1)
+set(PROJECT_VERSION_DEV) # used for dev versions, otherwise blank
 
-set(VERSION_SUFFIX "") # used for non-stable versions, otherwise blank
 set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -74,6 +74,25 @@ target_include_directories(Lodestone.Minecraft.Java
 target_link_libraries(Lodestone.Minecraft.Java PRIVATE Lodestone.Level Lodestone.Conversion nbt++ bio)
 target_link_libraries(Lodestone.Minecraft.Java PUBLIC Lodestone.Core Lodestone.Minecraft.Common)
 
+set(VERSIONS
+        MAJOR
+        MINOR
+        PATCH
+        DEV
+)
+
+foreach(k IN LISTS VERSIONS)
+    if (DEFINED PROJECT_VERSION_${k})
+        target_compile_definitions(Lodestone.Minecraft.Java PUBLIC
+                LODESTONE_MINECRAFT_JAVA_${k}_VERSION=${PROJECT_VERSION_${k}}
+        )
+    else()
+        target_compile_definitions(Lodestone.Minecraft.Java PUBLIC
+                LODESTONE_MINECRAFT_JAVA_${k}_VERSION=-1
+        )
+    endif()
+endforeach ()
+
 #None/TBB/STL-TBB/OpenMP/STL
 set(THREADING_TYPE TBB CACHE STRING "Threading type")
 set(APPLIED_THREADING_TYPE "None")
@@ -127,10 +146,5 @@ if (ENABLE_RISKY_OPTIMIZATIONS STREQUAL ON)
     target_compile_definitions(Lodestone.Minecraft.Java PRIVATE USE_RISKY_OPTIMIZATIONS)
 endif ()
 unset(ENABLE_RISKY_OPTIMIZATIONS CACHE)
-
-target_compile_definitions(Lodestone.Minecraft.Java PUBLIC
-        LODESTONE_JAVA_VERSION="${PROJECT_VERSION}${VERSION_SUFFIX}"
-        LODESTONE_JAVA_RC_VERSION=${PROJECT_VERSION_MAJOR},${PROJECT_VERSION_MINOR},${PROJECT_VERSION_PATCH}
-)
 
 setupLinter(Lodestone.Minecraft.Java)

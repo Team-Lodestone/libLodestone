@@ -606,7 +606,7 @@ namespace lodestone::minecraft::java {
         return *Identifiable::getIdentifier();
     }
 
-    std::string LodestoneJava::getVersion() const { return LODESTONE_JAVA_VERSION; }
+    lodestone::common::util::Semver LodestoneJava::getVersion() const { return VERSION; }
 
     core::LodestoneExtension *lodestoneInit() {
         return LodestoneJava::getInstance();

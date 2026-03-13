@@ -358,7 +358,7 @@ int main(int argc, char **argv) {
 
     lodestone::core::loader::NativeExtensionLoader l(lodestone::core::Lodestone::getInstance());
     l.extensionLoadedEvent += [](const lodestone::core::LodestoneExtension *ext) {
-        std::print("Initialized extension '{}' v{}\n", ext->getIdentifier(), ext->getVersion());
+        std::print("Initialized extension '{}' v{}\n", ext->getIdentifier(), ext->getVersion().toString());
     };
 
     l.loadExtension(lodestone::minecraft::java::lodestoneInit);

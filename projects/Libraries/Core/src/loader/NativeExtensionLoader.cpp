@@ -4,6 +4,9 @@
  * @date 3/12/26
  * 
  * @device zPc-i2
+ *
+ * @copyright Copyright (c) 2026 Team Lodestone
+ * @license This project is licensed under the LGPL 3.0 license, see the LICENSE file for details.
  */
 #include "Lodestone.Core/loader/NativeExtensionLoader.h"
 
@@ -15,17 +18,15 @@
 
 namespace lodestone::core::loader {
   void NativeExtensionLoader::load() {
-    std::filesystem::path extensionsFolder = std::filesystem::current_path() / "extensions";
+    const std::filesystem::path extensionsFolder = std::filesystem::current_path() / "extensions";
 
     if (!std::filesystem::exists(extensionsFolder)) {
-        std::error_code ec;
-        if (!std::filesystem::create_directories(extensionsFolder, ec)) {
+        if (std::error_code ec; !std::filesystem::create_directories(extensionsFolder, ec)) {
             throw std::filesystem::filesystem_error("Couldn't create extensions folder", extensionsFolder, ec);
         }
     }
 
-    std::error_code ec;
-    if (!std::filesystem::is_directory(extensionsFolder, ec))
+    if (std::error_code ec; !std::filesystem::is_directory(extensionsFolder, ec))
       throw std::filesystem::filesystem_error("Extensions folder path is not a directory", extensionsFolder, ec);
 
     for (const auto &p : std::filesystem::directory_iterator(extensionsFolder)) {

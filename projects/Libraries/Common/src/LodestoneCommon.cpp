@@ -12,7 +12,8 @@ namespace lodestone::common {
         constexpr const char *lodestone_get_compiler_name() { return LODESTONE_COMPILER_NAME; } // NOLINT
         constexpr const char *lodestone_get_platform_arch() { return LODESTONE_PLATFORM_ARCH; } // NOLINT
         constexpr const char *lodestone_get_platform() { return LODESTONE_PLATFORM_NAME; } // NOLINT
-        constexpr const char *lodestone_get_version() { return LODESTONE_VERSION; } // NOLINT
+        constexpr const char *lodestone_get_version_string() { return LODESTONE_VERSION; } // NOLINT
+        constexpr util::Semver lodestone_get_version() { return VERSION; } // NOLINT
         constexpr const char *lodestone_get_library_string() { return lodestone::common::LIBRARY_STRING; } // NOLINT
     // clang-format on
     }

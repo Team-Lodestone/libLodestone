@@ -3,6 +3,8 @@
 //
 #ifndef LODESTONE_LODESTONEEXTENSION_H
 #define LODESTONE_LODESTONEEXTENSION_H
+#include <Lodestone.Common/util/Semver.h>
+
 #include <Lodestone.Common/registry/Identifier.h>
 
 namespace lodestone::core {
@@ -12,7 +14,7 @@ namespace lodestone::core {
 
         // CHANGING VTABLE ORDER MAY BREAK OLDER LIBRARY BUILDS.
         virtual common::registry::Identifier getIdentifier() const = 0;
-        virtual std::string getVersion() const = 0;
+        virtual common::util::Semver getVersion() const = 0;
     };
 } // namespace lodestone::core
 

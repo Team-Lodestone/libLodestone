@@ -11,6 +11,7 @@
 #include <Lodestone.Conversion/block/VersionedBlockIO.h>
 
 #include <Lodestone.Core/LodestoneExtension.h>
+#include <Lodestone.Common/util/Semver.h>
 
 
 namespace lodestone::minecraft::java {
@@ -56,6 +57,12 @@ namespace lodestone::minecraft::java {
 #endif
 
     inline static constexpr lodestone::common::registry::Identifier IDENTIFIER = {"lodestone", "minecraft/java"};
+    static constexpr lodestone::common::util::Semver VERSION = {
+        LODESTONE_MINECRAFT_JAVA_MAJOR_VERSION,
+        LODESTONE_MINECRAFT_JAVA_MINOR_VERSION,
+        LODESTONE_MINECRAFT_JAVA_PATCH_VERSION,
+        LODESTONE_MINECRAFT_JAVA_DEV_VERSION
+    };
 
     class LODESTONE_API LodestoneJava : public core::LodestoneExtension, public lodestone::common::registry::Identifiable<&IDENTIFIER> {
       private:
@@ -67,7 +74,7 @@ namespace lodestone::minecraft::java {
         void initBlocks();
 
         lodestone::common::registry::Identifier getIdentifier() const override;
-        std::string getVersion() const override;
+        lodestone::common::util::Semver getVersion() const override;
 
         lodestone::conversion::block::version::VersionedBlockIO io;
     };

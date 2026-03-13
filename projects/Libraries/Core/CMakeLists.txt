@@ -18,7 +18,6 @@ set(FILES
         src/loader/LibraryHandle.cpp
 )
 
-message("CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
 add_library(Lodestone.Core SHARED ${FILES})
 target_include_directories(Lodestone.Core PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

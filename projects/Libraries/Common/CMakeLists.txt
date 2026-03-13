@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION VERSION 3.30)
 project(Lodestone.Common)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 
 set(FILES
         include/Lodestone.Common/LodestoneCommon.h

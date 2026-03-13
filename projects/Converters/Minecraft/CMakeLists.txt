@@ -12,9 +12,11 @@ FetchContent_MakeAvailable(nbt++)
 # PROJECTS
 add_subdirectory(Common)
 add_subdirectory(Java)
+add_subdirectory(Console)
 
 add_custom_target(Lodestone.Minecraft ALL DEPENDS
         Lodestone.Minecraft.Java
+        Lodestone.Minecraft.Console
         Lodestone.Minecraft.Common
 )
 
