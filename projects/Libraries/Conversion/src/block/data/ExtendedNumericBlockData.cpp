@@ -4,9 +4,9 @@
 #include "Lodestone.Conversion/block/data/ExtendedNumericBlockData.h"
 
 namespace lodestone::conversion::block::data {
-    const void *ExtendedNumericBlockData::getIdPtr() const { return &mId; }
+    const void *ExtendedNumericBlockData::getIdPtr() const { return &m_id; }
 
-    const void *ExtendedNumericBlockData::getDataPtr() const { return &mData; }
+    const void *ExtendedNumericBlockData::getDataPtr() const { return &m_data; }
 
     const std::type_info &ExtendedNumericBlockData::getIdType() const {
         return typeid(uint8_t);
@@ -26,7 +26,7 @@ namespace lodestone::conversion::block::data {
     }
 
     size_t ExtendedNumericBlockData::hash() const {
-        return std::hash<uint16_t>()(mId) ^ std::hash<uint8_t>()(mData) << 8 ^
+        return std::hash<uint16_t>()(m_id) ^ std::hash<uint8_t>()(m_data) << 8 ^
                (std::hash<const lodestone::common::registry::Identifier *>()(
                     getTypeName())
                 << 16);
@@ -34,7 +34,7 @@ namespace lodestone::conversion::block::data {
 
     bool ExtendedNumericBlockData::equals(const AbstractBlockData *rhs) const {
         if (const auto c = dynamic_cast<const ExtendedNumericBlockData *>(rhs))
-            return c->mId == mId && c->mData == mData &&
+            return c->m_id == m_id && c->m_data == m_data &&
                    c->getTypeName() == getTypeName();
 
         return false;

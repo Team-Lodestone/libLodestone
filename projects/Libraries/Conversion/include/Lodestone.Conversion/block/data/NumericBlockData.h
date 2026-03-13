@@ -12,11 +12,11 @@ namespace lodestone::conversion::block::data {
     class NumericBlockData final : public AbstractBlockData {
       public:
         constexpr NumericBlockData(const uint8_t id, const uint8_t data)
-            : mId(id), mData(data) {}
+            : m_id(id), m_data(data) {}
 
-        constexpr uint8_t getId() const { return this->mId; };
+        constexpr uint8_t getId() const { return this->m_id; };
 
-        constexpr uint8_t getData() const { return this->mData; };
+        constexpr uint8_t getData() const { return this->m_data; };
 
         const void *getIdPtr() const override;
 
@@ -36,12 +36,12 @@ namespace lodestone::conversion::block::data {
         bool equals(const AbstractBlockData *rhs) const override;
 
         constexpr std::string toString() const override {
-            return std::format("NumericBlockData[id={},data={}]", mId, mData);
+            return std::format("NumericBlockData[id={},data={}]", m_id, m_data);
         };
 
       private:
-        const uint8_t mId;
-        const uint8_t mData;
+        const uint8_t m_id;
+        const uint8_t m_data;
     };
 } // namespace lodestone::conversion::block::data
 

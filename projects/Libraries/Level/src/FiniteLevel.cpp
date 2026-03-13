@@ -4,11 +4,11 @@
 #include "Lodestone.Level/FiniteLevel.h"
 
 namespace lodestone::level {
-    FiniteLevel::FiniteLevel(const types::Bounds2i &bounds) : mBounds(bounds) {}
+    FiniteLevel::FiniteLevel(const types::Bounds2i &bounds) : m_bounds(bounds) {}
 
     bool FiniteLevel::isChunkInBounds(const types::Vec2i &coords) {
-        return !mBounds.empty() && mBounds.contains(coords);
+        return !m_bounds.empty() && m_bounds.contains(coords);
     }
 
-    const types::Bounds2i &FiniteLevel::getBounds() const { return mBounds; }
+    const types::Bounds2i &FiniteLevel::getBounds() const { return m_bounds; }
 } // namespace lodestone::level

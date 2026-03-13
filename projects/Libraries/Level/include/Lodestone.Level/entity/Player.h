@@ -19,9 +19,9 @@ namespace lodestone::level::entity {
         std::string toString() const override {
             return (common::string::OperatorStringBuilder(typeid(*this)))
                 .addField("id", getId())
-                ->addField("health", mHealth)
+                ->addField("health", m_health)
                 ->addField("pos",
-                           mPosition.value_or(types::Vec3d{0, 0, 0}).toString())
+                           position.toString())
                 ->toString();
         };
 
@@ -34,7 +34,7 @@ namespace lodestone::level::entity {
         virtual void respawn(bool inDefaultLevel = true);
         bool isOnGround() const;
 
-        std::shared_ptr<level::properties::AbstractProperty>
+        std::unique_ptr<level::properties::AbstractProperty>
         getProperty(const std::string &name) override;
 
       protected:
@@ -55,8 +55,8 @@ namespace lodestone::level::entity {
         const common::registry::Identifier *getType() const override;
 
       private:
-        world::World *mWorld = nullptr;
-        level::Level *mCurrentLevel = nullptr;
+        world::World *m_world = nullptr;
+        level::Level *m_currentLevel = nullptr;
         // todo should we make player that has inventory
 
         friend class lodestone::level::world::World;

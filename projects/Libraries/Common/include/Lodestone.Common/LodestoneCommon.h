@@ -13,8 +13,6 @@ namespace lodestone::common {
         " " LODESTONE_PLATFORM_ARCH
         ") | https://github.com/Team-Lodestone/libLodestone";
 
-    LODESTONE_API unsigned long long getCurrentTimeMillis();
-
     // clang-format off
     extern "C" {
         LODESTONE_API NO_DISCARD constexpr const char *lodestone_get_build_type(); // NOLINT

@@ -17,14 +17,12 @@ namespace lodestone::core {
         bool hasExtension(const common::registry::Identifier &id);
         LodestoneExtension *
         getExtension(const common::registry::Identifier &id);
-        const map_t<common::registry::Identifier, LodestoneExtension *,
-                    IdentifierHasher, IdentifierComparator> &
+        const map_t<common::registry::Identifier, LodestoneExtension *> &
         getExtensions();
 
       private:
-        map_t<common::registry::Identifier, LodestoneExtension *,
-              IdentifierHasher, IdentifierComparator>
-            mExtensions;
+        map_t<common::registry::Identifier, LodestoneExtension *>
+            m_extensions;
     };
 } // namespace lodestone::core
 

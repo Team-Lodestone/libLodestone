@@ -5,11 +5,9 @@
 
 namespace lodestone::level::chunk {
     ImmutableChunk *ImmutableChunk::getInstance() {
-        static ImmutableChunk sInstance;
-        return &sInstance;
+        static ImmutableChunk s_instance;
+        return &s_instance;
     }
-
-    void ImmutableChunk::calculateHeightmap() {}
 
     int ImmutableChunk::getChunkHeight() const { return 0; }
 
@@ -17,7 +15,7 @@ namespace lodestone::level::chunk {
         return section::ImmutableSection::getInstance();
     }
 
-    const block::properties::BlockProperties &
+    const block::instance::BlockInstance &
     ImmutableChunk::getBlock(const int x, const int y, const int z) const {
         return section::ImmutableSection::getInstance()->getBlock(x, y, z);
     }
@@ -26,24 +24,25 @@ namespace lodestone::level::chunk {
         return section::ImmutableSection::getInstance();
     }
 
-    void ImmutableChunk::setBlock(block::properties::BlockProperties &&blk, int x,
+    void ImmutableChunk::setBlock(block::instance::BlockInstance &&blk, int x,
                               int y, int z) {}
 
-    void ImmutableChunk::setBlockRaw(block::properties::BlockProperties &&blk,
+    void ImmutableChunk::setBlockRaw(block::instance::BlockInstance &&blk,
                                  int x, int y, int z) {}
 
     void ImmutableChunk::setHeightAt(int16_t h, int x, int z) {}
 
     void ImmutableChunk::calculateBlockmap() {}
 
-    void ImmutableChunk::setBlockmapBlockAt(const block::properties::BlockProperties &h,
+    void ImmutableChunk::setBlockmapBlockAt(const block::instance::BlockInstance *h,
                                         int x, int z) {}
 
-    void ImmutableChunk::calculateMaps() {}
+    void ImmutableChunk::setBlockmapEntryAt(const BlockmapEntry &b, int x,
+        int z) {}
 
     void ImmutableChunk::calculateBlockmapAtColumn(int x, int z, int height) {}
 
-    void ImmutableChunk::calculateHeightmapAtColumn(int x, int z, int height) {}
-
-    void ImmutableChunk::calculateMapsAtColumn(int x, int z, int height) {}
+    int ImmutableChunk::getSectionCount() const {
+        return 0;
+    }
 } // namespace lodestone::level::chunk

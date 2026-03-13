@@ -2,52 +2,45 @@
 // Created by Zero on 11/26/25.
 //
 
-#include "Lodestone.Minecraft.Java/anvil/jungle/world/JungleAnvilWorldIo.h"
+#include "Lodestone.Minecraft.Java/conversion/anvil/jungle/JungleAnvilWorldIo.h"
 
-#include <Lodestone.Conversion/chunk/ChunkIORegistry.h>
 
 #include <libnbt++/io/ozlibstream.h>
 
 #include <Lodestone.Common/util/Logging.h>
-#include <Lodestone.Conversion/player/PlayerIORegistry.h>
-#include <Lodestone.Conversion/region/RegionIORegistry.h>
+
+
 #include <Lodestone.Level/region/Region.h>
 
+#include "Lodestone.Minecraft.Java/LodestoneJava.h"
 #include "Lodestone.Minecraft.Java/Identifiers.h"
-#include "Lodestone.Minecraft.Java/anvil/jungle/chunk/JungleAnvilChunkIo.h"
-#include "Lodestone.Minecraft.Java/anvil/jungle/region/JungleAnvilRegionIo.h"
-#include "Lodestone.Minecraft.Java/anvil/jungle/world/JungleAnvilWorld.h"
-#include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayer.h"
-#include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayerIo.h"
-#include "Lodestone.Minecraft.Java/mcregion/region/McRegionRegion.h"
-#include "Lodestone.Minecraft.Java/mcregion/region/McRegionRegionIo.h"
+#include "Lodestone.Minecraft.Java/conversion/anvil/jungle/JungleAnvilChunkIo.h"
+#include "Lodestone.Minecraft.Java/conversion/anvil/jungle/JungleAnvilRegionIo.h"
+#include "Lodestone.Minecraft.Java/anvil/jungle/JungleAnvilWorld.h"
+#include "Lodestone.Minecraft.Java/mcregion/McRegionPlayer.h"
+#include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionPlayerIo.h"
+#include "Lodestone.Minecraft.Java/mcregion/McRegionRegion.h"
+#include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionRegionIo.h"
 #include <libnbt++/io/izlibstream.h>
 #include <libnbt++/io/stream_reader.h>
 #include <libnbt++/nbt_tags.h>
+#include THREADING_HEADER
+#include <format>
 
-#include <Lodestone.Conversion/level/LevelIORegistry.h>
 #include <fstream>
 #include <iostream>
 
 namespace lodestone::minecraft::java::anvil::jungle::world {
-    const conversion::level::LevelIO *
-    JungleAnvilWorldIo::getLevelIO(int version) const {
-        return conversion::level::LevelIoRegistry::getInstance().getLevelIO(
-            identifiers::ANVIL_JUNGLE);
-    }
-
-    std::unique_ptr<level::world::World> JungleAnvilWorldIo::read(
-        const std::filesystem::path &path, int version,
-        const conversion::world::options::AbstractWorldReadOptions &options)
+    std::unique_ptr<level::world::World> JungleAnvilWorldIo::read(const common::conversion::io::options::OptionPresets::CommonFilesystemOptions &options)
         const {
-        if (!std::filesystem::exists(path))
+        if (!std::filesystem::exists(options.path))
             return nullptr;
 
         map_t<int, std::filesystem::path> dims;
-        dims.emplace(0, path); // main dim
+        dims.emplace(0, options.path); // main dim
 
         // scan for dims
-        for (auto &d : std::filesystem::directory_iterator(path)) {
+        for (auto &d : std::filesystem::directory_iterator(options.path)) {
             const std::string name = d.path().filename().string();
 
             if (!d.is_directory() || !name.starts_with("DIM"))
@@ -63,12 +56,12 @@ namespace lodestone::minecraft::java::anvil::jungle::world {
         level::types::Vec3i spawnPos = {0, 64, 0};
         std::unique_ptr<level::world::World> world =
             std::make_unique<level::world::World>();
-        if (std::filesystem::exists(path / "level.dat")) {
+        if (std::filesystem::exists(options.path / "level.dat")) {
             // TODO we can get DataVersion later and check for fields depending
             // on it another way is to just try to get fields and if they dont
             // exist then Too Bad.
 
-            std::ifstream dat(path / "level.dat", std::ios::binary);
+            std::ifstream dat(options.path / "level.dat", std::ios::binary);
             zlib::izlibstream strm(dat);
 
             nbt::io::stream_reader nbt(strm);
@@ -89,40 +82,25 @@ namespace lodestone::minecraft::java::anvil::jungle::world {
             spawnPos = {spawnX, spawnY, spawnZ};
 
             int64_t time = data["Time"].get().as<nbt::tag_long>();
-            w->setTime(time);
-
             int rainTime = data["rainTime"].get().as<nbt::tag_int>();
             int thunderTime = data["thunderTime"].get().as<nbt::tag_int>();
-
-            w->setRainTime(rainTime);
-            w->setThunderTime(thunderTime);
-
             bool raining = data["raining"].get().as<nbt::tag_byte>();
             bool thundering = data["thundering"].get().as<nbt::tag_byte>();
-
-            w->setIsRaining(raining);
-            w->setIsThundering(thundering);
-
             int64_t seed = data["RandomSeed"].get().as<nbt::tag_long>();
-            w->setSeed(seed);
-
             int ver = data["version"].get().as<nbt::tag_int>();
-            w->setVersion(ver);
-
             int64_t lastPlayed = data["LastPlayed"].get().as<nbt::tag_long>();
-            w->setLastPlayed(lastPlayed);
 
             LOG_DEBUG(w->toString());
             world = std::move(w);
             dat.close();
         }
 
-        if (std::filesystem::exists(path / "players") &&
-            std::filesystem::is_directory(path / "players")) {
-            auto pio = static_cast<const mcregion::player::McRegionPlayerIO *>(
-                getPlayerIO(version));
+        if (std::filesystem::exists(options.path / "players") &&
+            std::filesystem::is_directory(options.path / "players")) {
+
+            auto pio = this->getAsByRelation<const mcregion::player::McRegionNbtPlayerIO, &identifiers::NBT_PLAYER_IO>();
             for (const auto &f :
-                 std::filesystem::directory_iterator(path / "players")) {
+                 std::filesystem::directory_iterator(options.path / "players")) {
                 if (!std::filesystem::is_regular_file(f))
                     continue;
 
@@ -133,59 +111,74 @@ namespace lodestone::minecraft::java::anvil::jungle::world {
                 auto [nm, root] = nbt.read_compound();
 
                 std::unique_ptr<level::entity::Player> r =
-                    pio->read(f, *root, version); // todo return value?
+                    pio->read(common::conversion::io::options::OptionPresets::CommonNbtFilesystemReadOptions {
+                        common::conversion::io::options::OptionPresets::CommonNbtReadOptions {
+                            common::conversion::io::options::NbtReaderOptions {
+                                *root
+                            },
+                            conversion::io::options::versioned::VersionedOptions {
+                                options.version
+                            }
+                        },
+                        conversion::io::options::fs::FilesystemPathOptions {
+                            f
+                        }
+                    }); // todo return value?
 
                 LOG_DEBUG(r->toString());
 
                 world->addPlayer(std::move(r), false);
                 ifs.close();
+                 }
             }
-        }
 
-        auto *io = static_cast<const region::JungleAnvilRegionIO *>(
-            getRegionIO(version));
+        const region::JungleAnvilRegionIO *io = this->getAsByRelation<const region::JungleAnvilRegionIO, &conversion::identifiers::REGION_IO>();
 
         int t = 2;
         // do I need to call exists?
         for (auto [id, pth] : dims) {
-            if (std::filesystem::exists(pth / "region") &&
-                std::filesystem::is_directory(pth / "region")) {
+            if (!std::filesystem::exists(pth / "region") ||
+                !std::filesystem::is_directory(pth / "region"))
+                continue;
 
                 LOG_DEBUG(pth);
 
                 level::Level *dim = new level::Level();
-#ifdef USE_OPENMP
-                std::vector<std::filesystem::directory_entry> e;
-                for (auto &f :
-                     std::filesystem::directory_iterator(pth / "region")) {
-                    e.push_back(f);
-                }
-
-#pragma omp parallel for
-                for (size_t i = 0; i < e.size(); ++i) {
-                    const auto &f = e[i];
-#else
-                for (const auto &f :
-                     std::filesystem::directory_iterator(pth / "region")) {
-#endif
-                    if (!std::filesystem::is_regular_file(f) ||
-                        f.path().extension() != ".mca")
+                std::vector<std::filesystem::path> paths;
+                for (const auto &f : std::filesystem::directory_iterator(pth / "region")) {
+                    if (!std::filesystem::is_regular_file(f) || f.path().extension() != ".mca")
                         continue;
 
-                    level::types::Vec2i coords =
-                        mcregion::region::McRegionRegion::getCoordsFromFilename(
-                            f.path().filename().string());
+                    paths.push_back(f);
+                }
 
-                    std::ifstream ifs(f.path(), std::ifstream::binary);
+                THREADED_LOOP_START_VEC(paths, &io, &options, &dim)
+                    const level::types::Vec2i coords =
+                        mcregion::region::McRegionRegion::getCoordsFromFilename(
+                            item.filename().string());
+
+                    std::ifstream ifs(item, std::ifstream::binary);
 
                     std::unique_ptr<level::region::Region> r =
-                        io->read(ifs, version, coords); // todo return value?
+                        io->read(common::conversion::io::options::OptionPresets::CommonChunkReadOptions {
+                            common::conversion::io::options::ChunkOptions {
+                                coords
+                            },
+                            common::conversion::io::options::OptionPresets::CommonReadOptions {
+                                lodestone::conversion::io::options::fs::file::FileReaderOptions {
+                                    ifs
+                                },
+                                lodestone::conversion::io::options::versioned::VersionedOptions {
+                                    options.version
+                                }
+                            }
+                        }); // todo return value?
 
                     LOG_DEBUG(r->toString());
 
                     dim->merge(std::move(r));
                     ifs.close();
-                }
+                THREADED_LOOP_END();
 
                 dim->setSpawnPos(
                     spawnPos); // in beta, only worlds have the spawn position
@@ -202,43 +195,42 @@ namespace lodestone::minecraft::java::anvil::jungle::world {
                 world->addLevel(
                     d, std::unique_ptr<level::Level>(
                            dim)); // todo move dimension id shit to world
-            }
             t++;
-        }
 
-        // move players to correct level otherwise they're stuck at correct
-        // coords in diff level
-        for (const auto &[name, plr] : world->getPlayers()) {
-            const mcregion::player::McRegionPlayer *p =
-                dynamic_cast<mcregion::player::McRegionPlayer *>(plr.get());
-            if (!p)
-                continue;
 
-            if (world->hasLevel(p->getDimension()))
-                world->movePlayerToLevel(name, p->getDimension(), false);
-        }
+            // move players to correct level otherwise they're stuck at correct
+            // coords in diff level
+            for (const auto &[name, plr] : world->getPlayers()) {
+                const mcregion::player::McRegionPlayer *p =
+                    dynamic_cast<mcregion::player::McRegionPlayer *>(plr.get());
+                if (!p)
+                    continue;
+
+                if (world->hasLevel(p->getDimension()))
+                    world->movePlayerToLevel(name, p->getDimension(), false);
+            }
+        };
 
         return world;
     }
 
-    void JungleAnvilWorldIo::write(
-        const std::filesystem::path &path, level::world::World *w, int version,
-        const conversion::world::options::AbstractWorldWriteOptions &options)
+    void JungleAnvilWorldIo::write(level::world::World *w, const common::conversion::io::options::OptionPresets::CommonFilesystemOptions &options)
         const {
-        if (!exists(path))
-            std::filesystem::create_directories(path);
-        if (!std::filesystem::is_directory(path))
+                if (!std::filesystem::exists(options.path))
+            std::filesystem::create_directories(options.path);
+        if (!std::filesystem::is_directory(options.path))
             throw std::runtime_error(
                 "Cannot write a world to a path that is not a directory");
 
         {
             // Leveldat
             // TODO incomplete
-            std::ofstream dat(path / "level.dat", std::ios::binary);
+            std::ofstream dat(options.path / "level.dat", std::ios::binary);
             zlib::ozlibstream strm(dat, Z_DEFAULT_COMPRESSION, true);
 
             nbt::io::stream_writer nbt(strm);
             nbt::tag_compound root{};
+
             nbt::tag_compound data{};
 
             data["LevelName"] = w->getName();
@@ -248,7 +240,7 @@ namespace lodestone::minecraft::java::anvil::jungle::world {
                 lastPlayed
                     ? lastPlayed
                           ->as<
-                              level::properties::TemplatedProperty<int64_t &>>()
+                              level::properties::TemplatedProperty<int64_t>>()
                           ->getValue()
                     : static_cast<int64_t>(0);
 
@@ -256,7 +248,7 @@ namespace lodestone::minecraft::java::anvil::jungle::world {
             data["RandomSeed"] =
                 seed
                     ? seed->as<
-                              level::properties::TemplatedProperty<int64_t &>>()
+                              level::properties::TemplatedProperty<int64_t>>()
                           ->getValue()
                     : static_cast<int64_t>(0);
 
@@ -271,7 +263,7 @@ namespace lodestone::minecraft::java::anvil::jungle::world {
             data["Time"] =
                 time
                     ? time->as<
-                              level::properties::TemplatedProperty<int64_t &>>()
+                              level::properties::TemplatedProperty<int64_t>>()
                           ->getValue()
                     : static_cast<int64_t>(0);
 
@@ -281,22 +273,26 @@ namespace lodestone::minecraft::java::anvil::jungle::world {
             nbt.write_tag("", root);
         }
         // Regions
-        auto *io =
-            static_cast<const anvil::jungle::region::JungleAnvilRegionIO *>(
-                getRegionIO(version));
+        auto io = this->getAsByRelation<const region::JungleAnvilRegionIO, &lodestone::conversion::identifiers::REGION_IO>();
 
-        std::filesystem::path p = path;
+        std::filesystem::path p = options.path;
 
-        int i = 2;
+        // todo this is trash code, throw it in the bin and remake it later
+        // we need to register custom dims in Level, and then make an internal conversion in this lib.
+        int i = 2; // for writing other dims
         for (auto &[id, lvl] : w->getLevels()) {
-            if (const int dim =
-                    mcregion::player::McRegionPlayer::identifierToDimensionId(
-                        id);
-                dim != 0) {
-                p = path /
+            const int dim = mcregion::player::McRegionPlayer::identifierToDimensionId(id);
+
+            if (dim == 0) {
+                p = options.path;
+            } else {
+                p = options.path /
                     ("DIM" + std::to_string(dim == 0x7FFFFFFF ? i : dim));
             }
             i++;
+
+            if (!std::filesystem::exists(p))
+                std::filesystem::create_directory(p);
 
             std::filesystem::path r = p / "region";
             if (!std::filesystem::exists(r))
@@ -304,12 +300,23 @@ namespace lodestone::minecraft::java::anvil::jungle::world {
 
             level::types::Bounds3i bounds = lvl->getChunkBounds();
 
-            for (int rx = bounds.min.x; rx < bounds.max.x; rx += 32 * 32) {
-                for (int rz = bounds.min.z; rz < bounds.max.z; rz += 32 * 32) {
-                    std::ofstream o(r / ("r." + std::to_string(rx) + "." +
-                                         std::to_string(rz) + ".mcr"));
+            for (int rx = bounds.min.x >> 5; rx <= bounds.max.x >> 5; rx++) {
+                for (int rz = bounds.min.z >> 5; rz <= bounds.max.z >> 5; rz++) {
+                    std::ofstream o(r / std::format("r.{}.{}.mca", rx, rz));
 
-                    io->write(lvl.get(), version, {rx, rz}, o);
+                    io->write(lvl.get(), common::conversion::io::options::OptionPresets::CommonChunkWriteOptions {
+                                  common::conversion::io::options::ChunkOptions {
+                                          {rx, rz}
+                                  },
+                                  common::conversion::io::options::OptionPresets::CommonWriteOptions {
+                                      lodestone::conversion::io::options::fs::file::FileWriterOptions {
+                                          o
+                                      },
+                                      lodestone::conversion::io::options::versioned::VersionedOptions {
+                                      options.version
+                                      }
+                                  }
+                    });
 
                     o.close();
                 }
@@ -322,25 +329,4 @@ namespace lodestone::minecraft::java::anvil::jungle::world {
         // TODO for block states we might be able to make registry that maps
         // fields to bits in data byte per block
     }
-    const conversion::chunk::ChunkIO *
-    JungleAnvilWorldIo::getChunkIO(int version) const {
-        return static_cast<const chunk::JungleAnvilChunkIO *>(
-            conversion::chunk::ChunkIORegistry::getInstance().getChunkIO(
-                identifiers::ANVIL_JUNGLE));
-    }
-
-    const conversion::region::RegionIO *
-    JungleAnvilWorldIo::getRegionIO(int version) const {
-        return static_cast<const region::JungleAnvilRegionIO *>(
-            conversion::region::RegionIORegistry::getInstance().getRegionIO(
-                identifiers::ANVIL_JUNGLE));
-    }
-
-    const conversion::player::PlayerIO *
-    JungleAnvilWorldIo::getPlayerIO(int version) const {
-        return static_cast<const mcregion::player::McRegionPlayerIO *>(
-            conversion::player::PlayerIORegistry::getInstance().getPlayerIO(
-                identifiers::ANVIL_JUNGLE));
-    }
-
 } // namespace lodestone::minecraft::java::anvil::jungle::world

@@ -5,8 +5,6 @@
 #define LODESTONE_MINEV2WORLD_H
 #include <Lodestone.Level/world/World.h>
 
-#include <Lodestone.Conversion/world/WorldIO.h>
-
 namespace lodestone::minecraft::java::classic::minev2 {
     class MineV2World : public level::world::World {
       public:
@@ -18,8 +16,7 @@ namespace lodestone::minecraft::java::classic::minev2 {
                     const std::string &author = "Player");
 
         MineV2World(map_t<lodestone::common::registry::Identifier,
-                          std::unique_ptr<level::Level>, IdentifierHasher,
-                          IdentifierComparator> &&levels,
+                          std::unique_ptr<level::Level>> &&levels,
                     const std::string &name, const std::string &author);
 
         const std::string &getAuthor() const;
@@ -28,15 +25,8 @@ namespace lodestone::minecraft::java::classic::minev2 {
 
         void setAuthor(const std::string &author);
 
-        uint64_t getCreationTime() const;
-
-        void setCreationTime(const uint64_t time);
-
-        const lodestone::conversion::world::WorldIO *getIO() override;
-
       protected:
-        std::string mAuthor;
-        std::uint64_t mCreationTime;
+        std::string m_author;
     };
 } // namespace lodestone::minecraft::java::classic::minev2
 

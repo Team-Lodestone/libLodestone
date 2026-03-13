@@ -1,8 +1,8 @@
 //
 // Created by DexrnZacAttack on 11/8/25 using zPc-i2.
 //
-#ifndef LODESTONE_UTIL_H
-#define LODESTONE_UTIL_H
+#ifndef LODESTONE_TESTS_UTIL_H
+#define LODESTONE_TESTS_UTIL_H
 #include <chrono>
 #include <filesystem>
 #include <iostream>

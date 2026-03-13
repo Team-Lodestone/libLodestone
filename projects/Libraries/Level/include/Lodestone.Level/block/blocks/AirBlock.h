@@ -8,14 +8,18 @@
 namespace lodestone::level::block::blocks {
     class AirBlock : public TranslucentBlock {
     public:
-        constexpr AirBlock(const lodestone::common::registry::Identifier *id,
-            const lodestone::level::material::Material &material)
-: TranslucentBlock(id, material) {
+        constexpr AirBlock(const common::registry::Identifier *id,
+            const material::Material &material, const properties::definition::ObjectDefinition *definition)
+: TranslucentBlock(id, material, definition) {
         };
 
         constexpr bool heightmapShouldIgnore() const override {
             return true;
         };
+
+        bool hasCollision() const override {
+            return false;
+        }
     };
 }
 

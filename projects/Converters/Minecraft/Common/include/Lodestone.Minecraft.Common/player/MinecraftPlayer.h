@@ -59,7 +59,7 @@ namespace lodestone::minecraft::common::player {
         const Abilities &getAbilities() const;
 
         void setAbilities(const Abilities &abilities);
-         std::shared_ptr<level::properties::AbstractProperty>
+         std::unique_ptr<level::properties::AbstractProperty>
         getProperty(const std::string &name) override;
 
       private:
@@ -67,60 +67,60 @@ namespace lodestone::minecraft::common::player {
          *
          * @prop name
          */
-        std::string mName;
+        std::string m_name;
 
         /** The player's respawn position
          *
          * @prop spawnPos
          */
-        level::types::Vec3i mSpawnPos{0, 0, 0};
+        level::types::Vec3i m_spawnPos{0, 0, 0};
 
         /**
          * @prop deathTime
          */
-        short mDeathTime;
+        short m_deathTime;
         /**
          * @prop hurtTime
          */
-        short mHurtTime;
+        short m_hurtTime;
         /**
          * @prop attackTime
          */
-        short mAttackTime;
+        short m_attackTime;
         /**
          * @prop fireTime
          */
-        short mFireTime;
+        short m_fireTime;
         /**
          * @prop breathingTime
          */
-        short mBreathingTime;
+        short m_breathingTime;
 
         /** The ID of the dimension the player is currently in
          * @prop dimension
          */
-        lodestone::common::registry::Identifier mDimension;
+        lodestone::common::registry::Identifier m_dimension;
 
         /** How far the player has fallen
          *
          * @prop fallDistance
          */
-        float mFallDistance;
+        float m_fallDistance;
 
         /** The player's abilities */
-        Abilities mAbilities;
+        Abilities m_abilities;
 
         /** The player's inventory
          *
          * @prop inventory
          */
-        level::container::ItemContainer mInventory =
+        level::container::ItemContainer m_inventory =
             level::container::ItemContainer(35);
         /** The player's armor slots
          *
          * @prop armor
          */
-        level::container::ItemContainer mArmor =
+        level::container::ItemContainer m_armor =
             level::container::ItemContainer(4);
     };
 } // namespace lodestone::minecraft::common::player

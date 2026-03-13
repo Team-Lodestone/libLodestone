@@ -64,12 +64,12 @@ namespace lodestone::level::types {
         }
 
         constexpr bool contains(const Vec2<T> &vec) const noexcept {
-            return vec.x >= min.x && vec.x <= max.x && vec.z >= min.z &&
-                   vec.z <= max.z;
+            return vec.x >= min.x && vec.x <= max.x && vec.y >= min.y &&
+                   vec.y <= max.y;
         }
 
         constexpr bool empty() const noexcept {
-            return max.x < min.x || max.z < min.z;
+            return max.x < min.x || max.y < min.y;
         }
 
         constexpr bool intersects(const Bounds2 &rhs) const noexcept {
@@ -77,7 +77,7 @@ namespace lodestone::level::types {
                 return false;
 
             return !(rhs.max.x < min.x || rhs.min.x > max.x ||
-                     rhs.max.z < min.z || rhs.min.z > max.z);
+                     rhs.max.y < min.y || rhs.min.y > max.y);
         }
 
         constexpr int getWidth() const noexcept {
@@ -85,7 +85,7 @@ namespace lodestone::level::types {
         }
 
         constexpr int getLength() const noexcept {
-            return empty() ? 0 : (max.z - min.z + 1);
+            return empty() ? 0 : (max.y - min.y + 1);
         }
     };
 

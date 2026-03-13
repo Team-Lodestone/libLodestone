@@ -4,25 +4,30 @@
 #ifndef LODESTONE_MAINTESTS_H
 #define LODESTONE_MAINTESTS_H
 #include "Lodestone.Tests/test/Test.h"
+#include <TestFramework/TestFramework.h>
 
 namespace lodestone::tests::test {
     class MainTests : public Test {
       public:
-        static void run();
+        static void add();
 
-        static void readAnvilWorld();
+        static tfw::test::result::TestResult generateWaterChunk(tfw::test::util::TestOutputLogger &logger);
 
-        static void readMcrChunk();
+        static tfw::test::result::TestResult readAnvilWorld(tfw::test::util::TestOutputLogger &logger);
 
-        static void readMcrFile();
+        static tfw::test::result::TestResult writeAnvilWorld(tfw::test::util::TestOutputLogger &logger);
 
-        static void readMcrWorld();
+        static void readMcrChunk(tfw::test::util::TestOutputLogger &logger);
 
-        static void readMinev2World();
+        static void readMcrFile(tfw::test::util::TestOutputLogger &logger);
 
-        static void readAlphaWorld();
+        static void readMcrWorld(tfw::test::util::TestOutputLogger &logger);
 
-        static void writeAlphaWorld();
+        static void readMinev2World(tfw::test::util::TestOutputLogger &logger);
+
+        static void readAlphaWorld(tfw::test::util::TestOutputLogger &logger);
+
+        static void writeAlphaWorld(tfw::test::util::TestOutputLogger &logger);
     };
 } // namespace lodestone::tests::test
 

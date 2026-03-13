@@ -247,7 +247,7 @@
 //     uint8_t *>(snd->getIdPtr())) << std::endl;
 //     // }
 //
-//     for (const auto &i: lodestone::level::block::BlockRegistry::sInstance |
+//     for (const auto &i: lodestone::level::block::BlockRegistry::s_instance |
 //     std::views::keys) {
 //         std::cout << i << std::endl;
 //     }
@@ -286,8 +286,8 @@
 //     // std::vector<uint8_t> b(s);
 //     // i.read(reinterpret_cast<char*>(b.data()), s);
 //     //
-//     // const lodestone::conversion::level::LevelIO *l =
-//     lodestone::conversion::level::LevelIORegistry::sInstance.getLevelIO({
+//     // const lodestone::conversion::io::LevelIO *l =
+//     lodestone::conversion::io::LevelIORegistry::s_instance.getLevelIO({
 //     "lodestone", "minev1" });
 //     // auto startTime = std::chrono::high_resolution_clock::now();
 //     // // lodestone::level::Level *level = l->read(b.data());
@@ -318,9 +318,9 @@
 //     //     level->setBlockCreate(&b, 0, 0, z);
 //     // }
 //
-//     const lodestone::conversion::world::FileWorldIO *l2 = dynamic_cast<const
-//         lodestone::conversion::world::FileWorldIO *>(
-//         lodestone::conversion::world::WorldIORegistry::sInstance.getWorldIO({"lodestone",
+//     const lodestone::conversion::registry::registries::FileWorldIO *l2 = dynamic_cast<const
+//         lodestone::conversion::registry::registries::FileWorldIO *>(
+//         lodestone::conversion::registry::registries::WorldIORegistry::s_instance.getWorldIO({"lodestone",
 //         "minev2"}));
 //     std::ofstream o("minev2.mine.out", std::ios::binary);
 //     lodestone::minecraft::java::classic::minev2::MineV2World *w = new
@@ -358,7 +358,9 @@ int main(int argc, char **argv) {
     std::filesystem::create_directories(lodestone::tests::util::INPUT_FOLDER);
     std::filesystem::create_directories(lodestone::tests::util::OUTPUT_FOLDER);
 
-    ADD_TESTS(RUN_MAIN_TESTS, lodestone::tests::test::MainTests::run);
+    ADD_TESTS(RUN_MAIN_TESTS, lodestone::tests::test::MainTests::add);
+
+    tfw::TestFramework::getInstance()->run();
 
     return 0;
 };

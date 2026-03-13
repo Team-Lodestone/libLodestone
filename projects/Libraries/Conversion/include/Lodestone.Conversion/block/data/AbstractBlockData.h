@@ -10,6 +10,14 @@ namespace lodestone::conversion::block::data {
     class AbstractBlockData
         : public lodestone::common::string::StringSerializable {
       public:
+        struct Comparator {
+            bool operator()(
+                const lodestone::conversion::block::data::AbstractBlockData *lhs,
+                const lodestone::conversion::block::data::AbstractBlockData *rhs) const {
+                return lhs->equals(rhs);
+            }
+        };
+
         constexpr ~AbstractBlockData() override = default;
 
         constexpr std::string toString() const override {
@@ -43,6 +51,18 @@ namespace lodestone::conversion::block::data {
             return this->equals(&rhs);
         }
     };
+
 } // namespace lodestone::conversion::block::data
+
+namespace std {
+    template <>
+    struct hash<lodestone::conversion::block::data::AbstractBlockData *> {
+        size_t operator()(
+            const lodestone::conversion::block::data::AbstractBlockData *blk) const noexcept {
+            return blk->hash();
+        }
+    };
+}
+
 
 #endif // LODESTONE_ABSTRACTBLOCKDATA_H

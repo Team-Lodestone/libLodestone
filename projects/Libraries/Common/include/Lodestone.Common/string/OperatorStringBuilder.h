@@ -14,20 +14,20 @@ namespace lodestone::common::string {
     // we have Apache ToStringBuilder at home.
     class OperatorStringBuilder {
       public:
-        OperatorStringBuilder(const std::type_info &type) : mType(type) {
+        OperatorStringBuilder(const std::type_info &type) : m_type(type) {
             const std::string d = demangle(type.name());
-            mStream << d.substr(d.find_last_of(':') + 1) << "[";
+            m_stream << d.substr(d.find_last_of(':') + 1) << "[";
         };
 
         template <typename T>
         constexpr OperatorStringBuilder *addField(const std::string &name,
                                                   const T &v) {
-            mStream << name << "=" << v << ", ";
+            m_stream << name << "=" << v << ", ";
             return this;
         }
 
         constexpr std::string toString() {
-            std::string s = mStream.str();
+            std::string s = m_stream.str();
             if (!s.empty() && s.ends_with(", ")) {
                 // substr probs creates new string
                 // so this should be more efficient
@@ -35,10 +35,10 @@ namespace lodestone::common::string {
                 s.pop_back();
             }
 
-            mStream.str("");
-            mStream << s << "]";
+            m_stream.str("");
+            m_stream << s << "]";
 
-            return mStream.str();
+            return m_stream.str();
         };
 
 #define ADD_FIELD(name) addField(#name, name)
@@ -62,7 +62,7 @@ namespace lodestone::common::string {
         constexpr operator std::string() { return toString(); }
 
       private:
-        const std::type_info &mType;
-        std::ostringstream mStream;
+        const std::type_info &m_type;
+        std::ostringstream m_stream;
     };
 } // namespace lodestone::common::string

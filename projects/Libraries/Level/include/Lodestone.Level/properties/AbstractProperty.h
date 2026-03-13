@@ -19,10 +19,26 @@ namespace lodestone::level::properties {
             return &identifiers::properties::ABSTRACT_PROPERTY;
         };
 
+        constexpr virtual size_t hash() const = 0;
+
+        constexpr virtual bool equals(const AbstractProperty *rhs) const {
+            if (rhs == nullptr)
+                return false;
+
+            if (typeid(rhs) != typeid(this))
+                return false;
+
+            return true;
+        }
+
         template <typename T>
             requires std::is_base_of_v<AbstractProperty, T>
         constexpr const T *as() const {
             return dynamic_cast<const T *>(this);
+        }
+
+        constexpr bool operator==(const AbstractProperty &rhs) const {
+            return this->equals(&rhs);
         }
     };
 } // namespace lodestone::level::properties

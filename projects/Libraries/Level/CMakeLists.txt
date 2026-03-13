@@ -23,8 +23,8 @@ set(FILES
         src/item/ItemRegistry.cpp
         src/material/MaterialRegistry.cpp
         include/Lodestone.Level/material/MaterialRegistry.h
-        src/block/properties/BlockProperties.cpp
-        include/Lodestone.Level/block/properties/BlockProperties.h
+        src/block/instance/BlockInstance.cpp
+        include/Lodestone.Level/block/instance/BlockInstance.h
         src/chunk/section/EmptySection.cpp
         include/Lodestone.Level/chunk/section/ImmutableSection.h
         src/chunk/section/Section.cpp
@@ -63,18 +63,22 @@ set(FILES
         include/Lodestone.Level/item/Item.h
         src/item/block/BlockItem.cpp
         include/Lodestone.Level/item/block/BlockItem.h
-        src/item/ItemProperties.cpp
-        include/Lodestone.Level/item/ItemProperties.h
+        src/item/ItemInstance.cpp
+        include/Lodestone.Level/item/ItemInstance.h
         include/Lodestone.Level/properties/AbstractProperty.h
         include/Lodestone.Level/Identifiers.h
         include/Lodestone.Level/properties/TemplatedProperty.h
         include/Lodestone.Level/item/Items.h
-        src/block/properties/ImmutableBlockProperties.cpp
-        include/Lodestone.Level/block/properties/ImmutableBlockProperties.h
+        src/block/instance/ImmutableBlockInstance.cpp
+        include/Lodestone.Level/block/instance/ImmutableBlockInstance.h
         include/Lodestone.Level/properties/ReflectiveProperties.h
         src/properties/ReflectiveProperties.cpp
         include/Lodestone.Level/block/blocks/TranslucentBlock.h
         include/Lodestone.Level/block/blocks/AirBlock.h
+        include/Lodestone.Level/entity/WorldSpaceObject.cpp
+        include/Lodestone.Level/entity/WorldSpaceObject.h
+        include/Lodestone.Level/properties/definition/ObjectDefinition.h
+        src/properties/definition/ObjectDefinition.cpp
 )
 
 # if (CMAKE_BUILD_TYPE STREQUAL "Debug")

@@ -13,6 +13,9 @@
 #include "Lodestone.Common/exception/PaletteIndexTooLargeException.h"
 #include "Lodestone.Common/exception/InvalidPaletteReferenceCountException.h"
 #include "Lodestone.Common/string/StringSerializable.h"
+#include <cstring>
+#include <array>
+#include <execution>
 
 namespace lodestone::common::storage::palette {
     // thanks danil for allowing us to port your code
@@ -36,31 +39,31 @@ namespace lodestone::common::storage::palette {
 
         const T &getValue(int index) const;
 
-        size_t getNewSize() const;
+        size_t getIndicesSize() const noexcept;
 
         // allows for getting the object reference but not write to it (since writing will modify ALL instances, because indexes will point to that one object)
         const T &operator[](int index) const;
 
         constexpr std::string toString() const override {
             return std::string("PalletizedStorage{")
-            + "capacity=" + std::to_string(mCapacity)
-            + ", paletteSize=" + std::to_string(mPaletteSize)
-            + ", indiceCount=" + std::to_string(mIndices.size());
+            + "capacity=" + std::to_string(m_capacity)
+            + ", paletteSize=" + std::to_string(m_paletteSize)
+            + ", indiceCount=" + std::to_string(m_indices.size());
         };
     protected:
         int getPaletteIndex(int index) const;
         void setPaletteIndex(int index, int value);
 
         int obtainPaletteEntry();
-        void grow();
+        void resize();
     private:
         // todo do we want array pool?
-        std::vector<uint8_t> mIndices;
-        std::vector<PaletteEntry> mPalette;
+        std::vector<uint8_t> m_indices;
+        std::vector<PaletteEntry> m_palette;
 
-        const int mCapacity;
-        int mPaletteSize = 0;
-        int mIndexBits = 1;
+        const int m_capacity;
+        int m_paletteSize = 0;
+        int m_indexBits = 1;
     };
 
 #include "Lodestone.Common/storage/palette/PalletizedStorage.tpp"
