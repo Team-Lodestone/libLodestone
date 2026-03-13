@@ -57,6 +57,7 @@ target_compile_definitions(Lodestone.Tests PRIVATE
 target_compile_definitions(Lodestone.Tests PRIVATE
         GENERATE_WATER_CHUNK=true
         READ_ANVIL_WORLD=false
+        WRITE_ANVIL_WORLD=true
         READ_MCR_WORLD=false
         READ_MCR_CHUNK=false
         READ_MCR_FILE=false

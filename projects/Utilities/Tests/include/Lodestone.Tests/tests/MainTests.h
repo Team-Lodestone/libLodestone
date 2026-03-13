@@ -15,6 +15,7 @@ namespace lodestone::tests::test {
 
         static tfw::test::result::TestResult readAnvilWorld(tfw::test::util::TestOutputLogger &logger);
 
+        static tfw::test::result::TestResult writeAnvilWorld(tfw::test::util::TestOutputLogger &logger);
 
         static void readMcrChunk(tfw::test::util::TestOutputLogger &logger);
 

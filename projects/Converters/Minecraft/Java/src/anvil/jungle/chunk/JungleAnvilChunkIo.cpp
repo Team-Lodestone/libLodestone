@@ -104,11 +104,111 @@ namespace lodestone::minecraft::java::anvil::jungle::chunk {
         return c;
     }
 
-    nbt::tag_compound
-    JungleAnvilChunkIO::write(level::chunk::Chunk *c,
-                              const level::types::Vec2i &coords,
-                              int version) const {
-        // TODO!
+    void
+    JungleAnvilNbtChunkIO::write(level::chunk::Chunk *chunk,const common::conversion::io::options::OptionPresets::NbtOutputWriteOptions<const common::conversion::io::options::OptionPresets::CommonChunkOptions> &options) const {
+        nbt::tag_compound root, level;
+
+        const std::unique_ptr<lodestone::conversion::block::version::BlockIO>
+            bio = LodestoneJava::getInstance()->io.getIo(options.version);
+
+        constexpr int sectionSize3D = JungleAnvilChunkIO::CHUNK_WIDTH * JungleAnvilChunkIO::SECTION_HEIGHT * JungleAnvilChunkIO::CHUNK_DEPTH;
+        constexpr int sectionSize2D = JungleAnvilChunkIO::CHUNK_WIDTH * JungleAnvilChunkIO::CHUNK_DEPTH;
+
+        // todo make sure to not write EmptyChunk
+        level["xPos"] = nbt::tag_int(options.coords.x);
+        level["zPos"] = nbt::tag_int(options.coords.y);
+        level["LastUpdate"] = nbt::tag_long(0); // TODO
+        level["TerrainPopulated"] = nbt::tag_byte(true);
+
+        // todo wiki says there's tileticks which is gonna be pain
+        std::vector<int32_t> heightMap(sectionSize2D);
+
+        // todo does new vector preinit?
+        std::vector<int8_t> biomes(sectionSize2D); // TODO biomes
+        std::fill_n(biomes.data(), sectionSize2D, -1);
+
+        nbt::tag_list sections;
+        sections.reserve(chunk->getSectionCount());
+
+        for (int sy = 0; sy < chunk->getSectionCount(); sy++) {
+            nbt::tag_compound section;
+
+            // TODO if we ever add floor field to chunk we need to fix these
+            level::chunk::section::Section *s = chunk->getSection(sy);
+
+            std::vector<int8_t> blocks(sectionSize3D);
+            std::vector<int8_t> data(sectionSize3D / 2);
+            std::vector<int8_t> skyLight(sectionSize3D / 2);
+            std::vector<int8_t> blockLight(sectionSize3D / 2);
+            // TODO we can implement Add (extended block ids) later too
+
+            if (s) {
+                for (int cy = 0; cy < JungleAnvilChunkIO::SECTION_HEIGHT; cy++) {
+                    for (int cz = 0; cz < JungleAnvilChunkIO::CHUNK_DEPTH; cz++) {
+                        for (int cx = 0; cx < JungleAnvilChunkIO::CHUNK_WIDTH; cx++) {
+                            const size_t idx =
+                                INDEX_YZX(cx, cy, cz, JungleAnvilChunkIO::CHUNK_WIDTH, JungleAnvilChunkIO::CHUNK_DEPTH);
+                            const level::block::instance::BlockInstance &b =
+                                s->getBlock(cx, cy, cz);
+
+#                           ifdef USE_RISKY_OPTIMIZATIONS
+                            if (b.getBlock() !=
+                                level::block::BlockRegistry::s_defaultBlock) {
+#                           endif
+                                uint8_t id = 0;
+                                uint8_t dat = 0;
+
+                                if (const lodestone::conversion::block::data::ExtendedNumericBlockData *bl =
+                                            bio->convertBlockFromInternal(&b)->as<lodestone::conversion::block::data::ExtendedNumericBlockData>()) {
+                                    id = bl->getId();
+                                    dat = bl->getData();
+                                            }
+
+                                blocks[idx] = id;
+
+                                SET_NIBBLE(data, idx, dat);
+#ifdef USE_RISKY_OPTIMIZATIONS
+                                }
+#endif
+
+                            SET_NIBBLE(skyLight, idx,
+                                       s ? s->getSkyLight()->getNibble(cx, cy, cz)
+                                         : 15);
+                            SET_NIBBLE(
+                                blockLight, idx,
+                                s ? s->getBlockLight()->getNibble(cx, cy, cz)
+                                  : 15);
+                        }
+                    }
+                }
+            }
+
+            section["Y"] = nbt::tag_byte(sy);
+            section["Blocks"] = nbt::tag_byte_array(std::move(blocks));
+            section["Data"] = nbt::tag_byte_array(std::move(data));
+            section["BlockLight"] = nbt::tag_byte_array(std::move(blockLight));
+            section["SkyLight"] = nbt::tag_byte_array(std::move(skyLight));
+
+            sections.push_back(std::move(section));
+        }
+
+        for (int cz = 0; cz < JungleAnvilChunkIO::CHUNK_DEPTH; cz++) {
+            for (int cx = 0; cx < JungleAnvilChunkIO::CHUNK_WIDTH; cx++) {
+                heightMap[INDEX_YX(cx, cz, JungleAnvilChunkIO::CHUNK_WIDTH)] = chunk->getHeightAt(cx, cz);
+            }
+        }
+
+        level["Sections"] = std::move(sections);
+        level["HeightMap"] = nbt::tag_int_array(std::move(heightMap));
+        level["Biomes"] = nbt::tag_byte_array(std::move(biomes));
+
+        // TODO entities
+        level["Entities"] = nbt::tag_list();     // TODO
+        level["TileEntities"] = nbt::tag_list(); // TODO
+
+        root["Level"] = std::move(level);
+
+        options.output = root;
     }
 
     std::unique_ptr<lodestone::level::chunk::Chunk>

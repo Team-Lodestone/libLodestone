@@ -35,6 +35,7 @@ namespace lodestone::tests::test {
     void MainTests::add() {
         tfw::TestFramework::getInstance()->addTest(GENERATE_WATER_CHUNK, "Generate LCE Water Chunk", generateWaterChunk);
         tfw::TestFramework::getInstance()->addTest(READ_ANVIL_WORLD, "Read Anvil World", readAnvilWorld);
+        tfw::TestFramework::getInstance()->addTest(WRITE_ANVIL_WORLD, "Write Anvil World", writeAnvilWorld);
         // ADD_TEST(READ_MCR_CHUNK, readMcrChunk, util::types::MAIN,
         //          "Read McRegion Chunk");
         // ADD_TEST(READ_MCR_FILE, readMcrFile, util::types::MAIN,
@@ -144,6 +145,38 @@ namespace lodestone::tests::test {
         return tfw::test::result::TestResult(true, w->toString());
     }
 
+    tfw::test::result::TestResult MainTests::writeAnvilWorld(tfw::test::util::TestOutputLogger &logger) {
+        const std::string name("WriteAnvilWorld");
+        const std::filesystem::path inputDir(util::INPUT_FOLDER / name);
+        const std::filesystem::path outputDir(util::OUTPUT_FOLDER / name);
+
+        logger << "Input: " << inputDir << std::endl;
+
+        const minecraft::java::mcregion::world::McRegionWorldIo *inputIo = conversion::registry::WorldIORegistry::getInstance().getAs<const minecraft::java::mcregion::world::McRegionWorldIo>(minecraft::java::identifiers::MCREGION_WORLD_IO);
+        const auto w = inputIo->read(lodestone::minecraft::common::conversion::io::options::OptionPresets::CommonFilesystemOptions {
+            conversion::io::options::fs::FilesystemPathOptions {
+                inputDir
+            },
+            conversion::io::options::versioned::VersionedOptions {
+                minecraft::java::Version::b1_3
+            }
+        });
+
+        logger << "Bounds: " << w->getDefaultLevel()->getChunkBounds() << std::endl;
+
+        logger << "Output: " << outputDir << std::endl;
+
+        const minecraft::java::anvil::jungle::world::JungleAnvilWorldIo *outputIo = conversion::registry::WorldIORegistry::getInstance().getAs<const minecraft::java::anvil::jungle::world::JungleAnvilWorldIo>(minecraft::java::identifiers::ANVIL_JUNGLE_WORLD_IO);
+        outputIo->write(w.get(), lodestone::minecraft::common::conversion::io::options::OptionPresets::CommonFilesystemOptions {
+            conversion::io::options::fs::FilesystemPathOptions {
+                outputDir
+            },
+            conversion::io::options::versioned::VersionedOptions {
+                minecraft::java::r1_2_1
+            }
+        });
+
+        return tfw::test::result::TestResult(true, w->toString());
     }
 
     // void MainTests::readMcrChunk(tfw::test::util::TestOutputLogger &logger) {
