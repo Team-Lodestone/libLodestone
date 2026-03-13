@@ -1,54 +1,45 @@
 //
 // Created by DexrnZacAttack on 11/11/25 using zPc-i2.
 //
-#include "Lodestone.Minecraft.Java/mcregion/world/McRegionWorldIo.h"
+#include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionWorldIo.h"
+
+#include "Lodestone.Minecraft.Java/LodestoneJava.h"
 
 #include <fstream>
 #include <iostream>
-#ifdef USE_OPENMP
-#include <omp.h>
-#endif
+
 #include <ranges>
+#include THREADING_HEADER
 #include <stack>
 
 #include "Lodestone.Minecraft.Java/Identifiers.h"
-#include "Lodestone.Minecraft.Java/mcregion/world/McRegionWorld.h"
-#include <Lodestone.Conversion/level/LevelIORegistry.h>
-#include <Lodestone.Conversion/region/RegionIORegistry.h>
+#include "Lodestone.Minecraft.Java/mcregion/McRegionWorld.h"
+
 #include <libnbt++/io/izlibstream.h>
 #include <libnbt++/io/stream_reader.h>
 #include <libnbt++/nbt_tags.h>
 
-#include <Lodestone.Conversion/player/PlayerIORegistry.h>
-
-#include "Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunk.h"
-#include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayer.h"
-#include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayerIo.h"
-#include "Lodestone.Minecraft.Java/mcregion/region/McRegionRegion.h"
-#include "Lodestone.Minecraft.Java/mcregion/region/McRegionRegionIo.h"
+#include "Lodestone.Minecraft.Java/mcregion/McRegionChunk.h"
+#include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionChunkIo.h"
+#include "Lodestone.Minecraft.Java/mcregion/McRegionPlayer.h"
+#include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionPlayerIo.h"
+#include "Lodestone.Minecraft.Java/mcregion/McRegionRegion.h"
+#include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionRegionIo.h"
 #include <libnbt++/io/ozlibstream.h>
 
 #include <Lodestone.Common/util/Logging.h>
 
 namespace lodestone::minecraft::java::mcregion::world {
-    const lodestone::conversion::level::LevelIO *
-    McRegionWorldIo::getLevelIO(int version) const {
-        return lodestone::conversion::level::LevelIoRegistry::getInstance()
-            .getLevelIO(identifiers::MCREGION);
-    }
-
-    std::unique_ptr<lodestone::level::world::World> McRegionWorldIo::read(
-        const std::filesystem::path &path, int version,
-        const conversion::world::options::AbstractWorldReadOptions &options)
+    std::unique_ptr<lodestone::level::world::World> McRegionWorldIo::read(const common::conversion::io::options::OptionPresets::CommonFilesystemOptions &options)
         const {
-        if (!std::filesystem::exists(path))
+        if (!std::filesystem::exists(options.path))
             return nullptr;
 
         map_t<int, std::filesystem::path> dims;
-        dims.emplace(0, path); // main dim
+        dims.emplace(0, options.path); // main dim
 
         // scan for dims
-        for (auto &d : std::filesystem::directory_iterator(path)) {
+        for (auto &d : std::filesystem::directory_iterator(options.path)) {
             const std::string name = d.path().filename().string();
 
             if (!d.is_directory() || !name.starts_with("DIM"))
@@ -69,8 +60,8 @@ namespace lodestone::minecraft::java::mcregion::world {
         level::types::Vec3i spawnPos = {0, 64, 0};
         std::unique_ptr<level::world::World> world =
             std::make_unique<level::world::World>();
-        if (std::filesystem::exists(path / "level.dat")) {
-            std::ifstream dat(path / "level.dat", std::ios::binary);
+        if (std::filesystem::exists(options.path / "level.dat")) {
+            std::ifstream dat(options.path / "level.dat", std::ios::binary);
             zlib::izlibstream strm(dat);
 
             nbt::io::stream_reader nbt(strm);
@@ -91,42 +82,26 @@ namespace lodestone::minecraft::java::mcregion::world {
             spawnPos = {spawnX, spawnY, spawnZ};
 
             int64_t time = data["Time"].get().as<nbt::tag_long>();
-            w->setTime(time);
-
             int rainTime = data["rainTime"].get().as<nbt::tag_int>();
             int thunderTime = data["thunderTime"].get().as<nbt::tag_int>();
-
-            w->setRainTime(rainTime);
-            w->setThunderTime(thunderTime);
-
             bool raining = data["raining"].get().as<nbt::tag_byte>();
             bool thundering = data["thundering"].get().as<nbt::tag_byte>();
-
-            w->setIsRaining(raining);
-            w->setIsThundering(thundering);
-
             int64_t seed = data["RandomSeed"].get().as<nbt::tag_long>();
-            w->setSeed(seed);
-
             int ver = data["version"].get().as<nbt::tag_int>();
-            w->setVersion(ver);
-
             int64_t lastPlayed = data["LastPlayed"].get().as<nbt::tag_long>();
-            w->setLastPlayed(lastPlayed);
+
+            // TODO
 
             LOG_DEBUG(w->toString());
             world = std::move(w);
             dat.close();
         }
 
-        if (std::filesystem::exists(path / "players") &&
-            std::filesystem::is_directory(path / "players")) {
-            const java::mcregion::player::McRegionPlayerIO *pio = static_cast<
-                const java::mcregion::player::McRegionPlayerIO *>(
-                lodestone::conversion::player::PlayerIORegistry::getInstance()
-                    .getPlayerIO(java::identifiers::MCREGION));
+        if (std::filesystem::exists(options.path / "players") &&
+            std::filesystem::is_directory(options.path / "players")) {
+            const player::McRegionNbtPlayerIO *pio = this->getAsByRelation<const player::McRegionNbtPlayerIO, &identifiers::NBT_PLAYER_IO>();
             for (const auto &f :
-                 std::filesystem::directory_iterator(path / "players")) {
+                 std::filesystem::directory_iterator(options.path / "players")) {
                 if (!std::filesystem::is_regular_file(f))
                     continue;
 
@@ -137,7 +112,19 @@ namespace lodestone::minecraft::java::mcregion::world {
                 auto [nm, root] = nbt.read_compound();
 
                 std::unique_ptr<level::entity::Player> r =
-                    pio->read(f, *root, version); // todo return value?
+                    pio->read(common::conversion::io::options::OptionPresets::CommonNbtFilesystemReadOptions {
+                        common::conversion::io::options::OptionPresets::CommonNbtReadOptions {
+                            common::conversion::io::options::NbtReaderOptions {
+                                *root
+                            },
+                            conversion::io::options::versioned::VersionedOptions {
+                                options.version
+                            }
+                        },
+                        conversion::io::options::fs::FilesystemPathOptions {
+                            f
+                        }
+                    }); // todo return value?
 
                 LOG_DEBUG(r->toString());
 
@@ -146,10 +133,7 @@ namespace lodestone::minecraft::java::mcregion::world {
             }
         }
 
-        const java::mcregion::region::McRegionRegionIO *io =
-            static_cast<const java::mcregion::region::McRegionRegionIO *>(
-                lodestone::conversion::region::RegionIORegistry::getInstance()
-                    .getRegionIO(java::identifiers::MCREGION));
+        const region::McRegionRegionIO *io = this->getAsByRelation<const region::McRegionRegionIO, &lodestone::conversion::identifiers::REGION_IO>();
 
         int t = 2;
         // do I need to call exists?
@@ -160,37 +144,41 @@ namespace lodestone::minecraft::java::mcregion::world {
                 LOG_DEBUG(pth);
 
                 level::Level *dim = new level::Level();
-#ifdef USE_OPENMP
-                std::vector<std::filesystem::directory_entry> e;
-                for (auto &f :
-                     std::filesystem::directory_iterator(pth / "region"))
-                    e.push_back(f);
-
-#pragma omp parallel for
-                for (size_t i = 0; i < e.size(); ++i) {
-                    const auto &f = e[i];
-#else
-                for (const auto &f :
-                     std::filesystem::directory_iterator(pth / "region")) {
-#endif
-                    if (!std::filesystem::is_regular_file(f) ||
-                        f.path().extension() != ".mcr")
+                std::vector<std::filesystem::path> paths;
+                for (const auto &f : std::filesystem::directory_iterator(pth / "region")) {
+                    if (!std::filesystem::is_regular_file(f) || f.path().extension() != ".mcr")
                         continue;
 
+                    paths.push_back(f);
+                }
+
+                THREADED_LOOP_START_VEC(paths, &io, &options, &dim)
                     level::types::Vec2i coords =
                         region::McRegionRegion::getCoordsFromFilename(
-                            f.path().filename().string());
+                            item.filename().string());
 
-                    std::ifstream ifs(f.path(), std::ifstream::binary);
+                    std::ifstream ifs(item, std::ifstream::binary);
 
                     std::unique_ptr<level::region::Region> r =
-                        io->read(ifs, version, coords); // todo return value?
+                        io->read(common::conversion::io::options::OptionPresets::CommonChunkReadOptions {
+                            common::conversion::io::options::ChunkOptions {
+                                coords
+                            },
+                            common::conversion::io::options::OptionPresets::CommonReadOptions {
+                                lodestone::conversion::io::options::fs::file::FileReaderOptions {
+                                    ifs
+                                },
+                                lodestone::conversion::io::options::versioned::VersionedOptions {
+                                    options.version
+                                }
+                            }
+                        }); // todo return value?
 
                     LOG_DEBUG(r->toString());
 
                     dim->merge(std::move(r));
                     ifs.close();
-                }
+                THREADED_LOOP_END();
 
                 dim->setSpawnPos(
                     spawnPos); // in beta, only worlds have the spawn position
@@ -223,21 +211,18 @@ namespace lodestone::minecraft::java::mcregion::world {
         return world;
     }
 
-    void McRegionWorldIo::write(
-        const std::filesystem::path &path, lodestone::level::world::World *w,
-        int version,
-        const conversion::world::options::AbstractWorldWriteOptions &options)
+    void McRegionWorldIo::write(level::world::World *w, const common::conversion::io::options::OptionPresets::CommonFilesystemOptions &options)
         const {
-        if (!exists(path))
-            std::filesystem::create_directories(path);
-        if (!std::filesystem::is_directory(path))
+        if (!std::filesystem::exists(options.path))
+            std::filesystem::create_directories(options.path);
+        if (!std::filesystem::is_directory(options.path))
             throw std::runtime_error(
                 "Cannot write a world to a path that is not a directory");
 
         {
             // Leveldat
             // TODO incomplete
-            std::ofstream dat(path / "level.dat", std::ios::binary);
+            std::ofstream dat(options.path / "level.dat", std::ios::binary);
             zlib::ozlibstream strm(dat, Z_DEFAULT_COMPRESSION, true);
 
             nbt::io::stream_writer nbt(strm);
@@ -247,57 +232,57 @@ namespace lodestone::minecraft::java::mcregion::world {
 
             data["LevelName"] = w->getName();
 
-            // int spawnX = data["SpawnX"].get().as<nbt::tag_int>();
-            // int spawnY = data["SpawnY"].get().as<nbt::tag_int>();
-            // int spawnZ = data["SpawnZ"].get().as<nbt::tag_int>();
-            // spawnPos = {spawnX, spawnY, spawnZ};
-            //
-            // int64_t time = data["Time"].get().as<nbt::tag_long>();
-            // w->setTime(time);
-            //
-            // int rainTime = data["rainTime"].get().as<nbt::tag_int>();
-            // int thunderTime = data["thunderTime"].get().as<nbt::tag_int>();
-            //
-            // w->setRainTime(rainTime);
-            // w->setThunderTime(thunderTime);
-            //
-            // bool raining = data["raining"].get().as<nbt::tag_byte>();
-            // bool thundering = data["thundering"].get().as<nbt::tag_byte>();
-            //
-            // w->setIsRaining(raining);
-            // w->setIsThundering(thundering);
-            //
-            // int64_t seed = data["RandomSeed"].get().as<nbt::tag_long>();
-            // w->setSeed(seed);
-            //
-            // int ver = data["version"].get().as<nbt::tag_int>();
-            // w->setVersion(ver);
-            //
-            // int64_t lastPlayed =
-            // data["LastPlayed"].get().as<nbt::tag_long>();
-            // w->setLastPlayed(lastPlayed);
-            //
-            // int64_t size = data["SizeOnDisk"].get().as<nbt::tag_long>();
-            // w->setSize(size);
+            auto lastPlayed = w->getProperty("lastPlayed");
+            data["LastPlayed"] =
+                lastPlayed
+                    ? lastPlayed
+                          ->as<
+                              level::properties::TemplatedProperty<int64_t>>()
+                          ->getValue()
+                    : static_cast<int64_t>(0);
+
+            auto seed = w->getProperty("seed");
+            data["RandomSeed"] =
+                seed
+                    ? seed->as<
+                              level::properties::TemplatedProperty<int64_t>>()
+                          ->getValue()
+                    : static_cast<int64_t>(0);
+
+            // TODO: Write default player tag here
+
+            level::types::Vec3i sp = w->getDefaultLevel()->getSpawnPos();
+            data["SpawnX"] = sp.x;
+            data["SpawnY"] = sp.y;
+            data["SpawnZ"] = sp.z;
+
+            auto time = w->getProperty("time");
+            data["Time"] =
+                time
+                    ? time->as<
+                              level::properties::TemplatedProperty<int64_t>>()
+                          ->getValue()
+                    : static_cast<int64_t>(0);
+
+            data["SizeOnDisk"] = static_cast<int64_t>(0);
 
             root.emplace<nbt::tag_compound>("Data", data);
             nbt.write_tag("", root);
         }
         // Regions
-        const java::mcregion::region::McRegionRegionIO *io =
-            static_cast<const java::mcregion::region::McRegionRegionIO *>(
-                lodestone::conversion::region::RegionIORegistry::getInstance()
-                    .getRegionIO(java::identifiers::MCREGION));
+        auto io = this->getAsByRelation<const region::McRegionRegionIO, &lodestone::conversion::identifiers::REGION_IO>();
 
-        std::filesystem::path p = path;
+        std::filesystem::path p = options.path;
 
+        // todo this is trash code, throw it in the bin and remake it later
+        // we need to register custom dims in Level, and then make an internal conversion in this lib.
         int i = 2; // for writing other dims
         for (auto &[id, lvl] : w->getLevels()) {
             if (const int dim =
                     player::McRegionPlayer::identifierToDimensionId(id);
                 dim != 0) {
-                const int d = dim == 0x7FFFFFFF ? i : dim;
-                p = path / ("DIM" + std::to_string(d));
+                p = options.path /
+                    ("DIM" + std::to_string(dim == 0x7FFFFFFF ? i : dim));
             }
             i++;
 
@@ -307,12 +292,24 @@ namespace lodestone::minecraft::java::mcregion::world {
 
             level::types::Bounds3i bounds = lvl->getChunkBounds();
 
-            for (int rx = bounds.min.x; rx < bounds.max.x; rx += 32 * 32) {
-                for (int rz = bounds.min.z; rz < bounds.max.z; rz += 32 * 32) {
+            for (int rx = bounds.min.x >> 5; rx <= bounds.max.x >> 5; rx++) {
+                for (int rz = bounds.min.z >> 5; rz <= bounds.max.z >> 5; rz++) {
                     std::ofstream o(r / ("r." + std::to_string(rx) + "." +
                                          std::to_string(rz) + ".mcr"));
 
-                    io->write(lvl.get(), version, {rx, rz}, o);
+                    io->write(lvl.get(), common::conversion::io::options::OptionPresets::CommonChunkWriteOptions {
+                                  common::conversion::io::options::ChunkOptions {
+                                          {rx, rz}
+                                  },
+                                  common::conversion::io::options::OptionPresets::CommonWriteOptions {
+                                      lodestone::conversion::io::options::fs::file::FileWriterOptions {
+                                          o
+                                      },
+                                      lodestone::conversion::io::options::versioned::VersionedOptions {
+                                      options.version
+                                      }
+                                  }
+                    });
 
                     o.close();
                 }

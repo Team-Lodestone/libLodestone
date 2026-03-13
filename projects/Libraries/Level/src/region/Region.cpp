@@ -10,9 +10,9 @@ namespace lodestone::level::region {
     Region::Region(const types::Vec2i &coords)
         : level::FiniteLevel(
               {{// min
-                coords.x * MAX_BOUNDS.x, coords.z * MAX_BOUNDS.z},
+                coords.x * MAX_BOUNDS.x, coords.y * MAX_BOUNDS.y},
                {// max
                 (coords.x * MAX_BOUNDS.x) + MAX_BOUNDS.x - 1,
-                (coords.z * MAX_BOUNDS.z) + MAX_BOUNDS.z - 1}}),
-          mCoords(coords) {}
+                (coords.y * MAX_BOUNDS.y) + MAX_BOUNDS.y - 1}}),
+          m_coords(coords) {}
 } // namespace lodestone::level::region

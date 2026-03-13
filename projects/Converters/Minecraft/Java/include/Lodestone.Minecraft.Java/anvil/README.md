@@ -1,0 +1,1 @@
+For info on the names, see https://github.com/DexrnZacAttack/MinecraftVersionIdentifiers

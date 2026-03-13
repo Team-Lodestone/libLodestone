@@ -2,20 +2,19 @@
 // Created by Zero on 11/20/25.
 //
 
-#include "Lodestone.Minecraft.Java/alpha/world/AlphaWorldIo.h"
+#include "Lodestone.Minecraft.Java/conversion/alpha/AlphaWorldIo.h"
 
 #include "Lodestone.Minecraft.Java/Identifiers.h"
-#include "Lodestone.Minecraft.Java/alpha/player/AlphaPlayerIo.h"
-#include "Lodestone.Minecraft.Java/alpha/world/AlphaWorld.h"
-#include "Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunk.h"
-#include "Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunkIo.h"
-#include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayer.h"
+#include "Lodestone.Minecraft.Java/conversion/alpha/AlphaPlayerIo.h"
+#include "Lodestone.Minecraft.Java/alpha/AlphaWorld.h"
+#include "Lodestone.Minecraft.Java/mcregion/McRegionChunk.h"
+#include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionChunkIo.h"
+#include "Lodestone.Minecraft.Java/mcregion/McRegionPlayer.h"
 #include <libnbt++/io/ozlibstream.h>
 
 #include <Lodestone.Common/util/Logging.h>
 #include <Lodestone.Common/util/Math.h>
-#include <Lodestone.Conversion/chunk/ChunkIORegistry.h>
-#include <Lodestone.Conversion/player/PlayerIORegistry.h>
+
 
 #include <libnbt++/io/izlibstream.h>
 #include <libnbt++/io/stream_reader.h>
@@ -25,23 +24,17 @@
 #include <iostream>
 
 namespace lodestone::minecraft::java::alpha::world {
-    const conversion::level::LevelIO *
-    AlphaWorldIo::getLevelIO(int version) const {
-        return nullptr;
-    }
-
     std::unique_ptr<level::world::World> AlphaWorldIo::read(
-        const std::filesystem::path &path, int version,
-        const conversion::world::options::AbstractWorldReadOptions &options)
+        const common::conversion::io::options::OptionPresets::CommonFilesystemOptions &options)
         const {
-        if (!std::filesystem::exists(path))
+        if (!std::filesystem::exists(options.path))
             return nullptr;
 
         map_t<int, std::filesystem::path> dims;
-        dims.emplace(0, path); // main dim
+        dims.emplace(0, options.path); // main dim
 
         // scan for dims
-        for (auto &d : std::filesystem::directory_iterator(path)) {
+        for (auto &d : std::filesystem::directory_iterator(options.path)) {
             const std::string name = d.path().filename().string();
 
             if (!d.is_directory() || !name.starts_with("DIM"))
@@ -57,8 +50,8 @@ namespace lodestone::minecraft::java::alpha::world {
         level::types::Vec3i spawnPos = {0, 64, 0};
         std::unique_ptr<level::world::World> world =
             std::make_unique<level::world::World>();
-        if (std::filesystem::exists(path / "level.dat")) {
-            std::ifstream dat(path / "level.dat", std::ios::binary);
+        if (std::filesystem::exists(options.path / "level.dat")) {
+            std::ifstream dat(options.path / "level.dat", std::ios::binary);
             zlib::izlibstream strm(dat);
 
             nbt::io::stream_reader nbt(strm);
@@ -67,7 +60,7 @@ namespace lodestone::minecraft::java::alpha::world {
             nbt::tag_compound &data =
                 (tag.get()->at("Data").as<nbt::tag_compound>());
 
-            std::string name = path.filename().string();
+            std::string name = options.path.filename().string();
             std::unique_ptr<AlphaWorld> w = std::make_unique<AlphaWorld>(name);
 
             // todo handle player tag
@@ -78,27 +71,22 @@ namespace lodestone::minecraft::java::alpha::world {
             spawnPos = {spawnX, spawnY, spawnZ};
 
             int64_t time = data["Time"].get().as<nbt::tag_long>();
-            w->setTime(time);
-
             int64_t seed = data["RandomSeed"].get().as<nbt::tag_long>();
-            w->setSeed(seed);
-
             int64_t lastPlayed = data["LastPlayed"].get().as<nbt::tag_long>();
-            w->setLastPlayed(lastPlayed);
+
+            common::world::data::LevelData *d = new common::world::data::LevelData{seed, lastPlayed, time};
 
             LOG_DEBUG(w->toString());
             world = std::move(w);
             dat.close();
         }
 
-        if (std::filesystem::exists(path / "players") &&
-            std::filesystem::is_directory(path / "players")) {
-            const player::AlphaPlayerIO *pio =
-                static_cast<const player::AlphaPlayerIO *>(
-                    conversion::player::PlayerIORegistry::getInstance()
-                        .getPlayerIO(identifiers::ALPHA));
+        if (std::filesystem::exists(options.path / "players") &&
+            std::filesystem::is_directory(options.path / "players")) {
+
+            const player::AlphaNbtPlayerIO *pio = this->getAsByRelation<const player::AlphaNbtPlayerIO, &identifiers::NBT_PLAYER_IO>();
             for (const auto &f :
-                 std::filesystem::directory_iterator(path / "players")) {
+                 std::filesystem::directory_iterator(options.path / "players")) {
                 if (!std::filesystem::is_regular_file(f))
                     continue;
 
@@ -109,7 +97,19 @@ namespace lodestone::minecraft::java::alpha::world {
                 auto [nm, root] = nbt.read_compound();
 
                 std::unique_ptr<level::entity::Player> r =
-                    pio->read(f, *root, version); // todo return value?
+                    pio->read(common::conversion::io::options::OptionPresets::CommonNbtFilesystemReadOptions {
+                                  common::conversion::io::options::OptionPresets::CommonNbtReadOptions {
+                                      common::conversion::io::options::NbtReaderOptions {
+                                          *root
+                                      },
+                                        lodestone::conversion::io::options::versioned::VersionedOptions {
+                                            options.version
+                                        }
+                                  },
+                                    lodestone::conversion::io::options::fs::FilesystemPathOptions {
+                                        f
+                                    }
+                    }); // todo return value?
 
                 LOG_DEBUG(r->toString());
 
@@ -119,10 +119,8 @@ namespace lodestone::minecraft::java::alpha::world {
         }
 
         int t = 2;
-        const mcregion::chunk::McRegionChunkIO *chunkIo =
-            dynamic_cast<const mcregion::chunk::McRegionChunkIO *>(
-                conversion::chunk::ChunkIORegistry::getInstance().getChunkIO(
-                    identifiers::MCREGION));
+
+        const mcregion::chunk::McRegionChunkIO *chunkIo = this->getAsByRelation<const mcregion::chunk::McRegionChunkIO, &lodestone::conversion::identifiers::CHUNK_IO>();
         for (auto [id, pth] : dims) {
             level::Level *dim = new level::Level();
             LOG_DEBUG("Reading " << dim->toString());
@@ -146,7 +144,14 @@ namespace lodestone::minecraft::java::alpha::world {
 
                 std::unique_ptr<mcregion::chunk::McRegionChunk> c =
                     CAST_UNIQUE_PTR(mcregion::chunk::McRegionChunk,
-                                    chunkIo->read(strm, version));
+                                    chunkIo->read(common::conversion::io::options::OptionPresets::CommonReadOptions {
+                                        lodestone::conversion::io::options::fs::file::FileReaderOptions {
+                                            strm
+                                        },
+                                        lodestone::conversion::io::options::versioned::VersionedOptions {
+                                            options.version
+                                        }
+                                    }));
 
                 LOG_DEBUG(file.string());
                 LOG_DEBUG(c->toString());
@@ -183,18 +188,16 @@ namespace lodestone::minecraft::java::alpha::world {
 
         return world;
     }
-    void AlphaWorldIo::write(
-        const std::filesystem::path &path, level::world::World *w, int version,
-        const conversion::world::options::AbstractWorldWriteOptions &options)
+    void AlphaWorldIo::write(level::world::World *w, const common::conversion::io::options::OptionPresets::CommonFilesystemOptions &options)
         const {
 
-        if (!std::filesystem::exists(path)) {
-            std::filesystem::create_directories(path);
+        if (!std::filesystem::exists(options.path)) {
+            std::filesystem::create_directories(options.path);
         }
 
         // Create level.dat
         {
-            std::ofstream ofs(path / "level.dat", std::ifstream::binary);
+            std::ofstream ofs(options.path / "level.dat", std::ifstream::binary);
             zlib::ozlibstream strm(ofs, Z_DEFAULT_COMPRESSION, true);
 
             nbt::io::stream_writer writer(strm);
@@ -207,7 +210,7 @@ namespace lodestone::minecraft::java::alpha::world {
                 lastPlayed
                     ? lastPlayed
                           ->as<
-                              level::properties::TemplatedProperty<int64_t &>>()
+                              level::properties::TemplatedProperty<int64_t>>()
                           ->getValue()
                     : static_cast<int64_t>(0);
 
@@ -215,7 +218,7 @@ namespace lodestone::minecraft::java::alpha::world {
             data["RandomSeed"] =
                 seed
                     ? seed->as<
-                              level::properties::TemplatedProperty<int64_t &>>()
+                              level::properties::TemplatedProperty<int64_t>>()
                           ->getValue()
                     : static_cast<int64_t>(0);
 
@@ -230,7 +233,7 @@ namespace lodestone::minecraft::java::alpha::world {
             data["Time"] =
                 time
                     ? time->as<
-                              level::properties::TemplatedProperty<int64_t &>>()
+                              level::properties::TemplatedProperty<int64_t>>()
                           ->getValue()
                     : static_cast<int64_t>(0);
 
@@ -241,12 +244,9 @@ namespace lodestone::minecraft::java::alpha::world {
         }
 
         // Create chunk folders and output chunks (base36)
-        const java::mcregion::chunk::McRegionChunkIO *io =
-            static_cast<const java::mcregion::chunk::McRegionChunkIO *>(
-                lodestone::conversion::chunk::ChunkIORegistry::getInstance()
-                    .getChunkIO(java::identifiers::MCREGION));
+        const mcregion::chunk::McRegionChunkIO *io = this->getAsByRelation<const mcregion::chunk::McRegionChunkIO, &lodestone::conversion::identifiers::CHUNK_IO>();
 
-        std::filesystem::path p = path;
+        std::filesystem::path p = options.path;
 
         int i = 2; // for writing other dims
         for (auto &[id, lvl] : w->getLevels()) {
@@ -256,14 +256,14 @@ namespace lodestone::minecraft::java::alpha::world {
                 dim != 0) {
                 const int d = dim == 0x7FFFFFFF ? i : dim;
                 if (d != 0)
-                    p = path / ("DIM" + std::to_string(d));
+                    p = options.path / ("DIM" + std::to_string(d));
             }
             i++;
 
             // loop over level chunks here
             for (auto &[coords, chunk] : lvl->getChunks()) {
                 int tX = coords.x;
-                int tZ = coords.z;
+                int tZ = coords.y;
 
                 std::string fX = lodestone::common::util::Math::base36(tX & 63);
                 std::string fZ = lodestone::common::util::Math::base36(tZ & 63);
@@ -279,9 +279,18 @@ namespace lodestone::minecraft::java::alpha::world {
                 std::string cf = "c." + cX + "." + cZ + ".dat";
                 std::ofstream ofs(chunkOut / cf, std::ofstream::binary);
                 zlib::ozlibstream ozs(ofs, Z_DEFAULT_COMPRESSION, true);
-                io->write(chunk.get(), coords, version, ozs);
+                io->write(chunk.get(), common::conversion::io::options::OptionPresets::CommonChunkWriteOptions {
+                              common::conversion::io::options::ChunkOptions {
+                              coords},
+                                common::conversion::io::options::OptionPresets::CommonWriteOptions {
+                                    lodestone::conversion::io::options::fs::file::FileWriterOptions {
+                                        ozs
+                                    },
+            lodestone::conversion::io::options::versioned::VersionedOptions {
+            options.version}
+                                }
+                });
             }
         }
     }
-
 } // namespace lodestone::minecraft::java::alpha::world

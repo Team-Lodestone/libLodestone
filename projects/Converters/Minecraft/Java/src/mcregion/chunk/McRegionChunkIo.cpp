@@ -1,7 +1,9 @@
 //
 // Created by DexrnZacAttack on 11/8/25 using zPc-i2.
 //
-#include "Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunkIo.h"
+#include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionChunkIo.h"
+
+#include <Lodestone.Minecraft.Common/Identifiers.h>
 
 #include <iostream>
 
@@ -13,38 +15,38 @@
 #include <libnbt++/tag_array.h>
 #include <libnbt++/tag_primitive.h>
 
-#include "Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunk.h"
+#include "Lodestone.Minecraft.Java/mcregion/McRegionChunk.h"
 #include <Lodestone.Common/Indexing.h>
 #include <libnbt++/tag_list.h>
 
 namespace lodestone::minecraft::java::mcregion::chunk {
     std::unique_ptr<level::chunk::Chunk>
-    McRegionChunkIO::read(nbt::tag_compound &chunk, const int version) const {
-        const int32_t x = chunk["xPos"].get().as<nbt::tag_int>().get();
-        const int32_t z = chunk["zPos"].get().as<nbt::tag_int>().get();
+    McRegionNbtChunkIO::read(const common::conversion::io::options::OptionPresets::CommonNbtReadOptions &options) const {
+        const int32_t x = options.input["xPos"].get().as<nbt::tag_int>().get();
+        const int32_t z = options.input["zPos"].get().as<nbt::tag_int>().get();
         const int64_t lastUpdate =
-            chunk["LastUpdate"].get().as<nbt::tag_long>().get();
+            options.input["LastUpdate"].get().as<nbt::tag_long>().get();
         const int8_t *blocks =
-            chunk["Blocks"].get().as<nbt::tag_byte_array>().get().data();
+            options.input["Blocks"].get().as<nbt::tag_byte_array>().get().data();
         const int8_t *data =
-            chunk["Data"].get().as<nbt::tag_byte_array>().get().data();
+            options.input["Data"].get().as<nbt::tag_byte_array>().get().data();
 
         const int8_t *skyLight =
-            chunk["SkyLight"].get().as<nbt::tag_byte_array>().get().data();
+            options.input["SkyLight"].get().as<nbt::tag_byte_array>().get().data();
         const int8_t *blockLight =
-            chunk["BlockLight"].get().as<nbt::tag_byte_array>().get().data();
+            options.input["BlockLight"].get().as<nbt::tag_byte_array>().get().data();
 
         std::unique_ptr<McRegionChunk> c = std::make_unique<McRegionChunk>(
             level::types::Vec2i(x, z), lastUpdate);
 
         const std::unique_ptr<lodestone::conversion::block::version::BlockIO>
-            io = LodestoneJava::getInstance()->io.getIo(version);
+            io = LodestoneJava::getInstance()->io.getIo(options.version);
 
-        for (int cx = 0; cx < CHUNK_WIDTH; cx++) {
-            for (int cz = 0; cz < CHUNK_DEPTH; cz++) {
-                for (int cy = 0; cy < CHUNK_HEIGHT; cy++) {
+        for (int cx = 0; cx < McRegionChunkIO::CHUNK_WIDTH; cx++) {
+            for (int cz = 0; cz < McRegionChunkIO::CHUNK_DEPTH; cz++) {
+                for (int cy = 0; cy < McRegionChunkIO::CHUNK_HEIGHT; cy++) {
                     const size_t idx =
-                        INDEX_XZY(cx, cy, cz, CHUNK_HEIGHT, CHUNK_DEPTH);
+                        INDEX_XZY(cx, cy, cz, McRegionChunkIO::CHUNK_HEIGHT, McRegionChunkIO::CHUNK_DEPTH);
 
                     const uint8_t bb = blocks[idx];
 
@@ -55,7 +57,7 @@ namespace lodestone::minecraft::java::mcregion::chunk {
 
                     const uint8_t d = GET_NIBBLE(data, idx);
 
-                    level::block::properties::BlockProperties b =
+                    level::block::instance::BlockInstance b =
                         io->convertBlockToInternal(
                             lodestone::conversion::block::data::
                                 NumericBlockData(
@@ -64,7 +66,7 @@ namespace lodestone::minecraft::java::mcregion::chunk {
                                          // BlockPropertyIO?)
 
                     if (b.getBlock() !=
-                        level::block::BlockRegistry::sDefaultBlock)
+                        level::block::BlockRegistry::s_defaultBlock)
                         c->McRegionChunk::setBlock(std::move(b), cx, cy, cz);
 
                     if (level::chunk::section::Section *s =
@@ -81,33 +83,31 @@ namespace lodestone::minecraft::java::mcregion::chunk {
         return c;
     }
 
-    nbt::tag_compound McRegionChunkIO::write(level::chunk::Chunk *c,
-                                             const level::types::Vec2i &coords,
-                                             const int version) const {
+    void McRegionNbtChunkIO::write(level::chunk::Chunk *c,const common::conversion::io::options::OptionPresets::NbtOutputWriteOptions<const common::conversion::io::options::OptionPresets::CommonChunkOptions> &options) const {
         nbt::tag_compound root{};
         nbt::tag_compound level{};
 
         const std::unique_ptr<lodestone::conversion::block::version::BlockIO>
-            bio = LodestoneJava::getInstance()->io.getIo(version);
+            bio = LodestoneJava::getInstance()->io.getIo(options.version);
 
         // todo make sure to not write EmptyChunk
-        level["xPos"] = static_cast<int32_t>(coords.x);
-        level["zPos"] = static_cast<int32_t>(coords.z);
+        level["xPos"] = static_cast<int32_t>(options.coords.x);
+        level["zPos"] = static_cast<int32_t>(options.coords.y);
         level["LastUpdate"] = static_cast<int64_t>(0); // TODO
         level["TerrainPopulated"] = static_cast<int8_t>(true);
 
         // this is shit but nbt lib begs for vector
         std::vector<int8_t> blocks(
-            CHUNK_WIDTH * CHUNK_HEIGHT *
-            CHUNK_DEPTH); // I didn't want to use vector but I guess I have to
+            McRegionChunkIO::CHUNK_WIDTH * McRegionChunkIO::CHUNK_HEIGHT *
+            McRegionChunkIO::CHUNK_DEPTH); // I didn't want to use vector but I guess I have to
                           // for nbt::tag_array
-        std::vector<int8_t> data((CHUNK_WIDTH * CHUNK_HEIGHT * CHUNK_DEPTH) /
+        std::vector<int8_t> data((McRegionChunkIO::CHUNK_WIDTH * McRegionChunkIO::CHUNK_HEIGHT * McRegionChunkIO::CHUNK_DEPTH) /
                                  2);
         std::vector<int8_t> skyLight(
-            (CHUNK_WIDTH * CHUNK_HEIGHT * CHUNK_DEPTH) / 2);
+            (McRegionChunkIO::CHUNK_WIDTH * McRegionChunkIO::CHUNK_HEIGHT * McRegionChunkIO::CHUNK_DEPTH) / 2);
         std::vector<int8_t> blockLight(
-            (CHUNK_WIDTH * CHUNK_HEIGHT * CHUNK_DEPTH) / 2);
-        std::vector<int8_t> heightMap(CHUNK_WIDTH * CHUNK_DEPTH);
+            (McRegionChunkIO::CHUNK_WIDTH * McRegionChunkIO::CHUNK_HEIGHT * McRegionChunkIO::CHUNK_DEPTH) / 2);
+        std::vector<int8_t> heightMap(McRegionChunkIO::CHUNK_WIDTH * McRegionChunkIO::CHUNK_DEPTH);
         // todo wiki says there's tileticks which is gonna be pain
 
         int8_t *blockData = blocks.data(); // avoid the annoying bounds checks
@@ -117,35 +117,25 @@ namespace lodestone::minecraft::java::mcregion::chunk {
         int8_t *blockLightData = blockLight.data();
         int8_t *heightMapData = heightMap.data();
 
-        for (int cx = 0; cx < CHUNK_WIDTH; cx++) {
-            for (int cz = 0; cz < CHUNK_DEPTH; cz++) {
-                for (int cy = 0; cy < CHUNK_HEIGHT; cy++) {
+        for (int cx = 0; cx < McRegionChunkIO::CHUNK_WIDTH; cx++) {
+            for (int cz = 0; cz < McRegionChunkIO::CHUNK_DEPTH; cz++) {
+                for (int cy = 0; cy < McRegionChunkIO::CHUNK_HEIGHT; cy++) {
                     const size_t idx =
-                        INDEX_XZY(cx, cy, cz, CHUNK_HEIGHT, CHUNK_DEPTH);
-                    const level::block::properties::BlockProperties *b =
+                        INDEX_XZY(cx, cy, cz, McRegionChunkIO::CHUNK_HEIGHT, McRegionChunkIO::CHUNK_DEPTH);
+                    const level::block::instance::BlockInstance &b =
                         c->getBlock(cx, cy, cz);
 #ifdef USE_RISKY_OPTIMIZATIONS
-                    if (b->getBlock() !=
-                        level::block::BlockRegistry::sDefaultBlock) {
+                    if (b.getBlock() !=
+                        level::block::BlockRegistry::s_defaultBlock) {
 #endif
                         uint8_t id = 0;
                         uint8_t dat = 0;
-#ifndef USE_RISKY_OPTIMIZATIONS
-                        if (b->getBlock() !=
-                            level::block::BlockRegistry::sDefaultBlock) {
-#endif
-                            if (const lodestone::conversion::block::data::
-                                    NumericBlockData *bl =
-                                        bio->convertBlockFromInternal(b)
-                                            ->as<
-                                                lodestone::conversion::block::
-                                                    data::NumericBlockData>()) {
-                                id = bl->getId();
-                                dat = bl->getData();
-                            }
-#ifndef USE_RISKY_OPTIMIZATIONS
+
+                        if (const lodestone::conversion::block::data::NumericBlockData *bl =
+                                    bio->convertBlockFromInternal(&b)->as<lodestone::conversion::block::data::NumericBlockData>()) {
+                            id = bl->getId();
+                            dat = bl->getData();
                         }
-#endif
 
                         blockData[idx] = id;
 
@@ -165,7 +155,7 @@ namespace lodestone::minecraft::java::mcregion::chunk {
                           : 15);
                 }
 
-                heightMapData[INDEX_YX(cx, cz, CHUNK_WIDTH)] =
+                heightMapData[INDEX_YX(cx, cz, McRegionChunkIO::CHUNK_WIDTH)] =
                     c->getHeightAt(cx, cz);
             }
         }
@@ -182,25 +172,41 @@ namespace lodestone::minecraft::java::mcregion::chunk {
 
         root["Level"] = std::move(level);
 
-        return root;
+        options.output = root;
     }
 
-    std::unique_ptr<lodestone::level::chunk::Chunk>
-    McRegionChunkIO::read(std::istream &in, const int version) const {
+    std::unique_ptr<level::chunk::Chunk>
+    McRegionChunkIO::read(const common::conversion::io::options::OptionPresets::CommonReadOptions &options) const {
         nbt::io::stream_reader streamReader =
-            nbt::io::stream_reader(in, endian::big);
+            nbt::io::stream_reader(options.input, endian::big);
 
         auto [name, root] = streamReader.read_compound();
         nbt::tag_compound &level =
             (root.get()->at("Level").as<nbt::tag_compound>());
-        return read(level, version);
+
+        const McRegionNbtChunkIO *io = this->getAsByRelation<const McRegionNbtChunkIO, &identifiers::NBT_CHUNK_IO>();
+
+        return io->read(common::conversion::io::options::OptionPresets::CommonNbtReadOptions {
+            common::conversion::io::options::NbtReaderOptions {
+                level
+            },
+            conversion::io::options::versioned::VersionedOptions {
+                options.version
+            }
+        });
     }
 
-    void McRegionChunkIO::write(lodestone::level::chunk::Chunk *c,
-                                const level::types::Vec2i &coords,
-                                const int version, std::ostream &out) const {
-        nbt::io::stream_writer w = nbt::io::stream_writer(out, endian::big);
+    void McRegionChunkIO::write(level::chunk::Chunk *c, const common::conversion::io::options::OptionPresets::CommonChunkWriteOptions &options) const {
+        nbt::io::stream_writer w = nbt::io::stream_writer(options.output, endian::big);
 
-        w.write_tag("", write(c, coords, version));
+        const McRegionNbtChunkIO *io = this->getAsByRelation<const McRegionNbtChunkIO, &identifiers::NBT_CHUNK_IO>();
+        io->writeToNbtStreamWriter(c, "", w, common::conversion::io::options::OptionPresets::CommonChunkOptions {
+            common::conversion::io::options::ChunkOptions {
+                options.coords
+            },
+            conversion::io::options::versioned::VersionedOptions {
+                options.version
+            }
+        });
     }
 } // namespace lodestone::minecraft::java::mcregion::chunk

@@ -18,11 +18,11 @@ namespace lodestone::level::chunk {
         LevelChunk(int height, ChunkContainer *container,
                    const types::Vec2i &coords);
 
-        int getChunkHeight() const override;
+        [[nodiscard]] int getChunkHeight() const override;
 
         /** Checks if a section at the given section relative y level exists
          * (NOT BLOCK Y) */
-        bool hasSection(const int y) const;
+        [[nodiscard]] bool hasSection(const int y) const;
 
         /** Gets/Creates a section at the given section relative y level (NOT
          * BLOCK Y) */
@@ -30,28 +30,22 @@ namespace lodestone::level::chunk {
 
         /** Creates a section at the given section relative y level (NOT BLOCK
          * Y) */
-        section::Section *getSection(const int y) const override;
-
-        void calculateHeightmap() override;
+        [[nodiscard]] section::Section *getSection(const int y) const override;
 
         void calculateBlockmap() override;
 
-        void calculateMaps() override;
-
-        void calculateHeightmapAtColumn(int x, int z, int height) override;
-
         void calculateBlockmapAtColumn(int x, int z, int height) override;
 
-        void calculateMapsAtColumn(int x, int z, int height) override;
-
-        block::properties::BlockProperties *
+        [[nodiscard]] const block::instance::BlockInstance &
         getBlock(const int x, const int y, const int z) const override;
 
-        void setBlock(block::properties::BlockProperties &&blk, int x, int y,
+        void setBlock(block::instance::BlockInstance &&blk, int x, int y,
                       int z) override;
 
-        void setBlockRaw(block::properties::BlockProperties &&blk, int x, int y,
+        void setBlockRaw(block::instance::BlockInstance &&blk, int x, int y,
                          int z) override;
+
+        int getSectionCount() const override;
 
       protected:
         /** Chunk Sections
@@ -60,7 +54,7 @@ namespace lodestone::level::chunk {
          * storing 16x16x16 blocks. This dictates the height of the chunk as
          * each section is 16 blocks in height.
          */
-        std::vector<std::unique_ptr<section::Section>> mSections;
+        std::vector<std::unique_ptr<section::Section>> m_sections;
     };
 } // namespace lodestone::level::chunk
 

@@ -1,32 +1,36 @@
 //
 // Created by DexrnZacAttack on 11/14/25 using zPc-i2.
 //
-#include "Lodestone.Minecraft.Java/alpha/player/AlphaPlayerIo.h"
+#include "Lodestone.Minecraft.Java/conversion/alpha/AlphaPlayerIo.h"
+
+#include <Lodestone.Level/world/World.h>
 
 #include <libnbt++/io/stream_reader.h>
 
-#include "Lodestone.Minecraft.Java/alpha/player/AlphaPlayer.h"
+#include "Lodestone.Minecraft.Java/alpha/AlphaPlayer.h"
 #include <libnbt++/nbt_tags.h>
 
-#include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayer.h"
+#include <Lodestone.Conversion/registry/Registries.h>
+#include "Lodestone.Minecraft.Java/mcregion/McRegionPlayer.h"
 
 namespace lodestone::minecraft::java::alpha::player {
     std::unique_ptr<level::entity::Player>
-    AlphaPlayerIO::read(const std::filesystem::path &filename,
-                        nbt::tag_compound &player, const int version) const {
+    AlphaNbtPlayerIO::read(const common::conversion::io::options::OptionPresets::CommonNbtFilesystemReadOptions &options) const {
         std::unique_ptr<AlphaPlayer> p =
-            std::make_unique<AlphaPlayer>(filename.stem().string());
+            std::make_unique<AlphaPlayer>(options.path.stem().string());
+
+        nbt::tag_compound &player = options.input;
 
         const nbt::tag_list pos = player["Pos"].as<nbt::tag_list>();
-        p->setPosition(level::types::Vec3d{static_cast<double>(pos[0]),
+        p->position = level::types::Vec3d{static_cast<double>(pos[0]),
                                            static_cast<double>(pos[1]),
-                                           static_cast<double>(pos[2])});
+                                           static_cast<double>(pos[2])};
 
         const nbt::tag_list rot = player["Rotation"].as<nbt::tag_list>();
-        p->setRotation(level::types::Vec2f{
+        p->rotation = level::types::Vec2f{
             static_cast<float>(rot[0]),
             static_cast<float>(rot[1]),
-        });
+        };
 
         const nbt::tag_list motion = player["Motion"].as<nbt::tag_list>();
         p->setMotion(level::types::Vec3d{static_cast<double>(motion[0]),
@@ -49,93 +53,102 @@ namespace lodestone::minecraft::java::alpha::player {
         return p;
     }
 
-    nbt::tag_compound AlphaPlayerIO::write(level::entity::Player *p,
-                                           const int version) const {
-        nbt::tag_compound out;
-
+    void AlphaNbtPlayerIO::write(level::entity::Player *plr,const common::conversion::io::options::OptionPresets::NbtOutputWriteOptions<const conversion::io::options::versioned::VersionedOptions> &options) const {
         const level::types::Vec3d &pos =
-            p->getPosition().value_or(level::types::Vec3d{0.0, 0.0, 0.0});
-        out["Pos"] = nbt::tag_list({pos.x, pos.y, pos.z});
+            plr->position;
+        options.output["Pos"] = nbt::tag_list({pos.x, pos.y, pos.z});
 
-        const level::types::Vec2f &rot = p->getRotation();
-        out["Rotation"] = nbt::tag_list({rot.x, rot.z});
+        const level::types::Vec2f &rot = plr->rotation;
+        options.output["Rotation"] = nbt::tag_list({rot.x, rot.y});
 
-        const level::types::Vec3d &motion = p->getMotion();
-        out["Motion"] = nbt::tag_list({motion.x, motion.y, motion.z});
+        const level::types::Vec3d &motion = plr->getMotion();
+        options.output["Motion"] = nbt::tag_list({motion.x, motion.y, motion.z});
 
-        out["Health"] = p->getHealth();
+        options.output["Health"] = plr->getHealth();
 
-        auto air = p->getProperty("breathingTime");
-        out["Air"] =
-            air ? air->as<level::properties::TemplatedProperty<short &>>()
+        auto air = plr->getProperty("breathingTime");
+        options.output["Air"] =
+            air ? air->as<level::properties::TemplatedProperty<short>>()
                       ->getValue()
                 : static_cast<short>(300);
 
-        auto deathTime = p->getProperty("deathTime");
-        out["DeathTime"] =
+        auto deathTime = plr->getProperty("deathTime");
+        options.output["DeathTime"] =
             deathTime
-                ? deathTime->as<level::properties::TemplatedProperty<short &>>()
+                ? deathTime->as<level::properties::TemplatedProperty<short>>()
                       ->getValue()
                 : static_cast<short>(0);
 
-        auto fire = p->getProperty("fireTime");
-        out["Fire"] =
-            fire ? fire->as<level::properties::TemplatedProperty<short &>>()
+        auto fire = plr->getProperty("fireTime");
+        options.output["Fire"] =
+            fire ? fire->as<level::properties::TemplatedProperty<short>>()
                        ->getValue()
                  : static_cast<short>(-20);
 
-        auto hurtTime = p->getProperty("hurtTime");
-        out["HurtTime"] =
+        auto hurtTime = plr->getProperty("hurtTime");
+        options.output["HurtTime"] =
             hurtTime
-                ? hurtTime->as<level::properties::TemplatedProperty<short &>>()
+                ? hurtTime->as<level::properties::TemplatedProperty<short>>()
                       ->getValue()
                 : static_cast<short>(0);
 
-        auto attackTime = p->getProperty("attackTime");
-        out["AttackTime"] =
+        auto attackTime = plr->getProperty("attackTime");
+        options.output["AttackTime"] =
             attackTime
                 ? attackTime
-                      ->as<level::properties::TemplatedProperty<short &>>()
+                      ->as<level::properties::TemplatedProperty<short>>()
                       ->getValue()
                 : static_cast<short>(0);
 
-        auto dimension = p->getProperty("dimension");
-        out["Dimension"] =
+        auto dimension = plr->getProperty("dimension");
+        options.output["Dimension"] =
             mcregion::player::McRegionPlayer::identifierToDimensionId(
                 dimension
                     ? dimension
                           ->as<level::properties::TemplatedProperty<
-                              lodestone::common::registry::Identifier &>>()
+                              lodestone::common::registry::Identifier>>()
                           ->getValue()
                     : level::world::World::Dimension::OVERWORLD);
 
-        auto fallDistance = p->getProperty("fallDistance");
-        out["FallDistance"] =
+        auto fallDistance = plr->getProperty("fallDistance");
+        options.output["FallDistance"] =
             fallDistance
                 ? fallDistance
-                      ->as<level::properties::TemplatedProperty<short &>>()
+                      ->as<level::properties::TemplatedProperty<short>>()
                       ->getValue()
                 : static_cast<short>(0);
 
-        out["OnGround"] = p->isOnGround();
-
-        return out;
+        options.output["OnGround"] = plr->isOnGround();
     }
 
     std::unique_ptr<level::entity::Player>
-    AlphaPlayerIO::read(const std::filesystem::path &filename, std::istream &in,
-                        const int version) const {
-        auto streamReader = nbt::io::stream_reader(in, endian::big);
+    AlphaPlayerIO::read(const common::conversion::io::options::OptionPresets::CommonPlayerReadOptions &options) const {
+        auto streamReader = nbt::io::stream_reader(options.input, endian::big);
 
-        auto root = streamReader.read_compound();
-        return read(filename, *root.second, version);
+        auto [key, value] = streamReader.read_compound();
+
+        const AlphaNbtPlayerIO *io = this->getAsByRelation<const AlphaNbtPlayerIO, &identifiers::NBT_PLAYER_IO>();
+        return io->read(common::conversion::io::options::OptionPresets::CommonNbtFilesystemReadOptions {
+            common::conversion::io::options::OptionPresets::CommonNbtReadOptions {
+                common::conversion::io::options::NbtReaderOptions {
+                    *value
+                },
+                conversion::io::options::versioned::VersionedOptions {
+                    options.version,
+                }
+            },
+            conversion::io::options::fs::FilesystemPathOptions {
+                options.path
+            }
+        });
     }
 
-    void AlphaPlayerIO::write(level::entity::Player *p, const int version,
-                              std::ostream &out) const {
-        nbt::io::stream_writer w = nbt::io::stream_writer(out, endian::big);
+    void AlphaPlayerIO::write(level::entity::Player *p, const common::conversion::io::options::OptionPresets::CommonWriteOptions &options) const {
+        nbt::io::stream_writer w = nbt::io::stream_writer(options.output, endian::big);
 
-        w.write_tag("", write(p, version));
+        const AlphaNbtPlayerIO *io = this->getAsByRelation<const AlphaNbtPlayerIO, &identifiers::NBT_PLAYER_IO>();
+        io->writeToNbtStreamWriter(p, "", w, conversion::io::options::versioned::VersionedOptions {
+            options.version
+        });
     }
-
 } // namespace lodestone::minecraft::java::alpha::player

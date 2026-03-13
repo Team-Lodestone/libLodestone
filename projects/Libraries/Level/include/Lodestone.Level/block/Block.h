@@ -10,6 +10,7 @@
 #include <Lodestone.Common/string/OperatorStringBuilder.h>
 #include <Lodestone.Common/string/StringSerializable.h>
 
+#include "Lodestone.Level/properties/definition/ObjectDefinition.h"
 #include "Lodestone.Level/item/block/BlockItem.h"
 
 namespace lodestone::level::block {
@@ -17,38 +18,50 @@ namespace lodestone::level::block {
 
     class Block : public common::string::StringSerializable {
       public:
-        constexpr Block(const lodestone::common::registry::Identifier *id,
-                        const material::Material &material)
-            : mId(id), mMaterial(material) {
-            this->mItem =
-                new lodestone::level::item::block::BlockItem(id, this);
+        constexpr Block(const common::registry::Identifier *id,
+                        const material::Material &material, const properties::definition::ObjectDefinition *definition)
+            : m_id(id), m_material(material), definition(definition) {
+            this->m_item = new item::block::BlockItem(id, this);
         };
 
         constexpr ~Block() override = default;
 
-        constexpr const lodestone::common::registry::Identifier *getID() const {
-            return mId;
+        constexpr const common::registry::Identifier *getID() const {
+            return m_id;
         };
 
-        constexpr std::string getIDString() const { return mId->getString(); };
+        constexpr std::string getIDString() const { return m_id->getString(); };
 
-        constexpr material::Material getMaterial() const { return mMaterial; }
+        constexpr material::Material getMaterial() const { return m_material; }
 
         std::string toString() const override {
-            return (common::string::OperatorStringBuilder(typeid(*this)))
-                .addField("id", *mId)
-                ->addField("material", mMaterial.toString())
+            return common::string::OperatorStringBuilder(typeid(*this))
+                .addField("id", *m_id)
+                ->addField("material", m_material.toString())
                 ->toString();
         };
 
         constexpr const item::block::BlockItem *getItem() const {
-            return mItem;
+            return m_item;
         }
 
+        constexpr virtual bool isTransparent() const {
+            return false;
+        }
+
+        constexpr virtual bool heightmapShouldIgnore() const {
+            return false;
+        }
+
+        constexpr virtual bool hasCollision() const {
+            return true;
+        }
+
+        const properties::definition::ObjectDefinition *definition;
       private:
-        const lodestone::common::registry::Identifier *mId;
-        const item::block::BlockItem *mItem;
-        const material::Material mMaterial;
+        const lodestone::common::registry::Identifier *m_id;
+        const item::block::BlockItem *m_item;
+        const material::Material m_material;
     };
 } // namespace lodestone::level::block
 

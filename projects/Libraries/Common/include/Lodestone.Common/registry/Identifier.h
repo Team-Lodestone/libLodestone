@@ -7,35 +7,38 @@
 #include <cstring>
 #include <format>
 
+#include "Lodestone.Common/util/Math.h"
+
 // this class required me to upgrade to c++20
 namespace lodestone::common::registry {
     class Identifier : public string::StringSerializable {
       protected:
         explicit constexpr Identifier(const char *name) noexcept
-            : mNamespace("lodestone"), mName(name) {};
+            : m_namespace("lodestone"), m_path(name) {};
 
       public:
-        constexpr Identifier(const char *nmsp, const char *name) noexcept
-            : mNamespace(nmsp), mName(name) {};
+        constexpr Identifier(const char *_namespace, const char *path) noexcept
+            : m_namespace(_namespace), m_path(path) {};
 
-        constexpr const char *getName() const noexcept { return mName; }
+        constexpr const char *getPath() const noexcept { return m_path; }
 
         constexpr const char *getNamespace() const noexcept {
-            return mNamespace;
+            return m_namespace;
         }
 
         constexpr std::string getString() const noexcept {
-            return std::string(mNamespace) + ":" + mName;
+            return std::string(m_namespace) + ":" + m_path;
         }
 
         constexpr std::string toString() const override { return getString(); };
 
         constexpr bool operator==(const Identifier &rhs) const noexcept {
-            return this->mName == rhs.mName &&
-                   this->mNamespace == rhs.mNamespace;
+            return util::Util::strcmpConstexpr(this->m_path, rhs.m_path) &&
+                   util::Util::strcmpConstexpr(this->m_namespace,
+                                               rhs.m_namespace);
         }
 
-        constexpr operator std::string() const noexcept override {
+        constexpr operator std::string() const noexcept {
             return getString();
         }
 
@@ -46,8 +49,8 @@ namespace lodestone::common::registry {
         }
 
       private:
-        const char *mNamespace;
-        const char *mName;
+        const char *m_namespace;
+        const char *m_path;
     };
 } // namespace lodestone::common::registry
 
@@ -61,20 +64,12 @@ struct std::formatter<lodestone::common::registry::Identifier>
     }
 };
 
-struct IdentifierHasher {
+template <>
+struct std::hash<lodestone::common::registry::Identifier> {
     size_t operator()(
         const lodestone::common::registry::Identifier &s) const noexcept {
-        return std::hash<std::string_view>{}(s.getName()) ^
+        return std::hash<std::string_view>{}(s.getPath()) ^
                (std::hash<std::string_view>{}(s.getNamespace()) << 1);
-    }
-};
-
-struct IdentifierComparator {
-    bool operator()(
-        const lodestone::common::registry::Identifier &lhs,
-        const lodestone::common::registry::Identifier &rhs) const noexcept {
-        return !std::strcmp(lhs.getNamespace(), rhs.getNamespace()) &&
-               !std::strcmp(lhs.getName(), rhs.getName());
     }
 };
 

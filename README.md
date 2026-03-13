@@ -21,7 +21,7 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
 - [X] World Engine
     - [X] Chunked Level
       - [X] Chunk Sections
-      - [ ] Palettes (for memory usage)
+      - [X] Palettes (for memory usage)
     - [ ] Lighting calculation (maybe?)
     - [ ] Biomes
     - [ ] POI/Structure system
@@ -51,8 +51,9 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
 - [ ] PE/Bedrock
 
 # Credits
-- [BinaryIO](https://github.com/DexrnZacAttack/libBIO)
+- [BinaryIO](https://codeberg.org/Dexrn/libBIO)
 - [libNBT++ 2](https://github.com/PrismLauncher/libnbtplusplus)
+- [danilwhale](https://codeberg.org/danilwhale)
 
 # Disclaimer
 This project is not an official Microsoft, Minecraft, nor Mojang Studios product.

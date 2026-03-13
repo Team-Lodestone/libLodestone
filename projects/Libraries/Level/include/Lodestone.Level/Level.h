@@ -3,6 +3,8 @@
 //
 #ifndef LODESTONE_LEVEL_H
 #define LODESTONE_LEVEL_H
+#include <Lodestone.Common/util/Util.h>
+
 #include <memory>
 #include <unordered_map>
 
@@ -24,20 +26,20 @@ namespace lodestone::level {
       public:
         bool isChunkInBounds(const types::Vec2i &coords) override;
 
-        block::properties::BlockProperties *
-        getBlock(signed_size_t x, signed_size_t y, signed_size_t z);
+        const block::instance::BlockInstance &
+        getBlock(signed_size_t x, signed_size_t y, signed_size_t z) const;
 
-        void setBlock(block::properties::BlockProperties &&blk, signed_size_t x,
+        void setBlock(block::instance::BlockInstance &&blk, signed_size_t x,
                       signed_size_t y, signed_size_t z);
 
-        void setBlockRaw(block::properties::BlockProperties &&blk,
+        void setBlockRaw(block::instance::BlockInstance &&blk,
                          signed_size_t x, signed_size_t y, signed_size_t z);
 
-        void setBlockCreate(block::properties::BlockProperties &&blk,
+        void setBlockCreate(block::instance::BlockInstance &&blk,
                             signed_size_t x, signed_size_t y, signed_size_t z,
                             int height = 256);
 
-        void setBlockCreateRaw(block::properties::BlockProperties &&blk,
+        void setBlockCreateRaw(block::instance::BlockInstance &&blk,
                                signed_size_t x, signed_size_t y,
                                signed_size_t z, int height = 256);
 
@@ -48,13 +50,13 @@ namespace lodestone::level {
         void setHeightAtCreate(int16_t h, signed_size_t x, signed_size_t z,
                                int height = 256);
 
-        const block::properties::BlockProperties *
+        const block::instance::BlockInstance &
         getBlockmapBlockAt(signed_size_t x, signed_size_t z) const;
 
-        void setBlockmapBlockAt(block::properties::BlockProperties *b,
+        void setBlockmapBlockAt(const block::instance::BlockInstance &b,
                                 signed_size_t x, signed_size_t z);
 
-        void setBlockmapBlockAtCreate(block::properties::BlockProperties *b,
+        void setBlockmapBlockAtCreate(const block::instance::BlockInstance &b,
                                       signed_size_t x, signed_size_t z,
                                       int height = 256);
 
@@ -70,9 +72,14 @@ namespace lodestone::level {
         virtual const level::types::Vec3i &getSpawnPos() const;
         virtual void setSpawnPos(const level::types::Vec3i &spawnPos);
 
-      private:
-        level::types::Vec3i mSpawnPos{0, 64, 0};
-        world::World *mWorld = nullptr;
+        virtual std::uint64_t getCreationTime() const;
+
+        virtual void setCreationTime(std::uint64_t creationTime);
+    private:
+        level::types::Vec3i m_spawnPos{0, 64, 0};
+        world::World *m_world = nullptr;
+
+        std::uint64_t m_creationTime = lodestone::common::util::Util::getCurrentTimeMillis();
     };
 } // namespace lodestone::level
 

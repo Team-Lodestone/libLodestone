@@ -18,7 +18,7 @@ namespace lodestone::level {
 
       protected:
         // todo: 3d finite???
-        types::Bounds2i mBounds;
+        types::Bounds2i m_bounds;
     };
 } // namespace lodestone::level
 

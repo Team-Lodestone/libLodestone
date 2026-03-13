@@ -7,7 +7,7 @@
 #include "Lodestone.Level/world/World.h"
 
 namespace lodestone::level::entity {
-    world::World *Player::getWorld() const { return mWorld; }
+    world::World *Player::getWorld() const { return m_world; }
 
     bool Player::isInWorld() const { return getWorld(); }
 
@@ -16,15 +16,13 @@ namespace lodestone::level::entity {
             throw std::runtime_error(
                 "Attempted to move player into null level");
 
-        if (this->mCurrentLevel != level) {
-            this->mCurrentLevel = level;
+        if (this->m_currentLevel != level) {
+            this->m_currentLevel = level;
 
-            this->mWorld = level->getWorld();
+            this->m_world = level->getWorld();
 
             if (resetCoords) {
-                this->mPosition.reset();
-                this->mMotion = {0, 0, 0};
-                this->mRotation = {0, 0};
+                this->resetCoords();
             }
         }
     }
@@ -34,15 +32,13 @@ namespace lodestone::level::entity {
             throw std::runtime_error(
                 "Attempted to move player into null world");
 
-        this->mWorld = world;
+        this->m_world = world;
 
-        if (!(this->mCurrentLevel &&
-              this->mCurrentLevel->getWorld() == world)) {
-            this->mCurrentLevel = world->getDefaultLevel();
+        if (!(this->m_currentLevel &&
+              this->m_currentLevel->getWorld() == world)) {
+            this->m_currentLevel = world->getDefaultLevel();
             if (resetCoords) {
-                this->mPosition.reset();
-                this->mMotion = {0, 0, 0};
-                this->mRotation = {0, 0};
+                this->resetCoords();
             }
         }
     }
@@ -51,29 +47,29 @@ namespace lodestone::level::entity {
         return &PLAYER;
     }
 
-    Level *Player::getLevel() const { return mCurrentLevel; }
+    Level *Player::getLevel() const { return m_currentLevel; }
 
     bool Player::isInLevel() const { return getLevel(); }
 
     void Player::respawn(const bool inDefaultLevel) {
+        this->resetCoords();
+
         if (const world::World *wld = getWorld();
             inDefaultLevel && wld && wld->getDefaultLevel()) {
-            this->mPosition =
-                wld->getDefaultLevel()->getSpawnPos().asVec<double>();
+            this->position =
+                static_cast<types::Vec3d>(wld->getDefaultLevel()->getSpawnPos());
         } else if (const Level *lvl = this->getLevel(); lvl != nullptr) {
-            this->mPosition = lvl->getSpawnPos().asVec<double>();
+            this->position = static_cast<types::Vec3d>(lvl->getSpawnPos());
         } else {
-            this->mPosition = {0, 64, 0};
+            this->position = {0, 64, 0};
         }
 
-        this->mMotion = {0, 0, 0};
-        this->mRotation = {0, 0};
-        this->mHealth = getMaxHealth();
+        this->m_health = getMaxHealth();
     }
 
     bool Player::isOnGround() const {
-        level::Level *lvl = this->getLevel();
-        if (lvl == nullptr || !this->mPosition.has_value())
+        const Level *lvl = this->getLevel();
+        if (lvl == nullptr)
             return false;
 
         double t;
@@ -84,16 +80,16 @@ namespace lodestone::level::entity {
         //
         // Additionally, we don't check for collision, but this *probably* won't
         // be an issue as the game will reset it afterward anyway.
-        if (std::modf(this->mPosition->y, &t) == 0 &&
-            lvl->getBlock(this->mPosition->x, this->mPosition->y - 1,
-                          this->mPosition->z)
-                    ->getBlock() != level::block::BlockRegistry::sDefaultBlock)
+        if (std::modf(this->position.y, &t) == 0 &&
+            lvl->getBlock(this->position.x, this->position.y - 1,
+                          this->position.z)
+                    .getBlock()->hasCollision())
             return true;
 
         return false;
     }
 
-    std::shared_ptr<level::properties::AbstractProperty>
+    std::unique_ptr<level::properties::AbstractProperty>
     Player::getProperty(const std::string &name) {
         return nullptr;
     }

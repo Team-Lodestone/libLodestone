@@ -2,14 +2,10 @@
 // Created by DexrnZacAttack on 10/15/25 using zPc-i2.
 //
 
-#include <Lodestone.Conversion/level/LevelIORegistry.h>
-
 #include "Lodestone.Minecraft.Java/Identifiers.h"
 #include "Lodestone.Minecraft.Java/LodestoneJava.h"
 
-#include "Lodestone.Minecraft.Java/classic/minev1/MineV1LevelIO.h"
-#include "Lodestone.Minecraft.Java/classic/minev2/MineV2LevelIO.h"
-#include "Lodestone.Minecraft.Java/indev/McLevelLevelIO.h"
+#include "Lodestone.Minecraft.Java/conversion/classic/minev2/MineV2LevelIO.h"
 #include <Lodestone.Conversion/block/data/ExtendedNumericBlockData.h>
 
 #include <Lodestone.Core/Lodestone.h>
@@ -19,99 +15,67 @@
 #include <Lodestone.Minecraft.Common/block/Blocks.h>
 
 #include "Lodestone.Minecraft.Java/Version.h"
-#include "Lodestone.Minecraft.Java/alpha/player/AlphaPlayerIo.h"
-#include "Lodestone.Minecraft.Java/alpha/world/AlphaWorldIo.h"
-#include "Lodestone.Minecraft.Java/anvil/jungle/chunk/JungleAnvilChunkIo.h"
-#include "Lodestone.Minecraft.Java/anvil/jungle/region/JungleAnvilRegionIo.h"
-#include "Lodestone.Minecraft.Java/classic/minev2/MineV2WorldIo.h"
-#include "Lodestone.Minecraft.Java/mcregion/chunk/McRegionChunkIo.h"
-#include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayerIo.h"
-#include "Lodestone.Minecraft.Java/mcregion/region/McRegionRegionIo.h"
-#include "Lodestone.Minecraft.Java/mcregion/world/McRegionWorldIo.h"
+#include "Lodestone.Minecraft.Java/conversion/alpha/AlphaPlayerIo.h"
+#include "Lodestone.Minecraft.Java/conversion/alpha/AlphaWorldIo.h"
+#include "Lodestone.Minecraft.Java/conversion/anvil/jungle/JungleAnvilChunkIo.h"
+#include "Lodestone.Minecraft.Java/conversion/anvil/jungle/JungleAnvilRegionIo.h"
+#include "Lodestone.Minecraft.Java/conversion/anvil/jungle/JungleAnvilWorldIo.h"
+#include "Lodestone.Minecraft.Java/conversion/classic/minev1/MineV1LevelIO.h"
+#include "Lodestone.Minecraft.Java/conversion/classic/minev2/MineV2WorldIo.h"
+#include "Lodestone.Minecraft.Java/conversion/indev/McLevelLevelIO.h"
+#include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionChunkIo.h"
+#include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionPlayerIo.h"
+#include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionRegionIo.h"
+#include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionWorldIo.h"
 #include <Lodestone.Conversion/block/data/ClassicBlockData.h>
 #include <Lodestone.Conversion/block/data/NumericBlockData.h>
-#include <Lodestone.Conversion/chunk/ChunkIORegistry.h>
-#include <Lodestone.Conversion/player/PlayerIORegistry.h>
-#include <Lodestone.Conversion/region/RegionIORegistry.h>
-#include <Lodestone.Conversion/world/WorldIORegistry.h>
+
+#include <Lodestone.Conversion/registry/Registries.h>
+#include <Lodestone.Conversion/io/ObjectIOs.h>
 
 namespace lodestone::minecraft::java {
+#define REG_PUT(r, n) lodestone::conversion::registry::r::getInstance().put(*n::getIdentifier(), std::make_unique<n>())
+
     LodestoneJava::LodestoneJava() {
         this->io = lodestone::conversion::block::version::VersionedBlockIO();
         initBlocks();
 
-        // mine v1
-        lodestone::conversion::level::LevelIoRegistry::getInstance()
-            .registerLevelIO(
-                identifiers::MINEV1,
-                std::make_unique<classic::minev1::MineV1LevelIO>());
+        // classic
+        // minev1
+        REG_PUT(LevelIORegistry, classic::minev1::MineV1LevelIO);
 
         // minev2
-        lodestone::conversion::level::LevelIoRegistry::getInstance()
-            .registerLevelIO(
-                identifiers::MINEV2,
-                std::make_unique<classic::minev2::MineV2LevelIO>());
-
-        lodestone::conversion::world::WorldIORegistry::getInstance()
-            .registerWorldIO(
-                identifiers::MINEV2,
-                std::make_unique<classic::minev2::MineV2WorldIO>());
+        REG_PUT(LevelIORegistry, classic::minev2::MineV2LevelIO);
+        REG_PUT(WorldIORegistry, classic::minev2::MineV2WorldIO);
 
         // indev
-        lodestone::conversion::level::LevelIoRegistry::getInstance()
-            .registerLevelIO(identifiers::MCLEVEL,
-                             std::make_unique<indev::McLevelLevelIO>());
+        REG_PUT(LevelIORegistry, indev::McLevelLevelIO);
+        REG_PUT(LevelIORegistry, indev::McLevelNbtLevelIO);
 
         // alpha
-        lodestone::conversion::world::WorldIORegistry::getInstance()
-            .registerWorldIO(identifiers::ALPHA,
-                             std::make_unique<alpha::world::AlphaWorldIo>());
-
-        lodestone::conversion::player::PlayerIORegistry::getInstance()
-            .registerPlayerIO(identifiers::ALPHA,
-                              std::make_unique<alpha::player::AlphaPlayerIO>());
+        REG_PUT(WorldIORegistry, alpha::world::AlphaWorldIo);
+        REG_PUT(PlayerIORegistry, alpha::player::AlphaPlayerIO);
+        REG_PUT(PlayerIORegistry, alpha::player::AlphaNbtPlayerIO);
 
         // mcr
-        lodestone::conversion::chunk::ChunkIORegistry::getInstance()
-            .registerChunkIO(
-                identifiers::MCREGION,
-                std::make_unique<mcregion::chunk::McRegionChunkIO>());
-
-        lodestone::conversion::region::RegionIORegistry::getInstance()
-            .registerRegionIO(
-                identifiers::MCREGION,
-                std::make_unique<mcregion::region::McRegionRegionIO>());
-
-        lodestone::conversion::world::WorldIORegistry::getInstance()
-            .registerWorldIO(
-                identifiers::MCREGION,
-                std::make_unique<mcregion::world::McRegionWorldIo>());
-
-        lodestone::conversion::player::PlayerIORegistry::getInstance()
-            .registerPlayerIO(
-                identifiers::MCREGION,
-                std::make_unique<mcregion::player::McRegionPlayerIO>());
+        REG_PUT(PlayerIORegistry, mcregion::player::McRegionNbtPlayerIO);
+        REG_PUT(PlayerIORegistry, mcregion::player::McRegionPlayerIO);
+        REG_PUT(ChunkIORegistry, mcregion::chunk::McRegionChunkIO);
+        REG_PUT(ChunkIORegistry, mcregion::chunk::McRegionNbtChunkIO);
+        REG_PUT(RegionIORegistry, mcregion::region::McRegionRegionIO);
+        REG_PUT(WorldIORegistry, mcregion::world::McRegionWorldIo);
 
         // anvil
         // jungle (1.2.1-1.12.2)
-        lodestone::conversion::chunk::ChunkIORegistry::getInstance()
-            .registerChunkIO(
-                identifiers::ANVIL_JUNGLE,
-                std::make_unique<anvil::jungle::chunk::JungleAnvilChunkIO>());
-
-        lodestone::conversion::region::RegionIORegistry::getInstance()
-            .registerRegionIO(
-                identifiers::ANVIL_JUNGLE,
-                std::make_unique<anvil::jungle::region::JungleAnvilRegionIO>());
+        REG_PUT(ChunkIORegistry, anvil::jungle::chunk::JungleAnvilChunkIO);
+        REG_PUT(ChunkIORegistry, anvil::jungle::chunk::JungleAnvilNbtChunkIO);
+        REG_PUT(RegionIORegistry, anvil::jungle::region::JungleAnvilRegionIO);
+        REG_PUT(WorldIORegistry, anvil::jungle::world::JungleAnvilWorldIo);
     }
 
     LodestoneJava *LodestoneJava::getInstance() {
-        static LodestoneJava sInstance;
-        return &sInstance;
-    }
-
-    void LodestoneJava::init() {
-        core::Lodestone::getInstance()->registerExtension(getInstance());
+        static LodestoneJava s_instance;
+        return &s_instance;
     }
 
     void LodestoneJava::initBlocks() {
@@ -275,6 +239,7 @@ namespace lodestone::minecraft::java {
         io.registerBlock(
             Version::c0_28, &minecraft::common::block::Blocks::OBSIDIAN,
             new lodestone::conversion::block::data::ClassicBlockData(49));
+
         // CPE specific
         io.registerBlock(
             Version::c0_30_CPE,
@@ -488,6 +453,9 @@ namespace lodestone::minecraft::java {
         io.registerBlock(
             Version::b1_3, &minecraft::common::block::Blocks::OBSIDIAN,
             new lodestone::conversion::block::data::NumericBlockData(49, 0));
+        io.registerBlock(
+            Version::b1_3, &minecraft::common::block::Blocks::TORCH,
+            new lodestone::conversion::block::data::NumericBlockData(50, 0));
         // ID FORMAT CHANGE #2
 
         io.registerBlock(
@@ -629,11 +597,18 @@ namespace lodestone::minecraft::java {
             Version::r1_2_1, &minecraft::common::block::Blocks::OBSIDIAN,
             new lodestone::conversion::block::data::ExtendedNumericBlockData(
                 49, 0));
+        io.registerBlock(
+            Version::r1_2_1, &minecraft::common::block::Blocks::TORCH,
+            new lodestone::conversion::block::data::ExtendedNumericBlockData(50, 0));
     }
 
-    lodestone::common::registry::Identifier LodestoneJava::getIdentifier() {
-        return {"lodestone", "java"};
+    lodestone::common::registry::Identifier LodestoneJava::getIdentifier() const {
+        return *Identifiable::getIdentifier();
     }
 
-    std::string LodestoneJava::getVersion() { return LODESTONE_JAVA_VERSION; }
+    std::string LodestoneJava::getVersion() const { return LODESTONE_JAVA_VERSION; }
+
+    core::LodestoneExtension *lodestoneInit() {
+        return LodestoneJava::getInstance();
+    }
 } // namespace lodestone::minecraft::java

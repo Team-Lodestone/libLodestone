@@ -13,7 +13,7 @@ namespace lodestone::common::string {
 
         constexpr virtual ~StringSerializable() = default;
 
-        virtual constexpr operator std::string() const { return toString(); }
+        // virtual constexpr operator std::string() const { return toString(); }
 
         constexpr virtual std::string toString() const = 0;
 

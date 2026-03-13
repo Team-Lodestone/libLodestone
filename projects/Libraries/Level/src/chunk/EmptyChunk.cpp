@@ -1,49 +1,48 @@
 //
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
-#include "Lodestone.Level/chunk/EmptyChunk.h"
+#include "Lodestone.Level/chunk/ImmutableChunk.h"
 
 namespace lodestone::level::chunk {
-    EmptyChunk *EmptyChunk::getInstance() {
-        static EmptyChunk sInstance;
-        return &sInstance;
+    ImmutableChunk *ImmutableChunk::getInstance() {
+        static ImmutableChunk s_instance;
+        return &s_instance;
     }
 
-    void EmptyChunk::calculateHeightmap() {}
+    int ImmutableChunk::getChunkHeight() const { return 0; }
 
-    int EmptyChunk::getChunkHeight() const { return 0; }
-
-    section::Section *EmptyChunk::getSection(int y) const {
-        return section::EmptySection::getInstance();
+    section::Section *ImmutableChunk::getSection(int y) const {
+        return section::ImmutableSection::getInstance();
     }
 
-    block::properties::BlockProperties *
-    EmptyChunk::getBlock(const int x, const int y, const int z) const {
-        return section::EmptySection::getInstance()->getBlock(x, y, z);
+    const block::instance::BlockInstance &
+    ImmutableChunk::getBlock(const int x, const int y, const int z) const {
+        return section::ImmutableSection::getInstance()->getBlock(x, y, z);
     }
 
-    section::Section *EmptyChunk::getSectionCreate(int y) {
-        return section::EmptySection::getInstance();
+    section::Section *ImmutableChunk::getSectionCreate(int y) {
+        return section::ImmutableSection::getInstance();
     }
 
-    void EmptyChunk::setBlock(block::properties::BlockProperties &&blk, int x,
+    void ImmutableChunk::setBlock(block::instance::BlockInstance &&blk, int x,
                               int y, int z) {}
 
-    void EmptyChunk::setBlockRaw(block::properties::BlockProperties &&blk,
+    void ImmutableChunk::setBlockRaw(block::instance::BlockInstance &&blk,
                                  int x, int y, int z) {}
 
-    void EmptyChunk::setHeightAt(int16_t h, int x, int z) {}
+    void ImmutableChunk::setHeightAt(int16_t h, int x, int z) {}
 
-    void EmptyChunk::calculateBlockmap() {}
+    void ImmutableChunk::calculateBlockmap() {}
 
-    void EmptyChunk::setBlockmapBlockAt(block::properties::BlockProperties *h,
+    void ImmutableChunk::setBlockmapBlockAt(const block::instance::BlockInstance *h,
                                         int x, int z) {}
 
-    void EmptyChunk::calculateMaps() {}
+    void ImmutableChunk::setBlockmapEntryAt(const BlockmapEntry &b, int x,
+        int z) {}
 
-    void EmptyChunk::calculateBlockmapAtColumn(int x, int z, int height) {}
+    void ImmutableChunk::calculateBlockmapAtColumn(int x, int z, int height) {}
 
-    void EmptyChunk::calculateHeightmapAtColumn(int x, int z, int height) {}
-
-    void EmptyChunk::calculateMapsAtColumn(int x, int z, int height) {}
+    int ImmutableChunk::getSectionCount() const {
+        return 0;
+    }
 } // namespace lodestone::level::chunk

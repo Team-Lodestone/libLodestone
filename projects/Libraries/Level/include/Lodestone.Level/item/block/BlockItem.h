@@ -10,14 +10,14 @@ namespace lodestone::level::item::block {
       public:
         constexpr BlockItem(const common::registry::Identifier *id,
                             const level::block::Block *block)
-            : Item(id, 64), mBlock(block) {};
+            : Item(id, nullptr, 64), m_block(block) {};
 
         constexpr const level::block::Block *getBlock() const {
-            return mBlock;
+            return m_block;
         };
 
       private:
-        const lodestone::level::block::Block *mBlock;
+        const lodestone::level::block::Block *m_block;
     };
 } // namespace lodestone::level::item::block
 

@@ -6,8 +6,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(FILES
-        include/Lodestone.Minecraft.Common/io/chunk/NbtChunkIo.h
-        include/Lodestone.Minecraft.Common/io/player/NbtPlayerIo.h
         src/player/MinecraftPlayer.cpp
         include/Lodestone.Minecraft.Common/player/MinecraftPlayer.h
         include/Lodestone.Minecraft.Common/Identifiers.h
@@ -18,6 +16,16 @@ set(FILES
         include/Lodestone.Minecraft.Common/world/MinecraftWorld.h
         include/Lodestone.Minecraft.Common/region/RegionChunkIndice.h
         include/Lodestone.Minecraft.Common/region/RegionCompression.h
+        include/Lodestone.Minecraft.Common/player/Abilities.h
+        src/world/data/LevelData.cpp
+        include/Lodestone.Minecraft.Common/world/data/LevelData.h
+        include/Lodestone.Minecraft.Common/conversion/io/options/NbtReaderOptions.h
+        include/Lodestone.Minecraft.Common/conversion/io/options/OptionPresets.h
+        include/Lodestone.Minecraft.Common/conversion/registry/Registries.h
+        include/Lodestone.Minecraft.Common/conversion/io/interfaces/ILevelDataIo.h
+        include/Lodestone.Minecraft.Common/conversion/io/ObjectIOs.h
+        include/Lodestone.Minecraft.Common/conversion/io/options/ChunkOptions.h
+        include/Lodestone.Minecraft.Common/conversion/io/types/NbtOutputWritable.h
 )
 
 add_library(Lodestone.Minecraft.Common OBJECT ${FILES})
@@ -25,8 +33,7 @@ target_include_directories(Lodestone.Minecraft.Common
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
-find_package(OpenMP COMPONENTS C CXX)
-target_link_libraries(Lodestone.Minecraft.Common PRIVATE Lodestone.Level Lodestone.Conversion nbt++ BIO)
+target_link_libraries(Lodestone.Minecraft.Common PRIVATE Lodestone.Level Lodestone.Conversion nbt++ bio)
 target_link_libraries(Lodestone.Minecraft.Common PUBLIC Lodestone.Core)
 
 setupLinter(Lodestone.Minecraft.Common)

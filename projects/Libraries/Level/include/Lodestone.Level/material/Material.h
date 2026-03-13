@@ -10,16 +10,16 @@
 namespace lodestone::level::material {
     class Material : public common::string::StringSerializable {
       public:
-        constexpr Material(const types::Color &color) : mColor(color) {};
+        constexpr Material(const types::Color &color) : m_color(color) {};
 
-        constexpr const types::Color &getColor() const { return mColor; }
+        constexpr const types::Color &getColor() const { return m_color; }
 
         std::string toString() const override {
-            return "Material[color=" + mColor.toString() + "]";
+            return "Material[color=" + m_color.toString() + "]";
         };
 
       private:
-        const types::Color mColor;
+        const types::Color m_color;
     };
 } // namespace lodestone::level::material
 

@@ -31,12 +31,6 @@
 #define TO_SECTION(n) __attribute__((section(n)))
 #endif
 
-#if CMAKE_BUILD_DEBUG
-#define LODESTONE_BUILD_TYPE "Debug"
-#else
-#define LODESTONE_BUILD_TYPE "Release"
-#endif
-
 // you're telling me they couldn't have come up with some neat way to cast
 // between unique_ptr types?
 #define CAST_UNIQUE_PTR(to, var)                                               \

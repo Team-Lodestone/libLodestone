@@ -1,20 +1,22 @@
 cmake_minimum_required(VERSION 3.30)
 project(Lodestone)
 
-include(${CMAKE_SOURCE_DIR}/scripts/cmake/linting.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/linting.cmake)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DCMAKE_BUILD_DEBUG)
 endif ()
 
+option(BIO_TESTS "Build libBIO tests" OFF)
+
 # BIO
 include(FetchContent)
 FetchContent_Declare(
-        BIO
-        GIT_REPOSITORY https://github.com/DexrnZacAttack/libBIO.git
-        GIT_TAG main
+        bio
+        GIT_REPOSITORY https://codeberg.org/Dexrn/libBIO.git
+        GIT_TAG 3.1.0
 )
-FetchContent_MakeAvailable(BIO)
+FetchContent_MakeAvailable(bio)
 
 # PROJECTS
 add_subdirectory(projects/Libraries)

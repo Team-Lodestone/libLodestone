@@ -1,7 +1,7 @@
 //
 // Created by DexrnZacAttack on 11/14/25 using zPc-i2.
 //
-#include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayer.h"
+#include "Lodestone.Minecraft.Java/mcregion/McRegionPlayer.h"
 
 #include "Lodestone.Minecraft.Java/Identifiers.h"
 #include <Lodestone.Level/world/World.h>
@@ -10,18 +10,18 @@
 
 namespace lodestone::minecraft::java::mcregion::player {
     McRegionPlayer::McRegionPlayer(const std::string &name)
-        : MinecraftPlayer(name), mIsSleeping(false), mSleepTimer(0) {}
+        : MinecraftPlayer(name), m_isSleeping(false), m_sleepTimer(0) {}
 
-    short McRegionPlayer::getSleepTimer() const { return mSleepTimer; }
+    short McRegionPlayer::getSleepTimer() const { return m_sleepTimer; }
 
     void McRegionPlayer::setSleepTimer(const short sleepTimer) {
-        mSleepTimer = sleepTimer;
+        m_sleepTimer = sleepTimer;
     }
 
-    bool McRegionPlayer::isSleeping() const { return mIsSleeping; }
+    bool McRegionPlayer::isSleeping() const { return m_isSleeping; }
 
     void McRegionPlayer::setSleeping(const bool isSleeping) {
-        mIsSleeping = isSleeping;
+        m_isSleeping = isSleeping;
     }
 
     const lodestone::common::registry::Identifier &
@@ -55,15 +55,15 @@ namespace lodestone::minecraft::java::mcregion::player {
 
     const lodestone::common::registry::Identifier *
     McRegionPlayer::getType() const {
-        return &identifiers::MCREGION;
+        return &identifiers::MCREGION_CHUNK_IO;
     }
 
-    std::shared_ptr<level::properties::AbstractProperty>
+    std::unique_ptr<level::properties::AbstractProperty>
     McRegionPlayer::getProperty(const std::string &name) {
         switch (lodestone::common::util::Math::fnv1a64(name.data(),
                                                        name.length())) {
-            ADD_PROPERTY("sleepTimer", mSleepTimer, short &);
-            ADD_PROPERTY("sleeping", mIsSleeping, bool &);
+            ADD_FIELD_PROPERTY("sleepTimer", m_sleepTimer);
+            ADD_FIELD_PROPERTY("sleeping", m_isSleeping);
         default:
             return MinecraftPlayer::getProperty(name);
         }

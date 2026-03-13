@@ -17,7 +17,7 @@ namespace lodestone::level::item {
         ItemRegistry() = default;
 
       public:
-#define REGISTER_ITEM(n) {n, new Item(n)}
+#define REGISTER_ITEM(n, d) {n, new Item(n, d)}
 
         static const Item *sDefaultItem;
 
@@ -40,18 +40,18 @@ namespace lodestone::level::item {
         map_t<const lodestone::common::registry::Identifier *,
               const Item *>::iterator
         begin() {
-            return mItems.begin();
+            return m_items.begin();
         }
 
         map_t<const lodestone::common::registry::Identifier *,
               const Item *>::iterator
         end() {
-            return mItems.end();
+            return m_items.end();
         }
 
       private:
         map_t<const lodestone::common::registry::Identifier *, const Item *>
-            mItems = {REGISTER_ITEM(&Items::NONE)};
+            m_items = {REGISTER_ITEM(&Items::NONE, nullptr)};
     };
 } // namespace lodestone::level::item
 

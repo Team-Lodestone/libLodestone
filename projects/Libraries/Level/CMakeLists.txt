@@ -23,10 +23,10 @@ set(FILES
         src/item/ItemRegistry.cpp
         src/material/MaterialRegistry.cpp
         include/Lodestone.Level/material/MaterialRegistry.h
-        src/block/properties/BlockProperties.cpp
-        include/Lodestone.Level/block/properties/BlockProperties.h
+        src/block/instance/BlockInstance.cpp
+        include/Lodestone.Level/block/instance/BlockInstance.h
         src/chunk/section/EmptySection.cpp
-        include/Lodestone.Level/chunk/section/EmptySection.h
+        include/Lodestone.Level/chunk/section/ImmutableSection.h
         src/chunk/section/Section.cpp
         include/Lodestone.Level/chunk/section/Section.h
         include/Lodestone.Level/chunk/section/LevelSection.h
@@ -36,7 +36,7 @@ set(FILES
         src/chunk/LevelChunk.cpp
         include/Lodestone.Level/chunk/LevelChunk.h
         src/chunk/EmptyChunk.cpp
-        include/Lodestone.Level/chunk/EmptyChunk.h
+        include/Lodestone.Level/chunk/ImmutableChunk.h
 
         src/world/World.cpp
         include/Lodestone.Level/world/World.h
@@ -63,23 +63,22 @@ set(FILES
         include/Lodestone.Level/item/Item.h
         src/item/block/BlockItem.cpp
         include/Lodestone.Level/item/block/BlockItem.h
-        src/item/ItemProperties.cpp
-        include/Lodestone.Level/item/ItemProperties.h
+        src/item/ItemInstance.cpp
+        include/Lodestone.Level/item/ItemInstance.h
         include/Lodestone.Level/properties/AbstractProperty.h
         include/Lodestone.Level/Identifiers.h
         include/Lodestone.Level/properties/TemplatedProperty.h
         include/Lodestone.Level/item/Items.h
-        src/block/properties/EmptyBlockProperties.cpp
-        include/Lodestone.Level/block/properties/EmptyBlockProperties.h
-        src/types/NibbleArray.cpp
-        include/Lodestone.Level/types/NibbleArray.h
-        include/Lodestone.Level/types/EmptyNibbleArray.h
-        src/types/EmptyNibbleArray.cpp
+        src/block/instance/ImmutableBlockInstance.cpp
+        include/Lodestone.Level/block/instance/ImmutableBlockInstance.h
         include/Lodestone.Level/properties/ReflectiveProperties.h
-        include/Lodestone.Level/properties/OptionalTemplatedProperty.h
         src/properties/ReflectiveProperties.cpp
-        src/types/AbstractNibbleArray.cpp
-        include/Lodestone.Level/types/AbstractNibbleArray.h
+        include/Lodestone.Level/block/blocks/TranslucentBlock.h
+        include/Lodestone.Level/block/blocks/AirBlock.h
+        include/Lodestone.Level/entity/WorldSpaceObject.cpp
+        include/Lodestone.Level/entity/WorldSpaceObject.h
+        include/Lodestone.Level/properties/definition/ObjectDefinition.h
+        src/properties/definition/ObjectDefinition.cpp
 )
 
 # if (CMAKE_BUILD_TYPE STREQUAL "Debug")

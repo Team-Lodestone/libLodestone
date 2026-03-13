@@ -5,27 +5,17 @@
 #define LODESTONE_MINECRAFTWORLD_H
 #include <Lodestone.Level/world/World.h>
 
+#include "Lodestone.Minecraft.Common/world/data/LevelData.h"
+
 namespace lodestone::minecraft::common::world {
+    template <typename LD = data::LevelData>
+    requires std::is_base_of_v<data::LevelData, LD>
     class MinecraftWorld : public level::world::World {
       public:
-        explicit MinecraftWorld(const std::string &name);
-
-        int64_t getSeed() const;
-        void setSeed(int64_t seed);
-
-        int64_t getLastPlayed() const;
-        void setLastPlayed(int64_t lastPlayed);
-
-        int64_t getTime() const;
-        void setTime(int64_t time);
-
-        std::shared_ptr<level::properties::AbstractProperty>
-        getProperty(const std::string &name) override;
+        explicit MinecraftWorld(const std::string &name, LD levelData) : World(name), m_levelData(levelData) {}
 
       protected:
-        int64_t mSeed = 0;
-        int64_t mLastPlayed = 0;
-        int64_t mTime = 0;
+        LD m_levelData;
     };
 } // namespace lodestone::minecraft::common::world
 

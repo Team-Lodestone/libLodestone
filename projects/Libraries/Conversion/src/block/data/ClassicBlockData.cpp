@@ -4,9 +4,9 @@
 #include "Lodestone.Conversion/block/data/ClassicBlockData.h"
 
 namespace lodestone::conversion::block::data {
-    const void *ClassicBlockData::getIdPtr() const { return &mId; }
+    const void *ClassicBlockData::getIdPtr() const { return &m_id; }
 
-    const void *ClassicBlockData::getDataPtr() const { return &mData; }
+    const void *ClassicBlockData::getDataPtr() const { return &m_data; }
 
     const std::type_info &ClassicBlockData::getIdType() const {
         return typeid(uint8_t);
@@ -27,7 +27,7 @@ namespace lodestone::conversion::block::data {
 
     bool ClassicBlockData::equals(const AbstractBlockData *rhs) const {
         if (const auto c = dynamic_cast<const ClassicBlockData *>(rhs))
-            return c->mId == mId && c->getTypeName() == getTypeName();
+            return c->m_id == m_id && c->getTypeName() == getTypeName();
 
         return false;
     }

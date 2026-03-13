@@ -6,11 +6,11 @@
 
 namespace lodestone::minecraft::common::region {
     enum RegionCompression : signed char {
-        GZip = 1,
-        Zlib = 2,
-        Uncompressed = 3,
+        GZIP = 1,
+        ZLIB = 2,
+        UNCOMPRESSED = 3,
         LZ4 = 4,
-        Custom = 127
+        CUSTOM = std::numeric_limits<int8_t>::max()
     };
 }
 
