@@ -10,6 +10,8 @@
 
 #include <Lodestone.Common/string/OperatorStringBuilder.h>
 
+#include "Lodestone.Level/properties/definition/ObjectDefinition.h"
+
 namespace lodestone::level::block {
     class Block;
 }
@@ -19,17 +21,17 @@ namespace lodestone::level::item {
     class Item : public common::string::StringSerializable {
       public:
         explicit constexpr Item(
-            const lodestone::common::registry::Identifier *id,
+            const lodestone::common::registry::Identifier *id, const properties::definition::ObjectDefinition *definition,
             const int maxStack = 64)
-            : mId(id), mMaxStack(maxStack) {};
+            : m_id(id), m_maxStack(maxStack), m_definition(definition) {};
 
         constexpr ~Item() override = default;
 
         constexpr const lodestone::common::registry::Identifier *getID() const {
-            return mId;
+            return m_id;
         };
 
-        constexpr std::string getIDString() const { return mId->getString(); };
+        constexpr std::string getIDString() const { return m_id->getString(); };
 
         std::string toString() const override {
             return (common::string::OperatorStringBuilder(typeid(*this)))
@@ -37,11 +39,13 @@ namespace lodestone::level::item {
                 ->toString();
         };
 
-        constexpr int getMaxStack() const { return mMaxStack; }
+        constexpr int getMaxStack() const { return m_maxStack; }
 
       private:
-        const lodestone::common::registry::Identifier *mId;
-        const int mMaxStack;
+        const lodestone::common::registry::Identifier *m_id;
+        const int m_maxStack;
+
+        const properties::definition::ObjectDefinition *m_definition;
     };
 } // namespace lodestone::level::item
 

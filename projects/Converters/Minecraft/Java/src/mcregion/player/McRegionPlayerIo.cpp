@@ -1,19 +1,18 @@
 //
 // Created by DexrnZacAttack on 11/14/25 using zPc-i2.
 //
-#include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayerIo.h"
+#include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionPlayerIo.h"
 
 #include <Lodestone.Common/io/DataBuffer.h>
 #include <libnbt++/io/stream_reader.h>
 #include <libnbt++/tag_primitive.h>
 
-#include "Lodestone.Minecraft.Java/mcregion/player/McRegionPlayer.h"
+#include "Lodestone.Minecraft.Java/mcregion/McRegionPlayer.h"
 #include <libnbt++/tag_list.h>
 
 namespace lodestone::minecraft::java::mcregion::player {
     std::unique_ptr<level::entity::Player>
-    McRegionPlayerIO::read(const std::filesystem::path &filename,
-                           nbt::tag_compound &player, const int version) const {
+    McRegionNbtPlayerIO::read(const common::conversion::io::options::OptionPresets::CommonNbtFilesystemReadOptions &options) const {
         // FOR LATER
         // I was accidentally reading from Project Poseidon player files which
         // included some UUID long uuidLeast =
@@ -42,54 +41,70 @@ namespace lodestone::minecraft::java::mcregion::player {
         // uuids::uuid uuid(u);
 
         std::unique_ptr<McRegionPlayer> p =
-            std::make_unique<McRegionPlayer>(filename.stem().string());
+            std::make_unique<McRegionPlayer>(options.path.stem().string());
 
-        const nbt::tag_list pos = player["Pos"].as<nbt::tag_list>();
-        p->setPosition(level::types::Vec3d{static_cast<double>(pos[0]),
+        const nbt::tag_list pos = options.input["Pos"].as<nbt::tag_list>();
+        p->position = level::types::Vec3d{static_cast<double>(pos[0]),
                                            static_cast<double>(pos[1]),
-                                           static_cast<double>(pos[2])});
+                                           static_cast<double>(pos[2])};
 
-        const nbt::tag_list rot = player["Rotation"].as<nbt::tag_list>();
-        p->setRotation(level::types::Vec2f{
+        const nbt::tag_list rot = options.input["Rotation"].as<nbt::tag_list>();
+        p->rotation = level::types::Vec2f{
             static_cast<float>(rot[0]),
             static_cast<float>(rot[1]),
-        });
+        };
 
-        const nbt::tag_list motion = player["Motion"].as<nbt::tag_list>();
+        const nbt::tag_list motion = options.input["Motion"].as<nbt::tag_list>();
         p->setMotion(level::types::Vec3d{static_cast<double>(motion[0]),
                                          static_cast<double>(motion[1]),
                                          static_cast<double>(motion[2])});
 
-        p->setHealth(static_cast<short>(player["Health"]));
-        p->setSleepTimer(player["SleepTimer"].as<nbt::tag_short>());
-        p->setBreathingTime(player["Air"].as<nbt::tag_short>());
-        p->setDeathTime(player["DeathTime"].as<nbt::tag_short>());
-        p->setFireTime(player["Fire"].as<nbt::tag_short>());
-        p->setHurtTime(player["HurtTime"].as<nbt::tag_short>());
-        p->setAttackTime(player["AttackTime"].as<nbt::tag_short>());
+        p->setHealth(static_cast<short>(options.input["Health"]));
+        p->setSleepTimer(options.input["SleepTimer"].as<nbt::tag_short>());
+        p->setBreathingTime(options.input["Air"].as<nbt::tag_short>());
+        p->setDeathTime(options.input["DeathTime"].as<nbt::tag_short>());
+        p->setFireTime(options.input["Fire"].as<nbt::tag_short>());
+        p->setHurtTime(options.input["HurtTime"].as<nbt::tag_short>());
+        p->setAttackTime(options.input["AttackTime"].as<nbt::tag_short>());
         p->setDimension(McRegionPlayer::dimensionIdToIdentifier(
-            player["Dimension"].as<nbt::tag_int>()));
-        p->setSleeping(player["Sleeping"].as<nbt::tag_byte>());
-        p->setFallDistance(player["FallDistance"].as<nbt::tag_short>());
+            options.input["Dimension"].as<nbt::tag_int>()));
+        p->setSleeping(options.input["Sleeping"].as<nbt::tag_byte>());
+        p->setFallDistance(options.input["FallDistance"].as<nbt::tag_short>());
 
         // TODO inventory
 
         return p;
     }
 
-    nbt::tag_compound McRegionPlayerIO::write(level::entity::Player &c) const {}
+    void McRegionNbtPlayerIO::write(level::entity::Player *c,
+       const common::conversion::io::options::OptionPresets::NbtOutputWriteOptions<
+        const conversion::io::options::EmptyOptions> &options) const {
+    }
 
     std::unique_ptr<lodestone::level::entity::Player>
-    McRegionPlayerIO::read(const std::filesystem::path &filename,
-                           std::istream &in, int version) const {
-        nbt::io::stream_reader streamReader =
-            nbt::io::stream_reader(in, endian::big);
-
+    McRegionPlayerIO::read(const common::conversion::io::options::OptionPresets::CommonPlayerReadOptions &options) const {
+        nbt::io::stream_reader streamReader(options.input, endian::big);
         auto root = streamReader.read_compound();
-        return read(filename, *root.second, version);
+
+        const McRegionNbtPlayerIO *io = this->getAsByRelation<const McRegionNbtPlayerIO, &identifiers::NBT_PLAYER_IO>();
+        return io->read(common::conversion::io::options::OptionPresets::CommonNbtFilesystemReadOptions {
+            common::conversion::io::options::OptionPresets::CommonNbtReadOptions {
+                common::conversion::io::options::NbtReaderOptions {
+                    *root.second
+                },
+                conversion::io::options::versioned::VersionedOptions {
+                    options.version
+                }
+            },
+            conversion::io::options::fs::FilesystemPathOptions {
+                options.path
+            }
+        });
     }
 
     void McRegionPlayerIO::write(lodestone::level::entity::Player *p,
-                                 int version, std::ostream &out) const {}
+        const lodestone::minecraft::common::conversion::io::options::
+        OptionPresets::CommonWriteOptions &options) const {
+    }
 
 } // namespace lodestone::minecraft::java::mcregion::player

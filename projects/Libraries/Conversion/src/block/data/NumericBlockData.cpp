@@ -5,11 +5,11 @@
 
 namespace lodestone::conversion::block::data {
     const void *NumericBlockData::getIdPtr() const {
-        return static_cast<const void *>(&mId);
+        return static_cast<const void *>(&m_id);
     }
 
     const void *NumericBlockData::getDataPtr() const {
-        return static_cast<const void *>(&mData);
+        return static_cast<const void *>(&m_data);
     }
 
     const std::type_info &NumericBlockData::getIdType() const {
@@ -30,7 +30,7 @@ namespace lodestone::conversion::block::data {
     }
 
     size_t NumericBlockData::hash() const {
-        return std::hash<uint8_t>()(mId) ^ std::hash<uint8_t>()(mData) << 8 ^
+        return std::hash<uint8_t>()(m_id) ^ std::hash<uint8_t>()(m_data) << 8 ^
                (std::hash<const lodestone::common::registry::Identifier *>()(
                     getTypeName())
                 << 16);
@@ -38,7 +38,7 @@ namespace lodestone::conversion::block::data {
 
     bool NumericBlockData::equals(const AbstractBlockData *rhs) const {
         if (const auto c = dynamic_cast<const NumericBlockData *>(rhs))
-            return c->mId == mId && c->mData == mData &&
+            return c->m_id == m_id && c->m_data == m_data &&
                    c->getTypeName() == getTypeName();
 
         return false;

@@ -6,47 +6,32 @@
 #include "Lodestone.Level/entity/Entities.h"
 
 namespace lodestone::level::entity {
-    int Entity::getHealth() const { return mHealth; }
+    int Entity::getHealth() const { return m_health; }
 
     void Entity::setHealth(const int health) {
-        this->mHealth = std::min(health, getMaxHealth());
+        this->m_health = std::min(health, getMaxHealth());
     }
 
-    bool Entity::isDead() const { return mHealth <= 0; }
+    bool Entity::isDead() const { return m_health <= 0; }
 
     int Entity::getMaxHealth() const {
         return MAX_HEALTH; // todo modifiers and such
     }
 
-    const std::optional<types::Vec3d> &Entity::getPosition() const {
-        return mPosition;
-    }
-
-    void Entity::setPosition(const types::Vec3d &pos) {
-        // TODO we need to move entity to different chunk too
-        this->mPosition = pos;
-    }
-
-    void Entity::setPosition(double x, double y, double z) {
-        setPosition({x, y, z});
-    }
-
-    const types::Vec2f &Entity::getRotation() const { return mRotation; }
-
-    void Entity::setRotation(const types::Vec2f &rot) { this->mRotation = rot; }
-
-    void Entity::setRotation(float yaw, float pitch) {
-        setRotation({yaw, pitch});
-    }
-
-    const types::Vec3d &Entity::getMotion() const { return mMotion; }
+    const types::Vec3d &Entity::getMotion() const { return m_motion; }
 
     void Entity::setMotion(const types::Vec3d &motion) {
-        this->mMotion = motion;
+        this->m_motion = motion;
     }
 
     void Entity::setMotion(double x, double y, double z) {
         setMotion({x, y, z});
+    }
+
+    void Entity::resetCoords() {
+        this->position = types::VEC3_ZERO<double>;
+        this->rotation = types::VEC2_ZERO<float>;
+        this->setMotion(types::VEC3_ZERO<double>);
     }
 
     const common::registry::Identifier *Entity::getType() const {

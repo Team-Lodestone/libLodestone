@@ -1,7 +1,7 @@
 //
 // Created by DexrnZacAttack on 11/14/25 using zPc-i2.
 //
-#include "Lodestone.Minecraft.Java/alpha/player/AlphaPlayer.h"
+#include "Lodestone.Minecraft.Java/alpha/AlphaPlayer.h"
 
 #include "Lodestone.Minecraft.Java/Identifiers.h"
 #include <Lodestone.Level/world/World.h>

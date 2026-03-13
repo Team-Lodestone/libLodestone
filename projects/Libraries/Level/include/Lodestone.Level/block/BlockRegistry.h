@@ -17,12 +17,12 @@ namespace lodestone::level::block {
         BlockRegistry();
 
       public:
-#define REGISTER_BLOCK(n, m) {n, new Block(n, m)}
-#define REGISTER_DERIVED_BLOCK(n, m, f) {n, new f(n, m)}
-#define REGISTER_BLOCK_FUNC(n, m) registerBlock(n, new Block(n, m))
-#define REGISTER_DERIVED_BLOCK_FUNC(n, m, f) registerBlock(n, new f(n, m))
+#define REGISTER_BLOCK(n, m, d) {n, new lodestone::level::block::Block(n, m, d)}
+#define REGISTER_DERIVED_BLOCK(n, m, d, f) {n, new f(n, m, d)}
+#define REGISTER_BLOCK_FUNC(n, m, d) registerBlock(n, new lodestone::level::block::Block(n, m, d))
+#define REGISTER_DERIVED_BLOCK_FUNC(n, m, d, f) registerBlock(n, new f(n, m, d))
 
-        static const Block *sDefaultBlock;
+        static const Block *s_defaultBlock;
 
         static BlockRegistry &getInstance();
 
@@ -43,18 +43,18 @@ namespace lodestone::level::block {
         map_t<const lodestone::common::registry::Identifier *,
               const Block *>::iterator
         begin() {
-            return mBlocks.begin();
+            return m_blocks.begin();
         }
 
         map_t<const lodestone::common::registry::Identifier *,
               const Block *>::iterator
         end() {
-            return mBlocks.end();
+            return m_blocks.end();
         }
 
       private:
         map_t<const lodestone::common::registry::Identifier *, const Block *>
-            mBlocks;
+            m_blocks;
     };
 } // namespace lodestone::level::block
 

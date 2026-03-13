@@ -6,11 +6,13 @@
 #include "Lodestone.Level/block/Block.h"
 
 namespace lodestone::level::block::blocks {
+    // transculent
+    // welcome back notch
     class TranslucentBlock : public lodestone::level::block::Block {
     public:
         constexpr TranslucentBlock(const lodestone::common::registry::Identifier *id,
-                    const lodestone::level::material::Material &material)
-        : Block(id, material) {
+                    const lodestone::level::material::Material &material, const properties::definition::ObjectDefinition *definition)
+        : Block(id, material, definition) {
         };
 
         constexpr bool isTransparent() const override {

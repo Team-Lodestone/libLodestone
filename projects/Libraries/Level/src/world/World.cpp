@@ -8,18 +8,18 @@ namespace lodestone::level::world {
                            std::unique_ptr<Level> level) {
         if (hasLevel(id))
             throw std::runtime_error(std::format(
-                "Level '{}' already exists in world '{}'", id, mName));
+                "Level '{}' already exists in world '{}'", id, m_name));
 
         Level *l = level.get();
         l->setWorld(this);
-        mLevels[id] = std::move(level);
+        m_levels[id] = std::move(level);
 
         return l;
     }
 
     Level *
     World::getLevel(const lodestone::common::registry::Identifier &id) const {
-        if (const auto it = mLevels.find(id); it != mLevels.end())
+        if (const auto it = m_levels.find(id); it != m_levels.end())
             return it->second.get();
 
         return nullptr;
@@ -29,29 +29,25 @@ namespace lodestone::level::world {
         if (!hasLevel(id))
             throw std::runtime_error(std::format(
                 "Cannot remove nonexistent level '{}' in world '{}'", id,
-                mName));
+                m_name));
 
-        mLevels.erase(id);
+        m_levels.erase(id);
     }
 
     bool
     World::hasLevel(const lodestone::common::registry::Identifier &id) const {
-        return mLevels.contains(id);
+        return m_levels.contains(id);
     }
 
-    std::string World::getName() const { return mName; }
+    std::string World::getName() const { return m_name; }
 
-    void World::setName(const std::string &n) { this->mName = n; }
-
-    const lodestone::conversion::world::WorldIO *World::getIO() {
-        return nullptr;
-    }
+    void World::setName(const std::string &n) { this->m_name = n; }
 
     level::Level *World::getDefaultLevel() const {
         return getLevel(Dimension::OVERWORLD);
     }
 
-    size_t World::getPlayerCount() const { return mPlayers.size(); }
+    size_t World::getPlayerCount() const { return m_players.size(); }
 
     entity::Player *World::addPlayer(std::unique_ptr<entity::Player> player,
                                      const bool resetCoords) {
@@ -61,76 +57,63 @@ namespace lodestone::level::world {
                 std::format("Attempted to add duplicate player '{}'", id));
 
         entity::Player *p = player.get();
-        this->mPlayers[id] = std::move(player);
+        this->m_players[id] = std::move(player);
         p->setWorld(this, resetCoords);
 
         return p; // I think this should work??
     }
 
     entity::Player *World::getPlayer(const std::string &id) const {
-        if (const auto it = mPlayers.find(id); it != mPlayers.end())
+        if (const auto it = m_players.find(id); it != m_players.end())
             return it->second.get();
 
         return nullptr;
     }
 
-    void World::removePlayer(const std::string &id) {
-        const auto it = mPlayers.find(id);
-        if (it == mPlayers.end())
-            return;
+    std::unique_ptr<entity::Player> World::removePlayer(const std::string &id) {
+        const auto it = m_players.find(id);
+        if (it == m_players.end())
+            return nullptr;
 
-        it->second->mPosition.reset();
-        it->second->mWorld = nullptr;
-        it->second->mCurrentLevel = nullptr;
+        it->second->m_world = nullptr;
+        it->second->m_currentLevel = nullptr;
 
-        mPlayers.erase(it);
+        std::unique_ptr<entity::Player> player = std::move(it->second);
+        m_players.erase(it);
+
+        return player;
     }
 
     bool World::hasPlayer(const std::string &id) const {
-        return mPlayers.contains(id);
+        return m_players.contains(id);
     }
 
-    void World::movePlayerToLevel(std::unique_ptr<entity::Player> player,
-                                  const common::registry::Identifier &level,
-                                  const bool resetCoords) {
-        Level *lvl = getLevel(level);
-        if (!lvl)
-            throw std::runtime_error(std::format(
-                "Tried to move player '{}' to nonexistent level '{}'",
-                player->getId(), level));
+    uint64_t World::getCreationTime() {
+        const auto m = std::ranges::min_element(this->m_levels, {}, [](const auto &l) -> uint64_t {
+            if (!l.second)
+                return 0;
 
-        entity::Player *p = player.get();
-        if (player->mWorld != this) {
-            if (player->mWorld)
-                player->mWorld->removePlayer(player->getId());
-            p = addPlayer(std::move(player));
-        }
+            return l.second->getCreationTime();
+        });
 
-        p->setLevel(lvl, resetCoords);
+        if (m != this->m_levels.end() && m->second != nullptr)
+            return m->second->getCreationTime();
+
+        return 0;
     }
 
-    void World::movePlayerToWorld(std::unique_ptr<entity::Player> player,
-                                  World *world) {
-        if (player->mWorld == this)
-            return;
-
-        removePlayer(player->getId());
-        world->addPlayer(std::move(player));
-    }
-
-    std::shared_ptr<level::properties::AbstractProperty>
+    std::unique_ptr<level::properties::AbstractProperty>
     World::getProperty(const std::string &name) {
         return nullptr;
     }
 
     const map_t<std::string, std::unique_ptr<entity::Player>> &
     World::getPlayers() const {
-        return mPlayers;
+        return m_players;
     }
 
-    const map_t<lodestone::common::registry::Identifier, std::unique_ptr<Level>,
-                IdentifierHasher, IdentifierComparator> &
+    const map_t<lodestone::common::registry::Identifier, std::unique_ptr<Level>> &
     World::getLevels() const {
-        return mLevels;
+        return m_levels;
     }
 } // namespace lodestone::level::world

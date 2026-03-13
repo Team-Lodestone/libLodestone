@@ -1,7 +1,8 @@
 //
 // Created by DexrnZacAttack on 10/15/25 using zPc-i2.
 //
-#include "Lodestone.Minecraft.Java/classic/minev1/MineV1LevelIO.h"
+
+#include "Lodestone.Minecraft.Java/conversion/classic/minev1/MineV1LevelIO.h"
 
 #include <ranges>
 
@@ -15,17 +16,16 @@
 #include <BinaryIO/stream/BinaryOutputStream.h>
 
 namespace lodestone::minecraft::java::classic::minev1 {
-
-    std::unique_ptr<lodestone::level::Level>
-    MineV1LevelIO::read(std::istream &in, const int version) const {
-        bio::stream::BinaryInputStream bis(in);
+    std::unique_ptr<level::Level>
+    MineV1LevelIO::read(const common::conversion::io::options::OptionPresets::CommonReadOptions &options) const {
+        bio::stream::BinaryInputStream bis(options.input);
 
         std::unique_ptr<level::FiniteLevel> l =
             std::make_unique<level::FiniteLevel>(level::types::Bounds2i{
                 {0, 0}, {CHUNK_IDX(WIDTH) - 1, CHUNK_IDX(DEPTH) - 1}});
 
         const std::unique_ptr<lodestone::conversion::block::version::BlockIO>
-            io = LodestoneJava::getInstance()->io.getIo(version);
+            io = LodestoneJava::getInstance()->io.getIo(options.version);
 
         for (int y = 0; y < HEIGHT; y++) {
             for (int z = 0; z < DEPTH; z++) {
@@ -37,13 +37,13 @@ namespace lodestone::minecraft::java::classic::minev1 {
                         continue; // this skips us having to convert the block
 #endif
 
-                    level::block::properties::BlockProperties b =
+                    level::block::instance::BlockInstance b =
                         io->convertBlockToInternal(
                             lodestone::conversion::block::data::
                                 ClassicBlockData(bb));
 
                     if (b.getBlock() !=
-                        level::block::BlockRegistry::sDefaultBlock)
+                        level::block::BlockRegistry::s_defaultBlock)
                         l->setBlockCreate(std::move(b), x, y, z, HEIGHT);
                 }
             }
@@ -52,22 +52,21 @@ namespace lodestone::minecraft::java::classic::minev1 {
         return l;
     }
 
-    void MineV1LevelIO::write(lodestone::level::Level *l, const int version,
-                              std::ostream &out) const {
-        bio::stream::BinaryOutputStream bos(out);
+    void MineV1LevelIO::write(level::Level *l, const common::conversion::io::options::OptionPresets::CommonWriteOptions &options) const {
+        bio::stream::BinaryOutputStream bos(options.output);
 
         const std::unique_ptr<lodestone::conversion::block::version::BlockIO>
-            io = LodestoneJava::getInstance()->io.getIo(version);
+            io = LodestoneJava::getInstance()->io.getIo(options.version);
 
         for (int y = 0; y < HEIGHT; y++) {
             for (int z = 0; z < DEPTH; z++) {
                 for (int x = 0; x < WIDTH; x++) {
-                    const level::block::properties::BlockProperties &b =
+                    const level::block::instance::BlockInstance &b =
                         l->getBlock(x, y, z);
 
                     uint8_t v = 0;
                     if (b.getBlock() !=
-                        level::block::BlockRegistry::sDefaultBlock) {
+                        level::block::BlockRegistry::s_defaultBlock) {
                         const lodestone::conversion::block::data::
                             AbstractBlockData *bd =
                                 io->convertBlockFromInternal(&b);

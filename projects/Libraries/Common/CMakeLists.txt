@@ -18,16 +18,20 @@ set(FILES
         src/util/Math.cpp
         include/Lodestone.Common/util/Math.h
         include/Lodestone.Common/util/Logging.h
-        src/storage/bits/BitsArray.cpp
-        include/Lodestone.Common/storage/bits/BitsArray.h
-        include/Lodestone.Common/storage/bits/ImmutableBitsArray.h
-        src/storage/bits/ImmutableBitsArray.cpp
-        src/storage/bits/AbstractBitsArray.cpp
-        include/Lodestone.Common/storage/bits/AbstractBitsArray.h
+        src/storage/bits/BitStorage.cpp
+        include/Lodestone.Common/storage/bits/BitStorage.h
+        include/Lodestone.Common/storage/bits/ImmutableBitStorage.h
+        src/storage/bits/ImmutableBitStorage.cpp
+        src/storage/bits/AbstractBitStorage.cpp
+        include/Lodestone.Common/storage/bits/AbstractBitStorage.h
         include/Lodestone.Common/storage/palette/PalletizedStorage.tpp
         include/Lodestone.Common/storage/palette/PalletizedStorage.h
         include/Lodestone.Common/exception/PaletteIndexTooLargeException.h
         include/Lodestone.Common/exception/InvalidPaletteReferenceCountException.h
+        include/Lodestone.Common/registry/Identifiable.h
+        include/Lodestone.Common/util/Concepts.h
+        include/Lodestone.Common/util/Util.h
+        src/util/Util.cpp
 )
 
 add_library(Lodestone.Common OBJECT ${FILES})

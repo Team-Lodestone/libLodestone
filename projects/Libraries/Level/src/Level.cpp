@@ -7,7 +7,7 @@
 #include <limits.h>
 #include <random>
 
-#include "Lodestone.Level/block/properties/ImmutableBlockProperties.h"
+#include "Lodestone.Level/block/instance/ImmutableBlockInstance.h"
 #include "Lodestone.Level/chunk/LevelChunk.h"
 #include <Lodestone.Common/Indexing.h>
 
@@ -15,18 +15,18 @@ namespace lodestone::level {
 #pragma region Blocks
     bool Level::isChunkInBounds(const types::Vec2i &coords) { return true; }
 
-    const block::properties::BlockProperties &Level::getBlock(const signed_size_t x,
+    const block::instance::BlockInstance &Level::getBlock(const signed_size_t x,
                                                         const signed_size_t y,
-                                                        const signed_size_t z) {
+                                                        const signed_size_t z) const {
         if (const chunk::Chunk *c = getChunk(CHUNK_IDX(x), CHUNK_IDX(z)))
             return c->getBlock(
                 CHUNK_LOCAL_IDX(x, common::constants::CHUNK_WIDTH), y,
                 CHUNK_LOCAL_IDX(z, common::constants::CHUNK_DEPTH));
 
-        return *block::properties::ImmutableBlockProperties::getInstance();
+        return *block::instance::ImmutableBlockInstance::getInstance();
     }
 
-    void Level::setBlock(block::properties::BlockProperties &&blk,
+    void Level::setBlock(block::instance::BlockInstance &&blk,
                          const signed_size_t x, const signed_size_t y,
                          const signed_size_t z) {
         if (chunk::Chunk *c = getChunk(CHUNK_IDX(x), CHUNK_IDX(z)))
@@ -35,7 +35,7 @@ namespace lodestone::level {
                         CHUNK_LOCAL_IDX(z, common::constants::CHUNK_DEPTH));
     }
 
-    void Level::setBlockCreate(block::properties::BlockProperties &&blk,
+    void Level::setBlockCreate(block::instance::BlockInstance &&blk,
                                const signed_size_t x, const signed_size_t y,
                                const signed_size_t z, const int height) {
         chunk::Chunk *c = getChunk(CHUNK_IDX(x), CHUNK_IDX(z));
@@ -48,7 +48,7 @@ namespace lodestone::level {
                     CHUNK_LOCAL_IDX(z, common::constants::CHUNK_DEPTH));
     }
 
-    void Level::setBlockRaw(block::properties::BlockProperties &&blk,
+    void Level::setBlockRaw(block::instance::BlockInstance &&blk,
                             const signed_size_t x, const signed_size_t y,
                             const signed_size_t z) {
         if (chunk::Chunk *c = getChunk(CHUNK_IDX(x), CHUNK_IDX(z)))
@@ -58,7 +58,7 @@ namespace lodestone::level {
                            CHUNK_LOCAL_IDX(z, common::constants::CHUNK_DEPTH));
     }
 
-    void Level::setBlockCreateRaw(block::properties::BlockProperties &&blk,
+    void Level::setBlockCreateRaw(block::instance::BlockInstance &&blk,
                                   const signed_size_t x, const signed_size_t y,
                                   const signed_size_t z, const int height) {
         chunk::Chunk *c = getChunk(CHUNK_IDX(x), CHUNK_IDX(z));
@@ -104,27 +104,27 @@ namespace lodestone::level {
 #pragma endregion
 
 #pragma region Blockmap
-    const block::properties::BlockProperties &
+    const block::instance::BlockInstance &
     Level::getBlockmapBlockAt(const signed_size_t x,
                               const signed_size_t z) const {
         if (const chunk::Chunk *c = getChunk(CHUNK_IDX(x), CHUNK_IDX(z)))
-            return c->getBlockmapBlockAt(
+            return *c->getBlockmapBlockAt(
                 CHUNK_LOCAL_IDX(x, common::constants::CHUNK_WIDTH),
                 CHUNK_LOCAL_IDX(z, common::constants::CHUNK_DEPTH));
 
-        return *block::properties::ImmutableBlockProperties::getInstance();
+        return *block::instance::ImmutableBlockInstance::getInstance();
     }
 
-    void Level::setBlockmapBlockAt(const block::properties::BlockProperties &b,
+    void Level::setBlockmapBlockAt(const block::instance::BlockInstance &b,
                                    const signed_size_t x,
                                    const signed_size_t z) {
         if (chunk::Chunk *c = getChunk(CHUNK_IDX(x), CHUNK_IDX(z)))
             c->setBlockmapBlockAt(
-                b, CHUNK_LOCAL_IDX(x, common::constants::CHUNK_WIDTH),
+                &b, CHUNK_LOCAL_IDX(x, common::constants::CHUNK_WIDTH),
                 CHUNK_LOCAL_IDX(z, common::constants::CHUNK_DEPTH));
     }
 
-    void Level::setBlockmapBlockAtCreate(const block::properties::BlockProperties &b,
+    void Level::setBlockmapBlockAtCreate(const block::instance::BlockInstance &b,
                                          const signed_size_t x,
                                          const signed_size_t z,
                                          const int height) {
@@ -134,7 +134,7 @@ namespace lodestone::level {
             c = createChunk(CHUNK_IDX(x), CHUNK_IDX(z), height);
 
         c->setBlockmapBlockAt(
-            b, CHUNK_LOCAL_IDX(x, common::constants::CHUNK_WIDTH),
+            &b, CHUNK_LOCAL_IDX(x, common::constants::CHUNK_WIDTH),
             CHUNK_LOCAL_IDX(z, common::constants::CHUNK_DEPTH));
     }
 #pragma endregion
@@ -153,9 +153,9 @@ namespace lodestone::level {
         int maxY = INT_MIN;
         int maxZ = INT_MIN;
 
-        for (const auto &[coord, chonk] : mChunks) {
+        for (const auto &[coord, chonk] : m_chunks) {
             int mX = coord.x * common::constants::CHUNK_WIDTH;
-            int mZ = coord.z * common::constants::CHUNK_DEPTH;
+            int mZ = coord.y * common::constants::CHUNK_DEPTH;
 
             minX = std::min(minX, mX);
             maxX = std::max(maxX, mX + common::constants::CHUNK_WIDTH - 1);
@@ -168,35 +168,49 @@ namespace lodestone::level {
         return {minX, minY, minZ, maxX, maxY, maxZ};
     }
 
-    world::World *Level::getWorld() const { return mWorld; }
+    world::World *Level::getWorld() const { return m_world; }
 
     bool Level::isInWorld() const { return getWorld(); }
 
-    void Level::setWorld(world::World *world) { this->mWorld = world; }
+    void Level::setWorld(world::World *world) { this->m_world = world; }
 
     types::Vec3i Level::generateSpawnPos(const unsigned int radius) const {
-        int x = 0;
-        int z = 0;
+        types::Vec3i pos = types::VEC3_ZERO<int>;
 
-        // spread the player
         if (radius != 0) {
             std::random_device rd;
             std::mt19937 gen(rd());
-            std::uniform_int_distribution<> distrib(0 - radius, 0 + radius);
+            std::uniform_int_distribution<> distrib(-radius, radius);
 
-            x = distrib(gen);
-            z = distrib(gen);
+            int iter = 0;
+            while ((pos.y == 0 || getBlock(pos.x, pos.y - 1, pos.z) == block::BlockRegistry::s_defaultBlock) && iter < 20) { // 20 tries ig
+                // spread the player
+                pos.x = distrib(gen);
+                pos.z = distrib(gen);
+
+                // make sure we spawn on top, maybe we should also check if the player's height in blocks is valid too
+                pos.y = getHeightAt(pos.x, pos.z);
+
+                iter++;
+            }
         }
 
-        int y = getHeightAt(x, z);
-        return {x, y, z};
+        return pos;
     }
 
     const level::types::Vec3i &Level::getSpawnPos() const {
-        return this->mSpawnPos;
+        return this->m_spawnPos;
     }
 
     void Level::setSpawnPos(const level::types::Vec3i &spawnPos) {
-        this->mSpawnPos = spawnPos;
+        this->m_spawnPos = spawnPos;
+    }
+
+    std::uint64_t Level::getCreationTime() const {
+        return m_creationTime;
+    }
+
+    void Level::setCreationTime(const std::uint64_t creationTime) {
+        m_creationTime = creationTime;
     }
 } // namespace lodestone::level

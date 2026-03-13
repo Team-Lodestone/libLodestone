@@ -1,11 +1,11 @@
 //
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
 //
+
 #ifndef LODESTONE_COLOR_H
 #define LODESTONE_COLOR_H
 
 #include <Lodestone.Common/string/StringSerializable.h>
-
 #include <format>
 #include <functional>
 
@@ -14,12 +14,8 @@ namespace lodestone::level::types {
         unsigned char r, g, b, a;
 
         constexpr Color(const unsigned char r, const unsigned char g,
-                        const unsigned char b, const unsigned char a)
+                        const unsigned char b, const unsigned char a = 0xFF)
             : r(r), g(g), b(b), a(a) {}
-
-        constexpr Color(const unsigned char r, const unsigned char g,
-                        const unsigned char b)
-            : r(r), g(g), b(b), a(0xFF) {}
 
         constexpr operator unsigned char *() { return &r; }
         constexpr operator const unsigned char *() const { return &r; }

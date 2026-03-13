@@ -3,8 +3,10 @@
 //
 #ifndef LODESTONE_CHUNKCONTAINER_H
 #define LODESTONE_CHUNKCONTAINER_H
+#include <iostream>
 #include <memory>
 
+#include <Lodestone.Common/util/Logging.h>
 #include "Lodestone.Level/chunk/Chunk.h"
 #include "Lodestone.Level/types/Bounds3.h"
 #include "Lodestone.Level/types/Vec2.h"
@@ -21,7 +23,7 @@ namespace lodestone::level::chunk {
 
         std::string toString() const override {
             return (common::string::OperatorStringBuilder(typeid(*this)))
-                .addField("chunks", mChunks.size())
+                .addField("chunks", m_chunks.size())
                 ->addField("bounds", getChunkBounds().toString())
                 ->toString();
         };
@@ -104,11 +106,11 @@ namespace lodestone::level::chunk {
         void merge(std::unique_ptr<ChunkContainer> rhs);
 
         map_t<types::Vec2i, std::unique_ptr<Chunk>> &getChunks() {
-            return mChunks;
+            return m_chunks;
         }
 
         const map_t<types::Vec2i, std::unique_ptr<Chunk>> &getChunks() const {
-            return mChunks;
+            return m_chunks;
         }
 
         // todo replace with inbuilt bounds that gets updated
@@ -118,7 +120,7 @@ namespace lodestone::level::chunk {
         ChunkContainer &operator=(const ChunkContainer &) = delete;
 
       protected:
-        map_t<types::Vec2i, std::unique_ptr<Chunk>> mChunks;
+        map_t<types::Vec2i, std::unique_ptr<Chunk>> m_chunks;
     };
 } // namespace lodestone::level::chunk
 

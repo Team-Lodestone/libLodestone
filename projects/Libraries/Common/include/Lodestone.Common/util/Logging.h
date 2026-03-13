@@ -3,6 +3,7 @@
 //
 #ifndef LODESTONE_LOGGING_H
 #define LODESTONE_LOGGING_H
+#include <iostream>
 
 #ifdef CMAKE_BUILD_DEBUG
 /** Only gets the filename instead of full file path */
@@ -26,11 +27,11 @@
 
 #define LOG_ERROR(...)                                                         \
     std::cerr << "[" << FILE_NAME << ":" << __LINE__ << " | " << __func__      \
-              << "/ERROR] " << __VA_ARGS__ << std::cerr
+              << "/ERROR] " << __VA_ARGS__ << std::endl
 
 #define LOG_ERROR_WIDE(...)                                                    \
     std::cerr << L"[" << FILE_NAME << L":" << __LINE__ << L" | " << __func__   \
-              << L"/ERROR] " << __VA_ARGS__ << std::cerr
+              << L"/ERROR] " << __VA_ARGS__ << std::endl
 
 #define LOG_DEBUG(...)                                                         \
     std::cout << "[" << FILE_NAME << ":" << __LINE__ << " | " << __func__      \
@@ -55,10 +56,10 @@
     std::cout << L"[" << __func__ << L"/WARN] " << __VA_ARGS__ << std::endl
 
 #define LOG_ERROR(...)                                                         \
-    std::cerr << "[" << __func__ << "/ERROR] " << __VA_ARGS__ << std::cerr
+    std::cerr << "[" << __func__ << "/ERROR] " << __VA_ARGS__ << std::endl
 
 #define LOG_ERROR_WIDE(...)                                                    \
-    std::cerr << L"[" << __func__ << L"/ERROR] " << __VA_ARGS__ << std::cerr
+    std::cerr << L"[" << __func__ << L"/ERROR] " << __VA_ARGS__ << std::endl
 
 #define LOG_DEBUG(...)
 #define LOG_DEBUG_WIDE(...)

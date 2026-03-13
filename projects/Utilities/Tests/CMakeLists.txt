@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION VERSION 3.30)
 project(Lodestone.Tests)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
@@ -21,9 +21,19 @@ FetchContent_Declare(
         nbt++
         GIT_REPOSITORY https://github.com/Team-Lodestone/libnbtplusplus.git
         GIT_TAG master
+        GIT_SHALLOW TRUE
 )
 FetchContent_MakeAvailable(nbt++)
 endif()
+
+include(FetchContent)
+FetchContent_Declare(
+        tfw
+        GIT_REPOSITORY https://codeberg.org/Dexrn/tfw.git
+        GIT_TAG 1.0.1
+        GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(tfw)
 
 add_executable(Lodestone.Tests ${FILES})
 target_include_directories(Lodestone.Tests
@@ -31,7 +41,7 @@ target_include_directories(Lodestone.Tests
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
-target_link_libraries(Lodestone.Tests PRIVATE Lodestone.Level nbt++ BIO)
+target_link_libraries(Lodestone.Tests PRIVATE Lodestone.Level nbt++ bio tfw)
 target_link_libraries(Lodestone.Tests PRIVATE Lodestone.Minecraft.Java Lodestone.Conversion)
 
 # Should we allow for exceptions to throw for debugging
@@ -45,7 +55,8 @@ target_compile_definitions(Lodestone.Tests PRIVATE
 
 # ENABLE INDIVIDUAL TESTS HERE
 target_compile_definitions(Lodestone.Tests PRIVATE
-        READ_ANVIL_WORLD=true
+        GENERATE_WATER_CHUNK=true
+        READ_ANVIL_WORLD=false
         READ_MCR_WORLD=false
         READ_MCR_CHUNK=false
         READ_MCR_FILE=false

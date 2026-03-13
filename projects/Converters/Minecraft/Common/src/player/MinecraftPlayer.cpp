@@ -10,54 +10,54 @@
 
 namespace lodestone::minecraft::common::player {
     MinecraftPlayer::MinecraftPlayer(const std::string &name)
-        : mName(name), mDeathTime(0), mHurtTime(0), mAttackTime(0),
-          mFireTime(0), mBreathingTime(0),
-          mDimension(level::world::World::Dimension::OVERWORLD),
-          mFallDistance(0) {}
+        : m_name(name), m_deathTime(0), m_hurtTime(0), m_attackTime(0),
+          m_fireTime(0), m_breathingTime(0),
+          m_dimension(level::world::World::Dimension::OVERWORLD),
+          m_fallDistance(0) {}
 
-    const std::string &MinecraftPlayer::getId() const { return mName; }
+    const std::string &MinecraftPlayer::getId() const { return m_name; }
 
     const level::types::Vec3i &MinecraftPlayer::getSpawnPos() const {
-        return mSpawnPos;
+        return m_spawnPos;
     }
 
     void MinecraftPlayer::setSpawnPos(const level::types::Vec3i &spawnPos) {
-        mSpawnPos = spawnPos;
+        m_spawnPos = spawnPos;
     }
 
-    short MinecraftPlayer::getDeathTime() const { return mDeathTime; }
+    short MinecraftPlayer::getDeathTime() const { return m_deathTime; }
 
     void MinecraftPlayer::setDeathTime(const short deathTime) {
-        mDeathTime = deathTime;
+        m_deathTime = deathTime;
     }
 
-    short MinecraftPlayer::getHurtTime() const { return mHurtTime; }
+    short MinecraftPlayer::getHurtTime() const { return m_hurtTime; }
 
     void MinecraftPlayer::setHurtTime(const short hurtTime) {
-        mHurtTime = hurtTime;
+        m_hurtTime = hurtTime;
     }
 
-    short MinecraftPlayer::getAttackTime() const { return mAttackTime; }
+    short MinecraftPlayer::getAttackTime() const { return m_attackTime; }
 
     void MinecraftPlayer::setAttackTime(const short attackTime) {
-        mAttackTime = attackTime;
+        m_attackTime = attackTime;
     }
 
-    short MinecraftPlayer::getFireTime() const { return mFireTime; }
+    short MinecraftPlayer::getFireTime() const { return m_fireTime; }
 
     void MinecraftPlayer::setFireTime(const short fireTime) {
-        mFireTime = fireTime;
+        m_fireTime = fireTime;
     }
 
-    short MinecraftPlayer::getBreathingTime() const { return mBreathingTime; }
+    short MinecraftPlayer::getBreathingTime() const { return m_breathingTime; }
 
     void MinecraftPlayer::setBreathingTime(const short breathingTime) {
-        mBreathingTime = breathingTime;
+        m_breathingTime = breathingTime;
     }
 
     const lodestone::common::registry::Identifier &
     MinecraftPlayer::getDimension() const {
-        return mDimension;
+        return m_dimension;
     }
 
     std::string MinecraftPlayer::getWorldName() const {
@@ -70,53 +70,53 @@ namespace lodestone::minecraft::common::player {
 
     void MinecraftPlayer::setDimension(
         const lodestone::common::registry::Identifier &dimension) {
-        this->mDimension = dimension;
+        this->m_dimension = dimension;
     }
 
-    float MinecraftPlayer::getFallDistance() const { return mFallDistance; }
+    float MinecraftPlayer::getFallDistance() const { return m_fallDistance; }
 
     void MinecraftPlayer::setFallDistance(const float fallDistance) {
-        this->mFallDistance = fallDistance;
+        this->m_fallDistance = fallDistance;
     }
 
     const level::container::ItemContainer &
     MinecraftPlayer::getInventory() const {
-        return mInventory;
+        return m_inventory;
     }
 
     const level::container::ItemContainer &MinecraftPlayer::getArmor() const {
-        return mArmor;
+        return m_armor;
     }
 
     const lodestone::common::registry::Identifier *
     MinecraftPlayer::getType() const {
-        return &identifiers::MINECRAFT_COMMON;
+        return &identifiers::MINECRAFT_PLAYER;
     }
 
     const Abilities &MinecraftPlayer::getAbilities() const {
-        return mAbilities;
+        return m_abilities;
     }
 
     void MinecraftPlayer::setAbilities(const Abilities &abilities) {
-        mAbilities = abilities;
+        m_abilities = abilities;
     }
 
-    std::shared_ptr<level::properties::AbstractProperty>
+    std::unique_ptr<level::properties::AbstractProperty>
     MinecraftPlayer::getProperty(const std::string &name) {
         switch (lodestone::common::util::Math::fnv1a64(name.data(),
                                                        name.length())) {
-            ADD_FIELD_PROPERTY("name", mName);
-            ADD_FIELD_PROPERTY("spawnPos", mSpawnPos);
-            ADD_FIELD_PROPERTY("deathTime", mDeathTime);
-            ADD_FIELD_PROPERTY("hurtTime", mHurtTime);
-            ADD_FIELD_PROPERTY("attackTime", mAttackTime);
-            ADD_FIELD_PROPERTY("fireTime", mFireTime);
-            ADD_FIELD_PROPERTY("breathingTime", mBreathingTime);
-            ADD_FIELD_PROPERTY("dimension", mDimension);
-            ADD_FIELD_PROPERTY("fallDistance", mFallDistance);
-            ADD_FIELD_PROPERTY("inventory", mInventory);
-            ADD_FIELD_PROPERTY("armor", mArmor);
-            ADD_FIELD_PROPERTY("abilities", mAbilities);
+            ADD_FIELD_PROPERTY("name", m_name);
+            ADD_FIELD_PROPERTY("spawnPos", m_spawnPos);
+            ADD_FIELD_PROPERTY("deathTime", m_deathTime);
+            ADD_FIELD_PROPERTY("hurtTime", m_hurtTime);
+            ADD_FIELD_PROPERTY("attackTime", m_attackTime);
+            ADD_FIELD_PROPERTY("fireTime", m_fireTime);
+            ADD_FIELD_PROPERTY("breathingTime", m_breathingTime);
+            ADD_FIELD_PROPERTY("dimension", m_dimension);
+            ADD_FIELD_PROPERTY("fallDistance", m_fallDistance);
+            ADD_FIELD_PROPERTY("inventory", m_inventory);
+            ADD_FIELD_PROPERTY("armor", m_armor);
+            ADD_FIELD_PROPERTY("abilities", m_abilities);
         default:
             return Player::getProperty(name);
         }

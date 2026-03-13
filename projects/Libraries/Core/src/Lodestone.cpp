@@ -9,8 +9,8 @@
 
 namespace lodestone::core {
     Lodestone *Lodestone::getInstance() {
-        static Lodestone sInstance;
-        return &sInstance;
+        static Lodestone s_instance;
+        return &s_instance;
     }
 
     void Lodestone::registerExtension(LodestoneExtension *ext) {
@@ -19,26 +19,23 @@ namespace lodestone::core {
             throw std::runtime_error(
                 "Tried to register extension with id that already exists.");
 
-        LOG_DEBUG(std::format("Registered extension '{}' v{}", id.getString(),
-                              ext->getVersion()));
-        mExtensions.emplace(id, ext);
+        m_extensions.emplace(id, ext);
     }
 
     bool Lodestone::hasExtension(const common::registry::Identifier &id) {
-        return mExtensions.contains(id);
+        return m_extensions.contains(id);
     }
 
     LodestoneExtension *
     Lodestone::getExtension(const common::registry::Identifier &id) {
-        if (const auto it = mExtensions.find(id); it != mExtensions.end())
+        if (const auto it = m_extensions.find(id); it != m_extensions.end())
             return it->second;
 
         return nullptr;
     }
 
-    const map_t<common::registry::Identifier, LodestoneExtension *,
-                IdentifierHasher, IdentifierComparator> &
+    const map_t<common::registry::Identifier, LodestoneExtension *> &
     Lodestone::getExtensions() {
-        return mExtensions;
+        return m_extensions;
     }
 } // namespace lodestone::core

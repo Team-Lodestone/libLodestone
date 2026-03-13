@@ -5,37 +5,37 @@
 
 namespace lodestone::level::container {
     ItemContainer::ItemContainer(const int count)
-        : mCount(count),
-          mSlots(new std::unique_ptr<item::ItemProperties>[count]) {}
+        : m_count(count),
+          m_slots(new std::unique_ptr<item::ItemInstance>[count]) {}
 
-    ItemContainer::~ItemContainer() { delete[] mSlots; }
+    ItemContainer::~ItemContainer() { delete[] m_slots; }
 
-    int ItemContainer::getCount() const { return mCount; }
+    int ItemContainer::getCount() const { return m_count; }
 
-    const item::ItemProperties *ItemContainer::getItems() const {
-        return mSlots->get();
+    const item::ItemInstance *ItemContainer::getItems() const {
+        return m_slots->get();
     }
 
-    item::ItemProperties *ItemContainer::getItem(const int slot) const {
-        if (slot > mCount || 0 > slot)
+    item::ItemInstance *ItemContainer::getItem(const int slot) const {
+        if (slot > m_count || 0 > slot)
             return nullptr;
 
-        return mSlots[slot].get();
+        return m_slots[slot].get();
     }
 
     void
     ItemContainer::setItem(const int slot,
-                           std::unique_ptr<item::ItemProperties> item) const {
-        if (slot > mCount || 0 > slot)
+                           std::unique_ptr<item::ItemInstance> item) const {
+        if (slot > m_count || 0 > slot)
             return;
 
-        mSlots[slot] = std::move(item);
+        m_slots[slot] = std::move(item);
     }
 
     bool ItemContainer::slotHasItem(const int slot) const {
-        if (slot > mCount || 0 > slot)
+        if (slot > m_count || 0 > slot)
             return false;
 
-        return mSlots[slot] != nullptr;
+        return m_slots[slot] != nullptr;
     }
 } // namespace lodestone::level::container

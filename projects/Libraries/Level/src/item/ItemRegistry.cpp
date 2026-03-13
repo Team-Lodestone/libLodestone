@@ -13,27 +13,27 @@ namespace lodestone::level::item {
         getInstance().getItem(&Items::NONE);
 
     ItemRegistry &ItemRegistry::getInstance() {
-        static ItemRegistry sInstance;
-        return sInstance;
+        static ItemRegistry s_instance;
+        return s_instance;
     }
 
     void ItemRegistry::registerItem(
         const lodestone::common::registry::Identifier *id, const Item *item) {
-        if (mItems.contains(id))
+        if (m_items.contains(id))
             throw std::runtime_error(
                 std::format("Item '{}' is already registered", *id));
 
-        mItems[id] = std::move(item);
+        m_items[id] = std::move(item);
         LOG_DEBUG("Registered item '" << *id << "'");
     }
 
     bool ItemRegistry::registerItemIfNonExistent(
         const lodestone::common::registry::Identifier *id,
         const Item *item) noexcept {
-        if (mItems.contains(id))
+        if (m_items.contains(id))
             return false;
 
-        mItems[id] = std::move(item);
+        m_items[id] = std::move(item);
 
         LOG_DEBUG("Registered item '" << *id << "'");
 
@@ -42,7 +42,7 @@ namespace lodestone::level::item {
 
     const Item *ItemRegistry::getItem(
         const lodestone::common::registry::Identifier *id) const {
-        if (const auto it = mItems.find(id); it != mItems.end())
+        if (const auto it = m_items.find(id); it != m_items.end())
             return it->second;
 
         return nullptr;

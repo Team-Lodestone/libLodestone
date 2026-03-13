@@ -7,44 +7,54 @@
 
 namespace lodestone::level::chunk::section {
     LevelSection::~LevelSection() {
-        delete[] mBiomes;
+        delete[] m_biomes;
     }
 
-    lodestone::common::storage::bits::AbstractBitsArray *LevelSection::getBlockLight() {
-        return &mBlockLight;
+    lodestone::common::storage::bits::AbstractBitStorage *LevelSection::getBlockLight() {
+        return &m_blockLight;
     }
 
-    lodestone::common::storage::bits::AbstractBitsArray *LevelSection::getSkyLight() {
-        return &mSkyLight;
+    lodestone::common::storage::bits::AbstractBitStorage *LevelSection::getSkyLight() {
+        return &m_skyLight;
     }
 
     void LevelSection::setBlockLight(const int x, const int y, const int z,
                                      const uint8_t l) {
-        this->mBlockLight.setNibble(x, y, z, l & 0xF);
+        this->m_blockLight.setNibble(x, y, z, l & 0xF);
+
+        m_modificationCount++;
     }
 
     void LevelSection::setSkyLight(const int x, const int y, const int z,
                                    const uint8_t l) {
-        this->mSkyLight.setNibble(x, y, z, l & 0xF);
+        this->m_skyLight.setNibble(x, y, z, l & 0xF);
+
+        m_modificationCount++;
     }
 
-    const block::properties::BlockProperties &
+    const block::instance::BlockInstance &
     LevelSection::getBlock(const int x, const int y, const int z) const {
-        return mBlocks.getValue(INDEX_YZX(x, y, z, common::constants::CHUNK_WIDTH,
+        return m_blocks.getValue(INDEX_YZX(x, y, z, common::constants::CHUNK_WIDTH,
                                   common::constants::CHUNK_DEPTH));
     }
 
-    const common::storage::palette::PalletizedStorage<block::properties::BlockProperties> &LevelSection::getStorage() {
-        return mBlocks;
+    const common::storage::palette::PalletizedStorage<block::instance::BlockInstance> &LevelSection::getStorage() {
+        return m_blocks;
     }
 
     Section::SectionType LevelSection::getType() {
         return SectionType::LevelSection;
     }
 
-    void LevelSection::setBlock(block::properties::BlockProperties &&blk,
+    uint64_t LevelSection::getModificationCount() {
+        return m_modificationCount;
+    }
+
+    void LevelSection::setBlock(block::instance::BlockInstance &&blk,
                                 const int x, const int y, const int z) {
-        mBlocks.setValue(INDEX_YZX(x, y, z, common::constants::CHUNK_WIDTH,
+        m_blocks.setValue(INDEX_YZX(x, y, z, common::constants::CHUNK_WIDTH,
                           common::constants::CHUNK_DEPTH), std::move(blk));
+
+        m_modificationCount++;
     }
 } // namespace lodestone::level::chunk::section

@@ -1,16 +1,17 @@
 //
 // Created by DexrnZacAttack on 11/26/25 using zPc-i2.
 //
-#include "Lodestone.Minecraft.Java/anvil/jungle/region/JungleAnvilRegionIo.h"
+#include "Lodestone.Minecraft.Java/conversion/anvil/jungle/JungleAnvilRegionIo.h"
 
+#include <libnbt++/io/ozlibstream.h>
+#include <BinaryIO/stream/BinaryOutputStream.h>
 #include "Lodestone.Minecraft.Java/Identifiers.h"
-#include "Lodestone.Minecraft.Java/anvil/jungle/chunk/JungleAnvilChunk.h"
-#include "Lodestone.Minecraft.Java/anvil/jungle/chunk/JungleAnvilChunkIo.h"
-#include "Lodestone.Minecraft.Java/anvil/jungle/region/JungleAnvilRegion.h"
-#include <BinaryIO/BinaryBuffer.h>
+#include "Lodestone.Minecraft.Java/anvil/jungle/JungleAnvilChunk.h"
+#include "Lodestone.Minecraft.Java/conversion/anvil/jungle/JungleAnvilChunkIo.h"
+#include "Lodestone.Minecraft.Java/anvil/jungle/JungleAnvilRegion.h"
+#include <BinaryIO/buffer/BinaryBuffer.h>
 #include <BinaryIO/stream/BinaryInputStream.h>
 #include <Lodestone.Common/util/Logging.h>
-#include <Lodestone.Conversion/chunk/ChunkIORegistry.h>
 #include <Lodestone.Minecraft.Common/region/RegionChunkIndice.h>
 #include <Lodestone.Minecraft.Common/region/RegionCompression.h>
 #include <libnbt++/io/izlibstream.h>
@@ -21,15 +22,13 @@ namespace lodestone::minecraft::java::anvil::jungle::region {
     // The format is the same as the McRegion one since they never actually
     // changed the container format
     std::unique_ptr<level::region::Region>
-    JungleAnvilRegionIO::read(std::istream &in, int version,
-                              const level::types::Vec2i &coords) const {
-        bio::stream::BinaryInputStream bis(in);
+    JungleAnvilRegionIO::read(const common::conversion::io::options::OptionPresets::CommonChunkReadOptions &options) const {
+        bio::stream::BinaryInputStream bis(options.input);
 
-        auto chunkIo = dynamic_cast<const chunk::JungleAnvilChunkIO *>(
-            getChunkIO(version));
+        auto chunkIo = this->getAsByRelation<const chunk::JungleAnvilChunkIO, &lodestone::conversion::identifiers::CHUNK_IO>();
 
         std::unique_ptr<level::region::Region> region =
-            std::make_unique<JungleAnvilRegion>(coords);
+            std::make_unique<JungleAnvilRegion>(options.coords);
 
         std::vector<common::region::RegionChunkIndice> locations;
         locations.reserve(CHUNK_COUNT);
@@ -40,8 +39,8 @@ namespace lodestone::minecraft::java::anvil::jungle::region {
         uint8_t *timestamps = new uint8_t[CHUNK_COUNT * 4];
         bis.readInto(timestamps, CHUNK_COUNT * 4);
 
-        bio::BinaryBuffer locBuf(locs);
-        bio::BinaryBuffer timeBuf(timestamps);
+        bio::buffer::BinaryBuffer locBuf(locs);
+        bio::buffer::BinaryBuffer timeBuf(timestamps);
         for (int i = 0; i < CHUNK_COUNT; i++) {
             const uint32_t offset =
                 locBuf.readUint24(bio::util::ByteOrder::BIG);
@@ -67,16 +66,24 @@ namespace lodestone::minecraft::java::anvil::jungle::region {
                 continue;
 
             switch (compression) {
-            case common::region::GZip:
-            case common::region::Zlib: {
+            case common::region::GZIP:
+            case common::region::ZLIB: {
                 zlib::izlibstream strm(bis.getStream());
                 std::unique_ptr<chunk::JungleAnvilChunk> c = CAST_UNIQUE_PTR(
-                    chunk::JungleAnvilChunk, chunkIo->read(strm, version));
+                    chunk::JungleAnvilChunk, chunkIo->read(common::conversion::io::options::OptionPresets::CommonReadOptions {
+                        lodestone::conversion::io::options::fs::file::FileReaderOptions {
+                            strm
+                        },
+                        conversion::io::options::versioned::VersionedOptions {
+                            options.version
+                        }
+                    }));
+
                 region->addChunk(std::move(c));
 
                 break;
             }
-            case common::region::Custom: {
+            case common::region::CUSTOM: {
                 const uint16_t l = bis.readBE<uint16_t>();
                 std::string name =
                     bis.readString(l); // who cares about mutf8 :trolley:

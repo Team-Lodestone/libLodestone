@@ -8,10 +8,9 @@
 #include <variant>
 
 #include <Lodestone.Common/Defines.h>
-#include <Lodestone.Level/block/properties/BlockProperties.h>
+#include <Lodestone.Level/block/instance/BlockInstance.h>
 
 #include "Lodestone.Conversion/block/data/AbstractBlockData.h"
-#include "Lodestone.Conversion/types/hash/BlockDataHash.h"
 #include <gtl/phmap.hpp>
 
 namespace lodestone::conversion::block::version {
@@ -39,21 +38,20 @@ namespace lodestone::conversion::block::version {
 
         /** Converts an internal block to the BlockIO's format */
         data::AbstractBlockData *convertBlockFromInternal(
-            const lodestone::level::block::properties::BlockProperties *b);
+            const lodestone::level::block::instance::BlockInstance *b);
 
         /** Converts a block from BlockIO to the internal format */
-        lodestone::level::block::properties::BlockProperties
+        lodestone::level::block::instance::BlockInstance
         convertBlockToInternal(const data::AbstractBlockData &b);
 
       private:
         // todo I have learned about the existence of bimap but I don't know if
         // a lib exists for cpp
         map_t<const lodestone::level::block::Block *, data::AbstractBlockData *>
-            mFromInternalConversionMap;
+            m_fromInternalConversionMap;
         map_t<const data::AbstractBlockData *,
-              const lodestone::level::block::Block *,
-              types::hash::BlockDataHash, types::hash::BlockDataComparator>
-            mToInternalConversionMap;
+              const level::block::Block *, std::hash<data::AbstractBlockData *>, data::AbstractBlockData::Comparator>
+            m_toInternalConversionMap;
     };
 } // namespace lodestone::conversion::block::version
 
