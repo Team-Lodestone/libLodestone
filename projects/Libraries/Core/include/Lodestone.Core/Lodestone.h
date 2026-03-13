@@ -14,7 +14,7 @@ namespace lodestone::core {
         static Lodestone *getInstance();
 
         void registerExtension(LodestoneExtension *ext);
-        bool hasExtension(const common::registry::Identifier &id);
+        bool hasExtension(const common::registry::Identifier &id) const;
         LodestoneExtension *
         getExtension(const common::registry::Identifier &id);
         const map_t<common::registry::Identifier, LodestoneExtension *> &

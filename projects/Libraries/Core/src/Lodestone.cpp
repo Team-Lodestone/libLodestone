@@ -22,7 +22,7 @@ namespace lodestone::core {
         m_extensions.emplace(id, ext);
     }
 
-    bool Lodestone::hasExtension(const common::registry::Identifier &id) {
+    bool Lodestone::hasExtension(const common::registry::Identifier &id) const {
         return m_extensions.contains(id);
     }
 

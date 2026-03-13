@@ -8,6 +8,14 @@ set(FILES
         src/Lodestone.cpp
         src/LodestoneExtension.cpp
         include/Lodestone.Core/LodestoneExtension.h
+        include/Lodestone.Core/loader/ExtensionLoader.h
+        include/Lodestone.Core/loader/NativeExtensionLoader.h
+        include/Lodestone.Core/loader/LibraryHandle.h
+        include/Lodestone.Core/event/Event.h
+        include/Lodestone.Core/event/Cancellable.h
+        src/loader/ExtensionLoader.cpp
+        src/loader/NativeExtensionLoader.cpp
+        src/loader/LibraryHandle.cpp
 )
 
 message("CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")

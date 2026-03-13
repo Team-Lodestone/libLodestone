@@ -1,3 +1,5 @@
+#include "Lodestone.Core/loader/NativeExtensionLoader.h"
+
 #include <filesystem>
 #include <iostream>
 #include <ostream>
@@ -7,6 +9,7 @@
 
 #include "Lodestone.Tests/tests/MainTests.h"
 #include "Lodestone.Tests/util.h"
+#include <print>
 #include <BinaryIO/Exports.h>
 //
 // Created by DexrnZacAttack on 10/14/25 using zPc-i2.
@@ -353,7 +356,12 @@ int main(int argc, char **argv) {
     LOG_INFO(lodestone::common::lodestone_get_library_string());
     LOG_INFO(bio::bio_get_library_string());
 
-    lodestone::minecraft::java::LodestoneJava::init();
+    lodestone::core::loader::NativeExtensionLoader l(lodestone::core::Lodestone::getInstance());
+    l.extensionLoadedEvent += [](const lodestone::core::LodestoneExtension *ext) {
+        std::print("Initialized extension '{}' v{}\n", ext->getIdentifier(), ext->getVersion());
+    };
+
+    l.loadExtension(lodestone::minecraft::java::lodestoneInit);
 
     std::filesystem::create_directories(lodestone::tests::util::INPUT_FOLDER);
     std::filesystem::create_directories(lodestone::tests::util::OUTPUT_FOLDER);

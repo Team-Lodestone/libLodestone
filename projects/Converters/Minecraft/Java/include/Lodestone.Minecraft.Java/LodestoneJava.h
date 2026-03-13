@@ -64,8 +64,6 @@ namespace lodestone::minecraft::java {
       public:
         static LodestoneJava *getInstance();
 
-        static core::LodestoneExtension *LODESTONE_API init();
-
         void initBlocks();
 
         lodestone::common::registry::Identifier getIdentifier() const override;
