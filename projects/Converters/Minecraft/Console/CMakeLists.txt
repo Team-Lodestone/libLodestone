@@ -17,7 +17,7 @@ target_include_directories(Lodestone.Minecraft.Console
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
-target_link_libraries(Lodestone.Minecraft.Console PRIVATE Lodestone.Level Lodestone.Conversion nbt++ bio)
+target_link_libraries(Lodestone.Minecraft.Console PRIVATE Lodestone.Level Lodestone.Conversion nbt++ bio-cpp20)
 target_link_libraries(Lodestone.Minecraft.Console PUBLIC Lodestone.Core Lodestone.Minecraft.Common)
 
 set(VERSIONS

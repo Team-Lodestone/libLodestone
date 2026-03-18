@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.30)
 project(Lodestone VERSION 1.0.0)
 
-set(PROJECT_VERSION_DEV 40) # used for dev versions, otherwise blank
+set(PROJECT_VERSION_DEV 41) # used for dev versions, otherwise blank
 set(CMAKE_CXX_STANDARD 20)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -44,7 +44,7 @@ FetchContent_MakeAvailable(zlib)
 
 FetchContent_Declare(
         msft_proxy4
-        GIT_TAG 4.0.0
+        GIT_TAG 4.0.2
         GIT_REPOSITORY https://github.com/ngcpp/proxy.git
 )
 FetchContent_MakeAvailable(msft_proxy4)

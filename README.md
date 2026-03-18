@@ -11,9 +11,10 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
 | [Lodestone.Core](/projects/Libraries/Core)             | Core library, handles converter registration |
 | [Lodestone.Common](/projects/Libraries/Common)         | Common dependencies for all projects         |
 ### Converters
-| Name                                                            | Description                       |
-|-----------------------------------------------------------------|-----------------------------------|
-| [Lodestone.Minecraft.Java](/projects/Converters/Minecraft/Java) | Minecraft: Java Edition Converter |
+| Name                                                                  | Description                                 |
+|-----------------------------------------------------------------------|---------------------------------------------|
+| [Lodestone.Minecraft.Java](/projects/Converters/Minecraft/Java)       | Minecraft: Java Edition Converter           |
+| [Lodestone.Minecraft.Console](/projects/Converters/Minecraft/Console) | Minecraft: Legacy Console Edition Converter |
 
 
 # Roadmap

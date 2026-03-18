@@ -41,7 +41,7 @@ target_include_directories(Lodestone.Tests
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
-target_link_libraries(Lodestone.Tests PRIVATE Lodestone.Level nbt++ bio tfw)
+target_link_libraries(Lodestone.Tests PRIVATE Lodestone.Level nbt++ bio-cpp20 tfw)
 target_link_libraries(Lodestone.Tests PRIVATE Lodestone.Minecraft.Java Lodestone.Conversion)
 
 # Should we allow for exceptions to throw for debugging
