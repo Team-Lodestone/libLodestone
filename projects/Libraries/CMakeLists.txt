@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.30)
 project(Lodestone VERSION 1.0.0)
 
-set(PROJECT_VERSION_DEV 42) # used for dev versions, otherwise blank
+set(PROJECT_VERSION_DEV 43) # used for dev versions, otherwise blank
 set(CMAKE_CXX_STANDARD 20)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")

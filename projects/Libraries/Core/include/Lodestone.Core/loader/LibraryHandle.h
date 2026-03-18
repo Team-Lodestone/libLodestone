@@ -14,7 +14,7 @@
 
 #ifdef _WIN32
 #include <windows.h>
-#elif defined(__unix__)
+#elif defined(__unix__) || defined (__APPLE__)
 #include <dlfcn.h>
 #endif
 
@@ -39,7 +39,7 @@ namespace lodestone::core::loader {
   private:
 #ifdef _WIN32
     HMODULE m_handle;
-#elif defined(__unix__)
+#elif defined(__unix__) || defined (__APPLE__)
     void *m_handle;
 #endif
     // TODO for emscripten and other platforms we will impl custom, internal loader which initializes libs added at compile time

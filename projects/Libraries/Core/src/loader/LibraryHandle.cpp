@@ -19,7 +19,7 @@ namespace lodestone::core::loader {
 
 #ifdef _WIN32
     return GetProcAddress(this->m_handle, name);
-#elif defined(__unix__)
+#elif defined(__unix__) || defined (__APPLE__)
     return dlsym(this->m_handle, name);
 #endif
   }
@@ -34,7 +34,7 @@ namespace lodestone::core::loader {
   void LibraryHandle::load(const std::filesystem::path& path) {
 #ifdef _WIN32
     this->m_handle = LoadLibraryW(path.c_str());
-#elif defined(__unix__)
+#elif defined(__unix__) || defined (__APPLE__)
     this->m_handle = dlopen(path.c_str(), RTLD_NOW);
 #endif
   }
@@ -42,7 +42,7 @@ namespace lodestone::core::loader {
   void LibraryHandle::unload() {
 #ifdef _WIN32
     FreeLibrary(this->m_handle);
-#elif defined(__unix__)
+#elif defined(__unix__) || defined (__APPLE__)
     dlclose(this->m_handle);
 #endif
 
