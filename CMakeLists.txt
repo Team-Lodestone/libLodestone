@@ -10,13 +10,16 @@ endif ()
 option(BIO_TESTS "Build libBIO tests" OFF)
 
 # BIO
-include(FetchContent)
-FetchContent_Declare(
-        bio
-        GIT_REPOSITORY https://codeberg.org/Dexrn/libBIO.git
-        GIT_TAG 4.0.0-dev.3
-)
-FetchContent_MakeAvailable(bio)
+if (NOT TARGET bio)
+    include(FetchContent)
+    FetchContent_Declare(
+            bio
+            GIT_REPOSITORY https://codeberg.org/Dexrn/libBIO.git
+            GIT_TAG 4.0.0-dev.3
+    )
+
+    FetchContent_MakeAvailable(bio)
+endif()
 
 # PROJECTS
 add_subdirectory(projects/Libraries)

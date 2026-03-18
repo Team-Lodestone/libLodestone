@@ -31,6 +31,8 @@ set(FILES
         include/Lodestone.Common/registry/Identifiable.h
         include/Lodestone.Common/util/Concepts.h
         include/Lodestone.Common/util/Util.h
+        include/Lodestone.Common/event/Event.h
+        include/Lodestone.Common/event/Cancellable.h
         src/util/Util.cpp
 )
 
