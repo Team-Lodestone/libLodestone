@@ -31,8 +31,10 @@ namespace lodestone::level::block {
                 std::format("Block '{}' is already registered", *id));
 
         item::ItemRegistry::getInstance().registerItem(id, block->getItem());
-        m_blocks[id] = std::move(block);
-        LOG_DEBUG("Registered block '" << *id << "'");
+        m_blocks[id] = block;
+        // LOG_DEBUG("Registered block '" << *id << "'");
+
+        this->blockRegisteredEvent.notify(id, block);
     }
 
     bool BlockRegistry::registerBlockIfNonExistent(
@@ -45,7 +47,7 @@ namespace lodestone::level::block {
             id, block->getItem());
         m_blocks[id] = std::move(block);
 
-        LOG_DEBUG("Registered block '" << *id << "'");
+        this->blockRegisteredEvent.notify(id, block);
         return true;
     }
 

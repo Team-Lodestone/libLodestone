@@ -10,9 +10,10 @@
  */
 #ifndef LODESTONE_LIBRARYLOADER_H
 #define LODESTONE_LIBRARYLOADER_H
+#include "Lodestone.Common/event/Event.h"
+
 #include <filesystem>
 
-#include "Lodestone.Core/event/Event.h"
 #include "Lodestone.Core/Lodestone.h"
 #include "Lodestone.Core/LodestoneExtension.h"
 
@@ -30,8 +31,8 @@ namespace lodestone::core::loader {
       virtual void loadExtension(LodestoneInit entrypoint);
 
     public:
-      event::CancellableEvent<const std::filesystem::path &> extensionLoadingEvent;
-      event::Event<core::LodestoneExtension *> extensionLoadedEvent;
+      common::event::CancellableEvent<const std::filesystem::path &> extensionLoadingEvent;
+      common::event::Event<core::LodestoneExtension *> extensionLoadedEvent;
 
     protected:
       core::Lodestone *m_core;

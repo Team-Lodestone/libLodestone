@@ -11,6 +11,12 @@ namespace lodestone::minecraft::common {
     r.registerBlockIfNonExistent(n, new level::block::Block(n, m, d))
 
     void LodestoneMinecraftCommon::initBlocks() {
+        static bool blocksInited = false;
+        if (blocksInited)
+            return;
+
+        blocksInited = true;
+
         level::block::BlockRegistry &r =
             level::block::BlockRegistry::getInstance();
 

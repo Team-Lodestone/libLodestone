@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.30)
 project(Lodestone VERSION 1.0.0)
 
-set(PROJECT_VERSION_DEV 37) # used for dev versions, otherwise blank
+set(PROJECT_VERSION_DEV 38) # used for dev versions, otherwise blank
 set(CMAKE_CXX_STANDARD 20)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -17,7 +17,7 @@ include(FetchContent)
 FetchContent_Declare(
         bio
         GIT_REPOSITORY https://codeberg.org/Dexrn/libBIO.git
-        GIT_TAG 3.1.0
+        GIT_TAG 4.0.0-dev.3
 )
 FetchContent_MakeAvailable(bio)
 

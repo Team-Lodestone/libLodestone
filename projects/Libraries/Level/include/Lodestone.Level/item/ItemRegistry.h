@@ -3,6 +3,8 @@
 //
 #ifndef LODESTONE_ITEMREGISTRY_H
 #define LODESTONE_ITEMREGISTRY_H
+#include "Lodestone.Common/event/Event.h"
+
 #include <unordered_map>
 
 #include <Lodestone.Common/Defines.h>
@@ -49,6 +51,7 @@ namespace lodestone::level::item {
             return m_items.end();
         }
 
+        common::event::Event<lodestone::common::registry::Identifier, const Item *> itemRegisteredEvent;
       private:
         map_t<const lodestone::common::registry::Identifier *, const Item *>
             m_items = {REGISTER_ITEM(&Items::NONE, nullptr)};

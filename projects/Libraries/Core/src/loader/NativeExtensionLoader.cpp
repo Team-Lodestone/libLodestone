@@ -46,7 +46,7 @@ namespace lodestone::core::loader {
         continue;
       }
 
-      event::Cancellable c;
+      common::event::Cancellable c;
       this->extensionLoadingEvent.notify(c, p.path());
       if (c.cancelled)
         return;

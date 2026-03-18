@@ -84,9 +84,7 @@ namespace lodestone::minecraft::java::anvil::jungle::region {
                 break;
             }
             case common::region::CUSTOM: {
-                const uint16_t l = bis.readBE<uint16_t>();
-                std::string name =
-                    bis.readString(l); // who cares about mutf8 :trolley:
+                std::string name = bis.readStringWithLength<char>(bio::util::ByteOrder::BIG, bio::util::string::StringLengthEncoding::LENGTH_PREFIX); // who cares about mutf8 :trolley:
 
                 LOG_WARNING("Unsupported compression type '" << name << "'");
                 continue;

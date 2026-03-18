@@ -11,7 +11,7 @@
 #ifndef LODESTONE_CANCELLABLE_H
 #define LODESTONE_CANCELLABLE_H
 
-namespace lodestone::core::event {
+namespace lodestone::common::event {
   struct Cancellable {
     bool cancelled;
   };

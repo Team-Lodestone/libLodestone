@@ -3,6 +3,9 @@
 //
 #ifndef LODESTONE_SIMPLEREGISTRY_H
 #define LODESTONE_SIMPLEREGISTRY_H
+
+#include <Lodestone.Common/event/Event.h>
+
 #include <Lodestone.Common/Defines.h>
 #include <Lodestone.Common/registry/Identifier.h>
 
@@ -35,6 +38,8 @@ namespace lodestone::conversion::registry {
               && std::is_base_of_v<common::registry::IIdentifiable, R>
         const R *getOfType() const;
 
+
+        common::event::Event<common::registry::Identifier> objectRegisteredEvent;
     private:
         map_t<common::registry::Identifier,
             Stored>

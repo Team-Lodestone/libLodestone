@@ -24,8 +24,8 @@ namespace lodestone::minecraft::java::classic::minev2 {
         }
 
         char ver = bis.readSignedByte();
-        const std::string name = bis.readString(bis.readBE<uint16_t>());
-        const std::string author = bis.readString(bis.readBE<uint16_t>());
+        const std::string name = bis.readStringWithLength<char>(bio::util::ByteOrder::BIG, bio::util::string::StringLengthEncoding::LENGTH_PREFIX);
+        const std::string author = bis.readStringWithLength<char>(bio::util::ByteOrder::BIG, bio::util::string::StringLengthEncoding::LENGTH_PREFIX);
         uint64_t creationTime = bis.readBE<uint64_t>(); // todo use
 
         const MineV2LevelIO *lio = this->getAsByRelation<const MineV2LevelIO, &lodestone::conversion::identifiers::LEVEL_IO>();
@@ -50,15 +50,12 @@ namespace lodestone::minecraft::java::classic::minev2 {
         bos.writeBE<uint32_t>(SIGNATURE);
         bos.writeByte(1);
 
-        bos.writeBE<uint16_t>(w->getName().length());
-        bos.writeString(w->getName(), false);
+        bos.writeString<char>(w->getName(), bio::util::ByteOrder::BIG, bio::util::string::StringLengthEncoding::LENGTH_PREFIX);
 
         if (MineV2World *mv2 = dynamic_cast<MineV2World *>(w)) {
-            bos.writeBE<uint16_t>(mv2->getAuthor().length());
-            bos.writeString(mv2->getAuthor(), false);
+            bos.writeString<char>(mv2->getAuthor(), bio::util::ByteOrder::BIG, bio::util::string::StringLengthEncoding::LENGTH_PREFIX);
         } else {
-            bos.writeBE<uint16_t>(strlen("Player"));
-            bos.writeString("Player", false);
+            bos.writeString<char>("Player", bio::util::ByteOrder::BIG, bio::util::string::StringLengthEncoding::LENGTH_PREFIX);
         }
 
         bos.writeBE<uint64_t>(w->getCreationTime());

@@ -12,7 +12,8 @@ void SimpleRegistry<Identifier, Type, Stored>::put(const common::registry::Ident
 
     this->m_registry[id] = std::move(io);
 
-    LOG_DEBUG("Registered " << Identifier->getString() << " '" << id << "'");
+    // LOG_DEBUG("Registered " << Identifier->getString() << " '" << id << "'");
+    objectRegisteredEvent.notify(id);
 }
 
 template <const common::registry::Identifier *Identifier, typename Type, typename Stored>
@@ -21,7 +22,7 @@ const Type *SimpleRegistry<Identifier, Type, Stored>::get(common::registry::Iden
     it != m_registry.end())
         return it->second.get();
 
-    LOG_DEBUG("Attemped to get value from nonexistent key '" << Identifier->getString() << "'");
+    LOG_DEBUG("Attempted to get value from nonexistent key '" << Identifier->getString() << "'");
     return nullptr;
 }
 

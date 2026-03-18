@@ -16,10 +16,10 @@
 #include <format>
 #include <stdexcept>
 
-#include "Lodestone.Core/event/Cancellable.h"
+#include "Lodestone.Common/event/Cancellable.h"
 #include "Lodestone.Common/registry/Identifier.h"
 
-namespace lodestone::core::event {
+namespace lodestone::common::event {
   using FunctionHandle = unsigned int;
 
   template <typename... Args>

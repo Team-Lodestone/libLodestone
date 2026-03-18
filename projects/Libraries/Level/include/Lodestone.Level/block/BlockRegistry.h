@@ -3,6 +3,8 @@
 //
 #ifndef LODESTONE_BLOCKREGISTRY_H
 #define LODESTONE_BLOCKREGISTRY_H
+#include "Lodestone.Common/event/Event.h"
+
 #include <unordered_map>
 
 #include <Lodestone.Common/Defines.h>
@@ -52,6 +54,7 @@ namespace lodestone::level::block {
             return m_blocks.end();
         }
 
+        common::event::Event<const lodestone::common::registry::Identifier *, const Block *> blockRegisteredEvent;
       private:
         map_t<const lodestone::common::registry::Identifier *, const Block *>
             m_blocks;
