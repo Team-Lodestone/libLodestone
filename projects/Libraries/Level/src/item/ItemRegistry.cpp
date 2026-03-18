@@ -23,8 +23,10 @@ namespace lodestone::level::item {
             throw std::runtime_error(
                 std::format("Item '{}' is already registered", *id));
 
-        m_items[id] = std::move(item);
-        LOG_DEBUG("Registered item '" << *id << "'");
+        m_items[id] = item;
+        // LOG_DEBUG("Registered item '" << *id << "'");
+
+        this->itemRegisteredEvent.notify(id, item);
     }
 
     bool ItemRegistry::registerItemIfNonExistent(
@@ -33,9 +35,10 @@ namespace lodestone::level::item {
         if (m_items.contains(id))
             return false;
 
-        m_items[id] = std::move(item);
+        m_items[id] = item;
 
-        LOG_DEBUG("Registered item '" << *id << "'");
+        // LOG_DEBUG("Registered item '" << *id << "'");
+        this->itemRegisteredEvent.notify(id, item);
 
         return true;
     }

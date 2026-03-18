@@ -22,9 +22,13 @@ namespace lodestone::common::util {
         static constexpr int NONE = -1;
 
         constexpr std::string toString() const {
+            return "v" + this->toVersionString();
+        }
+
+        constexpr std::string toVersionString() const {
             std::string ver = std::to_string(major) +
-                              "." + std::to_string(minor) +
-                              "." + std::to_string(patch);
+                  "." + std::to_string(minor) +
+                  "." + std::to_string(patch);
 
             if (devVer != NONE) {
                 ver += "-dev." + std::to_string(devVer);

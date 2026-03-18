@@ -17,27 +17,30 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
 
 
 # Roadmap
+<!-- Would you like to insert '→'?  -->
+Bold → Required for 1.0.0 final release, all releases from there will follow major.minor.patch
+
 ### Goals
 - [X] World Engine
-    - [X] Chunked Level
-      - [X] Chunk Sections
-      - [X] Palettes (for memory usage)
+    - [X] **Chunked Level**
+      - [X] **Chunk Sections**
+      - [X] **Palettes (for memory usage)**
     - [ ] Lighting calculation (maybe?)
-    - [ ] Biomes
+    - [ ] **Biomes**
     - [ ] POI/Structure system
-    - [X] Players (store player data per world)
+    - [X] **Players (store player data per world)**
     - [ ] Dynamic registration
       - [ ] `DynamicBlock`
       - [ ] `DynamicMaterial`
       - [ ] `DynamicBiome`
-    - [X] Internal Block IDs
-        - [X] Block ID conversion map between versions
+    - [ ] **Block definitions and properties**
+    - [X] **Internal Block IDs**
+        - [X] **Block ID conversion map between versions**
           - [X] Dynamic block map
           - [X] Versioned block map
-        - [ ] Item ID conversion map between versions
+        - [ ] **Item ID conversion map between versions**
           - [ ] Dynamic item map
           - [ ] Versioned item map
-        - [ ] Properly convert block states and other data
     - [ ] Entities
         - [ ] Tile Entities
     - [ ] Block Material Map (for the world map image generation)
