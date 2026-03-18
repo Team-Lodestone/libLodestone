@@ -7,6 +7,7 @@
 
 #include <cstring>
 #include <random>
+#include <numbers>
 
 namespace lodestone::common::util {
     class Math {
