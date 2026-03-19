@@ -12,7 +12,6 @@
 
 #include <filesystem>
 #include <iostream>
-#include <print>
 #include <cstdlib>
 
 #include "Lodestone.Core/loader/LibraryHandle.h"

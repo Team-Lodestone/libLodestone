@@ -13,9 +13,9 @@ namespace lodestone::level::entity {
 
     types::Vec3f WorldSpaceObject::getDirection() const {
         return types::Vec3f(
-            std::cosf(rotation.y) * std::cosf(rotation.x),
-            std::sinf(rotation.y),
-            std::cosf(rotation.y) * std::sinf(rotation.x)
+            std::cos(rotation.y) * std::cos(rotation.x),
+            std::sin(rotation.y),
+            std::cos(rotation.y) * std::sin(rotation.x)
         );
     }
 
