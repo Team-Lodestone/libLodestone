@@ -30,7 +30,7 @@ namespace lodestone::common::registry {
             return std::string(m_namespace) + ":" + m_path;
         }
 
-        std::string toString() const override { return getString(); };
+        constexpr std::string toString() const override { return getString(); };
 
         constexpr bool operator==(const Identifier &rhs) const noexcept {
             return util::Util::strcmpConstexpr(this->m_path, rhs.m_path) &&

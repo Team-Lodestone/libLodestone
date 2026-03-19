@@ -26,7 +26,7 @@ namespace lodestone::common::string {
             return this;
         }
 
-        std::string toString() {
+        constexpr std::string toString() {
             std::string s = m_stream.str();
             if (!s.empty() && s.ends_with(", ")) {
                 // substr probs creates new string
