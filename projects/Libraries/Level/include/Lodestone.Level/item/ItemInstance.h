@@ -54,7 +54,7 @@ namespace lodestone::level::item {
                        : m_properties.has_value() == b.m_properties.has_value();
         }
 
-        constexpr std::string toString() const override {
+        std::string toString() const override {
             return std::format("ItemInstance[item={}]",
                                m_item->getID()->getString());
         };

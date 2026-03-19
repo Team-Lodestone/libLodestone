@@ -50,7 +50,7 @@ namespace lodestone::level::block::instance {
             return m_block == b.m_block && m_properties == b.m_properties;
         }
 
-        constexpr std::string toString() const override {
+        std::string toString() const override {
             if (this->m_block)
                 return std::format("BlockInstance[block={}]",
                                    m_block->getID()->getString());

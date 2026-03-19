@@ -20,7 +20,7 @@ namespace lodestone::level::types {
         constexpr operator unsigned char *() { return &r; }
         constexpr operator const unsigned char *() const { return &r; }
 
-        constexpr std::string toString() const override {
+        std::string toString() const override {
             return std::format("Color[r={}, g={}, b={}, a={}]", r, g, b, a);
         };
 

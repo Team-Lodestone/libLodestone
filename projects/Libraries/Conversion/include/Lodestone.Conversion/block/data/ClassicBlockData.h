@@ -39,7 +39,7 @@ namespace lodestone::conversion::block::data {
 
         bool equals(const AbstractBlockData *rhs) const override;
 
-        constexpr std::string toString() const override {
+        std::string toString() const override {
             return std::format("ClassicBlockData[id={}]", m_id);
         };
 

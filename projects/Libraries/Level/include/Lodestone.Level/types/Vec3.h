@@ -18,7 +18,7 @@ namespace lodestone::level::types {
         explicit constexpr Vec3(const Vec3<O>& rhs) : x(static_cast<T>(rhs.x)), y(static_cast<T>(rhs.y)), z(static_cast<T>(rhs.z)) {
         }
 
-        constexpr std::string toString() const {
+        std::string toString() const {
             return std::format("Vec3[x={}, y={}, z={}]", x, y, z);
         };
 

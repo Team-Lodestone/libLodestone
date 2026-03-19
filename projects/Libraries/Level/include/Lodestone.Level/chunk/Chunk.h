@@ -28,7 +28,7 @@ namespace lodestone::level::chunk {
 
         enum class ChunkType { LevelChunk, EmptyChunk };
 
-        constexpr std::string toString() const override {
+        std::string toString() const override {
             if (this->m_coords.has_value())
                 return (common::string::OperatorStringBuilder(typeid(*this)))
                     .addField("coords", this->m_coords->toString())

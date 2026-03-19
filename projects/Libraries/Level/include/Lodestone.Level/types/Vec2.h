@@ -53,7 +53,7 @@ namespace lodestone::level::types {
             return {x / rhs.x, y / rhs.y};
         }
 
-        constexpr std::string toString() const {
+        std::string toString() const {
             return std::format("Vec2[x={}, z={}]", x, y);
         };
     };

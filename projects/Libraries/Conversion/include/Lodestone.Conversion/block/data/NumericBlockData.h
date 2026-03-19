@@ -35,7 +35,7 @@ namespace lodestone::conversion::block::data {
 
         bool equals(const AbstractBlockData *rhs) const override;
 
-        constexpr std::string toString() const override {
+        std::string toString() const override {
             return std::format("NumericBlockData[id={},data={}]", m_id, m_data);
         };
 

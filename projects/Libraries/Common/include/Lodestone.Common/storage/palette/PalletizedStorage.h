@@ -44,7 +44,7 @@ namespace lodestone::common::storage::palette {
         // allows for getting the object reference but not write to it (since writing will modify ALL instances, because indexes will point to that one object)
         const T &operator[](int index) const;
 
-        constexpr std::string toString() const override {
+        std::string toString() const override {
             return std::string("PalletizedStorage{")
             + "capacity=" + std::to_string(m_capacity)
             + ", paletteSize=" + std::to_string(m_paletteSize)

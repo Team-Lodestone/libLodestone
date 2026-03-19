@@ -43,7 +43,7 @@ namespace lodestone::level::entity {
 
         virtual const common::registry::Identifier *getType() const;
 
-        constexpr std::string toString() const override {
+        std::string toString() const override {
             return std::format(
                 "Entity[type={}, health={}, pos={}]", getType()->getString(),
                 m_health, position.toString());

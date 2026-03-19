@@ -20,7 +20,7 @@ namespace lodestone::conversion::block::data {
 
         constexpr ~AbstractBlockData() override = default;
 
-        constexpr std::string toString() const override {
+        std::string toString() const override {
             return *this->getTypeName();
         };
 

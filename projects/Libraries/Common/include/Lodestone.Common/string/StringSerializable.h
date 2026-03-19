@@ -15,9 +15,9 @@ namespace lodestone::common::string {
 
         // virtual constexpr operator std::string() const { return toString(); }
 
-        constexpr virtual std::string toString() const = 0;
+        virtual std::string toString() const = 0;
 
-        constexpr friend std::ostream &operator<<(std::ostream &os,
+        friend std::ostream &operator<<(std::ostream &os,
                                                   const StringSerializable &s) {
             os << s.toString();
             return os;

@@ -15,11 +15,14 @@
 namespace lodestone::core::loader {
   class NativeExtensionLoader : public ExtensionLoader {
   public:
-    explicit NativeExtensionLoader(core::Lodestone *core)
-      : ExtensionLoader(core) {
+    explicit NativeExtensionLoader(const std::filesystem::path &extensionsDirectory, core::Lodestone *core)
+      : ExtensionLoader(core), m_extensionsDirectory(extensionsDirectory) {
     }
 
     void load() override;
+
+  private:
+      std::filesystem::path m_extensionsDirectory;
   };
 }
 
