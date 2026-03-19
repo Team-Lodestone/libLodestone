@@ -356,7 +356,7 @@ int main(int argc, char **argv) {
     LOG_INFO(lodestone::common::lodestone_get_library_string());
     LOG_INFO(bio::bio_get_library_string());
 
-    lodestone::core::loader::NativeExtensionLoader l(lodestone::core::Lodestone::getInstance());
+    lodestone::core::loader::NativeExtensionLoader l("./extensions", lodestone::core::Lodestone::getInstance());
     l.extensionLoadedEvent += [](const lodestone::core::LodestoneExtension *ext) {
         std::print("Initialized extension '{}' {}\n", ext->getIdentifier(), ext->getVersion().toString());
     };
