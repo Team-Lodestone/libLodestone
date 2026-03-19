@@ -14,12 +14,11 @@
 
 namespace lodestone::conversion::registry {
 //https://groups.google.com/g/android-ndk/c/xr_h7ediIhY
-#define CREATE_REGISTRY_ALIAS(name, type...) \
-    extern template class type;              \
-    using name = type
+#define CREATE_REGISTRY_ALIAS(name, ...)                                       \
+    extern template class __VA_ARGS__;                                         \
+    using name = __VA_ARGS__
 
-#define IMPLEMENT_REGISTRY_ALIAS(type...)  \
-    template class type;
+#define IMPLEMENT_REGISTRY_ALIAS(...) template class __VA_ARGS__;
 
     CREATE_REGISTRY_ALIAS(PlayerIORegistry, SingletonRegistry<&identifiers::PLAYER_IO_REGISTRY, const io::interfaces::IPlayerIO>);
     CREATE_REGISTRY_ALIAS(LevelIORegistry, SingletonRegistry<&identifiers::LEVEL_IO_REGISTRY, const io::interfaces::ILevelIO>);

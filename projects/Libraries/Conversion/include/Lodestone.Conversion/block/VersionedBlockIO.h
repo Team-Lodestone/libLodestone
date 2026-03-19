@@ -18,14 +18,14 @@
 namespace lodestone::conversion::block::version {
     class LODESTONE_API VersionedBlockIO {
       public:
-        constexpr void
+        void
         registerBlock(const uint32_t version,
                       const lodestone::common::registry::Identifier *internal,
                       data::AbstractBlockData *blk) {
             m_fromInternalConversionMap[version][internal] = blk;
         }
 
-        constexpr void
+        void
         removeBlock(const uint32_t version,
                     const lodestone::common::registry::Identifier *internal) {
             m_fromInternalConversionMap[version][internal] = nullptr;

@@ -175,7 +175,7 @@ void PalletizedStorage<T>::resize() {
         throw exception::PaletteIndexTooLargeException(); // was originally "how many fucking blocks have you placed????"
 
     // decode
-    int indices[m_capacity];
+    std::vector<int> indices(m_capacity);
     for (int i = 0; i < m_capacity; ++i)
         indices[i] = getPaletteIndex(i);
 

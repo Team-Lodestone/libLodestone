@@ -4,6 +4,7 @@
 #ifndef LODESTONE_NAMESPACEDSTRING_H
 #define LODESTONE_NAMESPACEDSTRING_H
 #include "Lodestone.Common/string/StringSerializable.h"
+#include <ostream>
 #include <cstring>
 #include <format>
 
@@ -30,7 +31,7 @@ namespace lodestone::common::registry {
             return std::string(m_namespace) + ":" + m_path;
         }
 
-        constexpr std::string toString() const override { return getString(); };
+        std::string toString() const override { return getString(); };
 
         constexpr bool operator==(const Identifier &rhs) const noexcept {
             return util::Util::strcmpConstexpr(this->m_path, rhs.m_path) &&
@@ -42,7 +43,7 @@ namespace lodestone::common::registry {
             return getString();
         }
 
-        constexpr friend std::ostream &
+        friend std::ostream &
         operator<<(std::ostream &os, const Identifier &s) noexcept {
             os << s.getString();
             return os;

@@ -4,7 +4,10 @@
 #pragma once
 #include <gtl/phmap.hpp>
 
-#ifdef __EMSCRIPTEN__
+#ifdef _WIN32
+#define LODESTONE_API
+#define NO_DISCARD __declspec(noinline)
+#elif defined(__EMSCRIPTEN__)
 #define LODESTONE_API
 #define NO_DISCARD __attribute__((used))
 #elif defined(LODESTONE_EXPORTS)

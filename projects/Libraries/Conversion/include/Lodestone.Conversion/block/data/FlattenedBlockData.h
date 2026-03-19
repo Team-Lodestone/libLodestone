@@ -29,7 +29,7 @@ namespace lodestone::conversion::block::data {
 
         const std::type_info &getType() const override;
 
-        constexpr size_t hash() const override {
+        size_t hash() const override {
             return std::hash<std::string>()(m_id) ^
                    (std::hash<const lodestone::common::registry::Identifier
                                   *>()(getTypeName())

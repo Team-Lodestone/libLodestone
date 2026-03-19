@@ -4,6 +4,7 @@
 #ifndef LODESTONE_STRINGSERIALIZABLE_H
 #define LODESTONE_STRINGSERIALIZABLE_H
 #include <string>
+#include <ostream>
 
 namespace lodestone::common::string {
     /** Java toString clone */
