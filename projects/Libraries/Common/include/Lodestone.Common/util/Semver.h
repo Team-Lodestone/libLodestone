@@ -21,7 +21,7 @@ namespace lodestone::common::util {
     struct Semver {
         static constexpr int NONE = -1;
 
-        std::string toString() const {
+        constexpr std::string toString() const {
             return "v" + this->toVersionString();
         }
 
