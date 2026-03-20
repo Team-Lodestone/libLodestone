@@ -36,6 +36,11 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(tfw)
 
 add_executable(Lodestone.Tests ${FILES})
+
+if (WIN32)
+    target_link_libraries(Lodestone.Tests PRIVATE "-lstdc++exp")
+endif ()
+
 target_include_directories(Lodestone.Tests
         PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

@@ -18,7 +18,7 @@ namespace lodestone::core::loader {
       return nullptr;
 
 #ifdef _WIN32
-    return GetProcAddress(this->m_handle, name);
+    return reinterpret_cast<void *>(GetProcAddress(this->m_handle, name));
 #elif defined(__unix__) || defined (__APPLE__)
     return dlsym(this->m_handle, name);
 #endif
@@ -32,8 +32,14 @@ namespace lodestone::core::loader {
   }
 
   void LibraryHandle::load(const std::filesystem::path& path) {
+    //TODO we need to throw exception here, I left old commented code because I don't want to debug this again to figure out how to get loadlibrary error code
 #ifdef _WIN32
+    // SetLastError(0);
+
     this->m_handle = LoadLibraryW(path.c_str());
+
+    // if (GetLastError() != 0)
+      // throw std::runtime_error(std::to_string(GetLastError()));
 #elif defined(__unix__) || defined (__APPLE__)
     this->m_handle = dlopen(path.c_str(), RTLD_NOW);
 #endif

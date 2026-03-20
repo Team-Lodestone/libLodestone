@@ -28,7 +28,7 @@ namespace lodestone::minecraft::console {
         return VERSION;
     }
 
-    core::LodestoneExtension * lodestoneInit() {
+    core::LodestoneExtension *lodestoneInit() {
         return LodestoneLCE::getInstance();
     }
 }
