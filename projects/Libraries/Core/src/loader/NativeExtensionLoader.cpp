@@ -15,6 +15,7 @@
 #include <cstdlib>
 
 #include "Lodestone.Core/loader/LibraryHandle.h"
+#include "Lodestone.Core/loader/exception/LoadLibraryException.h"
 
 namespace lodestone::core::loader {
     void NativeExtensionLoader::load() {
@@ -38,18 +39,25 @@ namespace lodestone::core::loader {
                 continue;
 
             // TODO we might want to require a specific extension for this to make sure we're not trying to load random files as libraries
-            LibraryHandle h = LibraryHandle(p);
+            LibraryHandle h(p);
+
+            try {
+                h.load();
+            } catch (exception::LoadLibraryException &ex) {
+                std::cerr << ex.what() << std::endl;
+
+                continue;
+            }
+
             if (!h.valid()) {
-                std::cerr << "Failed to load library '" << p.path() << "'" <<
-                    "\n";
+                std::cerr << "Failed to load library '" << p.path() << "'" << std::endl;
                 continue;
             }
 
             const LodestoneInit init = h.getFunction<LodestoneInit>(ENTRYPOINT);
             if (init == nullptr) {
                 std::cerr << "Library '" << p.path() <<
-                    "' does not contain entrypoint '" << ENTRYPOINT << "'" <<
-                    "\n";
+                    "' does not contain entrypoint '" << ENTRYPOINT << "'" << std::endl;
                 continue;
             }
 

@@ -44,7 +44,7 @@ namespace lodestone::common::string {
 #define ADD_FIELD(name) addField(#name, name)
 
         // TODO: breaks on windows
-        static constexpr const char *demangle(const char *name) {
+        static const char *demangle(const char *name) {
 #if defined(__GNUC__) || defined(__clang__)
             int err = 0;
             char *demangled = abi::__cxa_demangle(name, nullptr, nullptr, &err);

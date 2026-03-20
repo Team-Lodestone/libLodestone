@@ -10,52 +10,82 @@
  */
 #include "Lodestone.Core/loader/LibraryHandle.h"
 
+#include "Lodestone.Core/loader/exception/LoadLibraryException.h"
+
 #include <cstddef>
 
 namespace lodestone::core::loader {
-  void* LibraryHandle::getFunction(const char* name) {
-    if (!this->valid())
-      return nullptr;
+    LibraryHandle::function_t LibraryHandle::getFunction(const char *name) {
+        if (!this->valid())
+            return NULL_FUNCTION;
 
 #ifdef _WIN32
-    return reinterpret_cast<void *>(GetProcAddress(this->m_handle, name));
+        return GetProcAddress(this->m_handle, name);
 #elif defined(__unix__) || defined (__APPLE__)
-    return dlsym(this->m_handle, name);
+        return dlsym(this->m_handle, name);
 #endif
-  }
+    }
 
-  LibraryHandle::LibraryHandle(const std::filesystem::path& path) : LibraryHandle() {
-    this->load(path);
-  }
+    LibraryHandle::LibraryHandle(const std::filesystem::path &path) : m_path(path), m_handle(NULL_HANDLE) {}
 
-  LibraryHandle::LibraryHandle() : m_handle(NULL) {
-  }
+    void LibraryHandle::load() {
+        if (this->valid())
+            throw std::runtime_error("The library is already loaded!");
 
-  void LibraryHandle::load(const std::filesystem::path& path) {
-    //TODO we need to throw exception here, I left old commented code because I don't want to debug this again to figure out how to get loadlibrary error code
 #ifdef _WIN32
-    // SetLastError(0);
+        SetLastError(0);
 
-    this->m_handle = LoadLibraryW(path.c_str());
+        this->m_handle = LoadLibraryW(this->m_path.c_str());
 
-    // if (GetLastError() != 0)
-      // throw std::runtime_error(std::to_string(GetLastError()));
+        if (GetLastError() != 0) {
+            this->m_handle = NULL_HANDLE;
+
+            throw exception::LoadLibraryException(this->m_path, std::error_code(GetLastError(), std::system_category()));
+        }
 #elif defined(__unix__) || defined (__APPLE__)
-    this->m_handle = dlopen(path.c_str(), RTLD_NOW);
-#endif
-  }
+        this->m_handle = dlopen(this->m_path.c_str(), RTLD_NOW);
+        if (!this->m_handle) {
+            const char *err = dlerror();
+            if (!err) {
+                err = "dlopen failed!";
+            }
 
-  void LibraryHandle::unload() {
+            throw exception::LoadLibraryException(
+                this->m_path, std::make_error_code(std::errc::invalid_argument), err);
+        }
+#endif
+    }
+
+    void LibraryHandle::unload() {
+        if (!this->valid())
+            return; //already assumed to be either not loaded or already unloaded
+
 #ifdef _WIN32
-    FreeLibrary(this->m_handle);
+        SetLastError(0);
+
+        if (!FreeLibrary(this->m_handle)) {
+            if (GetLastError() != 0) {
+                throw exception::UnloadLibraryException(this->m_path, std::error_code(GetLastError(), std::system_category()));
+            } else {
+                throw exception::UnloadLibraryException(this->m_path, std::make_error_code(std::errc::invalid_argument), "FreeLibrary failed!");
+            }
+        }
 #elif defined(__unix__) || defined (__APPLE__)
-    dlclose(this->m_handle);
+        if (dlclose(this->m_handle)) {
+            const char *err = dlerror();
+            if (!err) {
+                err = "dlclose failed!";
+            }
+
+            throw exception::LoadLibraryException(this->m_path, std::make_error_code(std::errc::invalid_argument), err);
+        }
 #endif
 
-    this->m_handle = NULL;
-  }
+        // TODO should this always be invalidated even on failure?
+        this->m_handle = NULL_HANDLE;
+    }
 
-  bool LibraryHandle::valid() const {
-    return this->m_handle != NULL;
-  }
+    bool LibraryHandle::valid() const noexcept {
+        return this->m_handle != NULL_HANDLE;
+    }
 }

@@ -14,6 +14,12 @@ set(FILES
         src/loader/ExtensionLoader.cpp
         src/loader/NativeExtensionLoader.cpp
         src/loader/LibraryHandle.cpp
+        src/loader/exception/LoadLibraryException.cpp
+        include/Lodestone.Core/loader/exception/LoadLibraryException.h
+        src/loader/exception/UnloadLibraryException.cpp
+        include/Lodestone.Core/loader/exception/UnloadLibraryException.h
+        src/loader/exception/LibraryException.cpp
+        include/Lodestone.Core/loader/exception/LibraryException.h
 )
 
 add_library(Lodestone.Core SHARED ${FILES})

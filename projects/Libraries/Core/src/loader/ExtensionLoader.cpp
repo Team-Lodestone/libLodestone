@@ -11,8 +11,7 @@
 #include "Lodestone.Core/loader/ExtensionLoader.h"
 
 namespace lodestone::core::loader {
-    ExtensionLoader::ExtensionLoader(core::Lodestone* core) : m_core(core) {
-    }
+    ExtensionLoader::ExtensionLoader(core::Lodestone* core) : m_core(core) {}
 
     void ExtensionLoader::loadExtension(const LodestoneInit entrypoint) {
         core::LodestoneExtension *ext = entrypoint();
