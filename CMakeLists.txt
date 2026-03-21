@@ -3,10 +3,6 @@ project(Lodestone)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/linting.cmake)
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_definitions(-DCMAKE_BUILD_DEBUG)
-endif ()
-
 option(BIO_TESTS "Build libBIO tests" OFF)
 
 # BIO
