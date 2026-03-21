@@ -11,6 +11,7 @@
 #include "Lodestone.Core/loader/LibraryHandle.h"
 
 #include "Lodestone.Core/loader/exception/LoadLibraryException.h"
+#include "Lodestone.Core/loader/exception/UnloadLibraryException.h"
 
 #include <cstddef>
 
@@ -77,7 +78,7 @@ namespace lodestone::core::loader {
                 err = "dlclose failed!";
             }
 
-            throw exception::LoadLibraryException(this->m_path, std::make_error_code(std::errc::invalid_argument), err);
+            throw exception::UnloadLibraryException(this->m_path, std::make_error_code(std::errc::invalid_argument), err);
         }
 #endif
 

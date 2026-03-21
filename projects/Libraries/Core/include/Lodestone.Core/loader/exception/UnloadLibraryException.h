@@ -11,6 +11,7 @@
 
 namespace lodestone::core::loader::exception {
     class UnloadLibraryException : public LibraryException {
+    public:
         explicit UnloadLibraryException(const std::filesystem::path &libraryPath, const std::error_code &errorCode = std::make_error_code(std::errc::invalid_argument));
         UnloadLibraryException(const std::filesystem::path &libraryPath, const std::error_code &errorCode, const std::string &info);
     };
