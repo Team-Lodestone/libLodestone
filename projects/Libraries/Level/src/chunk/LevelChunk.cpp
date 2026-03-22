@@ -48,7 +48,7 @@ namespace lodestone::level::chunk {
 
     section::Section *LevelChunk::getSectionCreate(const int y) {
         if (!m_sections[y])
-            m_sections[y] = std::make_unique<section::LevelSection>();
+            m_sections[y] = std::move(std::make_unique<section::LevelSection>());
 
         return m_sections[y].get();
     }

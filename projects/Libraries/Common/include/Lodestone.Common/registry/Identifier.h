@@ -43,7 +43,7 @@ namespace lodestone::common::registry {
             return getString();
         }
 
-        constexpr friend std::ostream &
+        friend std::ostream &
         operator<<(std::ostream &os, const Identifier &s) noexcept {
             os << s.getString();
             return os;

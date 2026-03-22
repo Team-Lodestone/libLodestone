@@ -9,7 +9,6 @@
 
 #include "Lodestone.Minecraft.Java/LodestoneJava.h"
 #include <Lodestone.Common/Indexing.h>
-#include <Lodestone.Common/io/DataBuffer.h>
 #include <Lodestone.Conversion/block/data/NumericBlockData.h>
 #include <libnbt++/io/stream_reader.h>
 #include <libnbt++/tag_array.h>
