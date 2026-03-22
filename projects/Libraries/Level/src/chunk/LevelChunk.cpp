@@ -8,25 +8,18 @@
 #include "Lodestone.Level/block/instance/ImmutableBlockInstance.h"
 
 namespace lodestone::level::chunk {
-    LevelChunk::LevelChunk(const int height) {
-        this->m_sections = std::vector<std::unique_ptr<section::Section>>(
-            common::util::Math::ceilDiv(height,
-                                        common::constants::SECTION_HEIGHT));
+    LevelChunk::LevelChunk(const int height) : m_sections(common::util::Math::ceilDiv(height, common::constants::SECTION_HEIGHT)) {
     }
 
     LevelChunk::LevelChunk(const int height, const types::Vec2i &coords)
-        : Chunk(coords) {
-        this->m_sections = std::vector<std::unique_ptr<section::Section>>(
-            common::util::Math::ceilDiv(height,
-                                        common::constants::SECTION_HEIGHT));
+    : Chunk(coords), m_sections(common::util::Math::ceilDiv(height,
+                                    common::constants::SECTION_HEIGHT)) {
     }
 
     LevelChunk::LevelChunk(const int height, ChunkContainer *container,
                            const types::Vec2i &coords)
-        : Chunk(container, coords) {
-        this->m_sections = std::vector<std::unique_ptr<section::Section>>(
-            common::util::Math::ceilDiv(height,
-                                        common::constants::SECTION_HEIGHT));
+    : Chunk(container, coords), m_sections(common::util::Math::ceilDiv(height,
+                                    common::constants::SECTION_HEIGHT)) {
     }
 
     int LevelChunk::getChunkHeight() const { return m_sections.size(); }
@@ -48,7 +41,7 @@ namespace lodestone::level::chunk {
 
     section::Section *LevelChunk::getSectionCreate(const int y) {
         if (!m_sections[y])
-            m_sections[y] = std::move(std::make_unique<section::LevelSection>());
+            m_sections[y] = std::make_unique<section::LevelSection>();
 
         return m_sections[y].get();
     }
