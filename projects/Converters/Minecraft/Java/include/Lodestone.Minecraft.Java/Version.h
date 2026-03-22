@@ -4,10 +4,8 @@
 #ifndef LODESTONE_JAVA_VERSION_H
 #define LODESTONE_JAVA_VERSION_H
 
-#include <Lodestone.Common/Defines.h>
-
 namespace lodestone::minecraft::java {
-    enum LODESTONE_API Version {
+    enum Version {
         // Pre-classic (rubydung)
         rd131655,
         rd20090515,

@@ -5,12 +5,14 @@
 #define LODESTONE_ABSTRACTBLOCKDATA_H
 
 #include "Lodestone.Conversion/Identifiers.h"
+#include "Lodestone.Conversion/internal/Exports.h"
 
 namespace lodestone::conversion::block::data {
-    class AbstractBlockData
+    //todo try to see if we can move subclasses to lodestone::minecraft::common
+    class LODESTONE_CONVERSION_API AbstractBlockData
         : public lodestone::common::string::StringSerializable {
       public:
-        struct Comparator {
+        struct LODESTONE_CONVERSION_API Comparator {
             bool operator()(
                 const lodestone::conversion::block::data::AbstractBlockData *lhs,
                 const lodestone::conversion::block::data::AbstractBlockData *rhs) const {
@@ -56,7 +58,7 @@ namespace lodestone::conversion::block::data {
 
 namespace std {
     template <>
-    struct hash<lodestone::conversion::block::data::AbstractBlockData *> {
+    struct LODESTONE_CONVERSION_API hash<lodestone::conversion::block::data::AbstractBlockData *> {
         size_t operator()(
             const lodestone::conversion::block::data::AbstractBlockData *blk) const noexcept {
             return blk->hash();

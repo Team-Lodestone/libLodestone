@@ -79,6 +79,9 @@ set(FILES
         include/Lodestone.Level/entity/WorldSpaceObject.h
         include/Lodestone.Level/properties/definition/ObjectDefinition.h
         src/properties/definition/ObjectDefinition.cpp
+        include/Lodestone.Level/LodestoneLevel.h
+        src/LodestoneLevel.cpp
+        include/Lodestone.Level/internal/Exports.h
 )
 
 # if (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -95,4 +98,5 @@ target_include_directories(Lodestone.Level PUBLIC
 
 target_link_libraries(Lodestone.Level PUBLIC Lodestone.Common gtl)
 
+setupExports(Lodestone.Level)
 setupLinter(Lodestone.Level)

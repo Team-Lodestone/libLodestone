@@ -12,10 +12,12 @@
 #include <Lodestone.Minecraft.Common/conversion/io/options/OptionPresets.h>
 #include "Lodestone.Minecraft.Java/Identifiers.h"
 
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
+
 namespace lodestone::minecraft::java::alpha::player {
     class AlphaNbtPlayerIO;
 
-    class AlphaPlayerIO : public conversion::io::PlayerIO<&identifiers::ALPHA_PLAYER_IO,
+    class LODESTONE_MINECRAFT_JAVA_API AlphaPlayerIO : public conversion::io::PlayerIO<&identifiers::ALPHA_PLAYER_IO,
                                            const common::conversion::io::options::OptionPresets::CommonPlayerReadOptions,
                                            const
                                            common::conversion::io::options::OptionPresets::CommonWriteOptions>,
@@ -34,7 +36,7 @@ namespace lodestone::minecraft::java::alpha::player {
                    &options) const override;
     };
 
-    class AlphaNbtPlayerIO : public common::conversion::io::NbtPlayerIO<
+    class LODESTONE_MINECRAFT_JAVA_API AlphaNbtPlayerIO : public common::conversion::io::NbtPlayerIO<
             &identifiers::ALPHA_NBT_PLAYER_IO,
             const
             common::conversion::io::options::OptionPresets::CommonNbtFilesystemReadOptions

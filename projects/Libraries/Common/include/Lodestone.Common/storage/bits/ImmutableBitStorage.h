@@ -6,7 +6,7 @@
 #include "Lodestone.Common/storage/bits/AbstractBitStorage.h"
 
 namespace lodestone::common::storage::bits {
-    class ImmutableBitStorage : public AbstractBitStorage {
+    class LODESTONE_COMMON_API ImmutableBitStorage : public AbstractBitStorage {
       protected:
         ImmutableBitStorage() = default;
 

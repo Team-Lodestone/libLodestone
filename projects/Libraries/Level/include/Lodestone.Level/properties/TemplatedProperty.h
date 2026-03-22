@@ -7,7 +7,7 @@
 
 namespace lodestone::level::properties {
     template <typename T>
-    class TemplatedProperty final : public AbstractProperty {
+    class LODESTONE_LEVEL_API TemplatedProperty final : public AbstractProperty {
       public:
         explicit constexpr TemplatedProperty(T val) : m_value(val) {}
 

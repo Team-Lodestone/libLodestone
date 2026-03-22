@@ -6,7 +6,7 @@
 #include "Lodestone.Conversion/io/IObjectIo.h"
 
 namespace lodestone::conversion::io::interfaces {
-    class IChunkIO : virtual public IObjectIO {
+    class LODESTONE_CONVERSION_API IChunkIO : virtual public IObjectIO {
     };
 }
 

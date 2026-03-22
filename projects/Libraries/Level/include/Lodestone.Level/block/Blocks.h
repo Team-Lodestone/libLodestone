@@ -6,8 +6,10 @@
 
 #include <Lodestone.Common/registry/Identifier.h>
 
+#include "Lodestone.Level/internal/Exports.h"
+
 namespace lodestone::level::block {
-    struct Blocks {
+    struct LODESTONE_LEVEL_API Blocks {
 #define ADD_BLOCK(name, id)                                                    \
     static constexpr const lodestone::common::registry::Identifier name =      \
         lodestone::common::registry::Identifier {                              \

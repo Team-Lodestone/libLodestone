@@ -15,9 +15,10 @@
 
 #include <Lodestone.Level/region/Region.h>
 #include <Lodestone.Level/types/Vec2.h>
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 
 namespace lodestone::minecraft::java::mcregion::region {
-    class McRegionRegionIO : public conversion::io::RegionIO<&identifiers::MCREGION_REGION_IO, const common::conversion::io::options::OptionPresets::CommonChunkReadOptions, const common::conversion::io::options::OptionPresets::CommonChunkWriteOptions>,
+    class LODESTONE_MINECRAFT_JAVA_API McRegionRegionIO : public conversion::io::RegionIO<&identifiers::MCREGION_REGION_IO, const common::conversion::io::options::OptionPresets::CommonChunkReadOptions, const common::conversion::io::options::OptionPresets::CommonChunkWriteOptions>,
     public conversion::registry::RegistryIdentifierRelations<
         conversion::registry::RegistryIdentifierRelation<&conversion::identifiers::CHUNK_IO, const chunk::McRegionChunkIO, &identifiers::MCREGION_CHUNK_IO, conversion::registry::ChunkIORegistry>,
         conversion::registry::RegistryIdentifierRelation<&identifiers::NBT_CHUNK_IO, const chunk::McRegionNbtChunkIO, &identifiers::MCREGION_NBT_CHUNK_IO, conversion::registry::ChunkIORegistry>

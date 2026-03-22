@@ -8,9 +8,9 @@
 
 namespace lodestone::conversion::registry {
     template <const common::registry::Identifier *Identifier, typename Type, typename Stored = std::unique_ptr<const Type>>
-    class LODESTONE_API SingletonRegistry : public SimpleRegistry<Identifier, Type, Stored> {
+    class LODESTONE_CONVERSION_API SingletonRegistry : public SimpleRegistry<Identifier, Type, Stored> {
     public:
-        static LODESTONE_API SingletonRegistry &getInstance();
+        static LODESTONE_CONVERSION_API SingletonRegistry &getInstance();
 
         SingletonRegistry(const SingletonRegistry&) = delete;
         SingletonRegistry& operator=(const SingletonRegistry&) = delete;

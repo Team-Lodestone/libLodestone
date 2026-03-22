@@ -12,6 +12,7 @@
 #include <Lodestone.Minecraft.Common/conversion/io/options/OptionPresets.h>
 #include "Lodestone.Minecraft.Java/Identifiers.h"
 #include "Lodestone.Minecraft.Java/conversion/classic/minev2/options/MineV2WorldWriteOptions.h"
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 
 namespace lodestone::minecraft::java::classic::minev2 {
     class MineV2LevelIO;
@@ -22,7 +23,7 @@ namespace lodestone::minecraft::java::classic::minev2 {
         conversion::io::options::versioned::VersionedOptions
     >;
 
-    class MineV2WorldIO : public conversion::io::WorldIO<&identifiers::MINEV2_WORLD_IO, const common::conversion::io::options::OptionPresets::CommonReadOptions, const MineV2WriteOptions>,
+    class LODESTONE_MINECRAFT_JAVA_API MineV2WorldIO : public conversion::io::WorldIO<&identifiers::MINEV2_WORLD_IO, const common::conversion::io::options::OptionPresets::CommonReadOptions, const MineV2WriteOptions>,
     public conversion::registry::RegistryIdentifierRelations<
         conversion::registry::RegistryIdentifierRelation<&lodestone::conversion::identifiers::LEVEL_IO, const MineV2LevelIO, &identifiers::MINEV2_LEVEL_IO, conversion::registry::LevelIORegistry>
     > {

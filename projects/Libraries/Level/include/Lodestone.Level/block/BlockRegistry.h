@@ -7,14 +7,14 @@
 
 #include <unordered_map>
 
-#include <Lodestone.Common/Defines.h>
+#include "Lodestone.Level/internal/Exports.h"
 
 #include "Lodestone.Level/block/Block.h"
 #include "Lodestone.Level/block/Blocks.h"
 #include <gtl/phmap.hpp>
 
 namespace lodestone::level::block {
-    class LODESTONE_API BlockRegistry {
+    class LODESTONE_LEVEL_API BlockRegistry {
       protected:
         BlockRegistry();
 

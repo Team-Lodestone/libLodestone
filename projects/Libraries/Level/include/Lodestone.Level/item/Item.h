@@ -18,7 +18,7 @@ namespace lodestone::level::block {
 
 namespace lodestone::level::item {
     // cant wait to make io for this mmmmm
-    class Item : public common::string::StringSerializable {
+    class LODESTONE_LEVEL_API Item : public common::string::StringSerializable {
       public:
         explicit constexpr Item(
             const lodestone::common::registry::Identifier *id, const properties::definition::ObjectDefinition *definition,

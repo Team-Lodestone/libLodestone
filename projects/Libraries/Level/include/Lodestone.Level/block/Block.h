@@ -15,7 +15,7 @@
 namespace lodestone::level::block {
     class BlockState;
 
-    class Block : public common::string::StringSerializable {
+    class LODESTONE_LEVEL_API Block : public common::string::StringSerializable {
       public:
         constexpr Block(const common::registry::Identifier *id,
                         const material::Material &material, const properties::definition::ObjectDefinition *definition)

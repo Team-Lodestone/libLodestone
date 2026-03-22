@@ -15,7 +15,7 @@ namespace lodestone::level::block {
 
 namespace lodestone::level::block::instance {
     /** Wraps a block with runtime-modifiable properties */
-    class BlockInstance
+    class LODESTONE_LEVEL_API BlockInstance
         : public lodestone::common::string::StringSerializable {
       public:
         static const map_t<common::registry::Identifier, level::properties::AbstractProperty *>

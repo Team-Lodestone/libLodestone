@@ -13,13 +13,13 @@
 #include "Lodestone.Common/registry/Identifiable.h"
 #include "Lodestone.Common/registry/Identifier.h"
 #include "Lodestone.Core/LodestoneExtension.h"
-#include <Lodestone.Common/Defines.h>
 #include <Lodestone.Common/util/Semver.h>
+#include "Lodestone.Minecraft.Console/internal/Exports.h"
 
 namespace lodestone::minecraft::console {
     inline static constexpr lodestone::common::registry::Identifier IDENTIFIER = {"lodestone", "minecraft/legacy_console"};
 
-    class LODESTONE_API LodestoneLCE : public core::LodestoneExtension, public common::registry::Identifiable<&IDENTIFIER> {
+    class LODESTONE_MINECRAFT_CONSOLE_API LodestoneLCE : public core::LodestoneExtension, public common::registry::Identifiable<&IDENTIFIER> {
     private:
         LodestoneLCE();
     public:

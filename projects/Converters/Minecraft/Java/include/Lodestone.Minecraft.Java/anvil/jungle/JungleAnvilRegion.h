@@ -6,9 +6,10 @@
 #include "Lodestone.Minecraft.Java/mcregion/McRegionRegion.h"
 
 #include <Lodestone.Level/types/Vec2.h>
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 
 namespace lodestone::minecraft::java::anvil::jungle::region {
-    class JungleAnvilRegion final
+    class LODESTONE_MINECRAFT_JAVA_API JungleAnvilRegion final
         : public lodestone::minecraft::java::mcregion::region::McRegionRegion {
       public:
         explicit JungleAnvilRegion(const level::types::Vec2i &coords);

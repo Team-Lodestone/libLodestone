@@ -3,11 +3,12 @@
 //
 #ifndef LODESTONE_VEC3I_H
 #define LODESTONE_VEC3I_H
-#include <Lodestone.Common/Defines.h>
+#include "Lodestone.Level/internal/Exports.h"
+#include <cmath>
 
 namespace lodestone::level::types {
     template <typename T>
-    struct LODESTONE_API Vec3 final {
+    struct LODESTONE_LEVEL_API Vec3 final {
         static_assert(std::is_arithmetic_v<T>, "T must be a numeric type");
 
         T x, y, z;
@@ -177,7 +178,7 @@ namespace lodestone::level::types {
     typedef Vec3<double> Vec3d;
 } // namespace lodestone::level::types
 
-template <typename T> struct std::hash<lodestone::level::types::Vec3<T>> {
+template <typename T> struct LODESTONE_LEVEL_API std::hash<lodestone::level::types::Vec3<T>> {
     size_t
     operator()(const lodestone::level::types::Vec3<T> &v) const noexcept {
         return std::hash<T>()(v.x) ^ (std::hash<T>()(v.y) << 1) ^

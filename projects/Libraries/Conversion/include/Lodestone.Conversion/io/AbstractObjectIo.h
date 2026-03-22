@@ -35,7 +35,7 @@ namespace lodestone::conversion::io {
      */
     template <const common::registry::Identifier *I, typename R, typename W, typename RO, typename WO, typename WR = void>
     requires lodestone::common::util::concepts::void_or_derived_from_v<options::IOptions, RO> && lodestone::common::util::concepts::void_or_derived_from_v<options::IOptions, WO>
-    struct AbstractObjectIO : virtual IObjectIO, common::registry::Identifiable<I>, types::Readable<R, RO>, types::Writable<W, WO, WR> {
+    struct LODESTONE_CONVERSION_API AbstractObjectIO : virtual IObjectIO, common::registry::Identifiable<I>, types::Readable<R, RO>, types::Writable<W, WO, WR> {
         AbstractObjectIO() = default;
 
         pro::proxy<ReallyAny> baseRead(void *options) const override {

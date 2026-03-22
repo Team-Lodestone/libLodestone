@@ -10,7 +10,7 @@
 #include "Lodestone.Level/properties/ReflectiveProperties.h"
 
 namespace lodestone::level::entity {
-    class LODESTONE_API Player : public Entity,
+    class LODESTONE_LEVEL_API Player : public Entity,
                                  public properties::ReflectiveProperties {
       public:
         /** Can return a UUID, player name, or other depending on the version */

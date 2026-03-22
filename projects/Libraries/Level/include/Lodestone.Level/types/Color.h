@@ -9,8 +9,10 @@
 #include <format>
 #include <functional>
 
+#include "Lodestone.Level/internal/Exports.h"
+
 namespace lodestone::level::types {
-    struct Color : public common::string::StringSerializable {
+    struct LODESTONE_LEVEL_API Color : public common::string::StringSerializable {
         unsigned char r, g, b, a;
 
         constexpr Color(const unsigned char r, const unsigned char g,
@@ -86,7 +88,7 @@ namespace lodestone::level::types {
     };
 } // namespace lodestone::level::types
 
-template <> struct std::hash<lodestone::level::types::Color> {
+template <> struct LODESTONE_LEVEL_API std::hash<lodestone::level::types::Color> {
     size_t operator()(const lodestone::level::types::Color &v) const noexcept {
         // we can just combine it into an int lol
         return (v.r << 24) | (v.g << 16) | (v.b << 8) | (v.a);

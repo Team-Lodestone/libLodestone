@@ -5,10 +5,11 @@
 #define LODESTONE_MCREGIONLEVELDATA_H
 #include <Lodestone.Minecraft.Common/world/data/LevelData.h>
 
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 #include <memory>
 
 namespace lodestone::minecraft::java::mcregion::world::data {
-    struct McRegionLevelData : common::world::data::LevelData {
+    struct LODESTONE_MINECRAFT_JAVA_API McRegionLevelData : common::world::data::LevelData {
         static constexpr int DEFAULT_VERSION = 19132;
 
         McRegionLevelData(const int64_t seed, const int64_t lastPlayed, const int64_t time,

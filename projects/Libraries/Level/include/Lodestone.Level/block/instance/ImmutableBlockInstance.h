@@ -7,7 +7,7 @@
 
 namespace lodestone::level::block::instance {
     /** Block properties type that cannot be written to  */
-    class ImmutableBlockInstance : public BlockInstance {
+    class LODESTONE_LEVEL_API ImmutableBlockInstance : public BlockInstance {
       private:
         ImmutableBlockInstance();
 

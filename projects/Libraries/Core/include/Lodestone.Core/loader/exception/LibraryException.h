@@ -9,8 +9,10 @@
 #define LODESTONE_LIBRARYEXCEPTION_H
 #include <filesystem>
 
+#include "Lodestone.Core/internal/Exports.h"
+
 namespace lodestone::core::loader::exception {
-    class LibraryException : public std::system_error {
+    class LODESTONE_CORE_API LibraryException : public std::system_error {
     public:
         LibraryException(const std::string &message, const std::filesystem::path &libraryPath, const std::error_code &errorCode);
 

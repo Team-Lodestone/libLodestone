@@ -4,6 +4,8 @@
 #ifndef LODESTONE_INDEXING_H
 #define LODESTONE_INDEXING_H
 
+#include "Lodestone.Common/internal/Exports.h"
+
 namespace lodestone::common {
 #define INDEX_YZX(x, y, z, w, d) (y * d + z) * w + x
 #define INDEX_XZY(x, y, z, h, d) (x * d + z) * h + y

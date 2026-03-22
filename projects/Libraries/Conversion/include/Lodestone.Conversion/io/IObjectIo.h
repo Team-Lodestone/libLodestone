@@ -5,9 +5,10 @@
 #define LODESTONE_IOBJECTIO_H
 #include "Lodestone.Conversion/io/types/ReadableAdapter.h"
 #include "Lodestone.Conversion/io/types/WritableAdapter.h"
+#include "Lodestone.Conversion/internal/Exports.h"
 
 namespace lodestone::conversion::io {
-    struct IObjectIO : types::ReadableAdapter, types::WritableAdapter {
+    struct LODESTONE_CONVERSION_API IObjectIO : types::ReadableAdapter, types::WritableAdapter {
         constexpr IObjectIO() = default;
 
         ~IObjectIO() override = default;

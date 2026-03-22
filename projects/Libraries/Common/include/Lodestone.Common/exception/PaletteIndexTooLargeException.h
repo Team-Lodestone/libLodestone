@@ -5,8 +5,10 @@
 #define LODESTONE_PALETTEINDEXTOOLARGEEXCEPTION_H
 #include <stdexcept>
 
+#include "Lodestone.Common/internal/Exports.h"
+
 namespace lodestone::common::exception {
-    class PaletteIndexTooLargeException : public std::exception {
+    class LODESTONE_COMMON_API PaletteIndexTooLargeException : public std::exception {
         const char *what() const noexcept override {
             return "Index palette too large";
         };

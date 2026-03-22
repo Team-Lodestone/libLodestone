@@ -16,6 +16,8 @@
 #include "Lodestone.Minecraft.Common/world/data/LevelData.h"
 #include <libnbt++/io/stream_writer.h>
 
+#include "Lodestone.Minecraft.Common/internal/Exports.h"
+
 namespace nbt {
     class tag_compound;
 }
@@ -23,13 +25,13 @@ namespace nbt {
 namespace lodestone::minecraft::common::conversion::io {
     template <const lodestone::common::registry::Identifier *I, typename RO, typename WO, typename WR = void>
     requires lodestone::common::util::concepts::void_or_derived_from_v<lodestone::conversion::io::options::IOptions, RO> && lodestone::common::util::concepts::void_or_derived_from_v<lodestone::conversion::io::options::IOptions, WO>
-    class LevelDataIO : public interfaces::ILevelDataIO,
+    class LODESTONE_MINECRAFT_COMMON_API LevelDataIO : public interfaces::ILevelDataIO,
                 public lodestone::conversion::io::AbstractObjectIO<I, std::unique_ptr<world::data::LevelData>, world::data::LevelData *, RO, WO, WR> {};
 
     template <const lodestone::common::registry::Identifier *I, typename R, typename W, typename RO, typename WO>
     requires lodestone::common::util::concepts::void_or_derived_from_v<lodestone::conversion::io::options::IOptions, RO>
           && lodestone::common::util::concepts::void_or_derived_from_v<lodestone::conversion::io::options::IOptions, WO>
-    class NbtIO : public lodestone::conversion::io::AbstractObjectIO<I, R, W, RO, const options::OptionPresets::NbtOutputWriteOptions<WO>, void> {
+    class LODESTONE_MINECRAFT_COMMON_API NbtIO : public lodestone::conversion::io::AbstractObjectIO<I, R, W, RO, const options::OptionPresets::NbtOutputWriteOptions<WO>, void>  {
     public:
 
         nbt::tag_compound tagFromWritten(W obj, WO &options) const {
@@ -54,22 +56,22 @@ namespace lodestone::minecraft::common::conversion::io {
 
     template <const lodestone::common::registry::Identifier *I, typename RO, typename WO>
     requires lodestone::common::util::concepts::void_or_derived_from_v<lodestone::conversion::io::options::IOptions, RO> && lodestone::common::util::concepts::void_or_derived_from_v<lodestone::conversion::io::options::IOptions, WO>
-    class NbtPlayerIO : public lodestone::conversion::io::interfaces::IPlayerIO,
+    class LODESTONE_MINECRAFT_COMMON_API NbtPlayerIO : public lodestone::conversion::io::interfaces::IPlayerIO,
                  public NbtIO<I, std::unique_ptr<level::entity::Player>, level::entity::Player *, RO, WO> {};
 
     template <const lodestone::common::registry::Identifier *I, typename RO, typename WO>
     requires lodestone::common::util::concepts::void_or_derived_from_v<lodestone::conversion::io::options::IOptions, RO> && lodestone::common::util::concepts::void_or_derived_from_v<lodestone::conversion::io::options::IOptions, WO>
-    class NbtLevelIO : public lodestone::conversion::io::interfaces::ILevelIO,
+    class LODESTONE_MINECRAFT_COMMON_API NbtLevelIO : public lodestone::conversion::io::interfaces::ILevelIO,
              public NbtIO<I, std::unique_ptr<level::Level>, level::Level *, RO, WO> {};
 
     template <const lodestone::common::registry::Identifier *I, typename RO, typename WO>
     requires lodestone::common::util::concepts::void_or_derived_from_v<lodestone::conversion::io::options::IOptions, RO> && lodestone::common::util::concepts::void_or_derived_from_v<lodestone::conversion::io::options::IOptions, WO>
-    class NbtLevelDataIO : public interfaces::ILevelDataIO,
+    class LODESTONE_MINECRAFT_COMMON_API NbtLevelDataIO : public interfaces::ILevelDataIO,
          public NbtIO<I, std::unique_ptr<world::data::LevelData>, world::data::LevelData *, RO, WO> {};
 
     template <const lodestone::common::registry::Identifier *I, typename RO, typename WO>
     requires lodestone::common::util::concepts::void_or_derived_from_v<lodestone::conversion::io::options::IOptions, RO> && lodestone::common::util::concepts::void_or_derived_from_v<lodestone::conversion::io::options::IOptions, WO>
-    class NbtChunkIO : public lodestone::conversion::io::interfaces::IChunkIO,
+    class LODESTONE_MINECRAFT_COMMON_API NbtChunkIO : public lodestone::conversion::io::interfaces::IChunkIO,
                  public NbtIO<I, std::unique_ptr<level::chunk::Chunk>, level::chunk::Chunk *, RO, WO> {};
 }
 

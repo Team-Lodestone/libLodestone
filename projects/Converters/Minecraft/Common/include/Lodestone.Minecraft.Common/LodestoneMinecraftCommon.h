@@ -4,8 +4,10 @@
 #ifndef LODESTONE_LODESTONEMINECRAFTCOMMON_H
 #define LODESTONE_LODESTONEMINECRAFTCOMMON_H
 
+#include "Lodestone.Minecraft.Common/internal/Exports.h"
+
 namespace lodestone::minecraft::common {
-    class LodestoneMinecraftCommon {
+    class LODESTONE_MINECRAFT_COMMON_API LodestoneMinecraftCommon  {
       public:
         static void initBlocks();
     };

@@ -18,10 +18,10 @@ namespace lodestone::conversion::world {
 }
 
 namespace lodestone::level::world {
-    class World : public common::string::StringSerializable,
+    class LODESTONE_LEVEL_API World : public common::string::StringSerializable,
                   public properties::ReflectiveProperties {
       public:
-        class Dimension {
+        class LODESTONE_LEVEL_API Dimension {
             // just a class full of constants for now
           public:
             static constexpr const common::registry::Identifier

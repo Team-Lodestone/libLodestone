@@ -6,9 +6,10 @@
 #include "Lodestone.Minecraft.Common/region/RegionCompression.h"
 
 #include <Lodestone.Conversion/io/options/OptionsBuilder.h>
+#include "Lodestone.Minecraft.Common/internal/Exports.h"
 
 namespace lodestone::minecraft::common::conversion::io::options {
-    struct McRegionOptions : lodestone::conversion::io::options::IOptions {
+    struct LODESTONE_MINECRAFT_COMMON_API McRegionOptions : lodestone::conversion::io::options::IOptions  {
         region::RegionCompression compression;
 
         McRegionOptions(const region::RegionCompression &compression) : compression(compression) {}

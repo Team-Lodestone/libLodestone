@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION VERSION 3.30)
-project(Lodestone.Minecraft.Java VERSION 1.2.2)
+project(Lodestone.Minecraft.Java VERSION 1.2.3)
 set(PROJECT_VERSION_DEV) # used for dev versions, otherwise blank
 
 set(CMAKE_CXX_STANDARD 20)
@@ -64,6 +64,7 @@ set(FILES
         include/Lodestone.Minecraft.Java/mcregion/McRegionLevelData.h
         src/alpha/world/data/AlphaLevelData.cpp
         include/Lodestone.Minecraft.Java/conversion/mcregion/McRegionLevelDataIo.h
+        include/Lodestone.Minecraft.Java/internal/Exports.h
 )
 
 add_library(Lodestone.Minecraft.Java SHARED ${FILES})
@@ -147,4 +148,5 @@ if (ENABLE_RISKY_OPTIMIZATIONS STREQUAL ON)
 endif ()
 unset(ENABLE_RISKY_OPTIMIZATIONS CACHE)
 
+setupExports(Lodestone.Minecraft.Java)
 setupLinter(Lodestone.Minecraft.Java)

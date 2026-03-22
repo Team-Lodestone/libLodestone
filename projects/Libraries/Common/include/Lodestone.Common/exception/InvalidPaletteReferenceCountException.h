@@ -5,8 +5,10 @@
 #define LODESTONE_INVALIDPALETTEREFERENCECOUNTEXCEPTION_H
 #include <exception>
 
+#include "Lodestone.Common/internal/Exports.h"
+
 namespace lodestone::common::exception {
-    class InvalidPaletteReferenceCountException : public std::exception {
+    class LODESTONE_COMMON_API InvalidPaletteReferenceCountException : public std::exception {
         const char *what() const noexcept override {
             return "Invalid palette reference count";
         };

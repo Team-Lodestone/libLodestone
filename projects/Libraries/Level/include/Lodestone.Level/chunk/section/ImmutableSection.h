@@ -11,7 +11,7 @@
 
 namespace lodestone::level::chunk::section {
     /** Immutable section, used in place of returning empty/null LevelSection */
-    class ImmutableSection : public Section {
+    class LODESTONE_LEVEL_API ImmutableSection : public Section {
     private:
         static const common::storage::palette::PalletizedStorage<block::instance::BlockInstance> EMPTY_STORAGE;
       public:

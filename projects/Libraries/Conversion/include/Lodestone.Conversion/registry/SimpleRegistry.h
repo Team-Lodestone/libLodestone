@@ -6,7 +6,8 @@
 
 #include <Lodestone.Common/event/Event.h>
 
-#include <Lodestone.Common/Defines.h>
+#include "Lodestone.Conversion/internal/Exports.h"
+#include "Lodestone.Common/internal/Defines.h"
 #include <Lodestone.Common/registry/Identifier.h>
 
 #include <Lodestone.Common/registry/Identifiable.h>
@@ -14,10 +15,11 @@
 #include <Lodestone.Common/util/Logging.h>
 #include <stdexcept>
 #include <format>
+#include "Lodestone.Conversion/internal/Exports.h"
 
 namespace lodestone::conversion::registry {
     template <const common::registry::Identifier *Identifier, typename Type, typename Stored = std::unique_ptr<const Type>>
-    class LODESTONE_API SimpleRegistry : public common::registry::Identifiable<Identifier> {
+    class LODESTONE_CONVERSION_API SimpleRegistry : public common::registry::Identifiable<Identifier> {
     protected:
         SimpleRegistry() = default;
     public:

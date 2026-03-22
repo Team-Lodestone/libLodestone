@@ -8,7 +8,7 @@
 #include "Lodestone.Conversion/io/options/OptionsBuilder.h"
 
 namespace lodestone::conversion::io::options::fs::file {
-    struct FileReaderOptions : IOptions {
+    struct LODESTONE_CONVERSION_API FileReaderOptions : IOptions {
         std::istream &input;
 
         FileReaderOptions(std::istream &input) : input(input) {}

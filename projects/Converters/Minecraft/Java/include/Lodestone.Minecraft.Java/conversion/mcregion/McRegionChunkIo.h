@@ -12,11 +12,12 @@
 #include <Lodestone.Minecraft.Common/conversion/io/ObjectIOs.h>
 #include <Lodestone.Minecraft.Common/conversion/io/options/OptionPresets.h>
 #include "Lodestone.Minecraft.Java/Identifiers.h"
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 
 namespace lodestone::minecraft::java::mcregion::chunk {
     class McRegionNbtChunkIO;
 
-    class McRegionChunkIO : public conversion::io::ChunkIO<&identifiers::MCREGION_CHUNK_IO, const common::conversion::io::options::OptionPresets::CommonReadOptions, const common::conversion::io::options::OptionPresets::CommonChunkWriteOptions>,
+    class LODESTONE_MINECRAFT_JAVA_API McRegionChunkIO : public conversion::io::ChunkIO<&identifiers::MCREGION_CHUNK_IO, const common::conversion::io::options::OptionPresets::CommonReadOptions, const common::conversion::io::options::OptionPresets::CommonChunkWriteOptions>,
     public conversion::registry::RegistryIdentifierRelations<
         conversion::registry::RegistryIdentifierRelation<&identifiers::NBT_CHUNK_IO, const McRegionNbtChunkIO, &identifiers::MCREGION_NBT_CHUNK_IO, conversion::registry::ChunkIORegistry>
     > {
@@ -29,7 +30,7 @@ namespace lodestone::minecraft::java::mcregion::chunk {
         void write(level::chunk::Chunk *c, const common::conversion::io::options::OptionPresets::CommonChunkWriteOptions &options) const override;
     };
 
-    class McRegionNbtChunkIO : public common::conversion::io::NbtChunkIO<&identifiers::MCREGION_NBT_CHUNK_IO, const common::conversion::io::options::OptionPresets::CommonNbtReadOptions, const common::conversion::io::options::OptionPresets::CommonChunkOptions>,
+    class LODESTONE_MINECRAFT_JAVA_API McRegionNbtChunkIO : public common::conversion::io::NbtChunkIO<&identifiers::MCREGION_NBT_CHUNK_IO, const common::conversion::io::options::OptionPresets::CommonNbtReadOptions, const common::conversion::io::options::OptionPresets::CommonChunkOptions>,
     public conversion::registry::RegistryIdentifierRelations<
         conversion::registry::RegistryIdentifierRelation<&conversion::identifiers::CHUNK_IO, const McRegionChunkIO, &identifiers::MCREGION_CHUNK_IO, conversion::registry::ChunkIORegistry>
     > {

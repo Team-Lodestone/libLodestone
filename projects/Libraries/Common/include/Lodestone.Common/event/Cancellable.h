@@ -11,10 +11,16 @@
 #ifndef LODESTONE_CANCELLABLE_H
 #define LODESTONE_CANCELLABLE_H
 
+#include "Lodestone.Common/internal/Exports.h"
+
 namespace lodestone::common::event {
-  struct Cancellable {
-    bool cancelled;
-  };
+    struct LODESTONE_COMMON_API Cancellable {
+        void setCancelled(const bool cancel = true) {
+            this->cancelled = cancel;
+        }
+
+        bool cancelled;
+    };
 }
 
 #endif // LODESTONE_CANCELLABLE_H

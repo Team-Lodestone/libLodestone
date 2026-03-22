@@ -7,14 +7,14 @@
 
 #include <unordered_map>
 
-#include <Lodestone.Common/Defines.h>
+#include "Lodestone.Level/internal/Exports.h"
 
 #include "Lodestone.Level/item/Item.h"
 #include "Lodestone.Level/item/Items.h"
 #include <gtl/phmap.hpp>
 
 namespace lodestone::level::item {
-    class LODESTONE_API ItemRegistry {
+    class LODESTONE_LEVEL_API ItemRegistry {
       protected:
         ItemRegistry() = default;
 

@@ -8,9 +8,10 @@
 #include <Lodestone.Level/world/World.h>
 
 #include <Lodestone.Conversion/io/options/OptionsBuilder.h>
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 
 namespace lodestone::minecraft::java::classic::minev2::options {
-    struct MineV2WorldWriteOptions : conversion::io::options::IOptions {
+    struct LODESTONE_MINECRAFT_JAVA_API MineV2WorldWriteOptions : conversion::io::options::IOptions {
         lodestone::common::registry::Identifier level = lodestone::level::world::World::Dimension::OVERWORLD;
 
         explicit MineV2WorldWriteOptions(const lodestone::common::registry::Identifier &level);

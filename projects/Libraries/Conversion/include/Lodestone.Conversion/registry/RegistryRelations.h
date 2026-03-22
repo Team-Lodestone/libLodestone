@@ -10,7 +10,7 @@
 
 namespace lodestone::conversion::registry {
      template<const common::registry::Identifier *_InternalIdentifier, typename _Type, const common::registry::Identifier *_RegistryIdentifier, typename _Registry>
-     struct RegistryIdentifierRelation {
+     struct LODESTONE_CONVERSION_API RegistryIdentifierRelation {
         static constexpr const common::registry::Identifier *InternalIdentifier = _InternalIdentifier; // NOLINT
         static constexpr const common::registry::Identifier *RegistryIdentifier = _RegistryIdentifier; // NOLINT
         using Type = _Type;
@@ -18,7 +18,7 @@ namespace lodestone::conversion::registry {
     };
 
     template <typename... C>
-    class RegistryIdentifierRelations {
+    class LODESTONE_CONVERSION_API RegistryIdentifierRelations {
     public:
         template<typename T>
         T* getAsByRelation(const common::registry::Identifier *identifier) const requires (std::is_base_of_v<io::IObjectIO, typename C::Type> && ...) {

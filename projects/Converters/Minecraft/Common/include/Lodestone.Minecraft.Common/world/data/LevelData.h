@@ -4,9 +4,10 @@
 #ifndef LODESTONE_LEVELDATA_H
 #define LODESTONE_LEVELDATA_H
 #include "Lodestone.Level/properties/ReflectiveProperties.h"
+#include "Lodestone.Minecraft.Common/internal/Exports.h"
 
 namespace lodestone::minecraft::common::world::data {
-    struct LevelData : level::properties::ReflectiveProperties {
+    struct LODESTONE_MINECRAFT_COMMON_API LevelData : level::properties::ReflectiveProperties  {
         std::unique_ptr<level::properties::AbstractProperty>
         getProperty(const std::string &name) override;
 

@@ -9,7 +9,7 @@ namespace lodestone::conversion::block::data {
     // Early anvil added block id support for ids ranging from 0-4096, this was
     // determined by an extra 4 bits stored in parallel with each section's
     // block array
-    class ExtendedNumericBlockData : public AbstractBlockData {
+    class LODESTONE_CONVERSION_API ExtendedNumericBlockData : public AbstractBlockData {
       public:
         constexpr ExtendedNumericBlockData(const uint16_t id,
                                            const uint8_t data)

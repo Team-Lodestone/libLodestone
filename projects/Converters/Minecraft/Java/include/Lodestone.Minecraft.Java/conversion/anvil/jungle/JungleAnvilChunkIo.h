@@ -11,12 +11,13 @@
 #include "Lodestone.Minecraft.Java/Identifiers.h"
 
 #include <libnbt++/tag_compound.h>
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 
 namespace lodestone::minecraft::java::anvil::jungle::chunk {
     class JungleAnvilNbtChunkIO;
 
     // 1.2.1+
-    class JungleAnvilChunkIO : public conversion::io::ChunkIO<&identifiers::ANVIL_JUNGLE_CHUNK_IO, const common::conversion::io::options::OptionPresets::CommonReadOptions, const common::conversion::io::options::OptionPresets::CommonChunkWriteOptions>,
+    class LODESTONE_MINECRAFT_JAVA_API JungleAnvilChunkIO : public conversion::io::ChunkIO<&identifiers::ANVIL_JUNGLE_CHUNK_IO, const common::conversion::io::options::OptionPresets::CommonReadOptions, const common::conversion::io::options::OptionPresets::CommonChunkWriteOptions>,
     conversion::registry::RegistryIdentifierRelations<
         conversion::registry::RegistryIdentifierRelation<&identifiers::NBT_CHUNK_IO, const chunk::JungleAnvilNbtChunkIO, &identifiers::ANVIL_JUNGLE_NBT_CHUNK_IO, conversion::registry::ChunkIORegistry>
     > {
@@ -29,7 +30,7 @@ namespace lodestone::minecraft::java::anvil::jungle::chunk {
         void write(level::chunk::Chunk *chunk, const common::conversion::io::options::OptionPresets::CommonChunkWriteOptions &options) const override;
     };
 
-    class JungleAnvilNbtChunkIO : public common::conversion::io::NbtChunkIO<&identifiers::ANVIL_JUNGLE_NBT_CHUNK_IO, const common::conversion::io::options::OptionPresets::CommonNbtReadOptions, const common::conversion::io::options::OptionPresets::CommonChunkOptions>,
+    class LODESTONE_MINECRAFT_JAVA_API JungleAnvilNbtChunkIO : public common::conversion::io::NbtChunkIO<&identifiers::ANVIL_JUNGLE_NBT_CHUNK_IO, const common::conversion::io::options::OptionPresets::CommonNbtReadOptions, const common::conversion::io::options::OptionPresets::CommonChunkOptions>,
     conversion::registry::RegistryIdentifierRelations<
     conversion::registry::RegistryIdentifierRelation<&lodestone::conversion::identifiers::CHUNK_IO, const chunk::JungleAnvilChunkIO, &identifiers::ANVIL_JUNGLE_CHUNK_IO, conversion::registry::ChunkIORegistry>
 > {

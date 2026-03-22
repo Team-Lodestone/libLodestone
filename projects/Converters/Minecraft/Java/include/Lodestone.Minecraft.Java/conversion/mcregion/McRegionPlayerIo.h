@@ -12,11 +12,12 @@
 #include <libnbt++/tag_compound.h>
 
 #include <Lodestone.Level/world/World.h>
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 
 namespace lodestone::minecraft::java::mcregion::player {
     class McRegionNbtPlayerIO;
 
-    class McRegionPlayerIO : public conversion::io::PlayerIO<&identifiers::MCREGION_PLAYER_IO, const common::conversion::io::options::OptionPresets::CommonPlayerReadOptions, const lodestone::minecraft::common::conversion::io::options::OptionPresets::CommonWriteOptions>,
+    class LODESTONE_MINECRAFT_JAVA_API McRegionPlayerIO : public conversion::io::PlayerIO<&identifiers::MCREGION_PLAYER_IO, const common::conversion::io::options::OptionPresets::CommonPlayerReadOptions, const lodestone::minecraft::common::conversion::io::options::OptionPresets::CommonWriteOptions>,
     conversion::registry::RegistryIdentifierRelations<
         conversion::registry::RegistryIdentifierRelation<&identifiers::NBT_PLAYER_IO, const McRegionNbtPlayerIO, &identifiers::MCREGION_NBT_PLAYER_IO, conversion::registry::PlayerIORegistry>
         >
@@ -26,7 +27,7 @@ namespace lodestone::minecraft::java::mcregion::player {
         void write(lodestone::level::entity::Player *p, const lodestone::minecraft::common::conversion::io::options::OptionPresets::CommonWriteOptions &options) const override;
     };
 
-    class McRegionNbtPlayerIO : public common::conversion::io::NbtPlayerIO<&identifiers::MCREGION_NBT_PLAYER_IO, const common::conversion::io::options::OptionPresets::CommonNbtFilesystemReadOptions, const conversion::io::options::EmptyOptions>,
+    class LODESTONE_MINECRAFT_JAVA_API McRegionNbtPlayerIO : public common::conversion::io::NbtPlayerIO<&identifiers::MCREGION_NBT_PLAYER_IO, const common::conversion::io::options::OptionPresets::CommonNbtFilesystemReadOptions, const conversion::io::options::EmptyOptions>,
     conversion::registry::RegistryIdentifierRelations<
     conversion::registry::RegistryIdentifierRelation<&lodestone::conversion::identifiers::PLAYER_IO, const McRegionPlayerIO, &identifiers::MCREGION_PLAYER_IO, conversion::registry::PlayerIORegistry>
     > {

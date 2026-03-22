@@ -4,8 +4,10 @@
 #ifndef LODESTONE_REGIONCHUNKINFO_H
 #define LODESTONE_REGIONCHUNKINFO_H
 
+#include "Lodestone.Minecraft.Common/internal/Exports.h"
+
 namespace lodestone::minecraft::common::region {
-    struct RegionChunkIndice {
+    struct LODESTONE_MINECRAFT_COMMON_API RegionChunkIndice  {
         uint32_t offset;
         uint8_t size;
         int32_t timestamp;

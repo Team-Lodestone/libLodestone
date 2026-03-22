@@ -7,9 +7,10 @@
 #include <Lodestone.Level/entity/Player.h>
 
 #include "Lodestone.Minecraft.Common/player/Abilities.h"
+#include "Lodestone.Minecraft.Common/internal/Exports.h"
 
 namespace lodestone::minecraft::common::player {
-    class MinecraftPlayer : public level::entity::Player {
+    class LODESTONE_MINECRAFT_COMMON_API MinecraftPlayer : public level::entity::Player  {
       public:
         explicit MinecraftPlayer(const std::string &name);
 

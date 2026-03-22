@@ -5,11 +5,13 @@
 #define LODESTONE_IDENTIFIABLE_H
 #include "Lodestone.Common/registry/Identifier.h"
 
+#include "Lodestone.Common/internal/Exports.h"
+
 namespace lodestone::common::registry {
-    struct IIdentifiable {};
+    struct LODESTONE_COMMON_API IIdentifiable {};
 
     template <const Identifier *I>
-    class Identifiable : public IIdentifiable {
+    class LODESTONE_COMMON_API Identifiable : public IIdentifiable {
     public:
         static constexpr const Identifier *getIdentifier() {
             return I;

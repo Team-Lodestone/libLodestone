@@ -20,7 +20,7 @@ namespace lodestone::level::chunk {
 }
 
 namespace lodestone::level::entity {
-    class Entity : public WorldSpaceObject, public common::string::StringSerializable {
+    class LODESTONE_LEVEL_API Entity : public WorldSpaceObject, public common::string::StringSerializable {
       public:
         static constexpr int MAX_HEALTH = 20;
 

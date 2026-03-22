@@ -4,9 +4,10 @@
 #ifndef LODESTONE_JUNGLEANVILCHUNK_H
 #define LODESTONE_JUNGLEANVILCHUNK_H
 #include <Lodestone.Level/chunk/LevelChunk.h>
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 
 namespace lodestone::minecraft::java::anvil::jungle::chunk {
-    class JungleAnvilChunk final : public level::chunk::LevelChunk {
+    class LODESTONE_MINECRAFT_JAVA_API JungleAnvilChunk final : public level::chunk::LevelChunk {
       public:
         explicit JungleAnvilChunk(const int64_t lastUpdate = 0)
             : LevelChunk(256), m_lastUpdate(lastUpdate) {}

@@ -6,9 +6,10 @@
 #include <Lodestone.Common/util/Semver.h>
 
 #include <Lodestone.Common/registry/Identifier.h>
+#include "Lodestone.Core/internal/Exports.h"
 
 namespace lodestone::core {
-    class LodestoneExtension {
+    class LODESTONE_CORE_API LodestoneExtension {
       public:
         virtual ~LodestoneExtension() = default;
 

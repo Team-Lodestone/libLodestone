@@ -6,8 +6,10 @@
 #define LODESTONE_JUNGLEANVILWORLD_H
 #include "Lodestone.Minecraft.Java/mcregion/McRegionWorld.h"
 
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
+
 namespace lodestone::minecraft::java::anvil::jungle::world {
-    class JungleAnvilWorld : public mcregion::world::McRegionWorld {
+    class LODESTONE_MINECRAFT_JAVA_API JungleAnvilWorld : public mcregion::world::McRegionWorld {
       public:
         explicit JungleAnvilWorld(const std::string &name);
     };

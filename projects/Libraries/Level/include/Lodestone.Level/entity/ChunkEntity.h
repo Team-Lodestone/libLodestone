@@ -7,7 +7,7 @@
 
 // An entity stored in a chunk (as the player is stored in world instead)
 namespace lodestone::level::entity {
-    class ChunkEntity : public Entity {};
+    class LODESTONE_LEVEL_API ChunkEntity : public Entity {};
 } // namespace lodestone::level::entity
 
 #endif // LODESTONE_LEVELENTITY_H

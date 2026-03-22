@@ -7,9 +7,10 @@
 #include <Lodestone.Level/entity/Player.h>
 
 #include <Lodestone.Minecraft.Common/player/MinecraftPlayer.h>
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 
 namespace lodestone::minecraft::java::alpha::player {
-    class AlphaPlayer final : public common::player::MinecraftPlayer {
+    class LODESTONE_MINECRAFT_JAVA_API AlphaPlayer final : public common::player::MinecraftPlayer {
       public:
         explicit AlphaPlayer(const std::string &name);
     };

@@ -13,7 +13,7 @@
 
 namespace lodestone::level::chunk {
     /** Holds chunks */
-    class LODESTONE_API ChunkContainer
+    class LODESTONE_LEVEL_API ChunkContainer
         : public lodestone::common::string::StringSerializable {
       public:
         ~ChunkContainer() override = default;

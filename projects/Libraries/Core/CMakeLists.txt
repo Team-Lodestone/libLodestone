@@ -20,6 +20,7 @@ set(FILES
         include/Lodestone.Core/loader/exception/UnloadLibraryException.h
         src/loader/exception/LibraryException.cpp
         include/Lodestone.Core/loader/exception/LibraryException.h
+        include/Lodestone.Core/internal/Exports.h
 )
 
 add_library(Lodestone.Core SHARED ${FILES})
@@ -27,4 +28,6 @@ target_include_directories(Lodestone.Core PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 target_link_libraries(Lodestone.Core PRIVATE Lodestone.Common gtl)
+
+setupExports(Lodestone.Core)
 setupLinter(Lodestone.Core)

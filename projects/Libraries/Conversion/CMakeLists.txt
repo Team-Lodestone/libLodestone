@@ -43,6 +43,9 @@ set(FILES
         include/Lodestone.Conversion/registry/SingletonRegistry.h
         include/Lodestone.Conversion/io/ObjectIOs.h
         src/registry/Registries.cpp
+        src/LodestoneConversion.cpp
+        include/Lodestone.Conversion/LodestoneConversion.h
+        include/Lodestone.Conversion/internal/Exports.h
 )
 
 add_library(Lodestone.Conversion SHARED ${FILES})
@@ -55,4 +58,6 @@ target_link_libraries(Lodestone.Conversion PUBLIC Lodestone.Common Lodestone.Lev
 if (USE_FALLBACK_BLOCK STREQUAL ON)
     target_compile_definitions(Lodestone.Conversion PRIVATE USE_FALLBACK_BLOCK)
 endif ()
+
+setupExports(Lodestone.Conversion)
 setupLinter(Lodestone.Conversion)

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION VERSION 3.30)
 project(Lodestone.Minecraft.Console VERSION 1.0.0)
-set(PROJECT_VERSION_DEV 1) # used for dev versions, otherwise blank
+set(PROJECT_VERSION_DEV 2) # used for dev versions, otherwise blank
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -9,6 +9,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(FILES
         src/LodestoneLce.cpp
         include/Lodestone.Minecraft.Console/LodestoneLce.h
+        include/Lodestone.Minecraft.Console/internal/Exports.h
 
 )
 
@@ -93,4 +94,5 @@ if (ENABLE_RISKY_OPTIMIZATIONS STREQUAL ON)
 endif ()
 unset(ENABLE_RISKY_OPTIMIZATIONS CACHE)
 
+setupExports(Lodestone.Minecraft.Console)
 setupLinter(Lodestone.Minecraft.Console)

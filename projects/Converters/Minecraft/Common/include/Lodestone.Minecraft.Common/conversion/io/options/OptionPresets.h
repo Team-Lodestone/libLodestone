@@ -12,9 +12,10 @@
 
 #include <Lodestone.Conversion/io/options/OptionsBuilder.h>
 #include <Lodestone.Conversion/io/options/versioned/VersionedOptions.h>
+#include "Lodestone.Minecraft.Common/internal/Exports.h"
 
 namespace lodestone::minecraft::common::conversion::io::options {
-    class OptionPresets {
+    class LODESTONE_MINECRAFT_COMMON_API OptionPresets  {
         OptionPresets() = delete;
     public:
         // I/O

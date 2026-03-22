@@ -13,7 +13,7 @@
 
 namespace lodestone::conversion::registry {
     template <const common::registry::Identifier *Identifier, typename Type, typename Stored>
-    LODESTONE_API SingletonRegistry<Identifier, Type, Stored> &SingletonRegistry<Identifier, Type, Stored>::getInstance() {
+    LODESTONE_CONVERSION_API SingletonRegistry<Identifier, Type, Stored> &SingletonRegistry<Identifier, Type, Stored>::getInstance() {
         static SingletonRegistry s_instance;
         return s_instance;
     }

@@ -5,8 +5,10 @@
 #define LODESTONE_MCREGIONCHUNK_H
 #include <Lodestone.Level/chunk/LevelChunk.h>
 
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
+
 namespace lodestone::minecraft::java::mcregion::chunk {
-    class McRegionChunk final : public level::chunk::LevelChunk {
+    class LODESTONE_MINECRAFT_JAVA_API McRegionChunk final : public level::chunk::LevelChunk {
       public:
         explicit McRegionChunk(const int64_t lastUpdate = 0)
             : LevelChunk(128), m_lastUpdate(lastUpdate) {}

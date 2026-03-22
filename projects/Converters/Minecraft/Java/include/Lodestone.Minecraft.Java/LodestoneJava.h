@@ -6,13 +6,11 @@
 #include <Lodestone.Common/registry/Identifiable.h>
 #include <Lodestone.Common/registry/Identifier.h>
 
-#include <Lodestone.Common/Defines.h>
-
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 #include <Lodestone.Conversion/block/VersionedBlockIO.h>
 
 #include <Lodestone.Core/LodestoneExtension.h>
 #include <Lodestone.Common/util/Semver.h>
-
 
 namespace lodestone::minecraft::java {
 #define THREADING_TYPE_NONE 0
@@ -64,7 +62,7 @@ namespace lodestone::minecraft::java {
         LODESTONE_MINECRAFT_JAVA_DEV_VERSION
     };
 
-    class LODESTONE_API LodestoneJava : public core::LodestoneExtension, public lodestone::common::registry::Identifiable<&IDENTIFIER> {
+    class LODESTONE_MINECRAFT_JAVA_API LodestoneJava : public core::LodestoneExtension, public lodestone::common::registry::Identifiable<&IDENTIFIER> {
       private:
         LodestoneJava();
 

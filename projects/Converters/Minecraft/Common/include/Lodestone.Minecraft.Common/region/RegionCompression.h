@@ -4,8 +4,10 @@
 #ifndef LODESTONE_REGIONCOMPRESSION_H
 #define LODESTONE_REGIONCOMPRESSION_H
 
+#include "Lodestone.Minecraft.Common/internal/Exports.h"
+
 namespace lodestone::minecraft::common::region {
-    enum RegionCompression : signed char {
+    enum RegionCompression : signed char  {
         GZIP = 1,
         ZLIB = 2,
         UNCOMPRESSED = 3,

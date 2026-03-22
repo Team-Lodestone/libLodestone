@@ -6,7 +6,7 @@
 #include "Lodestone.Level/block/blocks/TranslucentBlock.h"
 
 namespace lodestone::level::block::blocks {
-    class AirBlock : public TranslucentBlock {
+    class LODESTONE_LEVEL_API AirBlock : public TranslucentBlock {
     public:
         constexpr AirBlock(const common::registry::Identifier *id,
             const material::Material &material, const properties::definition::ObjectDefinition *definition)

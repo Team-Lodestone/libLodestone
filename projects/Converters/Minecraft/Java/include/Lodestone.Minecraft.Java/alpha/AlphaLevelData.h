@@ -5,8 +5,10 @@
 #define LODESTONE_ALPHALEVELDATA_H
 #include <Lodestone.Minecraft.Common/world/data/LevelData.h>
 
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
+
 namespace lodestone::minecraft::java::alpha::world::data {
-    struct AlphaLevelData : common::world::data::LevelData {
+    struct LODESTONE_MINECRAFT_JAVA_API AlphaLevelData : common::world::data::LevelData {
         std::unique_ptr<level::properties::AbstractProperty>
         getProperty(const std::string &name) override;
 

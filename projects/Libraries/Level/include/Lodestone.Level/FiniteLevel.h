@@ -7,7 +7,7 @@
 #include "Lodestone.Level/types/Bounds2.h"
 
 namespace lodestone::level {
-    class LODESTONE_API FiniteLevel : public Level {
+    class LODESTONE_LEVEL_API FiniteLevel : public Level {
       public:
         // TODO regular Level to FiniteLevel
         explicit FiniteLevel(const types::Bounds2i &bounds);

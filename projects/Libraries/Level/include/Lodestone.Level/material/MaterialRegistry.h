@@ -4,10 +4,10 @@
 #ifndef LODESTONE_MATERIALS_H
 #define LODESTONE_MATERIALS_H
 #include "Lodestone.Level/material/Material.h"
-#include <Lodestone.Common/Defines.h>
+#include "Lodestone.Level/internal/Exports.h"
 
 namespace lodestone::level::material {
-    class LODESTONE_API MaterialRegistry {
+    class LODESTONE_LEVEL_API MaterialRegistry {
       public:
         // todo: later
         static const Material AIR;

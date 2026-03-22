@@ -6,9 +6,10 @@
 #include <libnbt++/tag_compound.h>
 
 #include <Lodestone.Conversion/io/options/OptionsBuilder.h>
+#include "Lodestone.Minecraft.Common/internal/Exports.h"
 
 namespace lodestone::minecraft::common::conversion::io::options {
-    struct NbtReaderOptions : lodestone::conversion::io::options::IOptions {
+    struct LODESTONE_MINECRAFT_COMMON_API NbtReaderOptions : lodestone::conversion::io::options::IOptions {
         nbt::tag_compound &input;
 
         NbtReaderOptions(nbt::tag_compound &input) : input(input) {};

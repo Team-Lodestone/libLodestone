@@ -6,10 +6,11 @@
 
 #include <Lodestone.Common/string/StringSerializable.h>
 #include <format>
+#include "Lodestone.Level/internal/Exports.h"
 
 namespace lodestone::level::types {
     template <typename T>
-    struct Vec2 final {
+    struct LODESTONE_LEVEL_API Vec2 final {
         static_assert(std::is_arithmetic_v<T>, "typeof T must be numeric"); // Waiter! I want one Vec2<std::string, std::string> please.
 
         T x{}, y{};
@@ -69,7 +70,7 @@ namespace lodestone::level::types {
     typedef Vec2<double> Vec2d;
 } // namespace lodestone::level::types
 
-template <typename T> struct std::hash<lodestone::level::types::Vec2<T>> {
+template <typename T> struct LODESTONE_LEVEL_API std::hash<lodestone::level::types::Vec2<T>> {
     size_t
     operator()(const lodestone::level::types::Vec2<T> &v) const noexcept {
         return std::hash<T>()(v.x) ^ (std::hash<T>()(v.y) << 1);

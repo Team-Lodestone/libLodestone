@@ -17,10 +17,11 @@
 #include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionPlayerIo.h"
 
 #include <filesystem>
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 
 namespace lodestone::minecraft::java::anvil::jungle::world {
 
-    class JungleAnvilWorldIo : public conversion::io::WorldIO<&identifiers::ANVIL_JUNGLE_WORLD_IO, const common::conversion::io::options::OptionPresets::CommonFilesystemOptions, const common::conversion::io::options::OptionPresets::CommonFilesystemOptions>,
+    class LODESTONE_MINECRAFT_JAVA_API JungleAnvilWorldIo : public conversion::io::WorldIO<&identifiers::ANVIL_JUNGLE_WORLD_IO, const common::conversion::io::options::OptionPresets::CommonFilesystemOptions, const common::conversion::io::options::OptionPresets::CommonFilesystemOptions>,
     public conversion::registry::RegistryIdentifierRelations<
         conversion::registry::RegistryIdentifierRelation<&identifiers::NBT_PLAYER_IO, const mcregion::player::McRegionNbtPlayerIO, &identifiers::MCREGION_NBT_PLAYER_IO, conversion::registry::PlayerIORegistry>, // TODO we don't have a jungle anvil player type yet
         conversion::registry::RegistryIdentifierRelation<&identifiers::NBT_CHUNK_IO, const chunk::JungleAnvilChunkIO, &identifiers::ANVIL_JUNGLE_NBT_CHUNK_IO, conversion::registry::ChunkIORegistry>,

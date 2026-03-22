@@ -11,9 +11,10 @@
 #ifndef LODESTONE_NATIVEPLUGINLOADER_H
 #define LODESTONE_NATIVEPLUGINLOADER_H
 #include "Lodestone.Core/loader/ExtensionLoader.h"
+#include "Lodestone.Core/internal/Exports.h"
 
 namespace lodestone::core::loader {
-  class NativeExtensionLoader : public ExtensionLoader {
+  class LODESTONE_CORE_API NativeExtensionLoader : public ExtensionLoader {
   public:
     explicit NativeExtensionLoader(const std::filesystem::path &extensionsDirectory, core::Lodestone *core)
       : ExtensionLoader(core), m_extensionsDirectory(extensionsDirectory) {

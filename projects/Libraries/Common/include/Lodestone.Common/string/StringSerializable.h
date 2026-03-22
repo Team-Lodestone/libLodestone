@@ -4,10 +4,13 @@
 #ifndef LODESTONE_STRINGSERIALIZABLE_H
 #define LODESTONE_STRINGSERIALIZABLE_H
 #include <string>
+#include <iostream>
+
+#include "Lodestone.Common/internal/Exports.h"
 
 namespace lodestone::common::string {
     /** Java toString clone */
-    class StringSerializable {
+    class LODESTONE_COMMON_API StringSerializable {
       public:
         constexpr StringSerializable() = default;
 

@@ -11,7 +11,7 @@
 #include "Lodestone.Level/properties/AbstractProperty.h"
 
 namespace lodestone::level::item {
-    class ItemInstance : public common::string::StringSerializable {
+    class LODESTONE_LEVEL_API ItemInstance : public common::string::StringSerializable {
       public:
         static const map_t<std::string,
                            std::unique_ptr<properties::AbstractProperty>>

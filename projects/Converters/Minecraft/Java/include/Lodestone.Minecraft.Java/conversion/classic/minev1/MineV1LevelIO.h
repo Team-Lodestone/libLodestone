@@ -9,9 +9,11 @@
 
 #include <Lodestone.Minecraft.Common/conversion/io/options/OptionPresets.h>
 #include "Lodestone.Minecraft.Java/Identifiers.h"
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 
 namespace lodestone::minecraft::java::classic::minev1 {
-    class MineV1LevelIO : public conversion::io::LevelIO<&identifiers::MINEV1_LEVEL_IO, const common::conversion::io::options::OptionPresets::CommonReadOptions, const common::conversion::io::options::OptionPresets::CommonWriteOptions> {
+    class LODESTONE_MINECRAFT_JAVA_API MineV1LevelIO : public conversion::io::LevelIO<&identifiers::MINEV1_LEVEL_IO, const common::conversion::io::options::OptionPresets::CommonReadOptions, const common::conversion::io::options::OptionPresets::CommonWriteOptions> {
     public:
         static constexpr int WIDTH = 256;
         static constexpr int HEIGHT = 64;

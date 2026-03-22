@@ -6,8 +6,10 @@
 #include <Lodestone.Conversion/io/options/OptionsBuilder.h>
 #include <Lodestone.Level/types/Vec2.h>
 
+#include "Lodestone.Minecraft.Common/internal/Exports.h"
+
 namespace lodestone::minecraft::common::conversion::io::options {
-    struct ChunkOptions : lodestone::conversion::io::options::IOptions {
+    struct LODESTONE_MINECRAFT_COMMON_API ChunkOptions : lodestone::conversion::io::options::IOptions  {
         level::types::Vec2i coords;
 
         ChunkOptions(const level::types::Vec2i &coords) : coords(coords) {}

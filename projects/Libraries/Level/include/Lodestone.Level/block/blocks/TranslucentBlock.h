@@ -8,7 +8,7 @@
 namespace lodestone::level::block::blocks {
     // transculent
     // welcome back notch
-    class TranslucentBlock : public lodestone::level::block::Block {
+    class LODESTONE_LEVEL_API TranslucentBlock : public lodestone::level::block::Block {
     public:
         constexpr TranslucentBlock(const lodestone::common::registry::Identifier *id,
                     const lodestone::level::material::Material &material, const properties::definition::ObjectDefinition *definition)

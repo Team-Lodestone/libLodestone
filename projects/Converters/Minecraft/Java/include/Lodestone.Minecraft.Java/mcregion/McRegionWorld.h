@@ -6,11 +6,11 @@
 #include "Lodestone.Minecraft.Java/mcregion/McRegionLevelData.h"
 
 #include <Lodestone.Level/world/World.h>
-
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 #include <Lodestone.Minecraft.Common/world/MinecraftWorld.h>
 
 namespace lodestone::minecraft::java::mcregion::world {
-    class McRegionWorld : public common::world::MinecraftWorld<data::McRegionLevelData> {
+    class LODESTONE_MINECRAFT_JAVA_API McRegionWorld : public common::world::MinecraftWorld<data::McRegionLevelData> {
       public:
         explicit McRegionWorld(const std::string &name);
 

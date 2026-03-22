@@ -9,14 +9,14 @@
 #include <memory>
 #include <variant>
 
-#include <Lodestone.Common/Defines.h>
+#include "Lodestone.Conversion/internal/Exports.h"
 #include <Lodestone.Level/block/instance/BlockInstance.h>
 
 #include "Lodestone.Conversion/block/BlockIO.h"
 #include "Lodestone.Conversion/block/data/AbstractBlockData.h"
 
 namespace lodestone::conversion::block::version {
-    class LODESTONE_API VersionedBlockIO {
+    class LODESTONE_CONVERSION_API VersionedBlockIO {
       public:
         constexpr void
         registerBlock(const uint32_t version,

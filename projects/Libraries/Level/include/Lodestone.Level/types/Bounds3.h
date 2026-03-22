@@ -9,7 +9,7 @@
 
 namespace lodestone::level::types {
     template <typename T>
-    struct LODESTONE_API Bounds3 final
+    struct LODESTONE_LEVEL_API Bounds3 final
         : public lodestone::common::string::StringSerializable {
         Vec3<T> min;
         Vec3<T> max;

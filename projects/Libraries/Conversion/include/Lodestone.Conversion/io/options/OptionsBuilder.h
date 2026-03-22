@@ -4,15 +4,17 @@
 #ifndef LODESTONE_OPTIONS_H
 #define LODESTONE_OPTIONS_H
 
+#include "Lodestone.Conversion/internal/Exports.h"
+
 namespace lodestone::conversion::io::options {
-    struct IOptions {
+    struct LODESTONE_CONVERSION_API IOptions {
         IOptions() = default;
     };
 
-    struct EmptyOptions : IOptions {};
+    struct LODESTONE_CONVERSION_API EmptyOptions : IOptions {};
 
     template <typename... O>
-    struct OptionsBuilder : IOptions, O... {
+    struct LODESTONE_CONVERSION_API OptionsBuilder : IOptions, O... {
         template <typename... A>
         explicit OptionsBuilder(A&&... args)
             : O(std::forward<A>(args))... {}

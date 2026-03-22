@@ -8,9 +8,10 @@
 #include <cstring>
 #include <random>
 #include <numbers>
+#include "Lodestone.Common/internal/Exports.h"
 
 namespace lodestone::common::util {
-    class Math {
+    class LODESTONE_COMMON_API Math {
     private:
         // https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function#FNV-1a_hash
         template <typename I>

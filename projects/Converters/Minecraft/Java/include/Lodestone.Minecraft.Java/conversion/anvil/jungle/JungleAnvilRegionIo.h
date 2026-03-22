@@ -18,9 +18,10 @@
 
 #include <Lodestone.Level/region/Region.h>
 #include <Lodestone.Level/types/Vec2.h>
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 
 namespace lodestone::minecraft::java::anvil::jungle::region {
-    class JungleAnvilRegionIO : public conversion::io::RegionIO<&identifiers::ANVIL_JUNGLE_REGION_IO, const common::conversion::io::options::OptionPresets::CommonChunkReadOptions, const common::conversion::io::options::OptionPresets::CommonChunkWriteOptions>,
+    class LODESTONE_MINECRAFT_JAVA_API JungleAnvilRegionIO : public conversion::io::RegionIO<&identifiers::ANVIL_JUNGLE_REGION_IO, const common::conversion::io::options::OptionPresets::CommonChunkReadOptions, const common::conversion::io::options::OptionPresets::CommonChunkWriteOptions>,
     conversion::registry::RegistryIdentifierRelations<
         conversion::registry::RegistryIdentifierRelation<&lodestone::conversion::identifiers::CHUNK_IO, const chunk::JungleAnvilChunkIO, &identifiers::ANVIL_JUNGLE_CHUNK_IO, conversion::registry::ChunkIORegistry>
         > {

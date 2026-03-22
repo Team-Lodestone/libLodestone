@@ -5,8 +5,10 @@
 #define LODESTONE_GAMEMODE_H
 #include "Lodestone.Common/registry/Identifier.h"
 
+#include "Lodestone.Minecraft.Common/internal/Exports.h"
+
 namespace lodestone::minecraft::common::player {
-    struct Abilities {
+    struct LODESTONE_MINECRAFT_COMMON_API Abilities  {
         bool canFly;
         bool invulnerable;
         bool canInstabuild;
@@ -19,7 +21,7 @@ namespace lodestone::minecraft::common::player {
 
 namespace std {
     template <>
-    struct hash<lodestone::minecraft::common::player::Abilities> {
+    struct LODESTONE_MINECRAFT_COMMON_API hash<lodestone::minecraft::common::player::Abilities>  {
         size_t operator()(
             const lodestone::minecraft::common::player::Abilities &s) const noexcept {
             return std::hash<bool>{}(s.canFly)

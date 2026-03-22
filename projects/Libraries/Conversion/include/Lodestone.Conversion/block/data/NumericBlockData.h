@@ -9,7 +9,7 @@
 #include <Lodestone.Common/registry/Identifier.h>
 
 namespace lodestone::conversion::block::data {
-    class NumericBlockData final : public AbstractBlockData {
+    class LODESTONE_CONVERSION_API NumericBlockData final : public AbstractBlockData {
       public:
         constexpr NumericBlockData(const uint8_t id, const uint8_t data)
             : m_id(id), m_data(data) {}

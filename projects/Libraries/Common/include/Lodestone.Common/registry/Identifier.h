@@ -8,10 +8,11 @@
 #include <format>
 
 #include "Lodestone.Common/util/Math.h"
+#include "Lodestone.Common/internal/Exports.h"
 
 // this class required me to upgrade to c++20
 namespace lodestone::common::registry {
-    class Identifier : public string::StringSerializable {
+    class LODESTONE_COMMON_API Identifier : public string::StringSerializable {
       protected:
         explicit constexpr Identifier(const char *name) noexcept
             : m_namespace("lodestone"), m_path(name) {};
@@ -55,7 +56,7 @@ namespace lodestone::common::registry {
 } // namespace lodestone::common::registry
 
 template <>
-struct std::formatter<lodestone::common::registry::Identifier>
+struct LODESTONE_COMMON_API std::formatter<lodestone::common::registry::Identifier>
     : formatter<string> {
     std::format_context::iterator
     format(const lodestone::common::registry::Identifier &s,
@@ -65,7 +66,7 @@ struct std::formatter<lodestone::common::registry::Identifier>
 };
 
 template <>
-struct std::hash<lodestone::common::registry::Identifier> {
+struct LODESTONE_COMMON_API std::hash<lodestone::common::registry::Identifier> {
     size_t operator()(
         const lodestone::common::registry::Identifier &s) const noexcept {
         return std::hash<std::string_view>{}(s.getPath()) ^

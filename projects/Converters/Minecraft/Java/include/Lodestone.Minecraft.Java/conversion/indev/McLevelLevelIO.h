@@ -14,11 +14,12 @@
 #include <Lodestone.Minecraft.Common/conversion/io/options/OptionPresets.h>
 
 #include <libnbt++/nbt_tags.h>
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 
 namespace lodestone::minecraft::java::indev {
     class McLevelNbtLevelIO;
 
-    class McLevelLevelIO : public lodestone::conversion::io::LevelIO<&identifiers::MCLEVEL_LEVEL_IO, const common::conversion::io::options::OptionPresets::CommonReadOptions, const common::conversion::io::options::OptionPresets::CommonWriteOptions>,
+    class LODESTONE_MINECRAFT_JAVA_API McLevelLevelIO : public lodestone::conversion::io::LevelIO<&identifiers::MCLEVEL_LEVEL_IO, const common::conversion::io::options::OptionPresets::CommonReadOptions, const common::conversion::io::options::OptionPresets::CommonWriteOptions>,
     public conversion::registry::RegistryIdentifierRelations<
         conversion::registry::RegistryIdentifierRelation<&identifiers::NBT_LEVEL_IO, McLevelNbtLevelIO, &identifiers::MCLEVEL_NBT_LEVEL_IO, conversion::registry::LevelIORegistry>
         > {
@@ -29,7 +30,7 @@ namespace lodestone::minecraft::java::indev {
         void write(lodestone::level::Level *l, const common::conversion::io::options::OptionPresets::CommonWriteOptions &options) const override;
     };
 
-    class McLevelNbtLevelIO : public common::conversion::io::NbtLevelIO<&identifiers::MCLEVEL_NBT_LEVEL_IO, const common::conversion::io::options::OptionPresets::CommonNbtReadOptions, const conversion::io::options::EmptyOptions>,
+    class LODESTONE_MINECRAFT_JAVA_API McLevelNbtLevelIO : public common::conversion::io::NbtLevelIO<&identifiers::MCLEVEL_NBT_LEVEL_IO, const common::conversion::io::options::OptionPresets::CommonNbtReadOptions, const conversion::io::options::EmptyOptions>,
     public conversion::registry::RegistryIdentifierRelations<
         conversion::registry::RegistryIdentifierRelation<&conversion::identifiers::LEVEL_IO, McLevelLevelIO, &identifiers::MCLEVEL_LEVEL_IO, conversion::registry::LevelIORegistry>
         > {

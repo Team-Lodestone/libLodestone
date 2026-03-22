@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.30)
 project(Lodestone)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/linting.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/exports.cmake)
 
 option(BIO_TESTS "Build libBIO tests" OFF)
 

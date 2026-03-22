@@ -12,13 +12,14 @@
 #define LODESTONE_SEMVER_H
 #include <optional>
 #include <string>
+#include "Lodestone.Common/internal/Exports.h"
 
 namespace lodestone::common::util {
     /** Rough impl of a Semver class, if you can even call it that... hardly follows the specification lmao
      *
      * Does what we need it to do though.
      */
-    struct Semver {
+    struct LODESTONE_COMMON_API Semver {
         static constexpr int NONE = -1;
 
         constexpr std::string toString() const {

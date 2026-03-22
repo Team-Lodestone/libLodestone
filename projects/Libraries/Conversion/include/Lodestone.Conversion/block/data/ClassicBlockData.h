@@ -6,12 +6,12 @@
 #include <variant>
 
 #include "Lodestone.Conversion/block/data/AbstractBlockData.h"
-
+#include "Lodestone.Conversion/internal/Exports.h"
 #include <Lodestone.Common/registry/Identifier.h>
 #include <cstdint>
 
 namespace lodestone::conversion::block::data {
-    class ClassicBlockData final : public AbstractBlockData {
+    class LODESTONE_CONVERSION_API ClassicBlockData final : public AbstractBlockData {
       public:
         explicit constexpr ClassicBlockData(const uint8_t id) : m_id(id) {}
 

@@ -9,10 +9,11 @@
 #include <Lodestone.Level/world/World.h>
 
 #include <Lodestone.Minecraft.Common/world/MinecraftWorld.h>
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 
 namespace lodestone::minecraft::java::alpha::world {
 
-    class AlphaWorld final : public common::world::MinecraftWorld<data::AlphaLevelData> {
+    class LODESTONE_MINECRAFT_JAVA_API AlphaWorld final : public common::world::MinecraftWorld<data::AlphaLevelData> {
       public:
         explicit AlphaWorld(const std::string &name, data::AlphaLevelData levelData);
         explicit AlphaWorld(const std::string &name);

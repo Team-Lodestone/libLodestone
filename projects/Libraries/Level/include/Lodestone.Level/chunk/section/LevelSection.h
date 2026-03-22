@@ -13,7 +13,7 @@
 #include <Lodestone.Common/storage/bits/BitStorage.h>
 
 namespace lodestone::level::chunk::section {
-    class LevelSection : public Section {
+    class LODESTONE_LEVEL_API LevelSection : public Section {
       public:
         LevelSection() = default;
         ~LevelSection() override;

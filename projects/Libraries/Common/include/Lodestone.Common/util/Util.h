@@ -5,8 +5,10 @@
 #define LODESTONE_UTIL_H
 #include <cstring>
 
+#include "Lodestone.Common/internal/Exports.h"
+
 namespace lodestone::common::util {
-    class Util {
+    class LODESTONE_COMMON_API Util {
     public:
         Util() = delete;
 

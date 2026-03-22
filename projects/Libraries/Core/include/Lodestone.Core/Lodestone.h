@@ -4,12 +4,13 @@
 #ifndef LODESTONE_CORE_LODESTONE_H
 #define LODESTONE_CORE_LODESTONE_H
 #include "Lodestone.Core/LodestoneExtension.h"
-#include <Lodestone.Common/Defines.h>
+#include <Lodestone.Common/internal/Defines.h>
 #include <Lodestone.Common/registry/Identifier.h>
+#include "Lodestone.Core/internal/Exports.h"
 
 namespace lodestone::core {
     /** The core Lodestone class, used for registering other plugin libs. */
-    class Lodestone {
+    class LODESTONE_CORE_API Lodestone {
       public:
         static Lodestone *getInstance();
 

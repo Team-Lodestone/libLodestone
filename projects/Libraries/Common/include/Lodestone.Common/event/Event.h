@@ -19,17 +19,19 @@
 #include "Lodestone.Common/event/Cancellable.h"
 #include "Lodestone.Common/registry/Identifier.h"
 
+#include "Lodestone.Common/internal/Exports.h"
+
 namespace lodestone::common::event {
   using FunctionHandle = unsigned int;
 
   template <typename... Args>
-  class Event {
+  class LODESTONE_COMMON_API Event {
   public:
     using Handler = std::function<void(Args...)>;
 
     static constexpr FunctionHandle MAX_SUBSCRIBERS = std::numeric_limits<FunctionHandle>::max();
 
-    struct Subscriber {
+    struct LODESTONE_COMMON_API Subscriber {
       FunctionHandle id;
       Handler handler;
     };

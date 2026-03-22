@@ -10,7 +10,7 @@
 
 namespace lodestone::common::storage::bits {
 
-    class BitStorage : public AbstractBitStorage {
+    class LODESTONE_COMMON_API BitStorage : public AbstractBitStorage {
       public:
         BitStorage(unsigned int length, unsigned int bits);
         BitStorage(uint8_t *data, unsigned int bits);

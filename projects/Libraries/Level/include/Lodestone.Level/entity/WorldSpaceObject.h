@@ -8,7 +8,7 @@
 #include "Lodestone.Level/types/Vec3.h"
 
 namespace lodestone::level::entity {
-    class WorldSpaceObject {
+    class LODESTONE_LEVEL_API WorldSpaceObject {
     public:
         WorldSpaceObject();
         virtual ~WorldSpaceObject() = default;

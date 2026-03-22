@@ -9,7 +9,7 @@
 #include "Lodestone.Level/properties/TemplatedProperty.h"
 
 namespace lodestone::level::properties {
-    class ReflectiveProperties {
+    class LODESTONE_LEVEL_API ReflectiveProperties {
       public:
 #define ADD_FIELD_PROPERTY(n, f)                                                  \
     case n##_hash:                                                             \

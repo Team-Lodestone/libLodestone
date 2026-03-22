@@ -4,10 +4,10 @@
 #ifndef LODESTONE_IPLAYERIO_H
 #define LODESTONE_IPLAYERIO_H
 #include "Lodestone.Conversion/io/IObjectIo.h"
-
+#include "Lodestone.Conversion/internal/Exports.h"
 
 namespace lodestone::conversion::io::interfaces {
-    class IPlayerIO : virtual public IObjectIO {
+    class LODESTONE_CONVERSION_API IPlayerIO : virtual public IObjectIO {
     };
 }
 

@@ -6,7 +6,7 @@
 
 namespace lodestone::conversion::io::types {
     template <typename R, typename RO = void>
-    class Readable {
+    class LODESTONE_CONVERSION_API Readable {
     public:
         virtual ~Readable() = default;
 

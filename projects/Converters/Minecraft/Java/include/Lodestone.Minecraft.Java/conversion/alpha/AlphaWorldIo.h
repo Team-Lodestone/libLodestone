@@ -12,9 +12,10 @@
 #include "Lodestone.Minecraft.Java/conversion/alpha/AlphaPlayerIo.h"
 #include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionChunkIo.h"
 
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 
 namespace lodestone::minecraft::java::alpha::world {
-    class AlphaWorldIo : public conversion::io::WorldIO<&identifiers::ALPHA_WORLD_IO, const common::conversion::io::options::OptionPresets::CommonFilesystemOptions, const common::conversion::io::options::OptionPresets::CommonFilesystemOptions>,
+    class LODESTONE_MINECRAFT_JAVA_API AlphaWorldIo : public conversion::io::WorldIO<&identifiers::ALPHA_WORLD_IO, const common::conversion::io::options::OptionPresets::CommonFilesystemOptions, const common::conversion::io::options::OptionPresets::CommonFilesystemOptions>,
     public conversion::registry::RegistryIdentifierRelations<
             conversion::registry::RegistryIdentifierRelation<&conversion::identifiers::CHUNK_IO, const mcregion::chunk::McRegionChunkIO, &identifiers::MCREGION_CHUNK_IO, conversion::registry::ChunkIORegistry>,
             conversion::registry::RegistryIdentifierRelation<&conversion::identifiers::PLAYER_IO, const player::AlphaPlayerIO, &identifiers::ALPHA_PLAYER_IO, conversion::registry::PlayerIORegistry>,

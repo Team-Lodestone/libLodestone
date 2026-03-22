@@ -6,7 +6,7 @@
 #include "Lodestone.Level/item/Item.h"
 
 namespace lodestone::level::item::block {
-    class BlockItem final : public Item {
+    class LODESTONE_LEVEL_API BlockItem final : public Item {
       public:
         constexpr BlockItem(const common::registry::Identifier *id,
                             const level::block::Block *block)

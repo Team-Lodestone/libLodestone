@@ -5,8 +5,10 @@
 #define LODESTONE_MINECRAFT_COMMON_BLOCKS_H
 #include <Lodestone.Level/block/Blocks.h>
 
+#include "Lodestone.Minecraft.Common/internal/Exports.h"
+
 namespace lodestone::minecraft::common::block {
-    struct Blocks {
+    struct LODESTONE_MINECRAFT_COMMON_API Blocks  {
         ADD_BLOCK(STONE, "stone");
         ADD_BLOCK(GRASS_BLOCK, "grass_block");
         ADD_BLOCK(DIRT, "dirt");

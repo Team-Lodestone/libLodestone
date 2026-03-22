@@ -9,7 +9,7 @@
 #include <Lodestone.Common/registry/Identifier.h>
 
 namespace lodestone::conversion::block::data {
-    class FlattenedBlockData final : public AbstractBlockData {
+    class LODESTONE_CONVERSION_API FlattenedBlockData final : public AbstractBlockData {
       public:
         explicit constexpr FlattenedBlockData(const std::string &id)
             : m_id(id) {}

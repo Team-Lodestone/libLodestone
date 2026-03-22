@@ -6,7 +6,7 @@
 
 namespace lodestone::conversion::io::types {
     template <typename W, typename WO = void, typename WR = void>
-    class Writable {
+    class LODESTONE_CONVERSION_API Writable {
     public:
         virtual ~Writable() = default;
 

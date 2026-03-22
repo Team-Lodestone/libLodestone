@@ -5,8 +5,10 @@
 #define LODESTONE_ABSTRACTBITSTORAGE_H
 #include <cstdlib>
 
+#include "Lodestone.Common/internal/Exports.h"
+
 namespace lodestone::common::storage::bits {
-    class AbstractBitStorage {
+    class LODESTONE_COMMON_API AbstractBitStorage {
       public:
         virtual ~AbstractBitStorage() = default;
 

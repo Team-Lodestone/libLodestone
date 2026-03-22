@@ -7,15 +7,17 @@
 #include <iostream>
 #include <variant>
 
-#include <Lodestone.Common/Defines.h>
+#include "Lodestone.Conversion/internal/Exports.h"
 #include <Lodestone.Level/block/instance/BlockInstance.h>
 
 #include "Lodestone.Conversion/block/data/AbstractBlockData.h"
 #include <gtl/phmap.hpp>
 
+#include "Lodestone.Conversion/internal/Exports.h"
+
 namespace lodestone::conversion::block::version {
     /** Aids with block conversion between versions */
-    class LODESTONE_API BlockIO {
+    class LODESTONE_CONVERSION_API BlockIO {
       public:
         // TODO: handle converting block states!!!
         // via a separate conversion map

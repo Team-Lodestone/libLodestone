@@ -13,11 +13,12 @@
 #include <Lodestone.Conversion/io/ObjectIOs.h>
 #include <Lodestone.Minecraft.Common/conversion/io/options/OptionPresets.h>
 #include "Lodestone.Minecraft.Java/Identifiers.h"
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 
 namespace lodestone::minecraft::java::classic::minev2 {
     class MineV2WorldIO;
 
-    class MineV2LevelIO : public conversion::io::LevelIO<
+    class LODESTONE_MINECRAFT_JAVA_API MineV2LevelIO : public conversion::io::LevelIO<
         &identifiers::MINEV2_LEVEL_IO,
         const common::conversion::io::options::OptionPresets::CommonReadOptions,
         const common::conversion::io::options::OptionPresets::CommonWriteOptions

@@ -4,8 +4,10 @@
 #ifndef LODESTONE_WRITABLEADAPTER_H
 #define LODESTONE_WRITABLEADAPTER_H
 
+#include "Lodestone.Conversion/internal/Exports.h"
+
 namespace lodestone::conversion::io::types {
-    class WritableAdapter {
+    class LODESTONE_CONVERSION_API WritableAdapter {
     public:
         virtual ~WritableAdapter() = default;
 

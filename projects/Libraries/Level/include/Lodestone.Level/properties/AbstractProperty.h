@@ -5,9 +5,10 @@
 #define LODESTONE_ABSTRACTPROPERTIES_H
 #include "Lodestone.Level/Identifiers.h"
 #include <Lodestone.Common/registry/Identifier.h>
+#include "Lodestone.Level/internal/Exports.h"
 
 namespace lodestone::level::properties {
-    class AbstractProperty {
+    class LODESTONE_LEVEL_API AbstractProperty {
       protected:
         constexpr AbstractProperty() = default;
 

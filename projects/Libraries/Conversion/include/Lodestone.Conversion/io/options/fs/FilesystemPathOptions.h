@@ -8,7 +8,7 @@
 #include <filesystem>
 
 namespace lodestone::conversion::io::options::fs {
-    struct FilesystemPathOptions : public IOptions {
+    struct LODESTONE_CONVERSION_API FilesystemPathOptions : public IOptions {
         std::filesystem::path path;
 
         FilesystemPathOptions(const std::filesystem::path &path) : path(path) {}

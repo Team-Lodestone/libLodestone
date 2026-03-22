@@ -22,7 +22,7 @@ namespace lodestone::level {
      *
      * @see Chunk
      */
-    class LODESTONE_API Level : public chunk::ChunkContainer {
+    class LODESTONE_LEVEL_API Level : public chunk::ChunkContainer {
       public:
         bool isChunkInBounds(const types::Vec2i &coords) override;
 

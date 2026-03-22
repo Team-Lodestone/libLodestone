@@ -16,17 +16,17 @@ namespace lodestone::level::chunk {
 }
 
 namespace lodestone::level::chunk {
-    class LODESTONE_API Chunk
+    class LODESTONE_LEVEL_API Chunk
         : public lodestone::common::string::StringSerializable {
       public:
-        struct BlockmapEntry {
+        struct LODESTONE_LEVEL_API BlockmapEntry {
             const block::instance::BlockInstance *block;
             int16_t height;
         };
 
         Chunk();
 
-        enum class ChunkType { LevelChunk, EmptyChunk };
+        enum class LODESTONE_LEVEL_API ChunkType { LevelChunk, EmptyChunk };
 
         std::string toString() const override {
             if (this->m_coords.has_value())

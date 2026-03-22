@@ -14,9 +14,10 @@
 #include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionRegionIo.h"
 
 #include <filesystem>
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 
 namespace lodestone::minecraft::java::mcregion::world {
-    class McRegionWorldIo
+    class LODESTONE_MINECRAFT_JAVA_API McRegionWorldIo
         : public conversion::io::WorldIO<&identifiers::MCREGION_WORLD_IO, const common::conversion::io::options::OptionPresets::CommonFilesystemOptions, const common::conversion::io::options::OptionPresets::CommonFilesystemOptions>,
     public conversion::registry::RegistryIdentifierRelations< // allows us to do getByRelation<&identifiers::NBT_CHUNK_IO>() to get McRegionNbtChunkIO
         conversion::registry::RegistryIdentifierRelation<&identifiers::NBT_PLAYER_IO, const player::McRegionNbtPlayerIO, &identifiers::MCREGION_NBT_PLAYER_IO, conversion::registry::PlayerIORegistry>, // TODO we don't have a jungle anvil player type yet

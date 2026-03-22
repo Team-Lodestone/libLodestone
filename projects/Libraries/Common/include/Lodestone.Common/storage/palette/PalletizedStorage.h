@@ -16,15 +16,16 @@
 #include <cstring>
 #include <array>
 #include <execution>
+#include "Lodestone.Common/internal/Exports.h"
 
 namespace lodestone::common::storage::palette {
     // thanks danil for allowing us to port your code
     // modified slightly to allow for any arbitrary object to be stored
     // also based off of https://www.longor.net/articles/voxel-palette-compression-reddit
     template <typename T>
-    class PalletizedStorage : public string::StringSerializable {
+    class LODESTONE_COMMON_API PalletizedStorage : public string::StringSerializable {
     public:
-        struct PaletteEntry {
+        struct LODESTONE_COMMON_API PaletteEntry {
             T value;
             int references;
         };

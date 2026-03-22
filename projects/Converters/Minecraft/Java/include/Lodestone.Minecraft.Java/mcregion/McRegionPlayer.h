@@ -7,10 +7,11 @@
 #include <Lodestone.Level/entity/Player.h>
 
 #include <Lodestone.Minecraft.Common/player/MinecraftPlayer.h>
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 
 namespace lodestone::minecraft::java::mcregion::player {
     // TODO make minecraft project that has common player data
-    class McRegionPlayer final : public common::player::MinecraftPlayer {
+    class LODESTONE_MINECRAFT_JAVA_API McRegionPlayer final : public common::player::MinecraftPlayer {
       public:
         explicit McRegionPlayer(const std::string &name);
 

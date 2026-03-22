@@ -5,6 +5,7 @@
 #define LODESTONE_SECTION_H
 #include <Lodestone.Common/storage/palette/PalletizedStorage.h>
 #include <Lodestone.Common/storage/bits/BitStorage.h>
+#include "Lodestone.Level/internal/Exports.h"
 
 namespace lodestone::level::block {
     namespace instance {
@@ -13,11 +14,11 @@ namespace lodestone::level::block {
 } // namespace lodestone::level::block
 
 namespace lodestone::level::chunk::section {
-    class Section {
+    class LODESTONE_LEVEL_API Section {
       public:
         virtual ~Section() = default;
 
-        enum class SectionType { LevelSection, EmptySection };
+        enum class LODESTONE_LEVEL_API SectionType { LevelSection, EmptySection };
 
         virtual const common::storage::palette::PalletizedStorage<block::instance::BlockInstance> &getStorage() = 0;
 

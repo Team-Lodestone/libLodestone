@@ -13,6 +13,8 @@
 #include <filesystem>
 #include <optional>
 
+#include "Lodestone.Core/internal/Exports.h"
+
 #ifdef _WIN32
 #include <windows.h>
 #elif defined(__unix__) || defined (__APPLE__)
@@ -52,7 +54,7 @@ namespace lodestone::core::loader {
      * }
      * @endcode
      */
-    class LibraryHandle {
+    class LODESTONE_CORE_API  LibraryHandle {
     public:
 #ifdef _WIN32
         using handle_t = HMODULE;

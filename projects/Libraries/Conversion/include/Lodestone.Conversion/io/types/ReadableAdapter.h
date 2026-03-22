@@ -7,13 +7,14 @@
 
 #include <proxy/proxy.h>
 #include <memory>
+#include "Lodestone.Conversion/internal/Exports.h"
 
 namespace lodestone::conversion::io::types {
-    class ReadableAdapter {
+    class LODESTONE_CONVERSION_API ReadableAdapter {
     public:
         virtual ~ReadableAdapter() = default;
 
-        struct ReallyAny : pro::facade_builder::build {};
+        struct LODESTONE_CONVERSION_API ReallyAny : pro::facade_builder::build {};
 
         virtual pro::proxy<ReallyAny> baseRead(void *options) const = 0;
     };

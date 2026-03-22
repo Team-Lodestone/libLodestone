@@ -5,8 +5,10 @@
 #define LODESTONE_GENERATORTYPES_H
 #include <Lodestone.Common/registry/Identifier.h>
 
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
+
 namespace lodestone::minecraft::java {
-    struct GeneratorTypes {
+    struct LODESTONE_MINECRAFT_JAVA_API GeneratorTypes {
         static constexpr lodestone::common::registry::Identifier DEFAULT = {
             "minecraft", "default"};
         static constexpr lodestone::common::registry::Identifier FLAT = {

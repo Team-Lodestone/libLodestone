@@ -5,8 +5,10 @@
 #define LODESTONE_ILEVELDATAIO_H
 #include <Lodestone.Conversion/io/IObjectIo.h>
 
+#include "Lodestone.Minecraft.Common/internal/Exports.h"
+
 namespace lodestone::minecraft::common::conversion::io::interfaces {
-    struct ILevelDataIO : lodestone::conversion::io::IObjectIO {
+    struct LODESTONE_MINECRAFT_COMMON_API ILevelDataIO : lodestone::conversion::io::IObjectIO  {
     };
 }
 

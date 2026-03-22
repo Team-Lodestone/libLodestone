@@ -6,11 +6,12 @@
 #include <Lodestone.Level/world/World.h>
 
 #include "Lodestone.Minecraft.Common/world/data/LevelData.h"
+#include "Lodestone.Minecraft.Common/internal/Exports.h"
 
 namespace lodestone::minecraft::common::world {
     template <typename LD = data::LevelData>
     requires std::is_base_of_v<data::LevelData, LD>
-    class MinecraftWorld : public level::world::World {
+    class LODESTONE_MINECRAFT_COMMON_API MinecraftWorld : public level::world::World  {
       public:
         explicit MinecraftWorld(const std::string &name, LD levelData) : World(name), m_levelData(levelData) {}
 

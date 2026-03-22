@@ -6,7 +6,7 @@
 #include "Lodestone.Conversion/io/options/OptionsBuilder.h"
 
 namespace lodestone::conversion::io::options::versioned {
-    struct VersionedOptions : IOptions {
+    struct LODESTONE_CONVERSION_API VersionedOptions : IOptions {
         int version;
 
         VersionedOptions(const int version) : version(version) {}

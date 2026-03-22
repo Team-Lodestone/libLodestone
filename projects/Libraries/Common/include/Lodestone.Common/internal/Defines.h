@@ -4,27 +4,6 @@
 #pragma once
 #include <gtl/phmap.hpp>
 
-#ifdef __EMSCRIPTEN__
-#define LODESTONE_API
-#define NO_DISCARD __attribute__((used))
-#elif defined(LODESTONE_EXPORTS)
-#if defined(__GNUC__) || defined(__clang__)
-#define NO_DISCARD __attribute__((used))
-#define LODESTONE_API __attribute__((visibility("default")))
-#else
-#define NO_DISCARD __declspec(noinline)
-#define LODESTONE_API __declspec(dllexport)
-#endif
-#else
-#if defined(__GNUC__) || defined(__clang__)
-#define NO_DISCARD __attribute__((used))
-#define LODESTONE_API __attribute__((visibility("default")))
-#else
-#define NO_DISCARD __declspec(noinline)
-#define LODESTONE_API __declspec(dllimport)
-#endif
-#endif
-
 #if defined(_MSC_VER)
 #define TO_SECTION(n) __pragma(section(n, read)) __declspec(allocate(n))
 #elif defined(__GNUC__) || defined(__clang__)

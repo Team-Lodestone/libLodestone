@@ -6,7 +6,7 @@
 #include "Lodestone.Level/chunk/Chunk.h"
 
 namespace lodestone::level::chunk {
-    class ImmutableChunk : public Chunk {
+    class LODESTONE_LEVEL_API ImmutableChunk : public Chunk {
       public:
         static ImmutableChunk *getInstance();
 

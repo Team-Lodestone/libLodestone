@@ -13,7 +13,7 @@
 
 
 namespace lodestone::core::loader::exception {
-    class LoadLibraryException : public LibraryException {
+    class LODESTONE_CORE_API LoadLibraryException : public LibraryException {
     public:
         explicit LoadLibraryException(const std::filesystem::path &libraryPath, const std::error_code &errorCode = std::make_error_code(std::errc::invalid_argument));
         LoadLibraryException(const std::filesystem::path &libraryPath, const std::error_code &errorCode, const std::string &info);

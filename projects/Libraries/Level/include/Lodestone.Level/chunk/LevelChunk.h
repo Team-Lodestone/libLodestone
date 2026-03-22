@@ -8,7 +8,7 @@
 #include <memory>
 
 namespace lodestone::level::chunk {
-    class LODESTONE_API LevelChunk : public Chunk {
+    class LODESTONE_LEVEL_API LevelChunk : public Chunk {
       public:
         /** Creates a new LevelChunk with chunk sections for the given height */
         explicit LevelChunk(int height);

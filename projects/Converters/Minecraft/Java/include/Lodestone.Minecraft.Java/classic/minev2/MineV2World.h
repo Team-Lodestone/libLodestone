@@ -5,8 +5,10 @@
 #define LODESTONE_MINEV2WORLD_H
 #include <Lodestone.Level/world/World.h>
 
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
+
 namespace lodestone::minecraft::java::classic::minev2 {
-    class MineV2World : public level::world::World {
+    class LODESTONE_MINECRAFT_JAVA_API MineV2World : public level::world::World {
       public:
         MineV2World(const std::string &name = "New World",
                     const std::string &author = "Player");

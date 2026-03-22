@@ -4,9 +4,10 @@
 #ifndef LODESTONE_MCREGIONREGION_H
 #define LODESTONE_MCREGIONREGION_H
 #include <Lodestone.Level/region/Region.h>
+#include "Lodestone.Minecraft.Java/internal/Exports.h"
 
 namespace lodestone::minecraft::java::mcregion::region {
-    class McRegionRegion : public level::region::Region {
+    class LODESTONE_MINECRAFT_JAVA_API McRegionRegion : public level::region::Region {
       public:
         explicit McRegionRegion(const level::types::Vec2i &coords)
             : Region(coords) {}

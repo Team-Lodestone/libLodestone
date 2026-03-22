@@ -18,7 +18,7 @@
 #include "Lodestone.Core/LodestoneExtension.h"
 
 namespace lodestone::core::loader {
-    class ExtensionLoader {
+    class LODESTONE_CORE_API ExtensionLoader {
     public:
       using LodestoneInit = lodestone::core::LodestoneExtension *(*)(void);
       static constexpr const char *ENTRYPOINT = "lodestoneInit";

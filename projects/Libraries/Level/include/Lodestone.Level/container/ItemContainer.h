@@ -9,7 +9,7 @@
 #include "Lodestone.Level/item/ItemInstance.h"
 
 namespace lodestone::level::container {
-    class ItemContainer {
+    class LODESTONE_LEVEL_API ItemContainer {
       public:
         explicit ItemContainer(int count = 35);
         ~ItemContainer();
@@ -51,7 +51,7 @@ namespace lodestone::level::container {
 
 namespace std {
     template <>
-    struct hash<lodestone::level::container::ItemContainer> {
+    struct LODESTONE_LEVEL_API hash<lodestone::level::container::ItemContainer> {
         size_t operator()(
             const lodestone::level::container::ItemContainer &s) const noexcept {
             return std::hash<int>{}(s.getCount())

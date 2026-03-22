@@ -6,9 +6,10 @@
 #include <iosfwd>
 
 #include "Lodestone.Conversion/io/options/OptionsBuilder.h"
+#include "Lodestone.Conversion/internal/Exports.h"
 
 namespace lodestone::conversion::io::options::fs::file {
-    struct FileWriterOptions : IOptions {
+    struct LODESTONE_CONVERSION_API FileWriterOptions : IOptions {
         std::ostream &output;
 
         FileWriterOptions(std::ostream &output) : output(output) {}

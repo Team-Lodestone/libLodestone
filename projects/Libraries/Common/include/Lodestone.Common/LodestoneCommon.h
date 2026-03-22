@@ -4,7 +4,8 @@
 #ifndef LODESTONE_LODESTONECOMMON_H
 #define LODESTONE_LODESTONECOMMON_H
 
-#include "Lodestone.Common/Defines.h"
+#include "Lodestone.Common/internal/Exports.h"
+#include "internal/Defines.h"
 #include "Lodestone.Common/util/Semver.h"
 
 namespace lodestone::common {
@@ -23,13 +24,13 @@ namespace lodestone::common {
 
     // clang-format off
     extern "C" {
-        LODESTONE_API NO_DISCARD constexpr const char *lodestone_get_build_type(); // NOLINT
-        LODESTONE_API NO_DISCARD constexpr const char *lodestone_get_compiler_name(); // NOLINT
-        LODESTONE_API NO_DISCARD constexpr const char *lodestone_get_platform_arch(); // NOLINT
-        LODESTONE_API NO_DISCARD constexpr const char *lodestone_get_platform(); // NOLINT
-        LODESTONE_API NO_DISCARD constexpr const char *lodestone_get_version_string(); // NOLINT
-        LODESTONE_API NO_DISCARD constexpr util::Semver lodestone_get_version(); // NOLINT
-        LODESTONE_API NO_DISCARD constexpr const char *lodestone_get_library_string(); // NOLINT
+        LODESTONE_COMMON_API NO_DISCARD constexpr const char *lodestone_get_build_type(); // NOLINT
+        LODESTONE_COMMON_API NO_DISCARD constexpr const char *lodestone_get_compiler_name(); // NOLINT
+        LODESTONE_COMMON_API NO_DISCARD constexpr const char *lodestone_get_platform_arch(); // NOLINT
+        LODESTONE_COMMON_API NO_DISCARD constexpr const char *lodestone_get_platform(); // NOLINT
+        LODESTONE_COMMON_API NO_DISCARD constexpr const char *lodestone_get_version_string(); // NOLINT
+        LODESTONE_COMMON_API NO_DISCARD constexpr util::Semver lodestone_get_version(); // NOLINT
+        LODESTONE_COMMON_API NO_DISCARD constexpr const char *lodestone_get_library_string(); // NOLINT
     }
     // clang-format on
 } // namespace lodestone::common

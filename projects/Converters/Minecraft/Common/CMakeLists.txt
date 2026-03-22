@@ -26,6 +26,7 @@ set(FILES
         include/Lodestone.Minecraft.Common/conversion/io/ObjectIOs.h
         include/Lodestone.Minecraft.Common/conversion/io/options/ChunkOptions.h
         include/Lodestone.Minecraft.Common/conversion/io/types/NbtOutputWritable.h
+        include/Lodestone.Minecraft.Common/internal/Exports.h
 )
 
 add_library(Lodestone.Minecraft.Common OBJECT ${FILES})
@@ -36,4 +37,5 @@ target_include_directories(Lodestone.Minecraft.Common
 target_link_libraries(Lodestone.Minecraft.Common PRIVATE Lodestone.Level Lodestone.Conversion nbt++ bio-cpp20)
 target_link_libraries(Lodestone.Minecraft.Common PUBLIC Lodestone.Core)
 
+setupExports(Lodestone.Minecraft.Common)
 setupLinter(Lodestone.Minecraft.Common)

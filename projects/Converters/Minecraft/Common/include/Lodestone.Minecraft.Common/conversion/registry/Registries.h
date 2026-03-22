@@ -8,6 +8,7 @@
 
 #include "Lodestone.Minecraft.Common/Identifiers.h"
 #include "Lodestone.Minecraft.Common/conversion/io/interfaces/ILevelDataIo.h"
+#include "Lodestone.Minecraft.Common/internal/Exports.h"
 
 namespace lodestone::minecraft::common::conversion::registry {
     CREATE_REGISTRY_ALIAS(LevelDataIORegistry, lodestone::conversion::registry::SingletonRegistry<&identifiers::LEVEL_DATA_IO_REGISTRY, const io::interfaces::ILevelDataIO>);

@@ -6,9 +6,11 @@
 #include <Lodestone.Conversion/io/types/Writable.h>
 #include "Lodestone.Minecraft.Common/conversion/io/options/OptionPresets.h"
 
+#include "Lodestone.Minecraft.Common/internal/Exports.h"
+
 namespace lodestone::minecraft::common::conversion::io::types {
     template <typename W, typename WO>
-    class NbtOutputWritable : public lodestone::conversion::io::types::Writable<W, const options::OptionPresets::NbtOutputWriteOptions<WO>> {
+    class LODESTONE_MINECRAFT_COMMON_API NbtOutputWritable : public lodestone::conversion::io::types::Writable<W, const options::OptionPresets::NbtOutputWriteOptions<WO>>  {
     };
 }
 
