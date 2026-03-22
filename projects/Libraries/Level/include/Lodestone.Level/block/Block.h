@@ -7,7 +7,6 @@
 
 #include "Lodestone.Level/material/Material.h"
 #include <Lodestone.Common/registry/Identifier.h>
-#include <Lodestone.Common/string/OperatorStringBuilder.h>
 #include <Lodestone.Common/string/StringSerializable.h>
 
 #include "Lodestone.Level/properties/definition/ObjectDefinition.h"
@@ -35,10 +34,7 @@ namespace lodestone::level::block {
         constexpr material::Material getMaterial() const { return m_material; }
 
         std::string toString() const override {
-            return common::string::OperatorStringBuilder(typeid(*this))
-                .addField("id", *m_id)
-                ->addField("material", m_material.toString())
-                ->toString();
+            return std::format("Block[id={}, material={}]", *m_id, m_material.toString());
         };
 
         constexpr const item::block::BlockItem *getItem() const {

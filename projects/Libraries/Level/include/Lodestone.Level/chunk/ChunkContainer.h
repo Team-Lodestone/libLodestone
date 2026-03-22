@@ -22,10 +22,7 @@ namespace lodestone::level::chunk {
         ChunkContainer &operator=(ChunkContainer &&) = default;
 
         std::string toString() const override {
-            return (common::string::OperatorStringBuilder(typeid(*this)))
-                .addField("chunks", m_chunks.size())
-                ->addField("bounds", getChunkBounds().toString())
-                ->toString();
+            return std::format("ChunkContainer[chunks={}, bounds={}]", m_chunks.size(), getChunkBounds().toString());
         };
 
         virtual bool isChunkInBounds(const types::Vec2i &coords) = 0;

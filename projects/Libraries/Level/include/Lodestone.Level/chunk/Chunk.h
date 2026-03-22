@@ -30,12 +30,9 @@ namespace lodestone::level::chunk {
 
         std::string toString() const override {
             if (this->m_coords.has_value())
-                return (common::string::OperatorStringBuilder(typeid(*this)))
-                    .addField("coords", this->m_coords->toString())
-                    ->toString();
+                return std::format("Chunk[coords={}]", this->m_coords->toString());
 
-            return (common::string::OperatorStringBuilder(typeid(*this)))
-                .toString();
+            return std::format("Chunk");
         };
 
         explicit Chunk(const types::Vec2i &coords);

@@ -17,12 +17,7 @@ namespace lodestone::level::entity {
         virtual const std::string &getId() const = 0;
 
         std::string toString() const override {
-            return (common::string::OperatorStringBuilder(typeid(*this)))
-                .addField("id", getId())
-                ->addField("health", m_health)
-                ->addField("pos",
-                           position.toString())
-                ->toString();
+            return std::format("Player[id={}, health={}, pos={}]", this->getId(), this->m_health, this->position.toString());
         };
 
         world::World *getWorld() const;

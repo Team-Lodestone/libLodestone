@@ -62,9 +62,7 @@ namespace lodestone::level::world {
         bool hasLevel(const common::registry::Identifier &id) const;
 
         std::string toString() const override {
-            return (common::string::OperatorStringBuilder(typeid(*this)))
-                .addField("name", getName())
-                ->toString();
+            return std::format("World[name={}]", this->getName());
         };
 
         std::string getName() const;

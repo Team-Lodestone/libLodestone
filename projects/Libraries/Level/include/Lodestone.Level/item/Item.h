@@ -8,7 +8,7 @@
 
 #include <Lodestone.Common/registry/Identifier.h>
 
-#include <Lodestone.Common/string/OperatorStringBuilder.h>
+
 
 #include "Lodestone.Level/properties/definition/ObjectDefinition.h"
 
@@ -34,9 +34,7 @@ namespace lodestone::level::item {
         constexpr std::string getIDString() const { return m_id->getString(); };
 
         std::string toString() const override {
-            return (common::string::OperatorStringBuilder(typeid(*this)))
-                .addField("id", *this->getID())
-                ->toString();
+            return std::format("Item[id={}]", *m_id);
         };
 
         constexpr int getMaxStack() const { return m_maxStack; }

@@ -8,7 +8,6 @@ set(FILES
         src/LodestoneCommon.cpp
 
         include/Lodestone.Common/Defines.h
-        include/Lodestone.Common/string/OperatorStringBuilder.h
         include/Lodestone.Common/registry/Identifier.h
         include/Lodestone.Common/Indexing.h
         include/Lodestone.Common/Constants.h
