@@ -16,18 +16,18 @@ namespace lodestone::conversion::block::data {
 
         constexpr const std::string &getId() const { return this->m_id; };
 
-        const void *getIdPtr() const override;
+        constexpr const void *getIdPtr() const override;
 
-        const void *getDataPtr() const override;
+        constexpr const void *getDataPtr() const override;
 
-        const std::type_info &getIdType() const override;
+        constexpr const std::type_info &getIdType() const override;
 
-        const std::type_info &getDataType() const override;
+        constexpr const std::type_info &getDataType() const override;
 
-        const lodestone::common::registry::Identifier *
+        constexpr const lodestone::common::registry::Identifier *
         getTypeName() const override;
 
-        const std::type_info &getType() const override;
+        constexpr const std::type_info &getType() const override;
 
         constexpr size_t hash() const override {
             return std::hash<std::string>()(m_id) ^
@@ -36,7 +36,7 @@ namespace lodestone::conversion::block::data {
                     << 8);
         }
 
-        bool equals(const AbstractBlockData *rhs) const override;
+        constexpr bool equals(const AbstractBlockData *rhs) const override;
 
         std::string toString() const override {
             return std::format("FlattenedBlockData[id={}]", m_id);
