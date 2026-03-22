@@ -11,7 +11,7 @@ if (NOT TARGET bio)
     FetchContent_Declare(
             bio
             GIT_REPOSITORY https://codeberg.org/Dexrn/libBIO.git
-            GIT_TAG 4.0.0-dev.3
+            GIT_TAG 4.0.0-dev.4
     )
 
     FetchContent_MakeAvailable(bio)

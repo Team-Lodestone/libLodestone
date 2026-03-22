@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.30)
 project(Lodestone VERSION 1.0.0)
 
 # after we hit full 1.0.0, we should version all 4 libs.
-set(PROJECT_VERSION_DEV 51) # used for dev versions, otherwise blank
+set(PROJECT_VERSION_DEV 52) # used for dev versions, otherwise blank
 set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -15,7 +15,7 @@ if (NOT TARGET bio)
     FetchContent_Declare(
             bio
             GIT_REPOSITORY https://codeberg.org/Dexrn/libBIO.git
-            GIT_TAG 4.0.0-dev.3
+            GIT_TAG 4.0.0-dev.4
     )
 
     FetchContent_MakeAvailable(bio)
