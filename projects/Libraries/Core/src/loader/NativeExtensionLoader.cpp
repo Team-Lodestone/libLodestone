@@ -38,6 +38,10 @@ namespace lodestone::core::loader {
             if (!std::filesystem::is_regular_file(p))
                 continue;
 
+            // Ignore files starting with "."
+            if (p.path().filename().string().starts_with("."))
+                continue;
+
             // TODO we might want to require a specific extension for this to make sure we're not trying to load random files as libraries
             LibraryHandle h(p);
 

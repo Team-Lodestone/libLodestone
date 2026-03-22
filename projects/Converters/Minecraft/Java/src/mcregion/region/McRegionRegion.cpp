@@ -3,6 +3,8 @@
 //
 #include "Lodestone.Minecraft.Java/mcregion/McRegionRegion.h"
 
+#include <sstream>
+
 namespace lodestone::minecraft::java::mcregion::region {
     std::string McRegionRegion::getFilename() const {
         return std::format("r.{}.{}.mcr", this->m_coords.x, this->m_coords.y);
