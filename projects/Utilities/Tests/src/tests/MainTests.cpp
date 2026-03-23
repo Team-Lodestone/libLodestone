@@ -31,11 +31,24 @@
 
 #include <Lodestone.Minecraft.Common/block/Blocks.h>
 
+#include "Lodestone.Minecraft.Java/conversion/classic/minev3/MineV3LevelIO.h"
+#include "Lodestone.Minecraft.Java/conversion/classic/minev3/MineV3WorldIo.h"
+
+namespace lodestone::level::world {
+    class World;
+}
+
+namespace lodestone::minecraft::java::classic::minev3 {
+    class MineV3WorldIO;
+}
+
 namespace lodestone::tests::test {
     void MainTests::add() {
-        tfw::TestFramework::getInstance()->addTest(GENERATE_WATER_CHUNK, "Generate LCE Water Chunk", generateWaterChunk);
-        tfw::TestFramework::getInstance()->addTest(READ_ANVIL_WORLD, "Read Anvil World", readAnvilWorld);
-        tfw::TestFramework::getInstance()->addTest(WRITE_ANVIL_WORLD, "Write Anvil World", writeAnvilWorld);
+        tfw::TestFramework* tfw = tfw::TestFramework::getInstance();
+        tfw->addTest("Read Mine v3 World", readMinev3World);
+        // tfw->addTest(GENERATE_WATER_CHUNK, "Generate LCE Water Chunk", generateWaterChunk);
+        // tfw->addTest(READ_ANVIL_WORLD, "Read Anvil World", readAnvilWorld);
+        // tfw->addTest(WRITE_ANVIL_WORLD, "Write Anvil World", writeAnvilWorld);
         // ADD_TEST(READ_MCR_CHUNK, readMcrChunk, util::types::MAIN,
         //          "Read McRegion Chunk");
         // ADD_TEST(READ_MCR_FILE, readMcrFile, util::types::MAIN,
@@ -48,6 +61,24 @@ namespace lodestone::tests::test {
         //          "Read Alpha World");
         // ADD_TEST(WRITE_ALPHA_WORLD, writeAlphaWorld, util::types::MAIN,
         //          "Write Alpha World");
+    }
+
+    tfw::test::result::TestResult MainTests::readMinev3World(tfw::test::util::TestOutputLogger &logger) {
+        std::string name("c0.30");
+        OPEN_FILE_STREAM(std::format("{}.mine", name), c);
+
+        const minecraft::java::classic::minev3::MineV3WorldIO *inputIo =
+            conversion::registry::WorldIORegistry::getInstance().getAs<const minecraft::java::classic::minev3::MineV3WorldIO>(minecraft::java::identifiers::MINEV3_WORLD_IO);
+
+
+        std::unique_ptr<level::world::World> wld =
+            inputIo->read(minecraft::common::conversion::io::options::OptionPresets::CommonReadOptions {
+                                        conversion::io::options::fs::file::FileReaderOptions {
+                                            in
+                                        },
+                                        conversion::io::options::versioned::VersionedOptions {
+                                            minecraft::java::Version::c0_28
+                }});
     }
 
     tfw::test::result::TestResult MainTests::generateWaterChunk(tfw::test::util::TestOutputLogger &logger) {

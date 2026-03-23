@@ -41,6 +41,7 @@
 *.dwo
 /build
 .idea
+.DS_Store
 # remove when it's complete
 /projects/Viewer
 /projects/Tests/input

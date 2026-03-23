@@ -12,6 +12,10 @@ namespace lodestone::minecraft::java::identifiers {
         "lodestone", "minecraft/java/io/level/minev2"};
     inline static constexpr lodestone::common::registry::Identifier MINEV2_WORLD_IO = {
         "lodestone", "minecraft/java/io/world/minev2"};
+    inline static constexpr lodestone::common::registry::Identifier MINEV3_LEVEL_IO = {
+        "lodestone", "minecraft/java/io/level/minev3"};
+    inline static constexpr lodestone::common::registry::Identifier MINEV3_WORLD_IO = {
+        "lodestone", "minecraft/java/io/world/minev3"};
 
     inline static constexpr lodestone::common::registry::Identifier MCLEVEL_LEVEL_IO = {
         "lodestone", "minecraft/java/io/level/mclevel"};

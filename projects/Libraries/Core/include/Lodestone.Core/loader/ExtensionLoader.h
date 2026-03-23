@@ -1,4 +1,4 @@
-/** @file LibraryLoader.h
+/** @file ExtensionLoader.h
  *
  * @author DexrnZacAttack
  * @date 3/12/26

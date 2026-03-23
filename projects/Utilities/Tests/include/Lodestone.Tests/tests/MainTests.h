@@ -11,6 +11,8 @@ namespace lodestone::tests::test {
       public:
         static void add();
 
+        static tfw::test::result::TestResult readMinev3World(tfw::test::util::TestOutputLogger &logger);
+
         static tfw::test::result::TestResult generateWaterChunk(tfw::test::util::TestOutputLogger &logger);
 
         static tfw::test::result::TestResult readAnvilWorld(tfw::test::util::TestOutputLogger &logger);

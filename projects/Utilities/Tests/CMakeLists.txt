@@ -27,13 +27,15 @@ FetchContent_MakeAvailable(nbt++)
 endif()
 
 include(FetchContent)
-FetchContent_Declare(
-        tfw
-        GIT_REPOSITORY https://codeberg.org/Dexrn/tfw.git
-        GIT_TAG 1.0.3
-        GIT_SHALLOW TRUE
-)
-FetchContent_MakeAvailable(tfw)
+if (NOT TARGET tfw)
+    FetchContent_Declare(
+            tfw
+            GIT_REPOSITORY https://codeberg.org/Dexrn/tfw.git
+            GIT_TAG 1.0.3
+            GIT_SHALLOW TRUE
+    )
+    FetchContent_MakeAvailable(tfw)
+endif()
 
 add_executable(Lodestone.Tests ${FILES})
 
