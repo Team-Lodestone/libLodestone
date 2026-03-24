@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION VERSION 3.30)
 project(Lodestone.Minecraft.Java VERSION 1.2.2)
 set(PROJECT_VERSION_DEV) # used for dev versions, otherwise blank
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 21)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
@@ -66,8 +66,6 @@ set(FILES
         include/Lodestone.Minecraft.Java/conversion/mcregion/McRegionLevelDataIo.h
         src/classic/minev3/MineV3LevelIO.cpp
         include/Lodestone.Minecraft.Java/conversion/classic/minev3/MineV3LevelIO.h
-        src/classic/minev3/JavaSerializedClassParser.cpp
-        include/Lodestone.Minecraft.Java/classic/minev3/JavaSerializedClassParser.h
         src/classic/minev3/MineV3World.cpp
         src/classic/minev3/MineV3WorldIo.cpp
         include/Lodestone.Minecraft.Java/conversion/classic/minev3/MineV3WorldIo.h
@@ -75,12 +73,24 @@ set(FILES
         include/Lodestone.Minecraft.Java/classic/minev3/MineV3World.h
 )
 
+if (NOT TARGET JavaObjectStreams)
+    include(FetchContent)
+    FetchContent_Declare(JavaObjectStreams
+            GIT_REPOSITORY https://github.com/Team-Lodestone/JavaObjectStreams
+            GIT_TAG        main
+            GIT_PROGRESS   TRUE
+            GIT_SHALLOW    TRUE
+            EXCLUDE_FROM_ALL
+    )
+    FetchContent_MakeAvailable(JavaObjectStreams)
+endif()
+
 add_library(Lodestone.Minecraft.Java SHARED ${FILES})
 target_include_directories(Lodestone.Minecraft.Java
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
-target_link_libraries(Lodestone.Minecraft.Java PRIVATE Lodestone.Level Lodestone.Conversion nbt++ bio-cpp20)
+target_link_libraries(Lodestone.Minecraft.Java PRIVATE Lodestone.Level Lodestone.Conversion nbt++ bio-cpp20 JavaObjectStreams)
 target_link_libraries(Lodestone.Minecraft.Java PUBLIC Lodestone.Core Lodestone.Minecraft.Common)
 
 set(VERSIONS
