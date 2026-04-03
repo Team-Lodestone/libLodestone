@@ -1,0 +1,198 @@
+# This starter workflow is for a CMake project running on multiple platforms. There is a different starter workflow if you just want a single platform.
+# See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-single-platform.yml
+name: Build libLodestone
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
+      fail-fast: false
+
+      # Set up a matrix to run the following 3 configurations:
+      # 1. <Windows, Release, latest MSVC compiler toolchain on the default runner image, default generator>
+      # 2. <Linux, Release, latest GCC compiler toolchain on the default runner image, default generator>
+      # 3. <Linux, Release, latest Clang compiler toolchain on the default runner image, default generator>
+      #
+      # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
+      matrix:
+        os: [ ubuntu-latest, ubuntu-24.04-arm, macos-latest, macos-26-intel ]
+        build_type: [ Release, Debug ]
+        compiler: [ gcc, clang, appleclang ]
+        include:
+          # - os: windows-latest
+          #   platform_name: Windows x86_64
+          #   compiler_name: GCC
+          #   compiler: gcc
+          #   c_compiler: gcc
+          #   cpp_compiler: g++
+          #   settings: -G Ninja
+          # - os: windows-latest
+          #   platform_name: Windows x86_64
+          #   compiler_name: Clang
+          #   compiler: clang
+          #   c_compiler: clang
+          #   cpp_compiler: clang++
+          #   settings: -G Ninja
+#          - os: windows-11-arm
+#            platform_name: Windows AArch64
+#            compiler_name: GCC
+#            c_compiler: gcc
+#            cpp_compiler: g++
+#          - os: windows-11-arm
+#            platform_name: Windows AArch64
+#            compiler_name: Clang
+#            c_compiler: clang-19
+#            cpp_compiler: clang++-19
+          - os: ubuntu-latest
+            platform_name: Linux x86_64
+            compiler_name: GCC
+            compiler: gcc
+            c_compiler: gcc
+            cpp_compiler: g++
+          - os: ubuntu-latest
+            platform_name: Linux x86_64
+            compiler_name: Clang
+            compiler: clang
+            c_compiler: clang-19
+            cpp_compiler: clang++-19
+          - os: ubuntu-24.04-arm
+            platform_name: Linux AArch64
+            compiler_name: GCC
+            compiler: gcc
+            c_compiler: gcc
+            cpp_compiler: g++
+          - os: ubuntu-24.04-arm
+            platform_name: Linux AArch64
+            compiler_name: Clang
+            compiler: clang
+            c_compiler: clang-19
+            cpp_compiler: clang++-19
+          - os: macos-latest
+            platform_name: macOS AArch64
+            compiler_name: Clang
+            compiler: clang
+            c_compiler: clang-19
+            cpp_compiler: clang++-19
+          - os: macos-latest
+            platform_name: macOS AArch64
+            compiler_name: GCC
+            compiler: gcc
+            c_compiler: gcc
+            cpp_compiler: g++
+          - os: macos-26-intel
+            platform_name: macOS x86_64
+            compiler_name: Clang
+            compiler: clang
+            c_compiler: clang-19
+            cpp_compiler: clang++-19
+          - os: macos-26-intel
+            platform_name: macOS x86_64
+            compiler_name: GCC
+            compiler: gcc
+            c_compiler: gcc
+            cpp_compiler: g++
+          - os: macos-latest
+            platform_name: macOS AArch64
+            compiler_name: AppleClang
+            compiler: appleclang
+            c_compiler: clang
+            cpp_compiler: clang++
+          - os: macos-26-intel
+            platform_name: macOS x86_64
+            compiler_name: AppleClang
+            compiler: appleclang
+            c_compiler: clang
+            cpp_compiler: clang++
+        exclude:
+          # - os: windows-latest
+          #   compiler: appleclang
+          # - os: windows-11-arm
+          #   compiler: appleclang
+          - os: ubuntu-latest
+            compiler: appleclang
+          - os: ubuntu-24.04-arm
+            compiler: appleclang
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+
+      - name: Install latest GCC (Linux)
+        if: (matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-24.04-arm') && matrix.compiler == 'gcc'
+        uses: egor-tensin/setup-gcc@v2
+        with:
+          version: 15
+
+      - name: Install Clang 19 (Linux)
+        if: (matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-24.04-arm') && matrix.compiler == 'clang'
+        shell: bash
+        run: |
+          wget -qO- https://apt.llvm.org/llvm.sh | sudo bash -s -- 19
+
+      - name: Install latest GCC (macOS)
+        if: (matrix.os == 'macos-latest' || matrix.os == 'macos-26-intel') && matrix.compiler == 'gcc'
+        shell: bash
+        run: |
+          brew install gcc@15 \
+          && ln -s "$(brew --prefix gcc@15)/bin/g++-15" "$(brew --prefix gcc@15)/bin/g++" \
+          && echo "$(brew --prefix gcc@15)/bin" >> $GITHUB_PATH \
+          && echo 'LDFLAGS="-L$(brew --prefix gcc@15)/lib"' >> $GITHUB_ENV \
+          && echo 'CPPFLAGS="-I$(brew --prefix gcc@15)/include"' >> $GITHUB_ENV \
+          && echo 'CMAKE_PREFIX_PATH="$(brew --prefix gcc@15)"' >> $GITHUB_ENV \
+          && echo 'CC="$(brew --prefix gcc@15)/bin/gcc-15"' >> $GITHUB_ENV \
+          && echo 'CXX="$(brew --prefix gcc@15)/bin/g++-15"' >> $GITHUB_ENV \
+          && ls "$(brew --prefix gcc@15)/bin/"
+
+      - name: Install Clang 19 (macOS)
+        if: (matrix.os == 'macos-latest' || matrix.os == 'macos-26-intel') && matrix.compiler == 'clang'
+        shell: bash
+        run: |
+          brew install llvm@19 \
+          && ln -s "$(brew --prefix llvm@19)/bin/clang++" "$(brew --prefix llvm@19)/bin/clang++-19" \
+          && echo "$(brew --prefix llvm@19)/bin" >> $GITHUB_PATH \
+          && echo 'LDFLAGS="-L$(brew --prefix llvm@19)/lib"' >> $GITHUB_ENV \
+          && echo 'CPPFLAGS="-I$(brew --prefix llvm@19)/include"' >> $GITHUB_ENV \
+          && echo 'CMAKE_PREFIX_PATH="$(brew --prefix llvm@19)"' >> $GITHUB_ENV \
+          && echo 'CC="$(brew --prefix llvm@19)/bin/clang-19"' >> $GITHUB_ENV \
+          && echo 'CXX="$(brew --prefix llvm@19)/bin/clang++-19"' >> $GITHUB_ENV \
+          && ls "$(brew --prefix llvm@19)/bin/"
+
+      - name: Set reusable strings
+        # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
+        id: strings
+        shell: bash
+        run: |
+          echo "build-output-dir=${{ github.workspace }}/cmake-build-${{ matrix.build_type }}-${{ matrix.compiler }}" >> "$GITHUB_OUTPUT"
+
+      - name: Configure CMake
+        # Configure CMake in a 'build' subdirectory. CMAKE_BUILD_TYPE is only required if you are using a single-configuration generator such as make.
+        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+        run: >
+          cmake -B ${{ steps.strings.outputs.build-output-dir }}
+          -S ${{ github.workspace }}
+          -DCMAKE_CXX_STANDARD=20
+          -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          ${{ matrix.settings }}
+
+      - name: Build
+        # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
+        run: >
+          cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} ${{ matrix.build_settings }} --parallel
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform_name }}-${{ matrix.compiler_name }}_${{ matrix.build_type }}
+          path: |
+            ${{ github.workspace }}/cmake-build-${{ matrix.build_type }}-${{ matrix.compiler }}/${{ matrix.build_type }}
