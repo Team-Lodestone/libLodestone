@@ -12,18 +12,13 @@
 #include "Lodestone.Conversion/registry/SingletonRegistry.h"
 
 namespace lodestone::conversion::registry {
-    template <const common::registry::Identifier *Identifier, typename Type, typename Stored>
-    LODESTONE_API SingletonRegistry<Identifier, Type, Stored> &SingletonRegistry<Identifier, Type, Stored>::getInstance() {
-        static SingletonRegistry s_instance;
-        return s_instance;
-    }
+    LODESTONE_IMPLEMENT_REGISTRY_GET_INSTANCE()
 
     // I FOUGHT WITH THE GODDAMN COMPILER FOR 2 DAYS TRYING TO GET THIS SHIT TO WORK
     // THE FIX WAS JUST ME MAKING THE IDENTIFIER INSTANCES INLINE
     // AHIJSDHAISDHGIUYAGTSDUGUAYSDGUY
-    IMPLEMENT_REGISTRY_ALIAS(SingletonRegistry<&identifiers::PLAYER_IO_REGISTRY, const io::interfaces::IPlayerIO>);
-    IMPLEMENT_REGISTRY_ALIAS(SingletonRegistry<&identifiers::LEVEL_IO_REGISTRY, const io::interfaces::ILevelIO>);
-    IMPLEMENT_REGISTRY_ALIAS(SingletonRegistry<&identifiers::CHUNK_IO_REGISTRY, const io::interfaces::IChunkIO>);
-    IMPLEMENT_REGISTRY_ALIAS(SingletonRegistry<&identifiers::REGION_IO_REGISTRY, const io::interfaces::IRegionIO>);
-    IMPLEMENT_REGISTRY_ALIAS(SingletonRegistry<&identifiers::WORLD_IO_REGISTRY, const io::interfaces::IWorldIO>);
+    LODESTONE_IMPLEMENT_REGISTRY_ALIAS(SingletonRegistry<&identifiers::PLAYER_IO_REGISTRY, const io::interfaces::IPlayerIO>);
+    LODESTONE_IMPLEMENT_REGISTRY_ALIAS(SingletonRegistry<&identifiers::LEVEL_IO_REGISTRY, const io::interfaces::ILevelIO>);
+    LODESTONE_IMPLEMENT_REGISTRY_ALIAS(SingletonRegistry<&identifiers::CHUNK_IO_REGISTRY, const io::interfaces::IChunkIO>);
+    LODESTONE_IMPLEMENT_REGISTRY_ALIAS(SingletonRegistry<&identifiers::WORLD_IO_REGISTRY, const io::interfaces::IWorldIO>);
 }

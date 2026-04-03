@@ -90,7 +90,7 @@ namespace lodestone::minecraft::common::player {
 
     const lodestone::common::registry::Identifier *
     MinecraftPlayer::getType() const {
-        return &identifiers::MINECRAFT_PLAYER;
+        return &identifiers::entity::MINECRAFT_PLAYER;
     }
 
     const Abilities &MinecraftPlayer::getAbilities() const {

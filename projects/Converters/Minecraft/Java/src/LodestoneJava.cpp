@@ -31,6 +31,8 @@
 #include <Lodestone.Conversion/block/data/NumericBlockData.h>
 
 #include <Lodestone.Conversion/registry/Registries.h>
+#include <Lodestone.Minecraft.Common/conversion/registry/Registries.h>
+#include <Lodestone.Minecraft.Common/conversion/io/ObjectIOs.h>
 #include <Lodestone.Conversion/io/ObjectIOs.h>
 
 #include "Lodestone.Minecraft.Java/conversion/infdev/InfdevWorldIo.h"

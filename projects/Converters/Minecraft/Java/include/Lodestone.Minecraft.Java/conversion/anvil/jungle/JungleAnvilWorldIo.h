@@ -6,6 +6,10 @@
 #define LODESTONE_JUNGLEANVILWORLDIO_H
 
 
+#include <Lodestone.Minecraft.Common/conversion/registry/Registries.h>
+
+#include <Lodestone.Minecraft.Common/Identifiers.h>
+
 #include <Lodestone.Conversion/Identifiers.h>
 #include <Lodestone.Conversion/io/ObjectIOs.h>
 #include <Lodestone.Conversion/registry/Registries.h>
@@ -25,7 +29,7 @@ namespace lodestone::minecraft::java::anvil::jungle::world {
         conversion::registry::RegistryIdentifierRelation<&identifiers::NBT_PLAYER_IO, const mcregion::player::McRegionNbtPlayerIO, &identifiers::MCREGION_NBT_PLAYER_IO, conversion::registry::PlayerIORegistry>, // TODO we don't have a jungle anvil player type yet
         conversion::registry::RegistryIdentifierRelation<&identifiers::NBT_CHUNK_IO, const chunk::JungleAnvilChunkIO, &identifiers::ANVIL_JUNGLE_NBT_CHUNK_IO, conversion::registry::ChunkIORegistry>,
             conversion::registry::RegistryIdentifierRelation<&lodestone::conversion::identifiers::CHUNK_IO, const chunk::JungleAnvilChunkIO, &identifiers::ANVIL_JUNGLE_CHUNK_IO, conversion::registry::ChunkIORegistry>,
-            conversion::registry::RegistryIdentifierRelation<&lodestone::conversion::identifiers::REGION_IO, const region::JungleAnvilRegionIO, &identifiers::ANVIL_JUNGLE_REGION_IO, conversion::registry::RegionIORegistry>
+            conversion::registry::RegistryIdentifierRelation<&lodestone::minecraft::common::identifiers::io::REGION_IO, const region::JungleAnvilRegionIO, &identifiers::ANVIL_JUNGLE_REGION_IO, conversion::registry::RegionIORegistry>
         > {
       public:
         std::unique_ptr<level::world::World> read(const common::conversion::io::options::OptionPresets::CommonFilesystemOptions &options) const override;

@@ -7,14 +7,20 @@
 
 #include "Lodestone.Common/registry/Identifier.h"
 #include "Lodestone.Minecraft.Common/conversion/io/interfaces/ILevelDataIo.h"
+#include "Lodestone.Minecraft.Common/conversion/io/interfaces/IRegionIo.h"
 #include "Lodestone.Minecraft.Common/conversion/io/options/NbtOutputOptions.h"
 #include "Lodestone.Minecraft.Common/conversion/io/options/OptionPresets.h"
-#include "Lodestone.Minecraft.Common/conversion/io/types/NbtOutputWritable.h"
+#include "Lodestone.Minecraft.Common/region/Region.h"
 
 #include <Lodestone.Conversion/io/AbstractObjectIo.h>
 #include <Lodestone.Conversion/io/options/OptionsBuilder.h>
 #include "Lodestone.Minecraft.Common/world/data/LevelData.h"
 #include <libnbt++/io/stream_writer.h>
+
+#include <Lodestone.Conversion/io/interfaces/IWorldIo.h>
+#include <Lodestone.Conversion/io/interfaces/ILevelIo.h>
+#include <Lodestone.Conversion/io/interfaces/IPlayerIo.h>
+#include <Lodestone.Conversion/io/interfaces/IChunkIo.h>
 
 namespace nbt {
     class tag_compound;
@@ -25,6 +31,11 @@ namespace lodestone::minecraft::common::conversion::io {
     requires lodestone::common::util::concepts::void_or_derived_from_v<lodestone::conversion::io::options::IOptions, RO> && lodestone::common::util::concepts::void_or_derived_from_v<lodestone::conversion::io::options::IOptions, WO>
     class LevelDataIO : public interfaces::ILevelDataIO,
                 public lodestone::conversion::io::AbstractObjectIO<I, std::unique_ptr<world::data::LevelData>, world::data::LevelData *, RO, WO, WR> {};
+
+    template <const lodestone::common::registry::Identifier *I, typename RO, typename WO, typename WR = void>
+    requires lodestone::common::util::concepts::void_or_derived_from_v<lodestone::conversion::io::options::IOptions, RO> && lodestone::common::util::concepts::void_or_derived_from_v<lodestone::conversion::io::options::IOptions, WO>
+    class RegionIO : public interfaces::IRegionIO,
+                     public lodestone::conversion::io::AbstractObjectIO<I, std::unique_ptr<region::Region>, level::Level *, RO, WO, WR> {};
 
     template <const lodestone::common::registry::Identifier *I, typename R, typename W, typename RO, typename WO>
     requires lodestone::common::util::concepts::void_or_derived_from_v<lodestone::conversion::io::options::IOptions, RO>

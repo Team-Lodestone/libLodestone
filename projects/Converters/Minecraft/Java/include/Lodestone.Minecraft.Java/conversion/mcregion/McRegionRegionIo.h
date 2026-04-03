@@ -13,11 +13,11 @@
 #include <cstdint>
 #include <stddef.h>
 
-#include <Lodestone.Level/region/Region.h>
+#include <Lodestone.Minecraft.Common/region/Region.h>
 #include <Lodestone.Level/types/Vec2.h>
 
 namespace lodestone::minecraft::java::mcregion::region {
-    class McRegionRegionIO : public conversion::io::RegionIO<&identifiers::MCREGION_REGION_IO, const common::conversion::io::options::OptionPresets::CommonChunkReadOptions, const common::conversion::io::options::OptionPresets::CommonChunkWriteOptions>,
+    class McRegionRegionIO : public common::conversion::io::RegionIO<&identifiers::MCREGION_REGION_IO, const common::conversion::io::options::OptionPresets::CommonChunkReadOptions, const common::conversion::io::options::OptionPresets::CommonChunkWriteOptions>,
     public conversion::registry::RegistryIdentifierRelations<
         conversion::registry::RegistryIdentifierRelation<&conversion::identifiers::CHUNK_IO, const chunk::McRegionChunkIO, &identifiers::MCREGION_CHUNK_IO, conversion::registry::ChunkIORegistry>,
         conversion::registry::RegistryIdentifierRelation<&identifiers::NBT_CHUNK_IO, const chunk::McRegionNbtChunkIO, &identifiers::MCREGION_NBT_CHUNK_IO, conversion::registry::ChunkIORegistry>
@@ -26,7 +26,7 @@ namespace lodestone::minecraft::java::mcregion::region {
         static constexpr int CHUNK_COUNT = 1024;
         static constexpr int SECTOR_SIZE = 4096;
 
-        std::unique_ptr<lodestone::level::region::Region>
+        std::unique_ptr<common::region::Region>
         read(const common::conversion::io::options::OptionPresets::CommonChunkReadOptions &options) const override;
 
         // We take coords here so we don't have to convert our existing Level

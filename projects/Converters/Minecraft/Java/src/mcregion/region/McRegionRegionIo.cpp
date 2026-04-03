@@ -18,7 +18,7 @@
 #include "Lodestone.Minecraft.Java/Identifiers.h"
 #include "Lodestone.Minecraft.Java/mcregion/McRegionChunk.h"
 #include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionChunkIo.h"
-#include <Lodestone.Level/region/Region.h>
+#include <Lodestone.Minecraft.Common/region/Region.h>
 
 #include <BinaryIO/stream/BinaryInputStream.h>
 
@@ -30,13 +30,13 @@
 
 namespace lodestone::minecraft::java::mcregion::region {
 
-    std::unique_ptr<lodestone::level::region::Region>
+    std::unique_ptr<common::region::Region>
     McRegionRegionIO::read(const common::conversion::io::options::OptionPresets::CommonChunkReadOptions &options) const {
         bio::stream::BinaryInputStream bis(options.input);
 
         const chunk::McRegionChunkIO *chunkIo = this->getAsByRelation<const chunk::McRegionChunkIO, &conversion::identifiers::CHUNK_IO>();
 
-        std::unique_ptr<lodestone::level::region::Region> region =
+        std::unique_ptr<common::region::Region> region =
             std::make_unique<McRegionRegion>(options.coords);
 
         std::vector<common::region::RegionChunkIndice> locations;

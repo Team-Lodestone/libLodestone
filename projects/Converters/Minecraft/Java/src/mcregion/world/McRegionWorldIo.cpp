@@ -133,7 +133,7 @@ namespace lodestone::minecraft::java::mcregion::world {
             }
         }
 
-        const region::McRegionRegionIO *io = this->getAsByRelation<const region::McRegionRegionIO, &lodestone::conversion::identifiers::REGION_IO>();
+        const region::McRegionRegionIO *io = this->getAsByRelation<const region::McRegionRegionIO, &lodestone::minecraft::common::identifiers::io::REGION_IO>();
 
         int t = 2;
         // do I need to call exists?
@@ -159,7 +159,7 @@ namespace lodestone::minecraft::java::mcregion::world {
 
                     std::ifstream ifs(item, std::ifstream::binary);
 
-                    std::unique_ptr<level::region::Region> r =
+                    std::unique_ptr<lodestone::minecraft::common::region::Region> r =
                         io->read(common::conversion::io::options::OptionPresets::CommonChunkReadOptions {
                             common::conversion::io::options::ChunkOptions {
                                 coords
@@ -270,7 +270,7 @@ namespace lodestone::minecraft::java::mcregion::world {
             nbt.write_tag("", root);
         }
         // Regions
-        auto io = this->getAsByRelation<const region::McRegionRegionIO, &lodestone::conversion::identifiers::REGION_IO>();
+        auto io = this->getAsByRelation<const region::McRegionRegionIO, &lodestone::minecraft::common::identifiers::io::REGION_IO>();
 
         std::filesystem::path p = options.path;
 

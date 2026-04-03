@@ -44,8 +44,6 @@ set(FILES
         include/Lodestone.Level/types/Bounds3.h
         include/Lodestone.Level/types/Bounds2.h
         include/Lodestone.Level/block/Blocks.h
-        src/region/Region.cpp
-        include/Lodestone.Level/region/Region.h
         src/chunk/ChunkContainer.cpp
         include/Lodestone.Level/chunk/ChunkContainer.h
         src/FiniteLevel.cpp

@@ -7,14 +7,8 @@
 
 #include <Lodestone.Common/registry/Identifier.h>
 #include <Lodestone.Level/entity/Player.h>
-#include <Lodestone.Level/region/Region.h>
 
 #include "Lodestone.Conversion/io/IObjectIo.h"
-#include "Lodestone.Conversion/io/interfaces/IChunkIo.h"
-#include "Lodestone.Conversion/io/interfaces/ILevelIo.h"
-#include "Lodestone.Conversion/io/interfaces/IPlayerIo.h"
-#include "Lodestone.Conversion/io/interfaces/IRegionIo.h"
-#include "Lodestone.Conversion/io/interfaces/IWorldIo.h"
 #include "Lodestone.Conversion/io/options/OptionsBuilder.h"
 #include "Lodestone.Conversion/io/types/Readable.h"
 #include "Lodestone.Conversion/io/types/Writable.h"

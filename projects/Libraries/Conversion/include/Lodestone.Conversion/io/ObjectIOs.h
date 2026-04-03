@@ -7,16 +7,16 @@
 #include <Lodestone.Common/util/Concepts.h>
 #include "Lodestone.Conversion/io/AbstractObjectIo.h"
 
+#include "Lodestone.Conversion/io/interfaces/IPlayerIo.h"
+#include "Lodestone.Conversion/io/interfaces/ILevelIo.h"
+#include "Lodestone.Conversion/io/interfaces/IWorldIo.h"
+#include "Lodestone.Conversion/io/interfaces/IChunkIo.h"
+
 namespace lodestone::conversion::io {
     template <const common::registry::Identifier *I, typename RO, typename WO, typename WR = void>
     requires lodestone::common::util::concepts::void_or_derived_from_v<options::IOptions, RO> && lodestone::common::util::concepts::void_or_derived_from_v<options::IOptions, WO>
     class PlayerIO : public interfaces::IPlayerIO,
                      public AbstractObjectIO<I, std::unique_ptr<level::entity::Player>, level::entity::Player *, RO, WO, WR> {};
-
-    template <const common::registry::Identifier *I, typename RO, typename WO, typename WR = void>
-    requires lodestone::common::util::concepts::void_or_derived_from_v<options::IOptions, RO> && lodestone::common::util::concepts::void_or_derived_from_v<options::IOptions, WO>
-    class RegionIO : public interfaces::IRegionIO,
-                     public AbstractObjectIO<I, std::unique_ptr<level::region::Region>, level::Level *, RO, WO, WR> {};
 
     template <const common::registry::Identifier *I, typename RO, typename WO, typename WR = void>
         requires lodestone::common::util::concepts::void_or_derived_from_v<options::IOptions, RO> && lodestone::common::util::concepts::void_or_derived_from_v<options::IOptions, WO>

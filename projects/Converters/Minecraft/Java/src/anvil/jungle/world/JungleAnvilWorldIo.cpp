@@ -10,7 +10,7 @@
 #include <Lodestone.Common/util/Logging.h>
 
 
-#include <Lodestone.Level/region/Region.h>
+#include <Lodestone.Minecraft.Common/region/Region.h>
 
 #include "Lodestone.Minecraft.Java/LodestoneJava.h"
 #include "Lodestone.Minecraft.Java/Identifiers.h"
@@ -132,7 +132,7 @@ namespace lodestone::minecraft::java::anvil::jungle::world {
                  }
             }
 
-        const region::JungleAnvilRegionIO *io = this->getAsByRelation<const region::JungleAnvilRegionIO, &conversion::identifiers::REGION_IO>();
+        const region::JungleAnvilRegionIO *io = this->getAsByRelation<const region::JungleAnvilRegionIO, &lodestone::minecraft::common::identifiers::io::REGION_IO>();
 
         int t = 2;
         // do I need to call exists?
@@ -159,7 +159,7 @@ namespace lodestone::minecraft::java::anvil::jungle::world {
 
                     std::ifstream ifs(item, std::ifstream::binary);
 
-                    std::unique_ptr<level::region::Region> r =
+                    std::unique_ptr<lodestone::minecraft::common::region::Region> r =
                         io->read(common::conversion::io::options::OptionPresets::CommonChunkReadOptions {
                             common::conversion::io::options::ChunkOptions {
                                 coords
@@ -273,7 +273,7 @@ namespace lodestone::minecraft::java::anvil::jungle::world {
             nbt.write_tag("", root);
         }
         // Regions
-        auto io = this->getAsByRelation<const region::JungleAnvilRegionIO, &lodestone::conversion::identifiers::REGION_IO>();
+        auto io = this->getAsByRelation<const region::JungleAnvilRegionIO, &lodestone::minecraft::common::identifiers::io::REGION_IO>();
 
         std::filesystem::path p = options.path;
 

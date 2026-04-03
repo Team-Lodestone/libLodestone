@@ -1,13 +1,13 @@
 //
 // Created by DexrnZacAttack on 11/9/25 using zPc-i2.
 //
-#include "Lodestone.Level/region/Region.h"
+#include "Lodestone.Minecraft.Common/region/Region.h"
 
-#include "Lodestone.Level/FiniteLevel.h"
-#include "Lodestone.Level/types/Vec2.h"
+#include <Lodestone.Level/FiniteLevel.h>
+#include <Lodestone.Level/types/Vec2.h>
 
-namespace lodestone::level::region {
-    Region::Region(const types::Vec2i &coords)
+namespace lodestone::minecraft::common::region {
+    Region::Region(const lodestone::level::types::Vec2i &coords)
         : level::FiniteLevel(
               {{// min
                 coords.x * MAX_BOUNDS.x, coords.y * MAX_BOUNDS.y},

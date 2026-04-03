@@ -32,7 +32,6 @@ set(FILES
         include/Lodestone.Conversion/io/types/ReadableAdapter.h
         include/Lodestone.Conversion/io/types/WritableAdapter.h
         include/Lodestone.Conversion/io/interfaces/IPlayerIo.h
-        include/Lodestone.Conversion/io/interfaces/IRegionIo.h
         include/Lodestone.Conversion/io/interfaces/ILevelIo.h
         include/Lodestone.Conversion/io/interfaces/IWorldIo.h
         include/Lodestone.Conversion/io/interfaces/IChunkIo.h

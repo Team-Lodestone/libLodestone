@@ -20,8 +20,6 @@ namespace lodestone::conversion::identifiers {
         "lodestone", "flattened_block_data"};
 
     // Registries
-    inline constexpr const common::registry::Identifier REGION_IO_REGISTRY = {
-        "lodestone", "registry/region_io"};
     inline constexpr const common::registry::Identifier PLAYER_IO_REGISTRY = {
         "lodestone", "registry/player_io"};
     inline constexpr const common::registry::Identifier LEVEL_IO_REGISTRY = {
@@ -37,9 +35,6 @@ namespace lodestone::conversion::identifiers {
     // IO
     inline constexpr const common::registry::Identifier PLAYER_IO = {
         "lodestone", "io/player"};
-
-    inline constexpr const common::registry::Identifier REGION_IO = {
-        "lodestone", "io/region"};
 
     inline constexpr const common::registry::Identifier LEVEL_IO = {
         "lodestone", "io/level"};

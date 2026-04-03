@@ -13,6 +13,7 @@ Minecraft: Java Edition converter
 - [X] Infdev/Alpha (Alpha Save Format)
 - [X] McRegion
 - [X] Anvil
+  - Identifier is ['Jungle'](https://github.com/DexrnZacAttack/MinecraftVersionIdentifiers)
 - [ ] 1.13+ Anvil
 - [ ] 1.18+ Anvil
 

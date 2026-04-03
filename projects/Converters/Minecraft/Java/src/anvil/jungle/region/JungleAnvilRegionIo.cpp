@@ -21,13 +21,13 @@
 namespace lodestone::minecraft::java::anvil::jungle::region {
     // The format is the same as the McRegion one since they never actually
     // changed the container format
-    std::unique_ptr<level::region::Region>
+    std::unique_ptr<common::region::Region>
     JungleAnvilRegionIO::read(const common::conversion::io::options::OptionPresets::CommonChunkReadOptions &options) const {
         bio::stream::BinaryInputStream bis(options.input);
 
         auto chunkIo = this->getAsByRelation<const chunk::JungleAnvilChunkIO, &lodestone::conversion::identifiers::CHUNK_IO>();
 
-        std::unique_ptr<level::region::Region> region =
+        std::unique_ptr<common::region::Region> region =
             std::make_unique<JungleAnvilRegion>(options.coords);
 
         std::vector<common::region::RegionChunkIndice> locations;

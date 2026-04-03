@@ -26,6 +26,10 @@ set(FILES
         include/Lodestone.Minecraft.Common/conversion/io/ObjectIOs.h
         include/Lodestone.Minecraft.Common/conversion/io/options/ChunkOptions.h
         include/Lodestone.Minecraft.Common/conversion/io/types/NbtOutputWritable.h
+        include/Lodestone.Minecraft.Common/region/Region.h
+        src/region/Region.cpp
+        src/conversion/registry/Registries.cpp
+        include/Lodestone.Minecraft.Common/conversion/io/interfaces/IRegionIo.h
 )
 
 add_library(Lodestone.Minecraft.Common OBJECT ${FILES})

@@ -31,10 +31,10 @@ namespace lodestone::minecraft::java::infdev::zone {
         std::getline(ss, p, d);
 
         std::getline(ss, p, d);
-        coords.x = common::util::Math::decodeBase36(p);
+        coords.x = lodestone::common::util::Math::decodeBase36(p);
 
         std::getline(ss, p, d);
-        coords.y = common::util::Math::decodeBase36(p);
+        coords.y = lodestone::common::util::Math::decodeBase36(p);
 
         return coords;
     }
