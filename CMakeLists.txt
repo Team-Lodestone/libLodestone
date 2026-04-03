@@ -25,7 +25,7 @@ add_subdirectory(projects/Converters)
 add_custom_target(Lodestone.All ALL DEPENDS
         Lodestone.Libraries
         Lodestone.Converters
-#        Lodestone.Utilities
+        Lodestone.Utilities
 )
 
 

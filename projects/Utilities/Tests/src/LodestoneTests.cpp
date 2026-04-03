@@ -366,9 +366,11 @@ int main(int argc, char **argv) {
     std::filesystem::create_directories(lodestone::tests::util::INPUT_FOLDER);
     std::filesystem::create_directories(lodestone::tests::util::OUTPUT_FOLDER);
 
+    auto tfw = tfw::TestFramework::initFromArgs(argc, argv);
+
     ADD_TESTS(RUN_MAIN_TESTS, lodestone::tests::test::MainTests::add);
 
-    tfw::TestFramework::getInstance()->run();
+    tfw->run();
 
     return 0;
 };

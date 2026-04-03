@@ -11,7 +11,6 @@
 #include <fstream>
 
 #include "Lodestone.Tests/util.h"
-#include <TestFramework/test/ComparableTest.h>
 
 #include <Lodestone.Level/Level.h>
 #include <Lodestone.Minecraft.Java/Identifiers.h>
@@ -33,9 +32,11 @@
 
 namespace lodestone::tests::test {
     void MainTests::add() {
-        tfw::TestFramework::getInstance()->addTest(GENERATE_WATER_CHUNK, "Generate LCE Water Chunk", generateWaterChunk);
-        tfw::TestFramework::getInstance()->addTest(READ_ANVIL_WORLD, "Read Anvil World", readAnvilWorld);
-        tfw::TestFramework::getInstance()->addTest(WRITE_ANVIL_WORLD, "Write Anvil World", writeAnvilWorld);
+        auto &mgr = tfw::TestFramework::getInstance()->testManager();
+
+        mgr.addTest(GENERATE_WATER_CHUNK, "Generate LCE Water Chunk", generateWaterChunk);
+        mgr.addTest(READ_ANVIL_WORLD, "Read Anvil World", readAnvilWorld);
+        mgr.addTest(WRITE_ANVIL_WORLD, "Write Anvil World", writeAnvilWorld);
         // ADD_TEST(READ_MCR_CHUNK, readMcrChunk, util::types::MAIN,
         //          "Read McRegion Chunk");
         // ADD_TEST(READ_MCR_FILE, readMcrFile, util::types::MAIN,
@@ -50,7 +51,7 @@ namespace lodestone::tests::test {
         //          "Write Alpha World");
     }
 
-    tfw::test::result::TestResult MainTests::generateWaterChunk(tfw::test::util::TestOutputLogger &logger) {
+    tfw::test::result::TestResult MainTests::generateWaterChunk(tfw::test::logging::loggers::ITestLogger &logger) {
         const std::string name = "LCEWaterChunk";
 
         std::unique_ptr<level::FiniteLevel> lvl = std::make_unique<level::FiniteLevel>(level::types::Bounds2i{0, 0, 16, 16});
@@ -115,7 +116,7 @@ namespace lodestone::tests::test {
         return tfw::test::result::TestResult(true, wld->toString());
     }
 
-    tfw::test::result::TestResult MainTests::readAnvilWorld(tfw::test::util::TestOutputLogger &logger) {
+    tfw::test::result::TestResult MainTests::readAnvilWorld(tfw::test::logging::loggers::ITestLogger &logger) {
         const std::string name("AnvilWorld");
         const std::filesystem::path dir(util::INPUT_FOLDER / name);
         logger << "Reading from " << dir << std::endl;
@@ -145,7 +146,7 @@ namespace lodestone::tests::test {
         return tfw::test::result::TestResult(true, w->toString());
     }
 
-    tfw::test::result::TestResult MainTests::writeAnvilWorld(tfw::test::util::TestOutputLogger &logger) {
+    tfw::test::result::TestResult MainTests::writeAnvilWorld(tfw::test::logging::loggers::ITestLogger &logger) {
         const std::string name("WriteAnvilWorld");
         const std::filesystem::path inputDir(util::INPUT_FOLDER / name);
         const std::filesystem::path outputDir(util::OUTPUT_FOLDER / name);
@@ -179,7 +180,7 @@ namespace lodestone::tests::test {
         return tfw::test::result::TestResult(true, w->toString());
     }
 
-    // void MainTests::readMcrChunk(tfw::test::util::TestOutputLogger &logger) {
+    // void MainTests::readMcrChunk(tfw::test::logging::loggers::ITestLogger &logger) {
     //     OPEN_FILE_STREAM("mcregion_chunk.dat", c);
     //
     //     minecraft::java::mcregion::chunk::McRegionChunkIO *io =
@@ -207,7 +208,7 @@ namespace lodestone::tests::test {
     //     //            lodestone::minecraft::minecraft::java::c0_0_12a));
     // }
     //
-    // void MainTests::readMcrFile(tfw::test::util::TestOutputLogger &logger) {
+    // void MainTests::readMcrFile(tfw::test::logging::loggers::ITestLogger &logger) {
     //     std::string name("r.0.0.omnibeta");
     //     OPEN_FILE_STREAM(std::format("{}.mcr", name), c);
     //
@@ -235,7 +236,7 @@ namespace lodestone::tests::test {
     //     // out.close();
     // }
     //
-    // void MainTests::readMcrWorld(tfw::test::util::TestOutputLogger &logger) {
+    // void MainTests::readMcrWorld(tfw::test::logging::loggers::ITestLogger &logger) {
     //     std::string name("McRegionWorld");
     //     std::filesystem::path dir(util::INPUT_FOLDER / name);
     //
@@ -277,7 +278,7 @@ namespace lodestone::tests::test {
     //                      minecraft::java::b1_3, {});
     // }
     //
-    // void MainTests::readMinev2World(tfw::test::util::TestOutputLogger &logger) {
+    // void MainTests::readMinev2World(tfw::test::logging::loggers::ITestLogger &logger) {
     //     std::string name("ProjectLodestoneTestWorld");
     //     OPEN_FILE_STREAM(std::format("{}.mine", name), c);
     //
@@ -300,7 +301,7 @@ namespace lodestone::tests::test {
     //             level::world::World::Dimension::OVERWORLD});
     // }
     //
-    // void MainTests::readAlphaWorld(tfw::test::util::TestOutputLogger &logger) {
+    // void MainTests::readAlphaWorld(tfw::test::logging::loggers::ITestLogger &logger) {
     //     std::string name("alphaworld");
     //     std::filesystem::path dir(util::INPUT_FOLDER / name);
     //
@@ -337,7 +338,7 @@ namespace lodestone::tests::test {
     //     }
     // }
     //
-    // void MainTests::writeAlphaWorld(tfw::test::util::TestOutputLogger &logger) {
+    // void MainTests::writeAlphaWorld(tfw::test::logging::loggers::ITestLogger &logger) {
     //     std::string name("13a_03-level_greffen");
     //     OPEN_FILE_STREAM(std::format("{}.mine", name), c);
     //

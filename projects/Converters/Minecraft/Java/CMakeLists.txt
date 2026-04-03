@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION VERSION 3.30)
-project(Lodestone.Minecraft.Java VERSION 1.2.2)
+project(Lodestone.Minecraft.Java VERSION 1.2.3)
 set(PROJECT_VERSION_DEV) # used for dev versions, otherwise blank
 
 set(CMAKE_CXX_STANDARD 20)
