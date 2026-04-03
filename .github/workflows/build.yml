@@ -105,6 +105,20 @@ jobs:
             compiler: appleclang
             c_compiler: clang
             cpp_compiler: clang++
+          - os: macos-latest
+            platform_name: macOS Universal
+            compiler_name: Clang
+            compiler: clang
+            c_compiler: clang-19
+            cpp_compiler: clang++-19
+            settings: -DCMAKE_OSX_ARCHITECTURES=arm64;x86_64
+          - os: macos-latest
+            platform_name: macOS Universal
+            compiler_name: AppleClang
+            compiler: appleclang
+            c_compiler: clang
+            cpp_compiler: clang++
+            settings: -DCMAKE_OSX_ARCHITECTURES=arm64;x86_64
           - os: macos-26-intel
             platform_name: macOS x86_64
             compiler_name: AppleClang
