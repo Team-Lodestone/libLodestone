@@ -265,16 +265,16 @@ namespace lodestone::minecraft::java::alpha::world {
                 int tX = coords.x;
                 int tZ = coords.y;
 
-                std::string fX = lodestone::common::util::Math::base36(tX & 63);
-                std::string fZ = lodestone::common::util::Math::base36(tZ & 63);
+                std::string fX = lodestone::common::util::Math::encodeBase36(tX & 63);
+                std::string fZ = lodestone::common::util::Math::encodeBase36(tZ & 63);
 
                 std::filesystem::path chunkOut = p / fX / fZ;
                 if (!std::filesystem::exists(chunkOut)) {
                     std::filesystem::create_directories(chunkOut);
                 }
 
-                std::string cX = lodestone::common::util::Math::base36(tX);
-                std::string cZ = lodestone::common::util::Math::base36(tZ);
+                std::string cX = lodestone::common::util::Math::encodeBase36(tX);
+                std::string cZ = lodestone::common::util::Math::encodeBase36(tZ);
 
                 std::string cf = "c." + cX + "." + cZ + ".dat";
                 std::ofstream ofs(chunkOut / cf, std::ofstream::binary);

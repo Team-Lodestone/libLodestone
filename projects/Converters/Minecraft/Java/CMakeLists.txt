@@ -64,14 +64,51 @@ set(FILES
         include/Lodestone.Minecraft.Java/mcregion/McRegionLevelData.h
         src/alpha/world/data/AlphaLevelData.cpp
         include/Lodestone.Minecraft.Java/conversion/mcregion/McRegionLevelDataIo.h
+        src/classic/minev3/MineV3LevelIO.cpp
+        include/Lodestone.Minecraft.Java/conversion/classic/minev3/MineV3LevelIO.h
+        src/classic/minev3/MineV3World.cpp
+        src/classic/minev3/MineV3WorldIo.cpp
+        include/Lodestone.Minecraft.Java/conversion/classic/minev3/MineV3WorldIo.h
+        include/Lodestone.Minecraft.Java/conversion/classic/minev3/options/MineV3WorldWriteOptions.h
+        include/Lodestone.Minecraft.Java/classic/minev3/MineV3World.h
+        src/infdev/world/InfdevWorld.cpp
+        include/Lodestone.Minecraft.Java/infdev/InfdevWorld.h
+        src/infdev/world/data/InfdevLevelData.cpp
+        include/Lodestone.Minecraft.Java/infdev/InfdevLevelData.h
+        src/infdev/player/InfdevPlayer.cpp
+        include/Lodestone.Minecraft.Java/infdev/InfdevPlayer.h
+        src/infdev/player/InfdevPlayerIo.cpp
+        include/Lodestone.Minecraft.Java/conversion/infdev/InfdevPlayerIo.h
+        src/infdev/world/InfdevWorldIo.cpp
+        include/Lodestone.Minecraft.Java/conversion/infdev/InfdevWorldIo.h
+        src/infdev/zone/InfdevZoneIo.cpp
+        include/Lodestone.Minecraft.Java/conversion/infdev/InfdevZoneIo.h
+        src/infdev/zone/InfdevZone.cpp
+        include/Lodestone.Minecraft.Java/infdev/InfdevZone.h
+        src/infdev/chunk/InfdevChunk.cpp
+        include/Lodestone.Minecraft.Java/infdev/InfdevChunk.h
+        src/infdev/chunk/InfdevChunkIo.cpp
+        include/Lodestone.Minecraft.Java/conversion/infdev/InfdevChunkIo.h
 )
+
+if (NOT TARGET JavaObjectStreams)
+    include(FetchContent)
+    FetchContent_Declare(JavaObjectStreams
+            GIT_REPOSITORY https://github.com/Team-Lodestone/JavaObjectStreams
+            GIT_TAG        main
+            GIT_PROGRESS   TRUE
+            GIT_SHALLOW    TRUE
+            EXCLUDE_FROM_ALL
+    )
+    FetchContent_MakeAvailable(JavaObjectStreams)
+endif()
 
 add_library(Lodestone.Minecraft.Java SHARED ${FILES})
 target_include_directories(Lodestone.Minecraft.Java
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
-target_link_libraries(Lodestone.Minecraft.Java PRIVATE Lodestone.Level Lodestone.Conversion nbt++ bio-cpp20)
+target_link_libraries(Lodestone.Minecraft.Java PRIVATE Lodestone.Level Lodestone.Conversion nbt++ bio-cpp20 JavaObjectStreams)
 target_link_libraries(Lodestone.Minecraft.Java PUBLIC Lodestone.Core Lodestone.Minecraft.Common)
 
 set(VERSIONS

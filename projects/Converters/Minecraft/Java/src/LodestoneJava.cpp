@@ -22,6 +22,7 @@
 #include "Lodestone.Minecraft.Java/conversion/anvil/jungle/JungleAnvilWorldIo.h"
 #include "Lodestone.Minecraft.Java/conversion/classic/minev1/MineV1LevelIO.h"
 #include "Lodestone.Minecraft.Java/conversion/classic/minev2/MineV2WorldIo.h"
+#include "Lodestone.Minecraft.Java/conversion/classic/minev3/MineV3WorldIo.h"
 #include "Lodestone.Minecraft.Java/conversion/indev/McLevelLevelIO.h"
 #include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionChunkIo.h"
 #include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionPlayerIo.h"
@@ -32,6 +33,9 @@
 
 #include <Lodestone.Conversion/registry/Registries.h>
 #include <Lodestone.Conversion/io/ObjectIOs.h>
+
+#include "Lodestone.Minecraft.Java/conversion/classic/minev3/MineV3LevelIO.h"
+#include "Lodestone.Minecraft.Java/conversion/infdev/InfdevWorldIo.h"
 
 namespace lodestone::minecraft::java {
 #define REG_PUT(r, n) lodestone::conversion::registry::r::getInstance().put(*n::getIdentifier(), std::make_unique<n>())
@@ -48,9 +52,18 @@ namespace lodestone::minecraft::java {
         REG_PUT(LevelIORegistry, classic::minev2::MineV2LevelIO);
         REG_PUT(WorldIORegistry, classic::minev2::MineV2WorldIO);
 
+        // minev3
+        REG_PUT(LevelIORegistry, classic::minev3::MineV3LevelIO);
+        REG_PUT(WorldIORegistry, classic::minev3::MineV3WorldIO);
+
         // indev
         REG_PUT(LevelIORegistry, indev::McLevelLevelIO);
         REG_PUT(LevelIORegistry, indev::McLevelNbtLevelIO);
+
+        // infdev 20100624
+        REG_PUT(ChunkIORegistry, infdev::chunk::InfdevChunkIO);
+        REG_PUT(LevelIORegistry, infdev::zone::InfdevZoneIo);
+        REG_PUT(WorldIORegistry, infdev::world::InfdevWorldIo);
 
         // alpha
         REG_PUT(WorldIORegistry, alpha::world::AlphaWorldIo);

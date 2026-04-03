@@ -80,7 +80,9 @@ namespace lodestone::common::util {
          * @param value Integer value
          * @return String of base36 of value
          */
-        static std::string base36(int value);
+        static std::string encodeBase36(int value);
+
+        static int64_t decodeBase36(const std::string &input);
 
         static constexpr float degreesToRadians(const float deg) {
             return deg * (std::numbers::pi / 180.0);

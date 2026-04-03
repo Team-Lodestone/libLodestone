@@ -18,6 +18,17 @@ namespace lodestone::minecraft::java::identifiers {
     inline static constexpr lodestone::common::registry::Identifier MCLEVEL_NBT_LEVEL_IO = {
         "lodestone", "minecraft/java/io/nbt/level/mclevel"};
 
+    inline static constexpr lodestone::common::registry::Identifier INF_624_CHUNK_IO = {
+        "lodestone", "minecraft/java/io/chunk/inf_624"};
+    inline static constexpr lodestone::common::registry::Identifier INF_624_NBT_CHUNK_IO = {
+        "lodestone", "minecraft/java/io/nbt/chunk/inf_624"};
+    inline static constexpr lodestone::common::registry::Identifier INF_624_ZONE_IO = {
+        "lodestone", "minecraft/java/io/zone/inf_624"};
+    inline static constexpr lodestone::common::registry::Identifier INF_624_LEVEL_IO = {
+        "lodestone", "minecraft/java/io/level/inf_624"};
+    inline static constexpr lodestone::common::registry::Identifier INF_624_WORLD_IO = {
+        "lodestone", "minecraft/java/io/world/inf_624"};
+
     inline static constexpr lodestone::common::registry::Identifier ALPHA_PLAYER_IO = {
         "lodestone", "minecraft/java/io/player/alpha"};
     inline static constexpr lodestone::common::registry::Identifier ALPHA_NBT_PLAYER_IO = {

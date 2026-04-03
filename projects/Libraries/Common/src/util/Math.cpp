@@ -12,7 +12,7 @@ namespace lodestone::common::util {
 
     unsigned long Math::random() { return Math::s_random(); }
 
-    std::string Math::base36(int value) {
+    std::string Math::encodeBase36(int value) {
         if (value == 0)
             return "0"; // gotta get that optimization
 
@@ -34,5 +34,26 @@ namespace lodestone::common::util {
 
         std::ranges::reverse(s);
         return s;
+    }
+
+    int64_t Math::decodeBase36(const std::string &input) {
+        int64_t result = 0;
+
+        for (const char c : input) {
+            int value;
+            if (c >= '0' && c <= '9') {
+                value = c - '0';
+            } else if (c >= 'A' && c <= 'Z') {
+                value = c - 'A' + 10;
+            } else {
+                continue;
+            }
+            result = result * 36 + value;
+        }
+        if (input.starts_with('-')) {
+            result = -result;
+        }
+
+        return result;
     }
 } // namespace lodestone::common::util
