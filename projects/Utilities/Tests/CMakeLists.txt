@@ -26,6 +26,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(nbt++)
 endif()
 
+if (NOT TARGET tfw)
 include(FetchContent)
 FetchContent_Declare(
         tfw
@@ -34,6 +35,7 @@ FetchContent_Declare(
         GIT_SHALLOW TRUE
 )
 FetchContent_MakeAvailable(tfw)
+endif()
 
 add_executable(Lodestone.Tests ${FILES})
 

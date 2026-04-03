@@ -64,13 +64,6 @@ set(FILES
         include/Lodestone.Minecraft.Java/mcregion/McRegionLevelData.h
         src/alpha/world/data/AlphaLevelData.cpp
         include/Lodestone.Minecraft.Java/conversion/mcregion/McRegionLevelDataIo.h
-        src/classic/minev3/MineV3LevelIO.cpp
-        include/Lodestone.Minecraft.Java/conversion/classic/minev3/MineV3LevelIO.h
-        src/classic/minev3/MineV3World.cpp
-        src/classic/minev3/MineV3WorldIo.cpp
-        include/Lodestone.Minecraft.Java/conversion/classic/minev3/MineV3WorldIo.h
-        include/Lodestone.Minecraft.Java/conversion/classic/minev3/options/MineV3WorldWriteOptions.h
-        include/Lodestone.Minecraft.Java/classic/minev3/MineV3World.h
         src/infdev/world/InfdevWorld.cpp
         include/Lodestone.Minecraft.Java/infdev/InfdevWorld.h
         src/infdev/world/data/InfdevLevelData.cpp
