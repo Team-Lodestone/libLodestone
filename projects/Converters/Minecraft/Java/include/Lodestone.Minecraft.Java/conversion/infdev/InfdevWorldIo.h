@@ -11,9 +11,9 @@
 #ifndef LODESTONE_INFDEVWORLDIO_H
 #define LODESTONE_INFDEVWORLDIO_H
 
-#include "Lodestone.Conversion/Identifiers.h"
-#include "Lodestone.Conversion/io/ObjectIOs.h"
-#include "Lodestone.Conversion/registry/RegistryRelations.h"
+#include <Lodestone.Conversion/Identifiers.h>
+#include <Lodestone.Conversion/io/ObjectIOs.h>
+#include <Lodestone.Conversion/registry/RegistryRelations.h>
 #include "Lodestone.Minecraft.Java/Identifiers.h"
 #include "Lodestone.Minecraft.Java/conversion/alpha/AlphaPlayerIo.h"
 #include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionChunkIo.h"

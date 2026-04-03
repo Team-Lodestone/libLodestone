@@ -10,7 +10,7 @@
 */
 #ifndef LODESTONE_INFDEVCHUNK_H
 #define LODESTONE_INFDEVCHUNK_H
-#include "Lodestone.Level/chunk/LevelChunk.h"
+#include <Lodestone.Level/chunk/LevelChunk.h>
 
 namespace lodestone::minecraft::java::infdev::chunk {
 

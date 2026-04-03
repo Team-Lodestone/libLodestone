@@ -10,8 +10,8 @@
 */
 #ifndef LODESTONE_INFDEVZONE_H
 #define LODESTONE_INFDEVZONE_H
-#include "Lodestone.Level/region/Region.h"
-#include "Lodestone.Level/types/Vec2.h"
+#include <Lodestone.Level/region/Region.h>
+#include <Lodestone.Level/types/Vec2.h>
 
 namespace lodestone::minecraft::java::infdev::zone {
     class InfdevZone : public level::Level {

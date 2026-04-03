@@ -10,8 +10,8 @@
  */
 #ifndef LODESTONE_MCREGIONLEVELDATAIO_H
 #define LODESTONE_MCREGIONLEVELDATAIO_H
-#include "Lodestone.Conversion/registry/RegistryRelations.h"
-#include "Lodestone.Minecraft.Common/conversion/io/ObjectIOs.h"
+#include <Lodestone.Conversion/registry/RegistryRelations.h>
+#include <Lodestone.Minecraft.Common/conversion/io/ObjectIOs.h>
 #include "Lodestone.Minecraft.Java/Identifiers.h"
 
 namespace lodestone::minecraft::java::conversion::mcregion {

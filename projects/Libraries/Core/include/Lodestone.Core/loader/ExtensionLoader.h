@@ -10,7 +10,7 @@
  */
 #ifndef LODESTONE_LIBRARYLOADER_H
 #define LODESTONE_LIBRARYLOADER_H
-#include "Lodestone.Common/event/Event.h"
+#include <Lodestone.Common/event/Event.h>
 
 #include <filesystem>
 

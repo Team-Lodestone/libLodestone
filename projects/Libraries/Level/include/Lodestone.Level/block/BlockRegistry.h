@@ -3,7 +3,7 @@
 //
 #ifndef LODESTONE_BLOCKREGISTRY_H
 #define LODESTONE_BLOCKREGISTRY_H
-#include "Lodestone.Common/event/Event.h"
+#include <Lodestone.Common/event/Event.h>
 
 #include <unordered_map>
 

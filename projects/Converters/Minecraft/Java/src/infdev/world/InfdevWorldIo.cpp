@@ -12,11 +12,11 @@
 
 #include <fstream>
 
-#include "libnbt++/io/izlibstream.h"
-#include "libnbt++/io/stream_reader.h"
+#include <libnbt++/io/izlibstream.h>
+#include <libnbt++/io/stream_reader.h>
 #include <libnbt++/nbt_tags.h>
 
-#include "Lodestone.Level/world/World.h"
+#include <Lodestone.Level/world/World.h>
 #include "Lodestone.Minecraft.Java/conversion/infdev/InfdevZoneIo.h"
 #include "Lodestone.Minecraft.Java/infdev/InfdevWorld.h"
 #include "Lodestone.Minecraft.Java/infdev/InfdevZone.h"

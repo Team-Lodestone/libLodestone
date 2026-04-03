@@ -10,9 +10,9 @@
  */
 #ifndef LODESTONE_LODESTONELCE_H
 #define LODESTONE_LODESTONELCE_H
-#include "Lodestone.Common/registry/Identifiable.h"
-#include "Lodestone.Common/registry/Identifier.h"
-#include "Lodestone.Core/LodestoneExtension.h"
+#include <Lodestone.Common/registry/Identifiable.h>
+#include <Lodestone.Common/registry/Identifier.h>
+#include <Lodestone.Core/LodestoneExtension.h>
 #include <Lodestone.Common/Defines.h>
 #include <Lodestone.Common/util/Semver.h>
 

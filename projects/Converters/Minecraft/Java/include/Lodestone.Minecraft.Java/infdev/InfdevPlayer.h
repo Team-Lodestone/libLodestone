@@ -10,7 +10,7 @@
 */
 #ifndef LODESTONE_INFDEVPLAYER_H
 #define LODESTONE_INFDEVPLAYER_H
-#include "Lodestone.Minecraft.Common/player/MinecraftPlayer.h"
+#include <Lodestone.Minecraft.Common/player/MinecraftPlayer.h>
 
 namespace lodestone::minecraft::java::infdev::world {
     class InfdevPlayer final : common::player::MinecraftPlayer {

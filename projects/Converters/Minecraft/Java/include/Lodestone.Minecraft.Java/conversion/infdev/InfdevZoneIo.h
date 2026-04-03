@@ -13,9 +13,9 @@
 #include <Lodestone.Conversion/io/ObjectIOs.h>
 #include <Lodestone.Minecraft.Common/conversion/io/options/OptionPresets.h>
 
-#include "InfdevChunkIo.h"
-#include "Lodestone.Conversion/registry/Registries.h"
-#include "Lodestone.Conversion/registry/RegistryRelations.h"
+#include "Lodestone.Minecraft.Java/conversion/infdev/InfdevChunkIo.h"
+#include <Lodestone.Conversion/registry/Registries.h>
+#include <Lodestone.Conversion/registry/RegistryRelations.h>
 #include "Lodestone.Minecraft.Java/Identifiers.h"
 
 namespace lodestone::minecraft::java::infdev::zone {

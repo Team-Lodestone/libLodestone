@@ -13,7 +13,7 @@
 #include <string>
 #include <sstream>
 
-#include "Lodestone.Level/types/Vec2.h"
+#include <Lodestone.Level/types/Vec2.h>
 
 namespace lodestone::minecraft::java::infdev::zone {
     std::string InfdevZone::getFilename() const {

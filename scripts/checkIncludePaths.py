@@ -12,7 +12,7 @@ errors = []
 
 print("[LodestoneScripts.Linter] Running linter")
 
-for paths, dirs, files in os.walk(os.path.abspath("../projects")):
+for paths, dirs, files in os.walk(os.path.abspath("projects")):
     for name in files:
         if name.endswith(('.cpp', '.h')): # why does it have to be tuple????
             p = os.path.join(paths, name)

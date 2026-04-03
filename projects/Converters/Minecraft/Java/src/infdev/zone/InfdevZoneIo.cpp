@@ -10,9 +10,9 @@
 */
 #include "Lodestone.Minecraft.Java/conversion/infdev/InfdevZoneIo.h"
 
-#include "BinaryIO/container/FixedArray.h"
-#include "BinaryIO/stream/BinaryInputStream.h"
-#include "Lodestone.Conversion/Identifiers.h"
+#include <BinaryIO/container/FixedArray.h>
+#include <BinaryIO/stream/BinaryInputStream.h>
+#include <Lodestone.Conversion/Identifiers.h>
 #include "Lodestone.Minecraft.Java/conversion/infdev/InfdevChunkIo.h"
 #include "Lodestone.Minecraft.Java/infdev/InfdevZone.h"
 

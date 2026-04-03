@@ -11,7 +11,7 @@
 #ifndef LODESTONE_INFDEVWORLD_H
 #define LODESTONE_INFDEVWORLD_H
 #include "Lodestone.Minecraft.Java/infdev/InfdevLevelData.h"
-#include "Lodestone.Minecraft.Common/world/MinecraftWorld.h"
+#include <Lodestone.Minecraft.Common/world/MinecraftWorld.h>
 
 namespace lodestone::minecraft::java::infdev::world {
     class InfdevWorld final : public common::world::MinecraftWorld<data::InfdevLevelData> {

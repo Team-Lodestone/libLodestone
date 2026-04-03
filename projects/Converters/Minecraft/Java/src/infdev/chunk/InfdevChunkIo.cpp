@@ -10,9 +10,9 @@
 */
 #include "Lodestone.Minecraft.Java/conversion/infdev/InfdevChunkIo.h"
 
-#include "BinaryIO/stream/BinaryInputStream.h"
-#include "Lodestone.Common/Indexing.h"
-#include "Lodestone.Conversion/block/data/NumericBlockData.h"
+#include <BinaryIO/stream/BinaryInputStream.h>
+#include <Lodestone.Common/Indexing.h>
+#include <Lodestone.Conversion/block/data/NumericBlockData.h>
 #include "Lodestone.Minecraft.Java/LodestoneJava.h"
 #include "Lodestone.Minecraft.Java/infdev/InfdevChunk.h"
 
