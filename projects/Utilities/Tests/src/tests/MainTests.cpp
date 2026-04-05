@@ -30,10 +30,14 @@
 
 #include <Lodestone.Minecraft.Common/block/Blocks.h>
 
+#include <Lodestone.Minecraft.Java/conversion/infdev/InfdevWorldIo.h>
+
 namespace lodestone::tests::test {
     void MainTests::add() {
         auto &mgr = tfw::TestFramework::getInstance()->testManager();
 
+        mgr.addTest(READ_INFDEV_624_WORLD, "Read Infdev 624 World", readInfdev624World);
+        mgr.addTest(WRITE_INFDEV_624_WORLD, "Write Infdev 624 World", writeInfdev624World);
         mgr.addTest(GENERATE_WATER_CHUNK, "Generate LCE Water Chunk", generateWaterChunk);
         mgr.addTest(READ_ANVIL_WORLD, "Read Anvil World", readAnvilWorld);
         mgr.addTest(WRITE_ANVIL_WORLD, "Write Anvil World", writeAnvilWorld);
@@ -49,6 +53,66 @@ namespace lodestone::tests::test {
         //          "Read Alpha World");
         // ADD_TEST(WRITE_ALPHA_WORLD, writeAlphaWorld, util::types::MAIN,
         //          "Write Alpha World");
+    }
+
+    tfw::test::result::TestResult MainTests::readInfdev624World(tfw::test::logging::loggers::ITestLogger &logger) {
+        constexpr std::string name("Infdev624World");
+        const std::filesystem::path inputDir(util::INPUT_FOLDER / name);
+        const std::filesystem::path outputDir(util::OUTPUT_FOLDER / name);
+
+        logger << "Input: " << inputDir << std::endl;
+
+        const auto *inputIo = conversion::registry::WorldIORegistry::getInstance().getAs<const minecraft::java::infdev::world::InfdevWorldIo>(minecraft::java::identifiers::INF_624_WORLD_IO);
+        const auto w = inputIo->read(minecraft::common::conversion::io::options::OptionPresets::CommonFilesystemOptions {
+            conversion::io::options::fs::FilesystemPathOptions {
+                inputDir
+            },
+            conversion::io::options::versioned::VersionedOptions {
+                minecraft::java::Version::inf20100624
+            }
+        });
+
+        const auto *outputIo = conversion::registry::WorldIORegistry::getInstance().getAs<const minecraft::java::mcregion::world::McRegionWorldIo>(minecraft::java::identifiers::MCREGION_WORLD_IO);
+        outputIo->write(w.get(), minecraft::common::conversion::io::options::OptionPresets::CommonFilesystemOptions {
+            conversion::io::options::fs::FilesystemPathOptions {
+                outputDir
+            },
+            conversion::io::options::versioned::VersionedOptions {
+                minecraft::java::b1_3
+            }
+        });
+
+        return tfw::test::result::TestResult(true, w->toString());
+    }
+
+    tfw::test::result::TestResult MainTests::writeInfdev624World(tfw::test::logging::loggers::ITestLogger &logger) {
+        constexpr std::string name("BetaWorld");
+        const std::filesystem::path inputDir(util::INPUT_FOLDER / name);
+        const std::filesystem::path outputDir(util::OUTPUT_FOLDER / name);
+
+        logger << "Input: " << inputDir << std::endl;
+
+        const auto *inputIo = conversion::registry::WorldIORegistry::getInstance().getAs<const minecraft::java::mcregion::world::McRegionWorldIo>(minecraft::java::identifiers::MCREGION_WORLD_IO);
+        const auto w = inputIo->read(minecraft::common::conversion::io::options::OptionPresets::CommonFilesystemOptions {
+            conversion::io::options::fs::FilesystemPathOptions {
+                inputDir
+            },
+            conversion::io::options::versioned::VersionedOptions {
+                minecraft::java::Version::b1_3
+            }
+        });
+
+        const auto *outputIo = conversion::registry::WorldIORegistry::getInstance().getAs<const minecraft::java::infdev::world::InfdevWorldIo>(minecraft::java::identifiers::INF_624_WORLD_IO);
+        outputIo->write(w.get(), minecraft::common::conversion::io::options::OptionPresets::CommonFilesystemOptions {
+            conversion::io::options::fs::FilesystemPathOptions {
+            util::OUTPUT_FOLDER / name
+            },
+            conversion::io::options::versioned::VersionedOptions {
+                minecraft::java::inf20100624
+            }
+        });
+
+        return tfw::test::result::TestResult(true, w->toString());
     }
 
     tfw::test::result::TestResult MainTests::generateWaterChunk(tfw::test::logging::loggers::ITestLogger &logger) {

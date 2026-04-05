@@ -17,6 +17,10 @@
 #include <libnbt++/nbt_tags.h>
 
 #include <Lodestone.Level/world/World.h>
+
+#include <libnbt++/io/ozlibstream.h>
+
+#include "Lodestone.Minecraft.Java/conversion/anvil/jungle/JungleAnvilChunkIo.h"
 #include "Lodestone.Minecraft.Java/conversion/infdev/InfdevZoneIo.h"
 #include "Lodestone.Minecraft.Java/infdev/InfdevWorld.h"
 #include "Lodestone.Minecraft.Java/infdev/InfdevZone.h"
@@ -114,6 +118,98 @@ namespace lodestone::minecraft::java::infdev::world {
 
     void InfdevWorldIo::write(level::world::World *w,
                               const common::conversion::io::options::OptionPresets::CommonFilesystemOptions &options) const {
-        throw new std::runtime_error("Not implemented");
+        if (!std::filesystem::exists(options.path)) {
+            std::filesystem::create_directories(options.path);
+        }
+
+        // Create level.dat
+        {
+            std::ofstream ofs(options.path / "level.dat", std::ifstream::binary);
+            zlib::ozlibstream strm(ofs, Z_DEFAULT_COMPRESSION, true);
+
+            nbt::io::stream_writer writer(strm);
+            nbt::tag_compound root{};
+            nbt::tag_compound data{};
+
+            // Not the cleanest solution, but it definitely works.
+            auto lastPlayed = w->getProperty("lastPlayed");
+            data["LastPlayed"] =
+                lastPlayed
+                    ? lastPlayed
+                          ->as<
+                              level::properties::TemplatedProperty<int64_t>>()
+                          ->getValue()
+                    : static_cast<int64_t>(0);
+
+            auto seed = w->getProperty("seed");
+            data["RandomSeed"] =
+                seed
+                    ? seed->as<
+                              level::properties::TemplatedProperty<int64_t>>()
+                          ->getValue()
+                    : static_cast<int64_t>(0);
+
+            // TODO: Write default player tag here
+
+            level::types::Vec3i sp = w->getDefaultLevel()->getSpawnPos();
+            data["SpawnX"] = sp.x;
+            data["SpawnY"] = sp.y;
+            data["SpawnZ"] = sp.z;
+
+            auto time = w->getProperty("time");
+            data["Time"] =
+                time
+                    ? time->as<
+                              level::properties::TemplatedProperty<int64_t>>()
+                          ->getValue()
+                    : static_cast<int64_t>(0);
+
+            data["SizeOnDisk"] = static_cast<int64_t>(0);
+
+            root["Data"] = std::move(data);
+            writer.write_tag("", root);
+        }
+
+        // Write zones out
+        const zone::InfdevZoneIo *io = this->getAsByRelation<const zone::InfdevZoneIo, &conversion::identifiers::LEVEL_IO>();
+
+        std::filesystem::path p = options.path;
+
+        std::filesystem::path dataDir = p / "data";
+        if (!std::filesystem::exists(dataDir))
+            std::filesystem::create_directory(dataDir);
+
+
+        auto lvl = w->getDefaultLevel();
+        level::types::Bounds3i bounds = lvl->getChunkBounds();
+
+        for (int cX = 0; cX = bounds.min.x / chunk::InfdevChunkIO::CHUNK_WIDTH; cX++) {
+
+        }
+
+        for (int rx = bounds.min.x >> 5; rx <= bounds.max.x >> 5; rx++) {
+            for (int rz = bounds.min.z >> 5; rz <= bounds.max.z >> 5; rz++) {
+                auto zoneX = lodestone::common::util::Math::encodeBase36(rx);
+                auto zoneZ = lodestone::common::util::Math::encodeBase36(rz);
+                std::ofstream o(dataDir / ("zone_" + zoneX + "_" +
+                                     zoneZ + ".dat"));
+
+                io->write(lvl, common::conversion::io::options::OptionPresets::CommonChunkWriteOptions {
+                              common::conversion::io::options::ChunkOptions {
+                                      {rx, rz}
+                              },
+                              common::conversion::io::options::OptionPresets::CommonWriteOptions {
+                                  conversion::io::options::fs::file::FileWriterOptions {
+                                      o
+                                  },
+                                  conversion::io::options::versioned::VersionedOptions {
+                                  options.version
+                                  }
+                              }
+                });
+
+                o.close();
+            }
+        }
     }
 }

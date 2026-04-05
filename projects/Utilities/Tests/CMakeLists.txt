@@ -71,6 +71,8 @@ target_compile_definitions(Lodestone.Tests PRIVATE
         READ_MINEV2_WORLD=false
         READ_ALPHA_WORLD=false
         WRITE_ALPHA_WORLD=false
+        READ_INFDEV_624_WORLD=true
+        WRITE_INFDEV_624_WORLD=true
 )
 
 setupLinter(Lodestone.Tests)

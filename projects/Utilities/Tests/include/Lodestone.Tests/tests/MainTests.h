@@ -11,6 +11,10 @@ namespace lodestone::tests::test {
       public:
         static void add();
 
+        static tfw::test::result::TestResult readInfdev624World(tfw::test::logging::loggers::ITestLogger &logger);
+
+        static tfw::test::result::TestResult writeInfdev624World(tfw::test::logging::loggers::ITestLogger &logger);
+
         static tfw::test::result::TestResult generateWaterChunk(tfw::test::logging::loggers::ITestLogger &logger);
 
         static tfw::test::result::TestResult readAnvilWorld(tfw::test::logging::loggers::ITestLogger &logger);

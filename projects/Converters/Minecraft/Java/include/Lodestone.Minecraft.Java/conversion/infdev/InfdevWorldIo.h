@@ -15,8 +15,6 @@
 #include <Lodestone.Conversion/io/ObjectIOs.h>
 #include <Lodestone.Conversion/registry/RegistryRelations.h>
 #include "Lodestone.Minecraft.Java/Identifiers.h"
-#include "Lodestone.Minecraft.Java/conversion/alpha/AlphaPlayerIo.h"
-#include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionChunkIo.h"
 #include "Lodestone.Minecraft.Java/conversion/infdev/InfdevZoneIo.h"
 
 namespace lodestone::minecraft::java::infdev::world {

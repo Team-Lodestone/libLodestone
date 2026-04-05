@@ -20,6 +20,7 @@
 
 namespace lodestone::minecraft::java::infdev::zone {
     constexpr uint32_t EXPECTED_MAGIC = 0x13737000;
+    constexpr uint16_t EXPECTED_VERSION = 0;
 
     class InfdevZoneIo : public conversion::io::LevelIO<&identifiers::INF_624_ZONE_IO, const
                              common::conversion::io::options::OptionPresets::CommonChunkReadOptions, const
