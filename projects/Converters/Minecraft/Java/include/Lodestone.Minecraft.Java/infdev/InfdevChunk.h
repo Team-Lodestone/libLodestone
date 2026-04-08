@@ -10,23 +10,59 @@
 */
 #ifndef LODESTONE_INFDEVCHUNK_H
 #define LODESTONE_INFDEVCHUNK_H
+#include "Lodestone.Minecraft.Java/infdev/InfdevZone.h"
+
 #include <Lodestone.Level/chunk/LevelChunk.h>
 
 namespace lodestone::minecraft::java::infdev::chunk {
 
     class InfdevChunk final : public level::chunk::LevelChunk {
     public:
-        explicit InfdevChunk(const int64_t lastUpdate = 0)
-            : LevelChunk(128), m_lastUpdate(lastUpdate) {}
+        static constexpr int CHUNK_WIDTH = 16;
+        static constexpr int CHUNK_DEPTH = 16;
+        static constexpr int CHUNK_HEIGHT = 128;
+
+        /** Size of the chunk header in bytes */
+        static constexpr int CHUNK_HEADER_SIZE = sizeof(int32_t) // chunk x coord
+                                               + sizeof(int32_t) // chunk z coord
+                                               + sizeof(int64_t) // inhabited time
+                                               + sizeof(int64_t) // properties
+                                               + 232;            // extra padding/reserved
+
+        /** Size of the chunk heightmap in bytes */
+        static constexpr int CHUNK_HEIGHTMAP_SIZE = CHUNK_WIDTH * CHUNK_DEPTH;
+        /** Size of the chunk block array in bytes */
+        static constexpr int CHUNK_TOTAL_BLOCKS = CHUNK_WIDTH * CHUNK_DEPTH * CHUNK_HEIGHT;
+        /** Size of the chunk layer in bytes (used for metadata, skylight, blocklight) */
+        static constexpr int CHUNK_LAYER_SIZE = CHUNK_TOTAL_BLOCKS / 2;
+
+        /** Amount of layers stored in the chunk (DataLayer)
+         *
+         * - Metadata
+         * - Sky light
+         * - Block light
+         */
+        static constexpr int CHUNK_LAYERS = 3;
+
+        /** Incorrect chunk size in bytes, used for getting the zone offset
+         *
+         * The calculation is incorrect, please use CHUNK_SIZE_BYTES for the actual size in bytes
+         */
+        static constexpr int CHUNK_SIZE_SLOT_OFFSET = CHUNK_TOTAL_BLOCKS * CHUNK_LAYERS + CHUNK_HEADER_SIZE; // not the true size tho??? I mean technically it works since it will be bigger than the real size...
+        /** Chunk size in bytes */
+        static constexpr int CHUNK_BYTES = /*header*/CHUNK_HEADER_SIZE + /*block array*/CHUNK_TOTAL_BLOCKS + /*metadata, skylight, blocklight*/(CHUNK_LAYER_SIZE * CHUNK_LAYERS) + /*heightmap*/CHUNK_HEIGHTMAP_SIZE;
+
+        explicit InfdevChunk(const int64_t lastUpdate = 0, const bool isPopulated = true)
+            : LevelChunk(128), m_lastUpdate(lastUpdate), m_terrainPopulated(isPopulated) {}
 
         explicit InfdevChunk(const level::types::Vec2i &coords,
-                               const int64_t lastUpdate = 0)
-            : LevelChunk(128, coords), m_lastUpdate(lastUpdate) {}
+                               const int64_t lastUpdate = 0, const bool isPopulated = true)
+            : LevelChunk(128, coords), m_lastUpdate(lastUpdate), m_terrainPopulated(isPopulated) {}
 
         InfdevChunk(level::chunk::ChunkContainer *container,
                       const level::types::Vec2i &coords,
-                      const int64_t lastUpdate = 0)
-            : LevelChunk(128, container, coords), m_lastUpdate(lastUpdate) {}
+                      const int64_t lastUpdate = 0, const bool isPopulated = true)
+            : LevelChunk(128, container, coords), m_lastUpdate(lastUpdate), m_terrainPopulated(isPopulated) {}
 
         std::string toString() const override {
             if (this->m_coords.has_value())
@@ -36,8 +72,22 @@ namespace lodestone::minecraft::java::infdev::chunk {
             return std::format("InfdevChunk");
         };
 
+        constexpr static int getSlotIndex(const int chunkX, const int chunkZ) {
+            const int zoneX = chunkX >> zone::InfdevZone::CHUNKS_PER_ZONE_BITS;
+            const int zoneZ = chunkZ >> zone::InfdevZone::CHUNKS_PER_ZONE_BITS;
+
+            const int offsetX = chunkX - (zoneX << zone::InfdevZone::CHUNKS_PER_ZONE_BITS);
+            const int offsetZ = chunkZ - (zoneZ << zone::InfdevZone::CHUNKS_PER_ZONE_BITS);
+
+            return offsetX + offsetZ * zone::InfdevZone::CHUNKS_PER_ZONE;
+        }
+
+        constexpr static int getSlotOffset(int slotIndex) {
+            return (slotIndex - 1) * CHUNK_SIZE_SLOT_OFFSET + zone::InfdevZone::HEADER_SIZE;
+        }
     private:
         int64_t m_lastUpdate = 0;
+        bool m_terrainPopulated = true;
     };
 
 }

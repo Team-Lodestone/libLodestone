@@ -10,6 +10,8 @@
 */
 #include "Lodestone.Minecraft.Java/conversion/infdev/InfdevZoneIo.h"
 
+#include <Lodestone.Level/chunk/ImmutableChunk.h>
+
 #include <BinaryIO/container/FixedArray.h>
 #include <BinaryIO/stream/BinaryInputStream.h>
 #include <Lodestone.Conversion/Identifiers.h>
@@ -28,7 +30,7 @@ namespace lodestone::minecraft::java::infdev::zone {
 
         auto zone = std::make_unique<InfdevZone>(options.coords);
         const chunk::InfdevChunkIO *chunkIo = this->getAsByRelation<const chunk::InfdevChunkIO, &
-            conversion::identifiers::CHUNK_IO>();
+                                                                    conversion::identifiers::CHUNK_IO>();
 
         if (const uint32_t magic = bis.readBE<uint32_t>(); magic != EXPECTED_MAGIC) {
             throw std::runtime_error{std::format("Invalid magic value! Expected: {}, read: {}", EXPECTED_MAGIC, magic)};
@@ -46,10 +48,11 @@ namespace lodestone::minecraft::java::infdev::zone {
         }
 
         for (const uint16_t slot : slots) {
-            if (slot == 0) continue;
+            if (slot == 0)
+                continue;
 
             // TODO: Make this less jank / not reliant on seek
-            const uint64_t readPos = static_cast<uint64_t>(slot) * (32768 * 3 + 256) + 4096;
+            const uint64_t readPos = InfdevChunk::getSlotOffset(slot);
             bis.seek(readPos);
 
             auto c = CAST_UNIQUE_PTR(chunk::InfdevChunk,
@@ -95,30 +98,27 @@ namespace lodestone::minecraft::java::infdev::zone {
                 const int cz = zoneCoordinates.y * 32 + z;
 
                 level::chunk::Chunk *ch = c->getChunk(cx, cz);
-                if (ch != nullptr) {
+                if (ch != nullptr && typeid(*ch) != typeid(level::chunk::ImmutableChunk)) {
                     slotCount++;
 
-                    // TODO: Refactor to separate function
-                    const int v5 = cx - (zoneCoordinates.x << 5);
-                    const int v6 = cz - (zoneCoordinates.y << 5);
-                    const int slotIdx = v5 + v6 * 32;
+                    const int slotIdx = InfdevChunk::getSlotIndex(cx, cz);
                     slots[slotCount] = slotIdx;
 
-                    const uint64_t writePos = static_cast<uint64_t>(slotIdx) * (32768 * 3 + 256) + 4096;
+                    const uint64_t writePos = InfdevChunk::getSlotOffset(slotIdx);
                     bos.seek(writePos);
-                    chunkIo->write(ch, common::conversion::io::options::OptionPresets::CommonChunkWriteOptions {
-                       common::conversion::io::options::ChunkOptions {
-                               {cx, cz}
-                       },
-                        common::conversion::io::options::OptionPresets::CommonWriteOptions {
-                            conversion::io::options::fs::file::FileWriterOptions {
-                                bos.getStream(),
-                            },
-                            conversion::io::options::versioned::VersionedOptions {
-                                options.version
-                            }
-                        }
-    });
+                    chunkIo->write(ch, common::conversion::io::options::OptionPresets::CommonChunkWriteOptions{
+                                       common::conversion::io::options::ChunkOptions{
+                                           {cx, cz}
+                                       },
+                                       common::conversion::io::options::OptionPresets::CommonWriteOptions{
+                                           conversion::io::options::fs::file::FileWriterOptions{
+                                               bos.getStream(),
+                                           },
+                                           conversion::io::options::versioned::VersionedOptions{
+                                               options.version
+                                           }
+                                       }
+                                   });
                 }
             }
         }

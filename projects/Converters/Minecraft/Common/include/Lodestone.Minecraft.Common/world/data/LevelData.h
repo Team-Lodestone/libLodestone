@@ -14,7 +14,7 @@ namespace lodestone::minecraft::common::world::data {
         int64_t lastPlayed;
         int64_t time;
 
-        LevelData(const int64_t seed = 0, const int64_t lastPlayed = 0, const int64_t time = 0) : seed(seed), lastPlayed(lastPlayed), time(time) {}
+        explicit LevelData(const int64_t seed = 0, const int64_t lastPlayed = 0, const int64_t time = 0) : seed(seed), lastPlayed(lastPlayed), time(time) {}
     };
 }
 

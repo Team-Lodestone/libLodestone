@@ -22,6 +22,7 @@
 
 #include "Lodestone.Minecraft.Java/conversion/anvil/jungle/JungleAnvilChunkIo.h"
 #include "Lodestone.Minecraft.Java/conversion/infdev/InfdevZoneIo.h"
+#include "Lodestone.Minecraft.Java/infdev/InfdevChunk.h"
 #include "Lodestone.Minecraft.Java/infdev/InfdevWorld.h"
 #include "Lodestone.Minecraft.Java/infdev/InfdevZone.h"
 
@@ -30,7 +31,7 @@ namespace lodestone::minecraft::java::infdev::world {
         const common::conversion::io::options::OptionPresets::CommonFilesystemOptions &options) const {
 
         if (!std::filesystem::exists(options.path))
-            return nullptr;
+            throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), options.path);
 
         level::types::Vec3i spawnPos = {0, 64, 0};
         auto world = std::make_unique<level::world::World>();
@@ -73,7 +74,7 @@ namespace lodestone::minecraft::java::infdev::world {
 
         auto pth = options.path / "data";
         for (std::filesystem::recursive_directory_iterator it{pth}, end{};
-     it != end; ++it) {
+             it != end; ++it) {
             const std::filesystem::path file = it->path();
 
             // TODO: Read entities_x_z.dat
@@ -83,22 +84,23 @@ namespace lodestone::minecraft::java::infdev::world {
 
             // Read zones_x_z.dat
             if (file.filename().string().starts_with("zone_")) {
-                if (file.extension() != ".dat") continue;
+                if (file.extension() != ".dat")
+                    continue;
 
                 level::types::Vec2i coords = zone::InfdevZone::getCoordsFromFilename(file.filename().string());
 
                 std::ifstream ifs(file, std::ifstream::binary);
 
                 std::unique_ptr<level::Level> level =
-                    io->read(common::conversion::io::options::OptionPresets::CommonChunkReadOptions {
-                        common::conversion::io::options::ChunkOptions {
+                    io->read(common::conversion::io::options::OptionPresets::CommonChunkReadOptions{
+                        common::conversion::io::options::ChunkOptions{
                             coords
                         },
-                        common::conversion::io::options::OptionPresets::CommonReadOptions {
-                            conversion::io::options::fs::file::FileReaderOptions {
+                        common::conversion::io::options::OptionPresets::CommonReadOptions{
+                            conversion::io::options::fs::file::FileReaderOptions{
                                 ifs
                             },
-                            conversion::io::options::versioned::VersionedOptions {
+                            conversion::io::options::versioned::VersionedOptions{
                                 options.version
                             }
                         }
@@ -111,7 +113,7 @@ namespace lodestone::minecraft::java::infdev::world {
                     defaultLevel->merge(std::move(level));
                 }
             }
-     }
+        }
 
         return world;
     }
@@ -136,17 +138,17 @@ namespace lodestone::minecraft::java::infdev::world {
             data["LastPlayed"] =
                 lastPlayed
                     ? lastPlayed
-                          ->as<
-                              level::properties::TemplatedProperty<int64_t>>()
-                          ->getValue()
+                    ->as<
+                        level::properties::TemplatedProperty<int64_t> >()
+                    ->getValue()
                     : static_cast<int64_t>(0);
 
             auto seed = w->getProperty("seed");
             data["RandomSeed"] =
                 seed
                     ? seed->as<
-                              level::properties::TemplatedProperty<int64_t>>()
-                          ->getValue()
+                        level::properties::TemplatedProperty<int64_t> >()
+                    ->getValue()
                     : static_cast<int64_t>(0);
 
             // TODO: Write default player tag here
@@ -160,8 +162,8 @@ namespace lodestone::minecraft::java::infdev::world {
             data["Time"] =
                 time
                     ? time->as<
-                              level::properties::TemplatedProperty<int64_t>>()
-                          ->getValue()
+                        level::properties::TemplatedProperty<int64_t> >()
+                    ->getValue()
                     : static_cast<int64_t>(0);
 
             data["SizeOnDisk"] = static_cast<int64_t>(0);
@@ -179,34 +181,29 @@ namespace lodestone::minecraft::java::infdev::world {
         if (!std::filesystem::exists(dataDir))
             std::filesystem::create_directory(dataDir);
 
-
         auto lvl = w->getDefaultLevel();
         level::types::Bounds3i bounds = lvl->getChunkBounds();
-
-        for (int cX = 0; cX = bounds.min.x / chunk::InfdevChunkIO::CHUNK_WIDTH; cX++) {
-
-        }
 
         for (int rx = bounds.min.x >> 5; rx <= bounds.max.x >> 5; rx++) {
             for (int rz = bounds.min.z >> 5; rz <= bounds.max.z >> 5; rz++) {
                 auto zoneX = lodestone::common::util::Math::encodeBase36(rx);
                 auto zoneZ = lodestone::common::util::Math::encodeBase36(rz);
                 std::ofstream o(dataDir / ("zone_" + zoneX + "_" +
-                                     zoneZ + ".dat"));
+                                           zoneZ + ".dat"));
 
-                io->write(lvl, common::conversion::io::options::OptionPresets::CommonChunkWriteOptions {
-                              common::conversion::io::options::ChunkOptions {
-                                      {rx, rz}
+                io->write(lvl, common::conversion::io::options::OptionPresets::CommonChunkWriteOptions{
+                              common::conversion::io::options::ChunkOptions{
+                                  {rx, rz}
                               },
-                              common::conversion::io::options::OptionPresets::CommonWriteOptions {
-                                  conversion::io::options::fs::file::FileWriterOptions {
+                              common::conversion::io::options::OptionPresets::CommonWriteOptions{
+                                  conversion::io::options::fs::file::FileWriterOptions{
                                       o
                                   },
-                                  conversion::io::options::versioned::VersionedOptions {
-                                  options.version
+                                  conversion::io::options::versioned::VersionedOptions{
+                                      options.version
                                   }
                               }
-                });
+                          });
 
                 o.close();
             }

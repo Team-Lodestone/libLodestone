@@ -10,5 +10,8 @@
 */
 #include "Lodestone.Minecraft.Java/infdev/InfdevChunk.h"
 
+#include "Lodestone.Minecraft.Java/infdev/InfdevZone.h"
+
 namespace lodestone::minecraft::java::infdev::chunk {
+
 }

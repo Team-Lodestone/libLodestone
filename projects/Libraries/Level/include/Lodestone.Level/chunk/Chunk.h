@@ -9,6 +9,7 @@
 
 #include "Lodestone.Level/block/BlockRegistry.h"
 #include "Lodestone.Level/chunk/section/ImmutableSection.h"
+#include "Lodestone.Level/properties/ReflectiveProperties.h"
 #include "Lodestone.Level/types/Vec2.h"
 
 namespace lodestone::level::chunk {
@@ -17,7 +18,7 @@ namespace lodestone::level::chunk {
 
 namespace lodestone::level::chunk {
     class LODESTONE_API Chunk
-        : public lodestone::common::string::StringSerializable {
+        : public lodestone::common::string::StringSerializable, public properties::ReflectiveProperties {
       public:
         struct BlockmapEntry {
             const block::instance::BlockInstance *block;

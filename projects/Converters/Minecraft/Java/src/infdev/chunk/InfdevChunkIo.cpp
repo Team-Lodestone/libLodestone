@@ -21,34 +21,34 @@
 namespace lodestone::minecraft::java::infdev::chunk {
     std::unique_ptr<level::chunk::Chunk> InfdevChunkIO::read(
         const common::conversion::io::options::OptionPresets::CommonReadOptions &options) const {
-bio::stream::BinaryInputStream bis(options.input);
+        bio::stream::BinaryInputStream bis(options.input);
 
         // 256 byte entry
         const int32_t chunkX = bis.readBE<int32_t>();
         const int32_t chunkZ = bis.readBE<int32_t>();
-        int64_t time = bis.readBE<int64_t>();
-        int64_t isPopulated = bis.readBE<int64_t>();
+        const int64_t time = bis.readBE<int64_t>();
+        const std::unique_ptr<Properties> properties = bis.deserialize<Properties::Deserializer>();
 
-        auto c = std::make_unique<InfdevChunk>(level::types::Vec2i(chunkX, chunkZ), time);
+        auto c = std::make_unique<InfdevChunk>(level::types::Vec2i(chunkX, chunkZ), time, properties->terrainPopulated);
 
         // Skip over padding
         bis.seekRelative(232);
 
-        const std::vector<uint8_t> blocks = bis.readOfSizeVec(32768);
-        const std::vector<uint8_t> data = bis.readOfSizeVec(16384);
-        const std::vector<uint8_t> skyLight = bis.readOfSizeVec(16384);
-        const std::vector<uint8_t> blockLight = bis.readOfSizeVec(16384);
+        const std::vector<uint8_t> blocks = bis.readOfSizeVec(InfdevChunk::CHUNK_TOTAL_BLOCKS);
+        const std::vector<uint8_t> data = bis.readOfSizeVec(InfdevChunk::CHUNK_LAYER_SIZE);
+        const std::vector<uint8_t> skyLight = bis.readOfSizeVec(InfdevChunk::CHUNK_LAYER_SIZE);
+        const std::vector<uint8_t> blockLight = bis.readOfSizeVec(InfdevChunk::CHUNK_LAYER_SIZE);
 
-        const std::vector<uint8_t> heightMap = bis.readOfSizeVec(256);
+        const std::vector<uint8_t> heightMap = bis.readOfSizeVec(InfdevChunk::CHUNK_HEIGHTMAP_SIZE);
 
         const std::unique_ptr<conversion::block::version::BlockIO> io = LodestoneJava::getInstance()->io.getIo(
             options.version);
 
-        for (int cx = 0; cx < CHUNK_WIDTH; cx++) {
-            for (int cz = 0; cz < CHUNK_DEPTH; cz++) {
-                for (int cy = 0; cy < CHUNK_HEIGHT; cy++) {
+        for (int cx = 0; cx < InfdevChunk::CHUNK_WIDTH; cx++) {
+            for (int cz = 0; cz < InfdevChunk::CHUNK_DEPTH; cz++) {
+                for (int cy = 0; cy < InfdevChunk::CHUNK_HEIGHT; cy++) {
                     const size_t idx =
-                            INDEX_XZY(cx, cy, cz, InfdevChunkIO::CHUNK_HEIGHT, InfdevChunkIO::CHUNK_DEPTH);
+                        INDEX_XZY(cx, cy, cz, InfdevChunk::CHUNK_HEIGHT, InfdevChunk::CHUNK_DEPTH);
 
                     const uint8_t bb = blocks[idx];
 
@@ -60,18 +60,18 @@ bio::stream::BinaryInputStream bis(options.input);
                     const uint8_t d = GET_NIBBLE(data, idx);
 
                     level::block::instance::BlockInstance b =
-                            io->convertBlockToInternal(
-                                conversion::block::data::
-                                NumericBlockData(
-                                    bb,
-                                    0));
+                        io->convertBlockToInternal(
+                            conversion::block::data::
+                            NumericBlockData(
+                                bb,
+                                0));
 
                     if (b.getBlock() !=
                         level::block::BlockRegistry::s_defaultBlock)
                         c->InfdevChunk::setBlock(std::move(b), cx, cy, cz);
 
                     if (level::chunk::section::Section *s =
-                            c->getSection(cy >> 4)) {
+                        c->getSection(cy >> 4)) {
                         s->getBlockLight()->setNibble(
                             cx, cy & 15, cz, GET_NIBBLE(skyLight, idx));
                         s->getSkyLight()->setNibble(
@@ -96,35 +96,27 @@ bio::stream::BinaryInputStream bis(options.input);
         bos.writeBE<int32_t>(coords.x);
         bos.writeBE<int32_t>(coords.y); // Z
 
+        bos.writeBE<int64_t>(c->getPropertyOr<int64_t>("inhabitedTime", 0L)->getValue());
+        bos.serialize<Properties::Serializer>({
+            .terrainPopulated = c->getPropertyOr<bool>("terrainPopulated", true)->getValue()
+        });
+
         // Write padding
         for (int i = 0; i < 232; i++) {
             bos.writeBE<int8_t>(0);
         }
 
-        std::vector<int8_t> blocks(
-    CHUNK_WIDTH * CHUNK_HEIGHT *
-    CHUNK_DEPTH);
-        std::vector<int8_t> data((CHUNK_WIDTH * CHUNK_HEIGHT * CHUNK_DEPTH) /
-                                 2);
-        std::vector<int8_t> skyLight(
-            (CHUNK_WIDTH * CHUNK_HEIGHT * CHUNK_DEPTH) / 2);
-        std::vector<int8_t> blockLight(
-            (CHUNK_WIDTH * CHUNK_HEIGHT * CHUNK_DEPTH) / 2);
-        std::vector<int8_t> heightMap(CHUNK_WIDTH * CHUNK_DEPTH);
-        // todo wiki says there's tileticks which is gonna be pain
+        std::vector<int8_t> blocks(InfdevChunk::CHUNK_TOTAL_BLOCKS);
+        std::vector<int8_t> data(InfdevChunk::CHUNK_LAYER_SIZE);
+        std::vector<int8_t> skyLight(InfdevChunk::CHUNK_LAYER_SIZE);
+        std::vector<int8_t> blockLight(InfdevChunk::CHUNK_LAYER_SIZE);
+        std::vector<int8_t> heightMap(InfdevChunk::CHUNK_WIDTH * InfdevChunk::CHUNK_DEPTH);
 
-        int8_t *blockData = blocks.data(); // avoid the annoying bounds checks
-        // and just write directly
-        int8_t *dataData = data.data();    // welcome back 4J
-        int8_t *skyLightData = skyLight.data();
-        int8_t *blockLightData = blockLight.data();
-        int8_t *heightMapData = heightMap.data();
-
-        for (int cx = 0; cx < CHUNK_WIDTH; cx++) {
-            for (int cz = 0; cz < CHUNK_DEPTH; cz++) {
-                for (int cy = 0; cy < CHUNK_HEIGHT; cy++) {
+        for (int cx = 0; cx < InfdevChunk::CHUNK_WIDTH; cx++) {
+            for (int cz = 0; cz < InfdevChunk::CHUNK_DEPTH; cz++) {
+                for (int cy = 0; cy < InfdevChunk::CHUNK_HEIGHT; cy++) {
                     const size_t idx =
-                        INDEX_XZY(cx, cy, cz, InfdevChunkIO::CHUNK_HEIGHT, InfdevChunkIO::CHUNK_DEPTH);
+                        INDEX_XZY(cx, cy, cz, InfdevChunk::CHUNK_HEIGHT, InfdevChunk::CHUNK_DEPTH);
                     const level::block::instance::BlockInstance &b =
                         c->getBlock(cx, cy, cz);
 #ifdef USE_RISKY_OPTIMIZATIONS
@@ -135,38 +127,38 @@ bio::stream::BinaryInputStream bis(options.input);
                         uint8_t dat = 0;
 
                         if (const conversion::block::data::NumericBlockData *bl =
-                                    bio->convertBlockFromInternal(&b)->as<conversion::block::data::NumericBlockData>()) {
+                            bio->convertBlockFromInternal(&b)->as<conversion::block::data::NumericBlockData>()) {
                             id = bl->getId();
                             dat = bl->getData();
-                                    }
-
-                        blockData[idx] = id;
-
-                        SET_NIBBLE(dataData, idx, dat);
-#ifdef USE_RISKY_OPTIMIZATIONS
                         }
+
+                        blocks[idx] = id;
+
+                        SET_NIBBLE(data, idx, dat);
+#ifdef USE_RISKY_OPTIMIZATIONS
+                    }
 #endif
 
                     level::chunk::section::Section *s = c->getSection(cy >> 4);
 
-                    SET_NIBBLE(skyLightData, idx,
+                    SET_NIBBLE(skyLight, idx,
                                s ? s->getSkyLight()->getNibble(cx, cy & 15, cz)
-                                 : 15);
+                               : 15);
                     SET_NIBBLE(
-                        blockLightData, idx,
+                        blockLight, idx,
                         s ? s->getBlockLight()->getNibble(cx, cy & 15, cz)
-                          : 15);
+                        : 15);
                 }
 
-                heightMapData[INDEX_YX(cx, cz, CHUNK_WIDTH)] =
+                heightMap[INDEX_YX(cx, cz, InfdevChunk::CHUNK_WIDTH)] =
                     c->getHeightAt(cx, cz);
             }
-
-            bos.writeBytes(reinterpret_cast<uint8_t*>(blockData), 32768);
-            bos.writeBytes(reinterpret_cast<uint8_t*>(dataData), 16384);
-            bos.writeBytes(reinterpret_cast<uint8_t*>(skyLightData), 16384);
-            bos.writeBytes(reinterpret_cast<uint8_t*>(blockLightData), 16384);
-            bos.writeBytes(reinterpret_cast<uint8_t*>(heightMapData), 256);
         }
+
+        bos.writeBytes(reinterpret_cast<uint8_t *>(blocks.data()), blocks.size());
+        bos.writeBytes(reinterpret_cast<uint8_t *>(data.data()), data.size());
+        bos.writeBytes(reinterpret_cast<uint8_t *>(skyLight.data()), skyLight.size());
+        bos.writeBytes(reinterpret_cast<uint8_t *>(blockLight.data()), blockLight.size());
+        bos.writeBytes(reinterpret_cast<uint8_t *>(heightMap.data()), heightMap.size());
     }
 }
