@@ -91,9 +91,9 @@ namespace lodestone::minecraft::java::anvil::jungle::chunk {
 
                         if (level::chunk::section::Section *sec =
                                 c->getSection(cy >> 4)) {
-                            sec->getBlockLight()->setNibble(
+                            sec->getBlockLightStorage()->setNibble(
                                 cx, cy, cz, GET_NIBBLE(skyLight, idx));
-                            sec->getSkyLight()->setNibble(
+                            sec->getSkyLightStorage()->setNibble(
                                 cx, cy, cz, GET_NIBBLE(blockLight, idx));
                         }
                     }
@@ -172,11 +172,11 @@ namespace lodestone::minecraft::java::anvil::jungle::chunk {
 #endif
 
                             SET_NIBBLE(skyLight, idx,
-                                       s ? s->getSkyLight()->getNibble(cx, cy, cz)
+                                       s ? s->getSkyLightStorage()->getNibble(cx, cy, cz)
                                          : 15);
                             SET_NIBBLE(
                                 blockLight, idx,
-                                s ? s->getBlockLight()->getNibble(cx, cy, cz)
+                                s ? s->getBlockLightStorage()->getNibble(cx, cy, cz)
                                   : 15);
                         }
                     }

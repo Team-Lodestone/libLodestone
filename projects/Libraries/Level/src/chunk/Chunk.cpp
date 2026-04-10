@@ -10,68 +10,58 @@
 namespace lodestone::level::chunk {
     Chunk::Chunk() {
         this->m_container = nullptr;
-        for (int x = 0; x < lodestone::common::constants::CHUNK_WIDTH *
-                                common::constants::CHUNK_DEPTH;
-             ++x) {
-            m_blockMap[x] = Chunk::BlockmapEntry { block::instance::ImmutableBlockInstance::getInstance(), 0 };
-        }
     }
 
-    Chunk::Chunk(const types::Vec2i &coords) : Chunk() {
-        this->m_coords = std::move(coords);
-        this->m_container = nullptr;
-    }
-
-    Chunk::Chunk(ChunkContainer *container, const types::Vec2i &coords)
-        : Chunk() {
+    Chunk::Chunk(const coords::ChunkCoordinates &coords, ChunkContainer *container) {
         this->m_coords = std::move(coords);
         this->m_container = container;
     }
 
     Chunk::~Chunk() {
-        delete[] m_blockMap;
+        delete[] m_heightMap;
     }
 
     int Chunk::getChunkBlockHeight() const {
         return getChunkHeight() * common::constants::SECTION_HEIGHT;
     }
 
-    const Chunk::BlockmapEntry *Chunk::getBlockmap() const {
-        return m_blockMap;
+    section::Section * Chunk::getSectionFromBlockY(const signed_size_t &blockY) const {
+        return getSection(coords::SectionCoordinates::fromBlockCoordinates(blockY));
     }
 
-    int16_t Chunk::getHeightAt(const int x, const int z) const {
-        return m_blockMap[z * common::constants::CHUNK_WIDTH + x].height;
+    section::Section * Chunk::getSectionFromBlockYCreate(const signed_size_t &blockY) {
+        return getSectionCreate(coords::SectionCoordinates::fromBlockCoordinates(blockY));
     }
 
-    void Chunk::setHeightAt(const int16_t h, const int x, const int z) {
-        m_blockMap[z * common::constants::CHUNK_WIDTH + x].height = h;
+    const int16_t * Chunk::getHeightmap() const {
+        return this->m_heightMap;
     }
 
-    const block::instance::BlockInstance *
-    Chunk::getBlockmapBlockAt(const int x, const int z) const {
-        return m_blockMap[z * common::constants::CHUNK_WIDTH + x].block;
+    int16_t Chunk::getHeightAt(const int localX, const int localZ) const {
+        return m_heightMap[localZ * common::constants::CHUNK_WIDTH + localX];
     }
 
-    void Chunk::setBlockmapBlockAt(const block::instance::BlockInstance *b,
-                                   const int x, const int z) {
-        m_blockMap[z * common::constants::CHUNK_WIDTH + x].block = b;
+    void Chunk::setHeightAt(const int16_t height, const int localX, const int localZ) {
+        m_heightMap[localZ * common::constants::CHUNK_WIDTH + localX] = height;
     }
 
-    const Chunk::BlockmapEntry & Chunk::getBlockmapEntryAt(const int x,
-        const int z) const {
-        return m_blockMap[z * common::constants::CHUNK_WIDTH + x];
+    const block::instance::BlockInstance & Chunk::getBlockAtHeight(const int localX, const int localZ) const {
+        const int16_t y = this->getHeightAt(localX, localZ);
+
+        return this->getBlock(localX, y - 1, localZ);
     }
 
-    void Chunk::setBlockmapEntryAt(const BlockmapEntry &b, int x, int z) {
-        this->m_blockMap[z * common::constants::CHUNK_WIDTH + x] = b;
+    void Chunk::setBlockAtHeight(block::instance::BlockInstance &&block, const int localX, const int localZ) {
+        const int16_t y = this->getHeightAt(localX, localZ);
+
+        this->setBlock(std::move(block), localX, y - 1, localZ);
     }
 
     bool Chunk::hasCoords() const { return m_coords.has_value(); }
 
-    const std::optional<types::Vec2i> &Chunk::getCoords() { return m_coords; }
+    const std::optional<coords::ChunkCoordinates> &Chunk::getCoords() const { return m_coords; }
 
-    void Chunk::setCoords(const std::optional<types::Vec2i> &coords) {
+    void Chunk::setCoords(const std::optional<coords::ChunkCoordinates> &coords) {
         m_coords = std::move(coords);
     }
 
@@ -81,7 +71,7 @@ namespace lodestone::level::chunk {
         this->m_container = container;
     }
 
-    void Chunk::attach(ChunkContainer *container, const types::Vec2i &coords) {
+    void Chunk::attach(ChunkContainer *container, const coords::ChunkCoordinates &coords) {
         attach(container);
         setCoords(coords);
     }
@@ -95,4 +85,8 @@ namespace lodestone::level::chunk {
     bool Chunk::isInContainer() const { return m_container != nullptr; }
 
     ChunkContainer *Chunk::getContainer() const { return m_container; }
+
+    void Chunk::postProcess() {
+        this->calculateHeightmap();
+    }
 } // namespace lodestone::level::chunk

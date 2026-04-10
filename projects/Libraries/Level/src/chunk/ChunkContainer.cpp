@@ -12,11 +12,11 @@
 #include <Lodestone.Common/util/Logging.h>
 
 namespace lodestone::level::chunk {
-    bool ChunkContainer::hasChunk(const types::Vec2i &coords) const {
+    bool ChunkContainer::hasChunk(const coords::ChunkCoordinates &coords) const {
         return m_chunks.contains(coords);
     }
 
-    chunk::Chunk *ChunkContainer::createChunk(const types::Vec2i &coords,
+    chunk::Chunk *ChunkContainer::createChunk(const coords::ChunkCoordinates &coords,
                                               const int height) {
         if (hasChunk(coords))
             throw std::runtime_error(
@@ -38,12 +38,12 @@ namespace lodestone::level::chunk {
     }
 
     void ChunkContainer::addChunk(std::unique_ptr<chunk::Chunk> chunk) {
-        const std::optional<types::Vec2i> &optCoords = chunk->getCoords();
+        const std::optional<coords::ChunkCoordinates> &optCoords = chunk->getCoords();
 
         if (!optCoords.has_value())
             throw std::runtime_error(
                 "Tried to place chunk that does not contain coords");
-        const types::Vec2i &coords = optCoords.value();
+        const coords::ChunkCoordinates &coords = optCoords.value();
 
         if (m_chunks.contains(coords))
             throw std::runtime_error(std::format(
@@ -57,7 +57,7 @@ namespace lodestone::level::chunk {
         m_chunks[coords] = std::move(chunk);
     }
 
-    void ChunkContainer::addChunk(const types::Vec2i &coords,
+    void ChunkContainer::addChunk(const coords::ChunkCoordinates &coords,
                                   std::unique_ptr<chunk::Chunk> chunk) {
         if (m_chunks.contains(coords))
             throw std::runtime_error(std::format(
@@ -71,14 +71,14 @@ namespace lodestone::level::chunk {
         m_chunks[coords] = std::move(chunk);
     }
 
-    chunk::Chunk *ChunkContainer::getChunk(const types::Vec2i &coords) {
+    chunk::Chunk *ChunkContainer::getChunk(const coords::ChunkCoordinates &coords) {
         if (const auto it = m_chunks.find(coords); it != m_chunks.end())
             return it->second.get();
 
         return nullptr;
     }
 
-    chunk::Chunk *ChunkContainer::getChunkCreate(const types::Vec2i &coords,
+    chunk::Chunk *ChunkContainer::getChunkCreate(const coords::ChunkCoordinates &coords,
                                                  const int height) {
         if (const auto it = m_chunks.find(coords); it != m_chunks.end())
             return it->second.get();
@@ -87,7 +87,7 @@ namespace lodestone::level::chunk {
     }
 
     const chunk::Chunk *
-    ChunkContainer::getChunk(const types::Vec2i &coords) const {
+    ChunkContainer::getChunk(const coords::ChunkCoordinates &coords) const {
         if (const auto it = m_chunks.find(coords); it != m_chunks.end())
             return it->second.get();
 
@@ -95,7 +95,7 @@ namespace lodestone::level::chunk {
     }
 
     std::unique_ptr<chunk::Chunk>
-    ChunkContainer::detachChunk(const types::Vec2i &coords,
+    ChunkContainer::detachChunk(const coords::ChunkCoordinates &coords,
                                 const bool shouldInvalidateCoords) {
         const auto it = m_chunks.find(coords);
         if (it == m_chunks.end())
@@ -111,7 +111,7 @@ namespace lodestone::level::chunk {
         return chunk;
     }
 
-    void ChunkContainer::removeChunk(const types::Vec2i &coords) {
+    void ChunkContainer::removeChunk(const coords::ChunkCoordinates &coords) {
         m_chunks.erase(coords);
     }
 

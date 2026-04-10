@@ -83,11 +83,8 @@ namespace lodestone::minecraft::java::infdev::world {
             }
 
             // Read zones_x_z.dat
-            if (file.filename().string().starts_with("zone_")) {
-                if (file.extension() != ".dat")
-                    continue;
-
-                level::types::Vec2i coords = zone::InfdevZone::getCoordsFromFilename(file.filename().string());
+            if (file.filename().string().starts_with("zone_") && file.extension() == ".dat") {
+                const level::coords::ChunkCoordinates coords = zone::InfdevZone::getCoordsFromFilename(file.filename().string());
 
                 std::ifstream ifs(file, std::ifstream::binary);
 
@@ -184,16 +181,17 @@ namespace lodestone::minecraft::java::infdev::world {
         auto lvl = w->getDefaultLevel();
         level::types::Bounds3i bounds = lvl->getChunkBounds();
 
-        for (int rx = bounds.min.x >> 5; rx <= bounds.max.x >> 5; rx++) {
-            for (int rz = bounds.min.z >> 5; rz <= bounds.max.z >> 5; rz++) {
-                auto zoneX = lodestone::common::util::Math::encodeBase36(rx);
-                auto zoneZ = lodestone::common::util::Math::encodeBase36(rz);
-                std::ofstream o(dataDir / ("zone_" + zoneX + "_" +
-                                           zoneZ + ".dat"));
+        for (int zoneX = bounds.min.x >> zone::InfdevZone::CHUNKS_PER_ZONE_BITS; zoneX <= bounds.max.x >> zone::InfdevZone::CHUNKS_PER_ZONE_BITS; ++zoneX) {
+            for (int zoneZ = bounds.min.z >> zone::InfdevZone::CHUNKS_PER_ZONE_BITS; zoneZ <= bounds.max.z >> zone::InfdevZone::CHUNKS_PER_ZONE_BITS; ++zoneZ) {
+                auto zoneX36 = lodestone::common::util::Math::encodeBase36(zoneX);
+                auto zoneZ36 = lodestone::common::util::Math::encodeBase36(zoneZ);
+
+                std::ofstream o(dataDir / ("zone_" + zoneX36 + "_" +
+                                           zoneZ36 + ".dat"));
 
                 io->write(lvl, common::conversion::io::options::OptionPresets::CommonChunkWriteOptions{
                               common::conversion::io::options::ChunkOptions{
-                                  {rx, rz}
+                                  {zoneX, zoneZ}
                               },
                               common::conversion::io::options::OptionPresets::CommonWriteOptions{
                                   conversion::io::options::fs::file::FileWriterOptions{

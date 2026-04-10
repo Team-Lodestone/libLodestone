@@ -10,8 +10,6 @@
 */
 #ifndef LODESTONE_INFDEVCHUNK_H
 #define LODESTONE_INFDEVCHUNK_H
-#include "Lodestone.Minecraft.Java/infdev/InfdevZone.h"
-
 #include <Lodestone.Level/chunk/LevelChunk.h>
 
 namespace lodestone::minecraft::java::infdev::chunk {
@@ -55,14 +53,9 @@ namespace lodestone::minecraft::java::infdev::chunk {
         explicit InfdevChunk(const int64_t lastUpdate = 0, const bool isPopulated = true)
             : LevelChunk(128), m_lastUpdate(lastUpdate), m_terrainPopulated(isPopulated) {}
 
-        explicit InfdevChunk(const level::types::Vec2i &coords,
-                               const int64_t lastUpdate = 0, const bool isPopulated = true)
-            : LevelChunk(128, coords), m_lastUpdate(lastUpdate), m_terrainPopulated(isPopulated) {}
-
-        InfdevChunk(level::chunk::ChunkContainer *container,
-                      const level::types::Vec2i &coords,
-                      const int64_t lastUpdate = 0, const bool isPopulated = true)
-            : LevelChunk(128, container, coords), m_lastUpdate(lastUpdate), m_terrainPopulated(isPopulated) {}
+        InfdevChunk(const level::coords::ChunkCoordinates &coords,
+                      const int64_t lastUpdate = 0, const bool isPopulated = true, level::chunk::ChunkContainer *container = nullptr)
+            : LevelChunk(128, coords, container), m_lastUpdate(lastUpdate), m_terrainPopulated(isPopulated) {}
 
         std::string toString() const override {
             if (this->m_coords.has_value())
@@ -71,20 +64,6 @@ namespace lodestone::minecraft::java::infdev::chunk {
 
             return std::format("InfdevChunk");
         };
-
-        constexpr static int getSlotIndex(const int chunkX, const int chunkZ) {
-            const int zoneX = chunkX >> zone::InfdevZone::CHUNKS_PER_ZONE_BITS;
-            const int zoneZ = chunkZ >> zone::InfdevZone::CHUNKS_PER_ZONE_BITS;
-
-            const int offsetX = chunkX - (zoneX << zone::InfdevZone::CHUNKS_PER_ZONE_BITS);
-            const int offsetZ = chunkZ - (zoneZ << zone::InfdevZone::CHUNKS_PER_ZONE_BITS);
-
-            return offsetX + offsetZ * zone::InfdevZone::CHUNKS_PER_ZONE;
-        }
-
-        constexpr static int getSlotOffset(int slotIndex) {
-            return (slotIndex - 1) * CHUNK_SIZE_SLOT_OFFSET + zone::InfdevZone::HEADER_SIZE;
-        }
     private:
         int64_t m_lastUpdate = 0;
         bool m_terrainPopulated = true;

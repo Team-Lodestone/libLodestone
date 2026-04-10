@@ -18,63 +18,58 @@ namespace lodestone::level::world {
 }
 
 namespace lodestone::level {
-    /** A level, holds Chunks.
+    /** A level holds Chunks.
      *
      * @see Chunk
      */
     class LODESTONE_API Level : public chunk::ChunkContainer {
-      public:
-        bool isChunkInBounds(const types::Vec2i &coords) override;
+    public:
+        //region Blocks
+        const block::instance::BlockInstance &getBlock(signed_size_t blockX, signed_size_t blockY, signed_size_t blockZ) const;
+        void setBlock(block::instance::BlockInstance &&block, signed_size_t blockX, signed_size_t blockY, signed_size_t blockZ);
+        void setBlockRaw(block::instance::BlockInstance &&block, signed_size_t blockX, signed_size_t blockY, signed_size_t blockZ);
+        void setBlockCreate(block::instance::BlockInstance &&block, signed_size_t blockX, signed_size_t blockY, signed_size_t blockZ, int height = 256);
 
-        const block::instance::BlockInstance &
-        getBlock(signed_size_t x, signed_size_t y, signed_size_t z) const;
+        void setBlockCreateRaw(block::instance::BlockInstance &&block, signed_size_t blockX, signed_size_t blockY, signed_size_t blockZ, int height = 256);
+        //endregion
 
-        void setBlock(block::instance::BlockInstance &&blk, signed_size_t x,
-                      signed_size_t y, signed_size_t z);
+        //region Heightmap
+        int16_t getHeightAt(signed_size_t blockX, signed_size_t blockZ) const;
+        void setHeightAt(int16_t height, signed_size_t blockX, signed_size_t blockZ);
+        void setHeightAtCreate(int16_t height, signed_size_t blockX, signed_size_t blockZ, int newChunkHeight = 256);
+        //endregion
 
-        void setBlockRaw(block::instance::BlockInstance &&blk,
-                         signed_size_t x, signed_size_t y, signed_size_t z);
+        //region Blockmap
+        const block::instance::BlockInstance& getBlockAtHeight(signed_size_t blockX, signed_size_t blockZ) const;
+        void setBlockAtHeight(block::instance::BlockInstance &&block, signed_size_t blockX, signed_size_t blockZ);
+        //endregion
 
-        void setBlockCreate(block::instance::BlockInstance &&blk,
-                            signed_size_t x, signed_size_t y, signed_size_t z,
-                            int height = 256);
-
-        void setBlockCreateRaw(block::instance::BlockInstance &&blk,
-                               signed_size_t x, signed_size_t y,
-                               signed_size_t z, int height = 256);
-
-        int16_t getHeightAt(signed_size_t x, signed_size_t z) const;
-
-        void setHeightAt(int16_t h, signed_size_t x, signed_size_t z);
-
-        void setHeightAtCreate(int16_t h, signed_size_t x, signed_size_t z,
-                               int height = 256);
-
-        const block::instance::BlockInstance &
-        getBlockmapBlockAt(signed_size_t x, signed_size_t z) const;
-
-        void setBlockmapBlockAt(const block::instance::BlockInstance &b,
-                                signed_size_t x, signed_size_t z);
-
-        void setBlockmapBlockAtCreate(const block::instance::BlockInstance &b,
-                                      signed_size_t x, signed_size_t z,
-                                      int height = 256);
-
+        //region Extra
+        bool isChunkInBounds(const coords::ChunkCoordinates &chunkCoordinates) override;
         size_t getBlockCount() const;
-
         types::Bounds3i getBlockBounds() const;
 
+        //region World
         world::World *getWorld() const;
         bool isInWorld() const;
         void setWorld(world::World *world);
 
+        //endregion
+
+        //region Spawnpoint
         types::Vec3i generateSpawnPos(unsigned int radius = 21) const;
         virtual const level::types::Vec3i &getSpawnPos() const;
         virtual void setSpawnPos(const level::types::Vec3i &spawnPos);
 
-        virtual std::uint64_t getCreationTime() const;
+        //endregion
 
+        //region Creation Time
+        virtual std::uint64_t getCreationTime() const;
         virtual void setCreationTime(std::uint64_t creationTime);
+
+        //endregion
+
+        //endregion
     private:
         level::types::Vec3i m_spawnPos{0, 64, 0};
         world::World *m_world = nullptr;

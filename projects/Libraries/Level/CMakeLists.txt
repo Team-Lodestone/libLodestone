@@ -25,7 +25,7 @@ set(FILES
         include/Lodestone.Level/material/MaterialRegistry.h
         src/block/instance/BlockInstance.cpp
         include/Lodestone.Level/block/instance/BlockInstance.h
-        src/chunk/section/EmptySection.cpp
+        src/chunk/section/ImmutableSection.cpp
         include/Lodestone.Level/chunk/section/ImmutableSection.h
         src/chunk/section/Section.cpp
         include/Lodestone.Level/chunk/section/Section.h
@@ -35,7 +35,7 @@ set(FILES
         include/Lodestone.Level/chunk/LevelChunk.h
         src/chunk/LevelChunk.cpp
         include/Lodestone.Level/chunk/LevelChunk.h
-        src/chunk/EmptyChunk.cpp
+        src/chunk/ImmutableChunk.cpp
         include/Lodestone.Level/chunk/ImmutableChunk.h
 
         src/world/World.cpp
@@ -73,10 +73,14 @@ set(FILES
         src/properties/ReflectiveProperties.cpp
         include/Lodestone.Level/block/blocks/TranslucentBlock.h
         include/Lodestone.Level/block/blocks/AirBlock.h
-        include/Lodestone.Level/entity/WorldSpaceObject.cpp
+        src/entity/WorldSpaceObject.cpp
         include/Lodestone.Level/entity/WorldSpaceObject.h
         include/Lodestone.Level/properties/definition/ObjectDefinition.h
         src/properties/definition/ObjectDefinition.cpp
+        src/coords/ChunkCoordinates.cpp
+        include/Lodestone.Level/coords/ChunkCoordinates.h
+        src/coords/SectionCoordinates.cpp
+        include/Lodestone.Level/coords/SectionCoordinates.h
 )
 
 # if (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -94,3 +98,4 @@ target_include_directories(Lodestone.Level PUBLIC
 target_link_libraries(Lodestone.Level PUBLIC Lodestone.Common gtl)
 
 setupLinter(Lodestone.Level)
+setupDoxygen()

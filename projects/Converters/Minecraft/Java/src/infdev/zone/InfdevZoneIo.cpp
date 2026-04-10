@@ -29,7 +29,7 @@ namespace lodestone::minecraft::java::infdev::zone {
         auto bis = bio::stream::BinaryInputStream(options.input);
 
         auto zone = std::make_unique<InfdevZone>(options.coords);
-        const chunk::InfdevChunkIO *chunkIo = this->getAsByRelation<const chunk::InfdevChunkIO, &
+        const InfdevChunkIO *chunkIo = this->getAsByRelation<const InfdevChunkIO, &
                                                                     conversion::identifiers::CHUNK_IO>();
 
         if (const uint32_t magic = bis.readBE<uint32_t>(); magic != EXPECTED_MAGIC) {
@@ -41,18 +41,18 @@ namespace lodestone::minecraft::java::infdev::zone {
         }
 
         // Read slot indices
-        const uint16_t slotCount = bis.readBE<uint16_t>();
-        auto slots = bio::container::FixedArray<uint16_t>(slotCount);
+        const uint16_t slotCount = bis.readBE<int16_t>();
+        auto slots = bio::container::FixedArray<int16_t>(slotCount);
         for (int i = 0; i < slotCount; i++) {
-            slots[i] = bis.readBE<uint16_t>();
+            slots[i] = bis.readBE<int16_t>();
         }
 
-        for (const uint16_t slot : slots) {
+        for (const int16_t slot : slots) {
             if (slot == 0)
                 continue;
 
             // TODO: Make this less jank / not reliant on seek
-            const uint64_t readPos = InfdevChunk::getSlotOffset(slot);
+            const uint64_t readPos = InfdevZone::getSlotOffset(slot);
             bis.seek(readPos);
 
             auto c = CAST_UNIQUE_PTR(chunk::InfdevChunk,
@@ -82,29 +82,29 @@ namespace lodestone::minecraft::java::infdev::zone {
 
         // Write zone header
         bos.writeBE<uint32_t>(EXPECTED_MAGIC);
-
         bos.writeBE<uint16_t>(EXPECTED_VERSION);
 
         const int idx = bos.getOffset();
 
         // Write chunk data
-        auto *chunkIo = this->getAsByRelation<const chunk::InfdevChunkIO, &conversion::identifiers::CHUNK_IO>();
+        auto *chunkIo = this->getAsByRelation<const InfdevChunkIO, &conversion::identifiers::CHUNK_IO>();
 
         int slotCount = 0;
-        int slots[1024];
-        for (char x = 0; x < 32; x++) {
-            for (char z = 0; z < 32; z++) {
-                const int cx = zoneCoordinates.x * 32 + x;
-                const int cz = zoneCoordinates.y * 32 + z;
+        bio::container::FixedArray<int16_t> slots(InfdevZone::CHUNKS_PER_ZONE);
+        for (char x = 0; x < InfdevZone::CHUNKS_PER_ZONE_AXIS; x++) {
+            for (char z = 0; z < InfdevZone::CHUNKS_PER_ZONE_AXIS; z++) {
+                const int cx = zoneCoordinates.x * InfdevZone::CHUNKS_PER_ZONE_AXIS + x;
+                const int cz = zoneCoordinates.y * InfdevZone::CHUNKS_PER_ZONE_AXIS + z;
 
                 level::chunk::Chunk *ch = c->getChunk(cx, cz);
-                if (ch != nullptr && typeid(*ch) != typeid(level::chunk::ImmutableChunk)) {
-                    slotCount++;
+                if (ch != nullptr && !ch->instanceOf(level::chunk::ChunkType::ImmutableChunk)) {
+                    // std::cout << std::format("zoneX: {}, zoneZ: {}", zoneCoordinates.x, zoneCoordinates.y) << std::endl;
+                    // std::cout << std::format("chunkX: {}, chunkZ: {}", cx, cz) << std::endl;
 
-                    const int slotIdx = InfdevChunk::getSlotIndex(cx, cz);
-                    slots[slotCount] = slotIdx;
+                    const int slotIdx = InfdevZone::getSlotIndex(cx, cz);
+                    slots[slotIdx] = ++slotCount;
 
-                    const uint64_t writePos = InfdevChunk::getSlotOffset(slotIdx);
+                    const uint64_t writePos = InfdevZone::getSlotOffset(slots[slotIdx]);
                     bos.seek(writePos);
                     chunkIo->write(ch, common::conversion::io::options::OptionPresets::CommonChunkWriteOptions{
                                        common::conversion::io::options::ChunkOptions{
@@ -126,10 +126,9 @@ namespace lodestone::minecraft::java::infdev::zone {
         // Seek back to header to write slot information
         bos.seek(idx);
 
-        // TODO: Refactor this
-        bos.writeBE<uint16_t>(slotCount);
-        for (int i = 0; i < slotCount; i++) {
-            bos.writeBE<uint16_t>(slots[i]);
+        bos.writeBE<int16_t>(slotCount);
+        for (const int slot : slots) {
+            bos.writeBE<int16_t>(slot);
         }
     }
 }

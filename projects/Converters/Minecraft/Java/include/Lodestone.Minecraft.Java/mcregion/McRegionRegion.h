@@ -8,11 +8,11 @@
 namespace lodestone::minecraft::java::mcregion::region {
     class McRegionRegion : public common::region::Region {
       public:
-        explicit McRegionRegion(const level::types::Vec2i &coords)
+        explicit McRegionRegion(const level::coords::ChunkCoordinates &coords)
             : Region(coords) {}
 
         std::string getFilename() const;
-        static level::types::Vec2i
+        static level::coords::ChunkCoordinates
         getCoordsFromFilename(const std::string &name);
     };
 } // namespace lodestone::minecraft::java::mcregion::region

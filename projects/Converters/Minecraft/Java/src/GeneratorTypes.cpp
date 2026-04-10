@@ -23,14 +23,14 @@ namespace lodestone::minecraft::java {
 
     std::string GeneratorTypes::identifierToGeneratorId(
         const lodestone::common::registry::Identifier &id, int version) {
-        switch (lodestone::common::util::Math::fnv1a64(id)) {
+        switch (lodestone::common::util::Math::fnv1a64(id.getString())) {
         default:
-        case lodestone::common::util::Math::fnv1a64(GeneratorTypes::DEFAULT):
+        case lodestone::common::util::Math::fnv1a64(GeneratorTypes::DEFAULT.getString()):
             return "default";
-        case lodestone::common::util::Math::fnv1a64(GeneratorTypes::FLAT):
+        case lodestone::common::util::Math::fnv1a64(GeneratorTypes::FLAT.getString()):
             return "flat";
         case lodestone::common::util::Math::fnv1a64(
-            GeneratorTypes::LARGE_BIOMES):
+            GeneratorTypes::LARGE_BIOMES.getString()):
             return "largeBiomes";
         }
     }

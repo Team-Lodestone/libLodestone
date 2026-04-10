@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION VERSION 3.30)
-project(Lodestone.Minecraft.Java VERSION 1.2.5)
+project(Lodestone.Minecraft.Java VERSION 1.2.6)
 set(PROJECT_VERSION_DEV) # used for dev versions, otherwise blank
 
 set(CMAKE_CXX_STANDARD 20)
@@ -82,6 +82,10 @@ set(FILES
         include/Lodestone.Minecraft.Java/infdev/InfdevChunk.h
         src/infdev/chunk/InfdevChunkIo.cpp
         include/Lodestone.Minecraft.Java/conversion/infdev/InfdevChunkIo.h
+        src/alpha/AlphaLevelDataIo.cpp
+        include/Lodestone.Minecraft.Java/conversion/alpha/AlphaLevelDataIo.h
+        src/indev/McLevelLevelDataIo.cpp
+        include/Lodestone.Minecraft.Java/conversion/indev/McLevelLevelDataIo.h
 )
 
 if (NOT TARGET JavaObjectStreams)
@@ -178,3 +182,4 @@ endif ()
 unset(ENABLE_RISKY_OPTIMIZATIONS CACHE)
 
 setupLinter(Lodestone.Minecraft.Java)
+setupDoxygen()

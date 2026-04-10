@@ -9,7 +9,7 @@
 
 namespace lodestone::level::types {
     template <typename T>
-    struct Vec2 final {
+    struct Vec2 {
         static_assert(std::is_arithmetic_v<T>, "typeof T must be numeric"); // Waiter! I want one Vec2<std::string, std::string> please.
 
         T x{}, y{};
@@ -54,7 +54,7 @@ namespace lodestone::level::types {
         }
 
         std::string toString() const {
-            return std::format("Vec2[x={}, z={}]", x, y);
+            return std::format("Vec2[x={}, y={}]", x, y);
         };
     };
 
@@ -64,9 +64,9 @@ namespace lodestone::level::types {
     template <typename T>
     constexpr Vec2<T> VEC2_ONE{1,1};
 
-    typedef Vec2<int> Vec2i;
-    typedef Vec2<float> Vec2f;
-    typedef Vec2<double> Vec2d;
+    using Vec2i = Vec2<int>;
+    using Vec2f = Vec2<float>;
+    using Vec2d = Vec2<double>;
 } // namespace lodestone::level::types
 
 template <typename T> struct std::hash<lodestone::level::types::Vec2<T>> {
@@ -74,6 +74,12 @@ template <typename T> struct std::hash<lodestone::level::types::Vec2<T>> {
     operator()(const lodestone::level::types::Vec2<T> &v) const noexcept {
         return std::hash<T>()(v.x) ^ (std::hash<T>()(v.y) << 1);
     }
+};
+
+template <typename T>
+struct std::formatter<lodestone::level::types::Vec2<T>> {
+    template <typename FormatParseContext> constexpr auto parse(FormatParseContext &pc) { return pc.begin(); }
+    template <typename FormatContext> auto format(lodestone::level::types::Vec2<T> vec, FormatContext &fc) const { return std::format_to(fc.out(), "x={}, y={}", vec.x, vec.y); }
 };
 
 #endif

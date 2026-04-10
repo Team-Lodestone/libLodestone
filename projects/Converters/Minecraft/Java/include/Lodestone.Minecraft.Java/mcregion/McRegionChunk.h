@@ -11,14 +11,9 @@ namespace lodestone::minecraft::java::mcregion::chunk {
         explicit McRegionChunk(const int64_t lastUpdate = 0)
             : LevelChunk(128), m_lastUpdate(lastUpdate) {}
 
-        explicit McRegionChunk(const level::types::Vec2i &coords,
-                               const int64_t lastUpdate = 0)
-            : LevelChunk(128, coords), m_lastUpdate(lastUpdate) {}
-
-        McRegionChunk(level::chunk::ChunkContainer *container,
-                      const level::types::Vec2i &coords,
-                      const int64_t lastUpdate = 0)
-            : LevelChunk(128, container, coords), m_lastUpdate(lastUpdate) {}
+        explicit McRegionChunk(const level::coords::ChunkCoordinates &coords,
+                               const int64_t lastUpdate = 0, level::chunk::ChunkContainer *container = nullptr)
+            : LevelChunk(128, coords, container), m_lastUpdate(lastUpdate) {}
 
         std::string toString() const override {
             if (this->m_coords.has_value())

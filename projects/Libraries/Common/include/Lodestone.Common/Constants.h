@@ -7,9 +7,11 @@
 // Shared constants to prevent circular include (e.g. section includes chunk for
 // its constants and then chunk needs to include Section)
 namespace lodestone::common::constants {
-    static constexpr int CHUNK_WIDTH = 16;
-    static constexpr int SECTION_HEIGHT = 16;
-    static constexpr int CHUNK_DEPTH = 16;
+    static constexpr int CHUNK_AXIS_SIZE = 16;
+
+    static constexpr int CHUNK_WIDTH = CHUNK_AXIS_SIZE;
+    static constexpr int SECTION_HEIGHT = CHUNK_AXIS_SIZE;
+    static constexpr int CHUNK_DEPTH = CHUNK_AXIS_SIZE;
 } // namespace lodestone::common::constants
 
 #endif //  LODESTONE_CONSTANTS_H

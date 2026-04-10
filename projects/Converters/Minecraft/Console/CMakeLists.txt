@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION VERSION 3.30)
 project(Lodestone.Minecraft.Console VERSION 1.0.0)
 set(PROJECT_VERSION_DEV 1) # used for dev versions, otherwise blank
 
+set(LODESTONE_PROJECT_DESCRIPTION "Minecraft: Legacy Console Edition converters")
+
 set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -94,3 +96,4 @@ endif ()
 unset(ENABLE_RISKY_OPTIMIZATIONS CACHE)
 
 setupLinter(Lodestone.Minecraft.Console)
+setupDoxygen()

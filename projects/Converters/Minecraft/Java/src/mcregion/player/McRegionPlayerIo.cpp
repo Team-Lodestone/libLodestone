@@ -69,7 +69,7 @@ namespace lodestone::minecraft::java::mcregion::player {
         p->setDimension(McRegionPlayer::dimensionIdToIdentifier(
             options.input["Dimension"].as<nbt::tag_int>()));
         p->setSleeping(options.input["Sleeping"].as<nbt::tag_byte>());
-        p->setFallDistance(options.input["FallDistance"].as<nbt::tag_short>());
+        p->setFallDistance(options.input["FallDistance"].as<nbt::tag_float>());
 
         // TODO inventory
 

@@ -11,17 +11,19 @@ LCE formats will be handled by [libLCE](https://github.com/DexrnZacAttack/libLCE
 | [Lodestone.Core](/projects/Libraries/Core)             | Core library, handles converter registration |
 | [Lodestone.Common](/projects/Libraries/Common)         | Common dependencies for all projects         |
 ### Converters
-| Name                                                                  | Description                                 |
-|-----------------------------------------------------------------------|---------------------------------------------|
-| [Lodestone.Minecraft.Java](/projects/Converters/Minecraft/Java)       | Minecraft: Java Edition Converter           |
-| [Lodestone.Minecraft.Console](/projects/Converters/Minecraft/Console) | Minecraft: Legacy Console Edition Converter |
+| Name                                                                  | Description                                   |
+|-----------------------------------------------------------------------|-----------------------------------------------|
+| [Lodestone.Minecraft.Java](/projects/Converters/Minecraft/Java)       | Minecraft: Java Edition Converter             |
+| [Lodestone.Minecraft.Console](/projects/Converters/Minecraft/Console) | Minecraft: Legacy Console Edition Converter   |
+| [Lodestone.Minecraft.NN3DS](/projects/Converters/Minecraft/NN3DS)     | Minecraft: New Nintendo 3DS Edition Converter |
+| [Lodestone.Minecraft.Web](/projects/Converters/Minecraft/Web)         | `classic.minecraft.net` World Converter       |
 
 
 # Roadmap
 <!-- Would you like to insert '→'?  -->
 Bold → Required for 1.0.0 final release, all releases from there will follow major.minor.patch
 
-### Goals
+## Goals
 - [X] World Engine
     - [X] **Chunked Level**
       - [X] **Chunk Sections**
@@ -45,8 +47,8 @@ Bold → Required for 1.0.0 final release, all releases from there will follow m
     - [ ] Entities
         - [ ] Tile Entities
     - [ ] Block Material Map (for the world map image generation)
-### Formats
-- [ ] [Java](/projects/Converters/Minecraft/Java/README.md)
+## Formats
+- [ ] [Java](https://github.com/Team-Lodestone/libLodestone/tree/main/projects/Converters/Minecraft/Java/README.md)
 - [ ] LCE
     - [ ] V11
     - [ ] V12

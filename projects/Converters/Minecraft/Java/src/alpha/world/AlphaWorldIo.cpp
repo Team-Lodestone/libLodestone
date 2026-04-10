@@ -28,7 +28,7 @@ namespace lodestone::minecraft::java::alpha::world {
         const common::conversion::io::options::OptionPresets::CommonFilesystemOptions &options)
         const {
         if (!std::filesystem::exists(options.path))
-            return nullptr;
+            throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), options.path);
 
         map_t<int, std::filesystem::path> dims;
         dims.emplace(0, options.path); // main dim

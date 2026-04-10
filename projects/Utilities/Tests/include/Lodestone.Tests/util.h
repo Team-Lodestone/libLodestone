@@ -87,10 +87,10 @@ namespace lodestone::tests::util {
 
     const std::filesystem::path INPUT_FOLDER =
         std::filesystem::weakly_canonical(
-            "../../../../projects/Utilities/Tests/input");
+            LODESTONE_TESTS_INPUT_FOLDER);
     const std::filesystem::path OUTPUT_FOLDER =
         std::filesystem::weakly_canonical(
-            "../../../../projects/Utilities/Tests/output");
+            LODESTONE_TESTS_OUTPUT_FOLDER);
 
     namespace types {
         static constexpr const char *const MAIN = "main";

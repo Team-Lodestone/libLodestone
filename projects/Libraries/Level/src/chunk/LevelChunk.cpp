@@ -14,132 +14,105 @@ namespace lodestone::level::chunk {
                                         common::constants::SECTION_HEIGHT));
     }
 
-    LevelChunk::LevelChunk(const int height, const types::Vec2i &coords)
-        : Chunk(coords) {
+    LevelChunk::LevelChunk(const int height,
+                           const coords::ChunkCoordinates &coords, ChunkContainer *container)
+        : Chunk(coords, container) {
         this->m_sections = std::vector<std::unique_ptr<section::Section>>(
             common::util::Math::ceilDiv(height,
                                         common::constants::SECTION_HEIGHT));
     }
 
-    LevelChunk::LevelChunk(const int height, ChunkContainer *container,
-                           const types::Vec2i &coords)
-        : Chunk(container, coords) {
-        this->m_sections = std::vector<std::unique_ptr<section::Section>>(
-            common::util::Math::ceilDiv(height,
-                                        common::constants::SECTION_HEIGHT));
+    ChunkType LevelChunk::type() {
+        return ChunkType::LevelChunk;
     }
 
     int LevelChunk::getChunkHeight() const { return m_sections.size(); }
 
-    bool LevelChunk::hasSection(const int y) const {
-        if (y < 0 || y >= m_sections.size())
+    bool LevelChunk::hasSection(const coords::SectionCoordinates &sectionY) const {
+        if (sectionY < 0 || sectionY >= m_sections.size())
             return false;
 
-        return (m_sections[y] != nullptr);
+        return (m_sections[sectionY] != nullptr);
     }
 
-    section::Section *LevelChunk::getSection(const int y) const {
+    section::Section *LevelChunk::getSection(const coords::SectionCoordinates &sectionY) const {
         // if non-existent, return fake one
-        if (!hasSection(y))
+        if (!hasSection(sectionY))
             return section::ImmutableSection::getInstance();
 
-        return m_sections[y].get();
+        return m_sections[sectionY].get();
     }
 
-    section::Section *LevelChunk::getSectionCreate(const int y) {
-        if (!m_sections[y])
-            m_sections[y] = std::make_unique<section::LevelSection>();
+    section::Section *LevelChunk::getSectionCreate(const coords::SectionCoordinates &sectionY) {
+        if (!m_sections[sectionY])
+            m_sections[sectionY] = std::make_unique<section::LevelSection>();
 
-        return m_sections[y].get();
+        return m_sections[sectionY].get();
     }
 
-    const block::instance::BlockInstance &
-    LevelChunk::getBlock(const int x, const int y, const int z) const {
-        return getSection(y >> 4)->getBlock(x, y & 15, z);
+    const block::instance::BlockInstance &LevelChunk::getBlock(const int localX, const int blockY, const int localZ) const {
+        return getSectionFromBlockY(blockY)->getBlock(localX, coords::SectionCoordinates::blockToLocalSectionY(blockY), localZ);
     }
 
-    void LevelChunk::calculateBlockmap() {
+    void LevelChunk::calculateHeightmap() {
         const int height = getChunkBlockHeight();
 
         for (int z = 0; z < common::constants::CHUNK_DEPTH; z++) {
             for (int x = 0; x < common::constants::CHUNK_WIDTH; x++) {
-                for (int y = height; y >= 0; y--) {
-                    if (const block::instance::BlockInstance &s =
-                            getBlock(x, y, z);
-                        s != *getBlockmapBlockAt(x, z) &&
-                        !s.getBlock()->heightmapShouldIgnore()) {
-                        setBlockmapBlockAt(&s, x, z);
-                        break;
-                    }
-                }
+               this->calculateHeightmapAtColumn(x, z, height);
             }
         }
     }
 
-    void LevelChunk::calculateBlockmapAtColumn(const int x, const int z,
-                                               const int height) {
-        for (int y = height; y >= 0; y--) {
-            if (const block::instance::BlockInstance &s = getBlock(x, y, z);
-                s != *getBlockmapBlockAt(x, z) &&
-                !s.getBlock()->heightmapShouldIgnore()) {
-                setBlockmapBlockAt(&s, x, z);
+    void LevelChunk::calculateHeightmapAtColumn(const int localX, const int localZ,
+                                               const int startHeight) {
+        for (int y = startHeight; y >= 0; y--) {
+            const block::instance::BlockInstance &s = getBlock(localX, y, localZ);
+            if (!s.getBlock()->heightmapShouldIgnore()) {
+                setHeightAt(y + 1, localX, localZ);
                 break;
             }
         }
     }
 
-    void LevelChunk::setBlock(block::instance::BlockInstance &&blk,
-                              const int x, const int y, const int z) {
-        setBlockRaw(std::move(blk), x, y, z);
+    void LevelChunk::setBlock(block::instance::BlockInstance &&block,
+                              const int localX, const int y, const int localZ) {
+        setBlockRaw(std::move(block), localX, y, localZ);
 
-        if (!blk.getBlock())
+        if (!block.getBlock())
             throw std::runtime_error(
                 "attempted to set with instance of null block");
 
         const int height = getChunkBlockHeight();
-        if (!blk.getBlock()->heightmapShouldIgnore()) {
+        if (!block.getBlock()->heightmapShouldIgnore()) {
             // if our block is higher than the current height, and isn't air,
             // then it's obviously higher up. so we set the new height
-            if (y + 1 > getHeightAt(x, z)) {
-                setBlockmapEntryAt({ &blk, (int16_t)std::min(y + 1, height - 1) }, x, z);
-                //
-                // setHeightAt(std::min(y + 1, height - 1), x, z);
-                //
-                // if (blk != getBlockmapBlockAt(x, z))
-                //     setBlockmapBlockAt(blk, x, z);
+            if (y + 1 > getHeightAt(localX, localZ)) {
+                setHeightAt(std::min(y + 1, height - 1), localX, localZ);
             };
         } else {
             // if our air block's position is the topmost block of any column
-            if (y + 1 == getHeightAt(x, z)) {
+            if (y + 1 == getHeightAt(localX, localZ)) {
                 // then we get the new topmost block
                 for (int i = y; i >= 0; i--) {
-                    if (const block::instance::BlockInstance &s =
-                            getBlock(x, i, z);
-                        s.getBlock() &&
-                        !s.getBlock()->heightmapShouldIgnore()) {
-                        setBlockmapEntryAt({ &s, (int16_t)std::min(i + 1, height - 1) }, x, z);
-                        // setHeightAt(std::min(i + 1, height - 1), x,
-                        //             z); // new highest block
-                        //
-                        // if (s != getBlockmapBlockAt(x, z))
-                        //     setBlockmapBlockAt(s, x, z);
+                    const block::instance::BlockInstance &s = getBlock(localX, i, localZ);
+
+                    if (s.getBlock() && !s.getBlock()->heightmapShouldIgnore()) {
+                        setHeightAt(std::min(i + 1, height - 1), localX, localZ);
 
                         return;
                     }
                 }
 
                 // there were no blocks
-                setBlockmapEntryAt({ block::instance::ImmutableBlockInstance::getInstance(), 0 }, x, z);
-            } else if (!getBlockmapBlockAt(x, z)->getBlock()) {
-                setBlockmapBlockAt(block::instance::ImmutableBlockInstance::getInstance(), x,
-                                   z); // should be good?
+                setHeightAt(0, localX, localZ);
             }
         }
     }
 
-    void LevelChunk::setBlockRaw(block::instance::BlockInstance &&blk,
-                                 const int x, const int y, const int z) {
-        getSectionCreate(y >> 4)->setBlock(std::move(blk), x, y & 15, z);
+    void LevelChunk::setBlockRaw(block::instance::BlockInstance &&block,
+                                 const int localX, const int y, const int localZ) {
+        getSectionCreate(y >> 4)->setBlock(std::move(block), localX, y & 15, localZ);
     }
 
     int LevelChunk::getSectionCount() const {

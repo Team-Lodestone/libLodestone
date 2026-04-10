@@ -30,6 +30,7 @@ set(FILES
         src/region/Region.cpp
         src/conversion/registry/Registries.cpp
         include/Lodestone.Minecraft.Common/conversion/io/interfaces/IRegionIo.h
+        include/Lodestone.Minecraft.Common/material/Materials.h
 )
 
 add_library(Lodestone.Minecraft.Common OBJECT ${FILES})
@@ -41,3 +42,4 @@ target_link_libraries(Lodestone.Minecraft.Common PRIVATE Lodestone.Level Lodesto
 target_link_libraries(Lodestone.Minecraft.Common PUBLIC Lodestone.Core)
 
 setupLinter(Lodestone.Minecraft.Common)
+setupDoxygen()

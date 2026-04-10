@@ -19,7 +19,7 @@
 namespace lodestone::minecraft::java::classic::minev2 {
 
     std::unique_ptr<lodestone::level::Level>
-    MineV2LevelIO::read(const common::conversion::io::options::OptionPresets::CommonReadOptions& options) const {
+    MineV2LevelIO::read(const common::conversion::io::options::OptionPresets::CommonReadOptions &options) const {
         bio::stream::BinaryInputStream bis(options.input);
 
         const int width = bis.readBE<uint16_t>();
@@ -29,12 +29,13 @@ namespace lodestone::minecraft::java::classic::minev2 {
         std::unique_ptr<level::FiniteLevel> l =
             std::make_unique<level::FiniteLevel>(level::types::Bounds2i{
                 {0, 0},
-                {lodestone::common::util::Math::ceilDiv(
-                     CHUNK_IDX(width) - 1,
-                     CHUNK_IDX(lodestone::common::constants::CHUNK_WIDTH)),
-                 lodestone::common::util::Math::ceilDiv(
-                     CHUNK_IDX(depth) - 1,
-                     CHUNK_IDX(lodestone::common::constants::CHUNK_DEPTH))}});
+                {
+                    lodestone::common::util::Math::ceilDiv(level::coords::ChunkCoordinates::blockToChunkCoord(width) - 1,
+                                                           level::coords::ChunkCoordinates::blockToChunkCoord(lodestone::common::constants::CHUNK_WIDTH)),
+                    lodestone::common::util::Math::ceilDiv(level::coords::ChunkCoordinates::blockToChunkCoord(depth) - 1,
+                                                           level::coords::ChunkCoordinates::blockToChunkCoord(lodestone::common::constants::CHUNK_DEPTH))
+                }
+            });
 
         const std::unique_ptr<lodestone::conversion::block::version::BlockIO>
             bio = LodestoneJava::getInstance()->io.getIo(options.version);
@@ -45,14 +46,14 @@ namespace lodestone::minecraft::java::classic::minev2 {
                     const uint8_t bb = bis.readByte();
 
 #ifdef USE_RISKY_OPTIMIZATIONS
-                    if (bb == 0)  // since air is id 0
+                    if (bb == 0) // since air is id 0
                         continue; // this skips us having to convert the block
 #endif
 
                     level::block::instance::BlockInstance b =
                         bio->convertBlockToInternal(
                             lodestone::conversion::block::data::
-                                ClassicBlockData(bb));
+                            ClassicBlockData(bb));
                     if (b.getBlock() !=
                         level::block::BlockRegistry::s_defaultBlock)
                         l->setBlockCreate(std::move(b), x, y, z, height);
@@ -88,11 +89,11 @@ namespace lodestone::minecraft::java::classic::minev2 {
                     if (b.getBlock() !=
                         level::block::BlockRegistry::s_defaultBlock) {
                         if (const lodestone::conversion::block::data::
-                                AbstractBlockData *bl =
-                                    bio->convertBlockFromInternal(&b))
+                            AbstractBlockData *bl =
+                                bio->convertBlockFromInternal(&b))
                             v = bl->as<lodestone::conversion::block::data::
-                                           ClassicBlockData>()
-                                    ->getId();
+                                    ClassicBlockData>()
+                                ->getId();
                     }
 
                     bos << v;

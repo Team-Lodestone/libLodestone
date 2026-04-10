@@ -11,7 +11,7 @@ namespace lodestone::minecraft::java::anvil::jungle::region {
     class JungleAnvilRegion final
         : public lodestone::minecraft::java::mcregion::region::McRegionRegion {
       public:
-        explicit JungleAnvilRegion(const level::types::Vec2i &coords);
+        explicit JungleAnvilRegion(const level::coords::ChunkCoordinates &coords);
     };
 } // namespace lodestone::minecraft::java::anvil::jungle::region
 

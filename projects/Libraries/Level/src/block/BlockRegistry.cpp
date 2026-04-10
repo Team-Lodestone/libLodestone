@@ -13,10 +13,10 @@
 //
 namespace lodestone::level::block {
     const Block *BlockRegistry::s_defaultBlock =
-        getInstance().getBlock(&Blocks::AIR);
+        getInstance().getBlock(&Blocks::NONE);
 
     BlockRegistry::BlockRegistry() {
-        REGISTER_DERIVED_BLOCK_FUNC(&Blocks::AIR, material::Material({0, 0, 0, 0}), nullptr, blocks::AirBlock);
+        REGISTER_DERIVED_BLOCK_FUNC(&Blocks::NONE, material::Material({0, 0, 0, 0}), nullptr, blocks::AirBlock);
     }
 
     BlockRegistry &BlockRegistry::getInstance() {

@@ -6,44 +6,45 @@
 #include "Lodestone.Level/chunk/Chunk.h"
 
 namespace lodestone::level::chunk {
-    class ImmutableChunk : public Chunk {
+    class LODESTONE_API ImmutableChunk : public Chunk {
       public:
         static ImmutableChunk *getInstance();
 
-        ImmutableChunk() : Chunk() {}
+        ImmutableChunk() = default;
 
-        explicit ImmutableChunk(const types::Vec2i &coords) : Chunk(coords) {}
+        explicit ImmutableChunk(const coords::ChunkCoordinates &coords, ChunkContainer *container = nullptr)
+            : Chunk(coords, container) {}
 
-        ImmutableChunk(ChunkContainer *container, const types::Vec2i &coords)
-            : Chunk(container, coords) {}
+        ChunkType type() override;
 
         int getChunkHeight() const override;
 
-        section::Section *getSection(int y) const override;
+        section::Section *getSection(const coords::SectionCoordinates &sectionY) const override;
 
-        const block::instance::BlockInstance &getBlock(int x, int y,
-                                                     int z) const override;
+        const block::instance::BlockInstance &getBlock(int localX, int sectionY,
+                                                     int localZ) const override;
 
-        section::Section *getSectionCreate(int y) override;
+        section::Section *getSectionCreate(const coords::SectionCoordinates &sectionY) override;
 
-        void setBlock(block::instance::BlockInstance &&blk, int x, int y,
-                      int z) override;
+        void setBlock(block::instance::BlockInstance &&block, int localX, int y,
+                      int localZ) override;
 
-        void setBlockRaw(block::instance::BlockInstance &&blk, int x, int y,
-                         int z) override;
+        void setBlockRaw(block::instance::BlockInstance &&block, int localX, int y,
+                         int localZ) override;
 
-        void setHeightAt(int16_t h, int x, int z) override;
+        void setHeightAt(int16_t height, int localX, int localZ) override;
 
-        void calculateBlockmap() override;
+        void calculateHeightmap() override;
 
-        void setBlockmapBlockAt(const block::instance::BlockInstance *h, int x,
-                                int z) override;
-
-        void setBlockmapEntryAt(const BlockmapEntry &b, int x, int z) override;
-
-        void calculateBlockmapAtColumn(int x, int z, int height) override;
+        void calculateHeightmapAtColumn(int localX, int localZ, int height) override;
 
         int getSectionCount() const override;
+
+        int16_t getHeightAt(int localX, int localZ) const override;
+
+        const block::instance::BlockInstance & getBlockAtHeight(int localX, int localZ) const override;
+
+        void setBlockAtHeight(block::instance::BlockInstance &&block, int localX, int localZ) override;
     };
 } // namespace lodestone::level::chunk
 

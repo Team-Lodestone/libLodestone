@@ -8,134 +8,119 @@
 #include <random>
 
 #include "Lodestone.Level/block/instance/ImmutableBlockInstance.h"
+#include "Lodestone.Level/chunk/ImmutableChunk.h"
 #include "Lodestone.Level/chunk/LevelChunk.h"
 #include <Lodestone.Common/Indexing.h>
 
 namespace lodestone::level {
 #pragma region Blocks
-    bool Level::isChunkInBounds(const types::Vec2i &coords) { return true; }
+    bool Level::isChunkInBounds(const coords::ChunkCoordinates &chunkCoordinates) { return true; }
 
-    const block::instance::BlockInstance &Level::getBlock(const signed_size_t x,
-                                                        const signed_size_t y,
-                                                        const signed_size_t z) const {
-        if (const chunk::Chunk *c = getChunk(CHUNK_IDX(x), CHUNK_IDX(z)))
-            return c->getBlock(
-                CHUNK_LOCAL_IDX(x, common::constants::CHUNK_WIDTH), y,
-                CHUNK_LOCAL_IDX(z, common::constants::CHUNK_DEPTH));
+    const block::instance::BlockInstance &Level::getBlock(const signed_size_t blockX,
+                                                          const signed_size_t blockY,
+                                                          const signed_size_t blockZ) const {
+        if (const chunk::Chunk *c = getChunkFromBlockCoords(blockX, blockZ))
+            return c->getBlock(coords::ChunkCoordinates::blockToLocalChunkX(blockX), blockY, coords::ChunkCoordinates::blockToLocalChunkZ(blockZ));
 
         return *block::instance::ImmutableBlockInstance::getInstance();
     }
 
-    void Level::setBlock(block::instance::BlockInstance &&blk,
-                         const signed_size_t x, const signed_size_t y,
-                         const signed_size_t z) {
-        if (chunk::Chunk *c = getChunk(CHUNK_IDX(x), CHUNK_IDX(z)))
-            c->setBlock(std::move(blk),
-                        CHUNK_LOCAL_IDX(x, common::constants::CHUNK_WIDTH), y,
-                        CHUNK_LOCAL_IDX(z, common::constants::CHUNK_DEPTH));
+    void Level::setBlock(block::instance::BlockInstance &&block,
+                         const signed_size_t blockX, const signed_size_t blockY,
+                         const signed_size_t blockZ) {
+        if (chunk::Chunk *c = getChunkFromBlockCoords(blockX, blockZ))
+            c->setBlock(std::move(block),
+                        coords::ChunkCoordinates::blockToLocalChunkX(blockX), blockY,
+                        coords::ChunkCoordinates::blockToLocalChunkZ(blockZ));
     }
 
-    void Level::setBlockCreate(block::instance::BlockInstance &&blk,
-                               const signed_size_t x, const signed_size_t y,
-                               const signed_size_t z, const int height) {
-        chunk::Chunk *c = getChunk(CHUNK_IDX(x), CHUNK_IDX(z));
+    void Level::setBlockCreate(block::instance::BlockInstance &&block,
+                               const signed_size_t blockX, const signed_size_t blockY,
+                               const signed_size_t blockZ, const int height) {
+        chunk::Chunk *c = getChunkFromBlockCoords(blockX, blockZ);
 
         if (!c)
-            c = createChunk(CHUNK_IDX(x), CHUNK_IDX(z), height);
+            c = createChunk(coords::ChunkCoordinates::fromBlockCoordinates(blockX, blockZ), height);
 
-        c->setBlock(std::move(blk),
-                    CHUNK_LOCAL_IDX(x, common::constants::CHUNK_WIDTH), y,
-                    CHUNK_LOCAL_IDX(z, common::constants::CHUNK_DEPTH));
+        c->setBlock(std::move(block),
+                    coords::ChunkCoordinates::blockToLocalChunkX(blockX), blockY,
+                    coords::ChunkCoordinates::blockToLocalChunkZ(blockZ));
     }
 
-    void Level::setBlockRaw(block::instance::BlockInstance &&blk,
-                            const signed_size_t x, const signed_size_t y,
-                            const signed_size_t z) {
-        if (chunk::Chunk *c = getChunk(CHUNK_IDX(x), CHUNK_IDX(z)))
-            c->setBlockRaw(std::move(blk),
-                           CHUNK_LOCAL_IDX(x, common::constants::CHUNK_WIDTH),
-                           y,
-                           CHUNK_LOCAL_IDX(z, common::constants::CHUNK_DEPTH));
+    void Level::setBlockRaw(block::instance::BlockInstance &&block,
+                            const signed_size_t blockX, const signed_size_t blockY,
+                            const signed_size_t blockZ) {
+        if (chunk::Chunk *c = getChunkFromBlockCoords(blockX, blockZ))
+            c->setBlockRaw(std::move(block),
+                           coords::ChunkCoordinates::blockToLocalChunkX(blockX),
+                           blockY,
+                           coords::ChunkCoordinates::blockToLocalChunkZ(blockZ));
     }
 
-    void Level::setBlockCreateRaw(block::instance::BlockInstance &&blk,
-                                  const signed_size_t x, const signed_size_t y,
-                                  const signed_size_t z, const int height) {
-        chunk::Chunk *c = getChunk(CHUNK_IDX(x), CHUNK_IDX(z));
+    void Level::setBlockCreateRaw(block::instance::BlockInstance &&block,
+                                  const signed_size_t blockX, const signed_size_t blockY,
+                                  const signed_size_t blockZ, const int height) {
+        chunk::Chunk *c = getChunkFromBlockCoords(blockX, blockZ);
 
         if (!c)
-            c = createChunk(CHUNK_IDX(x), CHUNK_IDX(z), height);
+            c = createChunk(coords::ChunkCoordinates::fromBlockCoordinates(blockX, blockZ), height);
 
-        c->setBlockRaw(std::move(blk),
-                       CHUNK_LOCAL_IDX(x, common::constants::CHUNK_WIDTH), y,
-                       CHUNK_LOCAL_IDX(z, common::constants::CHUNK_DEPTH));
+        c->setBlockRaw(std::move(block),
+                       coords::ChunkCoordinates::blockToLocalChunkX(blockX), blockY,
+                       coords::ChunkCoordinates::blockToLocalChunkZ(blockZ));
     }
 #pragma endregion
 
 #pragma region Heightmap
-    int16_t Level::getHeightAt(const signed_size_t x,
-                               const signed_size_t z) const {
-        if (const chunk::Chunk *c = getChunk(CHUNK_IDX(x), CHUNK_IDX(z)))
+    int16_t Level::getHeightAt(const signed_size_t blockX,
+                               const signed_size_t blockZ) const {
+        if (const chunk::Chunk *c = getChunkFromBlockCoords(blockX, blockZ))
             return c->getHeightAt(
-                CHUNK_LOCAL_IDX(x, common::constants::CHUNK_WIDTH),
-                CHUNK_LOCAL_IDX(z, common::constants::CHUNK_DEPTH));
+                coords::ChunkCoordinates::blockToLocalChunkX(blockX),
+                coords::ChunkCoordinates::blockToLocalChunkZ(blockZ));
 
         return 0;
     }
 
-    void Level::setHeightAt(const int16_t h, const signed_size_t x,
-                            const signed_size_t z) {
-        if (chunk::Chunk *c = getChunk(CHUNK_IDX(x), CHUNK_IDX(z)))
-            c->setHeightAt(h,
-                           CHUNK_LOCAL_IDX(x, common::constants::CHUNK_WIDTH),
-                           CHUNK_LOCAL_IDX(z, common::constants::CHUNK_DEPTH));
+    void Level::setHeightAt(const int16_t height, const signed_size_t blockX,
+                            const signed_size_t blockZ) {
+        if (chunk::Chunk *c = getChunkFromBlockCoords(blockX, blockZ))
+            c->setHeightAt(height,
+                           coords::ChunkCoordinates::blockToLocalChunkX(blockX),
+                           coords::ChunkCoordinates::blockToLocalChunkZ(blockZ));
     }
 
-    void Level::setHeightAtCreate(const int16_t h, const signed_size_t x,
-                                  const signed_size_t z, const int height) {
-        chunk::Chunk *c = getChunk(CHUNK_IDX(x), CHUNK_IDX(z));
+    void Level::setHeightAtCreate(const int16_t height, const signed_size_t blockX,
+                                  const signed_size_t blockZ, const int newChunkHeight) {
+        chunk::Chunk *c = getChunkFromBlockCoords(blockX, blockZ);
 
         if (!c)
-            c = createChunk(CHUNK_IDX(x), CHUNK_IDX(z), height);
+            c = createChunk(coords::ChunkCoordinates::fromBlockCoordinates(blockX, blockZ), newChunkHeight);
 
-        c->setHeightAt(h, CHUNK_LOCAL_IDX(x, common::constants::CHUNK_WIDTH),
-                       CHUNK_LOCAL_IDX(z, common::constants::CHUNK_DEPTH));
+        c->setHeightAt(height, coords::ChunkCoordinates::blockToLocalChunkX(blockX),
+                       coords::ChunkCoordinates::blockToLocalChunkZ(blockZ));
     }
 #pragma endregion
 
 #pragma region Blockmap
-    const block::instance::BlockInstance &
-    Level::getBlockmapBlockAt(const signed_size_t x,
-                              const signed_size_t z) const {
-        if (const chunk::Chunk *c = getChunk(CHUNK_IDX(x), CHUNK_IDX(z)))
-            return *c->getBlockmapBlockAt(
-                CHUNK_LOCAL_IDX(x, common::constants::CHUNK_WIDTH),
-                CHUNK_LOCAL_IDX(z, common::constants::CHUNK_DEPTH));
+    const block::instance::BlockInstance &Level::getBlockAtHeight(const signed_size_t blockX, const signed_size_t blockZ) const {
+        const chunk::Chunk *c = getChunkFromBlockCoords(blockX, blockZ);
+        if (c == nullptr) {
+            c = chunk::ImmutableChunk::getInstance();
+        }
 
-        return *block::instance::ImmutableBlockInstance::getInstance();
+        return c->getBlockAtHeight(coords::ChunkCoordinates::blockToLocalChunkX(blockX),
+                                   coords::ChunkCoordinates::blockToLocalChunkZ(blockZ));
     }
 
-    void Level::setBlockmapBlockAt(const block::instance::BlockInstance &b,
-                                   const signed_size_t x,
-                                   const signed_size_t z) {
-        if (chunk::Chunk *c = getChunk(CHUNK_IDX(x), CHUNK_IDX(z)))
-            c->setBlockmapBlockAt(
-                &b, CHUNK_LOCAL_IDX(x, common::constants::CHUNK_WIDTH),
-                CHUNK_LOCAL_IDX(z, common::constants::CHUNK_DEPTH));
-    }
+    void Level::setBlockAtHeight(block::instance::BlockInstance &&block, const signed_size_t blockX, const signed_size_t blockZ) {
+        chunk::Chunk *c = getChunkFromBlockCoords(blockX, blockZ);
+        if (c == nullptr) {
+            c = chunk::ImmutableChunk::getInstance();
+        }
 
-    void Level::setBlockmapBlockAtCreate(const block::instance::BlockInstance &b,
-                                         const signed_size_t x,
-                                         const signed_size_t z,
-                                         const int height) {
-        chunk::Chunk *c = getChunk(CHUNK_IDX(x), CHUNK_IDX(z));
-
-        if (!c)
-            c = createChunk(CHUNK_IDX(x), CHUNK_IDX(z), height);
-
-        c->setBlockmapBlockAt(
-            &b, CHUNK_LOCAL_IDX(x, common::constants::CHUNK_WIDTH),
-            CHUNK_LOCAL_IDX(z, common::constants::CHUNK_DEPTH));
+        c->setBlockAtHeight(std::move(block), coords::ChunkCoordinates::blockToLocalChunkX(blockX),
+                            coords::ChunkCoordinates::blockToLocalChunkZ(blockZ));
     }
 #pragma endregion
 
@@ -183,7 +168,8 @@ namespace lodestone::level {
             std::uniform_int_distribution<> distrib(-radius, radius);
 
             int iter = 0;
-            while ((pos.y == 0 || getBlock(pos.x, pos.y - 1, pos.z) == block::BlockRegistry::s_defaultBlock) && iter < 20) { // 20 tries ig
+            while ((pos.y == 0 || getBlock(pos.x, pos.y - 1, pos.z) == block::BlockRegistry::s_defaultBlock) && iter < 20) {
+                // 20 tries ig
                 // spread the player
                 pos.x = distrib(gen);
                 pos.z = distrib(gen);

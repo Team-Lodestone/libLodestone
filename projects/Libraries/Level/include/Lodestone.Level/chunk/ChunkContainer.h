@@ -25,14 +25,14 @@ namespace lodestone::level::chunk {
             return std::format("ChunkContainer[chunks={}, bounds={}]", m_chunks.size(), getChunkBounds().toString());
         };
 
-        virtual bool isChunkInBounds(const types::Vec2i &coords) = 0;
+        virtual bool isChunkInBounds(const coords::ChunkCoordinates &coords) = 0;
 
         /** Returns true if chunk at coords exist
          *
          * @param coords The coordinates you want to check for a chunk
          * @returns @c true if a chunk at given coords exist
          */
-        bool hasChunk(const types::Vec2i &coords) const;
+        bool hasChunk(const coords::ChunkCoordinates &coords) const;
 
         /** Returns true if chunk at coords exist
          *
@@ -50,7 +50,7 @@ namespace lodestone::level::chunk {
          * @param height The height you'd like to make the new chunk
          * @returns The new chunk
          */
-        Chunk *createChunk(const types::Vec2i &coords, int height = 256);
+        Chunk *createChunk(const coords::ChunkCoordinates &coords, int height = 256);
 
         /** Creates a chunk at the given coordinates with the given height
          *
@@ -65,29 +65,41 @@ namespace lodestone::level::chunk {
 
         void addChunk(std::unique_ptr<Chunk> chunk);
 
-        void addChunk(const types::Vec2i &coords, std::unique_ptr<Chunk> chunk);
+        void addChunk(const coords::ChunkCoordinates &coords, std::unique_ptr<Chunk> chunk);
 
         void addChunk(const int x, const int z, std::unique_ptr<Chunk> chunk) {
             addChunk({x, z}, std::move(chunk));
         }
 
-        Chunk *getChunk(const types::Vec2i &coords);
+        Chunk *getChunk(const coords::ChunkCoordinates &coords);
 
         Chunk *getChunk(const int x, const int z) { return getChunk({x, z}); };
 
-        Chunk *getChunkCreate(const types::Vec2i &coords, int height = 256);
-
-        Chunk *getChunkCreate(const int x, const int z, int height = 256) {
-            return getChunkCreate({x, z});
+        Chunk *getChunkFromBlockCoords(const signed_size_t blockX, const signed_size_t blockZ) {
+            return getChunk(coords::ChunkCoordinates::fromBlockCoordinates(blockX, blockZ));
         };
 
-        const Chunk *getChunk(const types::Vec2i &coords) const;
+        Chunk *getChunkCreate(const coords::ChunkCoordinates &coords, int height = 256);
+
+        Chunk *getChunkCreate(const int x, const int z, const int height = 256) {
+            return getChunkCreate({x, z}, height);
+        };
+
+        Chunk *getChunkFromBlockCoordsCreate(const int blockX, const int blockZ, const int height = 256) {
+            return getChunkCreate(coords::ChunkCoordinates::fromBlockCoordinates(blockX, blockZ), height);
+        };
+
+        const Chunk *getChunk(const coords::ChunkCoordinates &coords) const;
 
         const Chunk *getChunk(const int x, const int z) const {
             return getChunk({x, z});
         };
 
-        std::unique_ptr<Chunk> detachChunk(const types::Vec2i &coords,
+        const Chunk *getChunkFromBlockCoords(const signed_size_t blockX, const signed_size_t blockZ) const {
+            return getChunk(coords::ChunkCoordinates::fromBlockCoordinates(blockX, blockZ));
+        };
+
+        std::unique_ptr<Chunk> detachChunk(const coords::ChunkCoordinates &coords,
                                            bool shouldInvalidateCoords = true);
 
         std::unique_ptr<Chunk>
@@ -96,17 +108,17 @@ namespace lodestone::level::chunk {
             return detachChunk({x, z}, shouldInvalidateCoords);
         };
 
-        void removeChunk(const types::Vec2i &coords);
+        void removeChunk(const coords::ChunkCoordinates &coords);
 
         void removeChunk(const int x, const int z) { removeChunk({x, z}); };
 
         void merge(std::unique_ptr<ChunkContainer> rhs);
 
-        map_t<types::Vec2i, std::unique_ptr<Chunk>> &getChunks() {
+        map_t<coords::ChunkCoordinates, std::unique_ptr<Chunk>> &getChunks() {
             return m_chunks;
         }
 
-        const map_t<types::Vec2i, std::unique_ptr<Chunk>> &getChunks() const {
+        const map_t<coords::ChunkCoordinates, std::unique_ptr<Chunk>> &getChunks() const {
             return m_chunks;
         }
 
@@ -117,7 +129,7 @@ namespace lodestone::level::chunk {
         ChunkContainer &operator=(const ChunkContainer &) = delete;
 
       protected:
-        map_t<types::Vec2i, std::unique_ptr<Chunk>> m_chunks;
+        map_t<coords::ChunkCoordinates, std::unique_ptr<Chunk>> m_chunks;
     };
 } // namespace lodestone::level::chunk
 

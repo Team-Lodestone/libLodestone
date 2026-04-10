@@ -22,7 +22,7 @@ namespace lodestone::minecraft::java::classic::minev1 {
 
         std::unique_ptr<level::FiniteLevel> l =
             std::make_unique<level::FiniteLevel>(level::types::Bounds2i{
-                {0, 0}, {CHUNK_IDX(WIDTH) - 1, CHUNK_IDX(DEPTH) - 1}});
+                {0, 0}, {level::coords::ChunkCoordinates::blockToChunkCoord(WIDTH) - 1, level::coords::ChunkCoordinates::blockToChunkCoord(DEPTH) - 1}});
 
         const std::unique_ptr<lodestone::conversion::block::version::BlockIO>
             io = LodestoneJava::getInstance()->io.getIo(options.version);

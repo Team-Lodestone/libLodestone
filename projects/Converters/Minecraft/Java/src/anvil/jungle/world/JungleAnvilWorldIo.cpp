@@ -34,7 +34,7 @@ namespace lodestone::minecraft::java::anvil::jungle::world {
     std::unique_ptr<level::world::World> JungleAnvilWorldIo::read(const common::conversion::io::options::OptionPresets::CommonFilesystemOptions &options)
         const {
         if (!std::filesystem::exists(options.path))
-            return nullptr;
+            throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), options.path);
 
         map_t<int, std::filesystem::path> dims;
         dims.emplace(0, options.path); // main dim
@@ -153,7 +153,7 @@ namespace lodestone::minecraft::java::anvil::jungle::world {
                 }
 
                 THREADED_LOOP_START_VEC(paths, &io, &options, &dim)
-                    const level::types::Vec2i coords =
+                    const level::coords::ChunkCoordinates coords =
                         mcregion::region::McRegionRegion::getCoordsFromFilename(
                             item.filename().string());
 

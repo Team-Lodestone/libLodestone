@@ -6,7 +6,7 @@
 namespace lodestone::level {
     FiniteLevel::FiniteLevel(const types::Bounds2i &bounds) : m_bounds(bounds) {}
 
-    bool FiniteLevel::isChunkInBounds(const types::Vec2i &coords) {
+    bool FiniteLevel::isChunkInBounds(const coords::ChunkCoordinates &coords) {
         return !m_bounds.empty() && m_bounds.contains(coords);
     }
 

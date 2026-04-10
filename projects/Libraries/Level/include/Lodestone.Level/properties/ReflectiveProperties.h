@@ -3,6 +3,9 @@
 //
 #ifndef LODESTONE_REFLECTIVEPROPERTIES_H
 #define LODESTONE_REFLECTIVEPROPERTIES_H
+#include <Lodestone.Common/Defines.h>
+#include <Lodestone.Common/util/Casts.h>
+
 #include <memory>
 
 #include "Lodestone.Level/properties/AbstractProperty.h"
@@ -28,8 +31,23 @@ namespace lodestone::level::properties {
          * @property name The name of the property to get
          * @returns The property if present, otherwise nullptr.
          */
-        virtual std::unique_ptr<level::properties::AbstractProperty>
-        getProperty(const std::string &name) = 0;
+        virtual std::unique_ptr<AbstractProperty>
+        getProperty(const std::string &name);
+
+        template <typename T>
+        std::unique_ptr<TemplatedProperty<T>> getProperty(const std::string &name) {
+            return common::util::Casts::dynamic_unique_pointer_cast<TemplatedProperty<T>>(getProperty(name));
+        }
+
+        template <typename T>
+        std::unique_ptr<TemplatedProperty<T>> getPropertyOr(const std::string &name, T value) {
+            std::unique_ptr<TemplatedProperty<T>> prop = common::util::Casts::dynamic_unique_pointer_cast<TemplatedProperty<T>>(getProperty(name));
+            if (prop == nullptr) {
+                return std::make_unique<TemplatedProperty<T>>(value);
+            }
+
+            return std::move(prop);
+        }
     };
 } // namespace lodestone::level::properties
 

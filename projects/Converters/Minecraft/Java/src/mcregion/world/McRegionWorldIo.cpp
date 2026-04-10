@@ -153,7 +153,7 @@ namespace lodestone::minecraft::java::mcregion::world {
                 }
 
                 THREADED_LOOP_START_VEC(paths, &io, &options, &dim)
-                    level::types::Vec2i coords =
+                    const level::coords::ChunkCoordinates coords =
                         region::McRegionRegion::getCoordsFromFilename(
                             item.filename().string());
 

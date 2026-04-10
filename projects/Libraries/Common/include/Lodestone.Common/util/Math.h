@@ -3,6 +3,7 @@
 //
 #ifndef LODESTONE_MATH_H
 #define LODESTONE_MATH_H
+#include "Lodestone.Common/Defines.h"
 #include "Lodestone.Common/util/Util.h"
 
 #include <cstring>
@@ -53,7 +54,7 @@ namespace lodestone::common::util {
             return _fnv1a<uint32_t>(s, l, FNV1A_32_HASH, FNV1A_32_PRIME);
         }
 
-        static constexpr uint64_t fnv1a64(const std::string &s) {
+        static constexpr uint64_t fnv1a64(const std::string_view &s) {
             return fnv1a64(s.data(), s.length());
         }
 
@@ -61,12 +62,24 @@ namespace lodestone::common::util {
             return fnv1a64(s, Util::strlenConstexpr(s));
         }
 
-        static constexpr uint32_t fnv1a32(const std::string &s) {
+        static constexpr uint32_t fnv1a32(const std::string_view &s) {
             return fnv1a32(s.data(), s.length());
         }
 
         static constexpr uint32_t fnv1a32(const char *s) {
             return fnv1a32(s, Util::strlenConstexpr(s));
+        }
+
+        static consteval size_t constevalLog(size_t value, const size_t base) {
+            if (value <= 1) return 0;
+
+            size_t l = 0;
+            while (value >= base) {
+                value /= base;
+                l++;
+            }
+
+            return l;
         }
 
         /** Gets a random number
@@ -80,9 +93,11 @@ namespace lodestone::common::util {
          * @param value Integer value
          * @return String of base36 of value
          */
-        static std::string encodeBase36(int value);
+        static std::string encodeBase36(signed_size_t value);
 
-        static int64_t decodeBase36(const std::string &input);
+        static constexpr signed_size_t decodeBase36(const std::string_view &input) {
+            return std::stoull(input.data(), nullptr, 36);
+        }
 
         static constexpr float degreesToRadians(const float deg) {
             return deg * (std::numbers::pi / 180.0);

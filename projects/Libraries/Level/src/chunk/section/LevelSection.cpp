@@ -10,50 +10,48 @@ namespace lodestone::level::chunk::section {
         delete[] m_biomes;
     }
 
-    lodestone::common::storage::bits::AbstractBitStorage *LevelSection::getBlockLight() {
-        return &m_blockLight;
+    SectionType LevelSection::type() {
+        return SectionType::LevelSection;
     }
 
-    lodestone::common::storage::bits::AbstractBitStorage *LevelSection::getSkyLight() {
-        return &m_skyLight;
+    lodestone::common::storage::bits::AbstractBitStorage *LevelSection::getBlockLightStorage() {
+        return &m_blockLightStorage;
     }
 
-    void LevelSection::setBlockLight(const int x, const int y, const int z,
-                                     const uint8_t l) {
-        this->m_blockLight.setNibble(x, y, z, l & 0xF);
+    lodestone::common::storage::bits::AbstractBitStorage *LevelSection::getSkyLightStorage() {
+        return &m_skyLightStorage;
+    }
+
+    void LevelSection::setBlockLight(const int localX, const int localY, const int localZ, const uint8_t lightLevel) {
+        this->m_blockLightStorage.setNibble(localX, localY, localZ, lightLevel & 0xF);
 
         m_modificationCount++;
     }
 
-    void LevelSection::setSkyLight(const int x, const int y, const int z,
-                                   const uint8_t l) {
-        this->m_skyLight.setNibble(x, y, z, l & 0xF);
+    void LevelSection::setSkyLight(const int localX, const int localY, const int localZ,
+                                   const uint8_t lightLevel) {
+        this->m_skyLightStorage.setNibble(localX, localY, localZ, lightLevel & 0xF);
 
         m_modificationCount++;
     }
 
     const block::instance::BlockInstance &
-    LevelSection::getBlock(const int x, const int y, const int z) const {
-        return m_blocks.getValue(INDEX_YZX(x, y, z, common::constants::CHUNK_WIDTH,
+    LevelSection::getBlock(const int localX, const int localY, const int localZ) const {
+        return m_blockStorage.getValue(INDEX_YZX(localX, localY, localZ, common::constants::CHUNK_WIDTH,
                                   common::constants::CHUNK_DEPTH));
     }
 
-    const common::storage::palette::PalletizedStorage<block::instance::BlockInstance> &LevelSection::getStorage() {
-        return m_blocks;
-    }
-
-    Section::SectionType LevelSection::getType() {
-        return SectionType::LevelSection;
+    const common::storage::palette::PalletizedStorage<block::instance::BlockInstance> &LevelSection::getBlockStorage() {
+        return m_blockStorage;
     }
 
     uint64_t LevelSection::getModificationCount() {
         return m_modificationCount;
     }
 
-    void LevelSection::setBlock(block::instance::BlockInstance &&blk,
-                                const int x, const int y, const int z) {
-        m_blocks.setValue(INDEX_YZX(x, y, z, common::constants::CHUNK_WIDTH,
-                          common::constants::CHUNK_DEPTH), std::move(blk));
+    void LevelSection::setBlock(block::instance::BlockInstance &&block, const int localX, const int localY, const int localZ) {
+        m_blockStorage.setValue(INDEX_YZX(localX, localY, localZ, common::constants::CHUNK_WIDTH,
+                          common::constants::CHUNK_DEPTH), std::move(block));
 
         m_modificationCount++;
     }

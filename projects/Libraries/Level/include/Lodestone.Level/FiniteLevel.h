@@ -12,7 +12,7 @@ namespace lodestone::level {
         // TODO regular Level to FiniteLevel
         explicit FiniteLevel(const types::Bounds2i &bounds);
 
-        bool isChunkInBounds(const types::Vec2i &coords) override;
+        bool isChunkInBounds(const coords::ChunkCoordinates &coords) override;
 
         const types::Bounds2i &getBounds() const;
 

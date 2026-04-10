@@ -4,6 +4,6 @@
 #include "Lodestone.Minecraft.Java/anvil/jungle/JungleAnvilRegion.h"
 
 namespace lodestone::minecraft::java::anvil::jungle::region {
-    JungleAnvilRegion::JungleAnvilRegion(const level::types::Vec2i &coords)
+    JungleAnvilRegion::JungleAnvilRegion(const level::coords::ChunkCoordinates &coords)
         : McRegionRegion(coords) {}
 } // namespace lodestone::minecraft::java::anvil::jungle::region

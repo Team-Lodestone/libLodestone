@@ -28,3 +28,4 @@ target_include_directories(Lodestone.Core PUBLIC
 )
 target_link_libraries(Lodestone.Core PRIVATE Lodestone.Common gtl)
 setupLinter(Lodestone.Core)
+setupDoxygen()

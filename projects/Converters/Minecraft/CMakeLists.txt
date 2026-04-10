@@ -22,4 +22,3 @@ add_custom_target(Lodestone.Minecraft ALL DEPENDS
         Lodestone.Minecraft.Common
 )
 
-

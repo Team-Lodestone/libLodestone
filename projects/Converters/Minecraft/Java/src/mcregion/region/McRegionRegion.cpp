@@ -10,13 +10,13 @@ namespace lodestone::minecraft::java::mcregion::region {
         return std::format("r.{}.{}.mcr", this->m_coords.x, this->m_coords.y);
     }
 
-    level::types::Vec2i
+    level::coords::ChunkCoordinates
     McRegionRegion::getCoordsFromFilename(const std::string &name) {
         std::stringstream ss(name);
         std::string p;
         constexpr char d = '.';
 
-        level::types::Vec2i coords{0, 0};
+        level::coords::ChunkCoordinates coords{0, 0};
 
         std::getline(ss, p, d);
 

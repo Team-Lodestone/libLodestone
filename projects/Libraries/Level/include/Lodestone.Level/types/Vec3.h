@@ -185,4 +185,10 @@ template <typename T> struct std::hash<lodestone::level::types::Vec3<T>> {
     }
 };
 
+template <typename T>
+struct std::formatter<lodestone::level::types::Vec3<T>> {
+    template <typename FormatParseContext> constexpr auto parse(FormatParseContext &pc) { return pc.begin(); }
+    template <typename FormatContext> auto format(lodestone::level::types::Vec3<T> vec, FormatContext &fc) const { return std::format_to(fc.out(), "x={}, y={}, z={}", vec.x, vec.y, vec.z); }
+};
+
 #endif

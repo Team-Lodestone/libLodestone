@@ -12,6 +12,9 @@ namespace lodestone::level::material {
       public:
         constexpr Material(const types::Color &color) : m_color(color) {};
 
+        template <typename... Args>
+        explicit constexpr Material(Args&&... args) : m_color(std::forward<Args>(args)...) {}
+
         constexpr const types::Color &getColor() const { return m_color; }
 
         std::string toString() const override {

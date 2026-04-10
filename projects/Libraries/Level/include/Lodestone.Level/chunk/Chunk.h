@@ -4,11 +4,14 @@
 #ifndef LODESTONE_CHUNK_H
 #define LODESTONE_CHUNK_H
 
+#include <Lodestone.Common/util/IHasDerivedTypes.h>
 #include "Lodestone.Level/block/instance/BlockInstance.h"
 #include <Lodestone.Common/Constants.h>
 
 #include "Lodestone.Level/block/BlockRegistry.h"
 #include "Lodestone.Level/chunk/section/ImmutableSection.h"
+#include "Lodestone.Level/coords/ChunkCoordinates.h"
+#include "Lodestone.Level/coords/SectionCoordinates.h"
 #include "Lodestone.Level/properties/ReflectiveProperties.h"
 #include "Lodestone.Level/types/Vec2.h"
 
@@ -17,17 +20,14 @@ namespace lodestone::level::chunk {
 }
 
 namespace lodestone::level::chunk {
+    enum class ChunkType { LevelChunk, ImmutableChunk };
+
     class LODESTONE_API Chunk
-        : public lodestone::common::string::StringSerializable, public properties::ReflectiveProperties {
+        : public lodestone::common::string::StringSerializable, public properties::ReflectiveProperties, public common::util::IHasDerivedTypes<ChunkType> {
       public:
-        struct BlockmapEntry {
-            const block::instance::BlockInstance *block;
-            int16_t height;
-        };
+        static constexpr int TOTAL_CHUNK_2D_SIZE = common::constants::CHUNK_WIDTH * common::constants::CHUNK_DEPTH;
 
         Chunk();
-
-        enum class ChunkType { LevelChunk, EmptyChunk };
 
         std::string toString() const override {
             if (this->m_coords.has_value())
@@ -36,15 +36,13 @@ namespace lodestone::level::chunk {
             return std::format("Chunk");
         };
 
-        explicit Chunk(const types::Vec2i &coords);
-
-        Chunk(ChunkContainer *container, const types::Vec2i &coords);
+        Chunk(const coords::ChunkCoordinates &coords, ChunkContainer *container = nullptr);
 
         ~Chunk() override;
 
-        virtual void calculateBlockmap() = 0;
+        virtual void calculateHeightmap() = 0;
 
-        virtual void calculateBlockmapAtColumn(int x, int z, int height) = 0;
+        virtual void calculateHeightmapAtColumn(int localX, int localZ, int height) = 0;
 
         /** Gets the height of the chunk in Sections, can be used for getting
          * section count */
@@ -53,56 +51,54 @@ namespace lodestone::level::chunk {
         /** Gets the height of the chunk in Blocks */
         int getChunkBlockHeight() const;
 
-        virtual section::Section *getSection(int y) const = 0;
+        virtual section::Section *getSection(const coords::SectionCoordinates &sectionY) const = 0;
 
-        virtual section::Section *getSectionCreate(int y) = 0;
+        virtual section::Section *getSectionCreate(const coords::SectionCoordinates &sectionY) = 0;
 
-        virtual const Chunk::BlockmapEntry *getBlockmap() const;
+        virtual section::Section *getSectionFromBlockY(const signed_size_t &blockY) const;
 
-        virtual const block::instance::BlockInstance &getBlock(int x, int y,
-                                                             int z) const = 0;
+        virtual section::Section *getSectionFromBlockYCreate(const signed_size_t &blockY);
+
+        virtual const int16_t *getHeightmap() const;
+
+        virtual const block::instance::BlockInstance &getBlock(int localX, int y,
+                                                             int localZ) const = 0;
 
         /** Sets a block at the given X, Y, and Z coordinates.
          *
          * Also updates the blockmap and heightmap
          */
-        virtual void setBlock(block::instance::BlockInstance &&blk, int x,
-                              int y, int z) = 0;
+        virtual void setBlock(block::instance::BlockInstance &&block, int localX,
+                              int y, int localZ) = 0;
 
         /** Sets a block at the given X, Y, and Z coordinates.
          *
          * Does not update blockmap
          */
-        virtual void setBlockRaw(block::instance::BlockInstance &&blk,
-                                 int x, int y, int z) = 0;
+        virtual void setBlockRaw(block::instance::BlockInstance &&block,
+                                 int localX, int y, int localZ) = 0;
 
-        virtual int16_t getHeightAt(int x, int z) const;
+        virtual int16_t getHeightAt(int localX, int localZ) const;
 
-        virtual void setHeightAt(int16_t h, int x, int z);
+        virtual void setHeightAt(int16_t height, int localX, int localZ);
 
-        virtual const block::instance::BlockInstance *
-        getBlockmapBlockAt(int x, int z) const;
+        virtual const block::instance::BlockInstance &
+        getBlockAtHeight(int localX, int localZ) const;
 
-        virtual void setBlockmapBlockAt(const block::instance::BlockInstance *b,
-                                        int x, int z);
-
-        virtual const BlockmapEntry &
-            getBlockmapEntryAt(int x, int z) const;
-
-        virtual void setBlockmapEntryAt(const BlockmapEntry &b,
-                                        int x, int z);
+        virtual void setBlockAtHeight(block::instance::BlockInstance &&block,
+                                        int localX, int localZ);
 
         bool hasCoords() const;
 
-        const std::optional<types::Vec2i> &getCoords();
+        const std::optional<coords::ChunkCoordinates> &getCoords() const;
 
-        void setCoords(const std::optional<types::Vec2i> &coords);
+        void setCoords(const std::optional<coords::ChunkCoordinates> &coords);
 
         void invalidateCoords();
 
         void attach(ChunkContainer *container);
 
-        void attach(ChunkContainer *container, const types::Vec2i &coords);
+        void attach(ChunkContainer *container, const coords::ChunkCoordinates &coords);
 
         void detach(bool shouldInvalidateCoords);
 
@@ -112,20 +108,23 @@ namespace lodestone::level::chunk {
 
         virtual int getSectionCount() const = 0;
 
+        virtual void postProcess();
+
         // todo: section iterator
       protected:
-        std::optional<types::Vec2i> m_coords;
+        std::optional<coords::ChunkCoordinates> m_coords;
         /** The parent container which may hold the chunk */
         ChunkContainer *m_container;
 
-        /** Blockmap
-         *
-         * Each x and z coord corresponds to the topmost block's state and it's height
-         */
-        BlockmapEntry *m_blockMap =
-            new BlockmapEntry[common::constants::CHUNK_WIDTH *
-                  common::constants::CHUNK_DEPTH] {};
+        // TODO floor
 
+        /** Heightmap
+         *
+         * Each x and z coord corresponds to the Y coordinate above the topmost block(height)
+         */
+        int16_t *m_heightMap = new int16_t[TOTAL_CHUNK_2D_SIZE] {};
+
+        // TODO or maybe these should be held in Level with references to them from Chunk
         // map_t<Vec3i, TileEntity> mTileEntities;
         // map_t<Vec3i, Entity> mEntities;
     };

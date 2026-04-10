@@ -22,9 +22,11 @@ namespace lodestone::common::registry {
 
         constexpr const char *getPath() const noexcept { return m_path; }
 
-        constexpr const char *getNamespace() const noexcept {
-            return m_namespace;
-        }
+        constexpr std::string_view getPathView() const noexcept { return m_path; }
+
+        constexpr const char *getNamespace() const noexcept { return m_namespace; }
+
+        constexpr std::string_view getNamespaceView() const noexcept { return m_namespace; }
 
         constexpr std::string getString() const noexcept {
             return std::string(m_namespace) + ":" + m_path;

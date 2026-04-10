@@ -33,6 +33,10 @@ set(FILES
         include/Lodestone.Common/event/Event.h
         include/Lodestone.Common/event/Cancellable.h
         src/util/Util.cpp
+        src/util/Casts.cpp
+        include/Lodestone.Common/util/Casts.h
+        src/util/IHasDerivedTypes.cpp
+        include/Lodestone.Common/util/IHasDerivedTypes.h
 )
 
 add_library(Lodestone.Common OBJECT ${FILES})
@@ -42,3 +46,4 @@ target_include_directories(Lodestone.Common
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 setupLinter(Lodestone.Common)
+setupDoxygen()

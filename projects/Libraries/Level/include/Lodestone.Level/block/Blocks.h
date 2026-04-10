@@ -15,7 +15,7 @@ namespace lodestone::level::block {
     }
 
         // todo we can replace with builtin EMPTY block since Air might not be what we want across games
-        ADD_BLOCK(AIR, "air");
+        ADD_BLOCK(NONE, "none");
     };
 } // namespace lodestone::level::block
 

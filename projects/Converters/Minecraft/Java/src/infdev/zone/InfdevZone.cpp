@@ -17,7 +17,10 @@
 
 namespace lodestone::minecraft::java::infdev::zone {
     std::string InfdevZone::getFilename() const {
-        return std::format("zone_{}_{}.dat", this->m_coords.x, this->m_coords.y);
+        auto zoneX36 = lodestone::common::util::Math::encodeBase36(this->m_coords.x);
+        auto zoneZ36 = lodestone::common::util::Math::encodeBase36(this->m_coords.y);
+
+        return std::format("zone_{}_{}.dat", zoneX36, zoneZ36);
     }
 
     level::types::Vec2i
@@ -34,7 +37,7 @@ namespace lodestone::minecraft::java::infdev::zone {
         coords.x = lodestone::common::util::Math::decodeBase36(p);
 
         std::getline(ss, p, d);
-        coords.y = lodestone::common::util::Math::decodeBase36(p);
+        coords.y = lodestone::common::util::Math::decodeBase36(std::string_view(p.data(), p.find(".dat")));
 
         return coords;
     }

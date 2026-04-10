@@ -9,6 +9,13 @@
 #include <type_traits>
 
 namespace lodestone::conversion::registry {
+
+    /**
+     * @tparam _InternalIdentifier Category of type
+     * @tparam _Type Type to register
+     * @tparam _RegistryIdentifier Identifier for the type (must be the same as the one registered in the registry)
+     * @tparam _Registry The registry that contains the type and registry identifier
+     */
      template<const common::registry::Identifier *_InternalIdentifier, typename _Type, const common::registry::Identifier *_RegistryIdentifier, typename _Registry>
      struct RegistryIdentifierRelation {
         static constexpr const common::registry::Identifier *InternalIdentifier = _InternalIdentifier; // NOLINT

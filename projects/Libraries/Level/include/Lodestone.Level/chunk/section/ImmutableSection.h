@@ -13,29 +13,24 @@ namespace lodestone::level::chunk::section {
     /** Immutable section, used in place of returning empty/null LevelSection */
     class ImmutableSection : public Section {
     private:
-        static const common::storage::palette::PalletizedStorage<block::instance::BlockInstance> EMPTY_STORAGE;
+        static const common::storage::palette::PalletizedStorage<block::instance::BlockInstance> EMPTY_BLOCK_STORAGE;
       public:
         static ImmutableSection *getInstance();
 
-        SectionType getType() override;
-
-        const common::storage::palette::PalletizedStorage<block::instance::BlockInstance> &getStorage() override;
-
-        lodestone::common::storage::bits::AbstractBitStorage *getBlockLight() override;
-
-        lodestone::common::storage::bits::AbstractBitStorage *getSkyLight() override;
-
-        void setBlockLight(int x, int y, int z, uint8_t l) override;
-
-        void setSkyLight(int x, int y, int z, uint8_t l) override;
-
-        const block::instance::BlockInstance &
-        getBlock(const int x, const int y, const int z) const override;
-
-        void setBlock(block::instance::BlockInstance &&blk, int x, int y,
-                      int z) override;
+        SectionType type() override;
 
         uint64_t getModificationCount() override;
+
+        const common::storage::palette::PalletizedStorage<block::instance::BlockInstance> &getBlockStorage() override;
+
+        const block::instance::BlockInstance &getBlock(const int localX, const int localY, const int localZ) const override;
+        void setBlock(block::instance::BlockInstance &&block, int localX, int localY, int localZ) override;
+
+        lodestone::common::storage::bits::AbstractBitStorage *getBlockLightStorage() override;
+        lodestone::common::storage::bits::AbstractBitStorage *getSkyLightStorage() override;
+
+        void setBlockLight(int localX, int localY, int localZ, uint8_t lightLevel) override;
+        void setSkyLight(int localX, int localY, int localZ, uint8_t lightLevel) override;
     };
 } // namespace lodestone::level::chunk::section
 

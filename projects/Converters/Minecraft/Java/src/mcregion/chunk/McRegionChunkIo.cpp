@@ -71,9 +71,9 @@ namespace lodestone::minecraft::java::mcregion::chunk {
 
                     if (level::chunk::section::Section *s =
                             c->getSection(cy >> 4)) {
-                        s->getBlockLight()->setNibble(
+                        s->getBlockLightStorage()->setNibble(
                             cx, cy & 15, cz, GET_NIBBLE(skyLight, idx));
-                        s->getSkyLight()->setNibble(
+                        s->getSkyLightStorage()->setNibble(
                             cx, cy & 15, cz, GET_NIBBLE(blockLight, idx));
                     }
                 }
@@ -147,11 +147,11 @@ namespace lodestone::minecraft::java::mcregion::chunk {
                     level::chunk::section::Section *s = c->getSection(cy >> 4);
 
                     SET_NIBBLE(skyLightData, idx,
-                               s ? s->getSkyLight()->getNibble(cx, cy & 15, cz)
+                               s ? s->getSkyLightStorage()->getNibble(cx, cy & 15, cz)
                                  : 15);
                     SET_NIBBLE(
                         blockLightData, idx,
-                        s ? s->getBlockLight()->getNibble(cx, cy & 15, cz)
+                        s ? s->getBlockLightStorage()->getNibble(cx, cy & 15, cz)
                           : 15);
                 }
 

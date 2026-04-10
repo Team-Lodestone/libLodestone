@@ -15,6 +15,12 @@ namespace lodestone::tests::test {
 
         static tfw::test::result::TestResult writeInfdev624World(tfw::test::logging::loggers::ITestLogger &logger);
 
+        static tfw::test::result::TestResult visualizeInfdev624World(tfw::test::logging::loggers::ITestLogger &logger);
+        static tfw::test::result::TestResult visualizeMcRegionWorld(tfw::test::logging::loggers::ITestLogger &logger);
+        static tfw::test::result::TestResult visualizeAlphaWorld(tfw::test::logging::loggers::ITestLogger &logger);
+
+        static tfw::test::result::TestResult readIndevWorld(tfw::test::logging::loggers::ITestLogger &logger);
+
         static tfw::test::result::TestResult generateWaterChunk(tfw::test::logging::loggers::ITestLogger &logger);
 
         static tfw::test::result::TestResult readAnvilWorld(tfw::test::logging::loggers::ITestLogger &logger);

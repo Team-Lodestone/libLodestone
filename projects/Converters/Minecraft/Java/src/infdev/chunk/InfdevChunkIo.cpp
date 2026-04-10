@@ -68,18 +68,21 @@ namespace lodestone::minecraft::java::infdev::chunk {
 
                     if (b.getBlock() !=
                         level::block::BlockRegistry::s_defaultBlock)
-                        c->InfdevChunk::setBlock(std::move(b), cx, cy, cz);
+                        c->InfdevChunk::setBlockRaw(std::move(b), cx, cy, cz);
 
                     if (level::chunk::section::Section *s =
-                        c->getSection(cy >> 4)) {
-                        s->getBlockLight()->setNibble(
+                        c->getSection(level::coords::SectionCoordinates::blockToSectionCoord(cy))) {
+                        // TODO: Metadata
+                        s->getBlockLightStorage()->setNibble(
                             cx, cy & 15, cz, GET_NIBBLE(skyLight, idx));
-                        s->getSkyLight()->setNibble(
+                        s->getSkyLightStorage()->setNibble(
                             cx, cy & 15, cz, GET_NIBBLE(blockLight, idx));
                     }
                 }
             }
         }
+
+        c->postProcess();
 
         return c;
     }
@@ -92,9 +95,9 @@ namespace lodestone::minecraft::java::infdev::chunk {
         const std::unique_ptr<conversion::block::version::BlockIO>
             bio = LodestoneJava::getInstance()->io.getIo(options.version);
 
-        const level::types::Vec2i coords = c->getCoords().value();
-        bos.writeBE<int32_t>(coords.x);
-        bos.writeBE<int32_t>(coords.y); // Z
+        const level::coords::ChunkCoordinates coords = c->getCoords().value();
+        bos.writeBE<int32_t>(coords.getX());
+        bos.writeBE<int32_t>(coords.getZ()); // Z
 
         bos.writeBE<int64_t>(c->getPropertyOr<int64_t>("inhabitedTime", 0L)->getValue());
         bos.serialize<Properties::Serializer>({
@@ -142,11 +145,11 @@ namespace lodestone::minecraft::java::infdev::chunk {
                     level::chunk::section::Section *s = c->getSection(cy >> 4);
 
                     SET_NIBBLE(skyLight, idx,
-                               s ? s->getSkyLight()->getNibble(cx, cy & 15, cz)
+                               s ? s->getSkyLightStorage()->getNibble(cx, cy & 15, cz)
                                : 15);
                     SET_NIBBLE(
                         blockLight, idx,
-                        s ? s->getBlockLight()->getNibble(cx, cy & 15, cz)
+                        s ? s->getBlockLightStorage()->getNibble(cx, cy & 15, cz)
                         : 15);
                 }
 

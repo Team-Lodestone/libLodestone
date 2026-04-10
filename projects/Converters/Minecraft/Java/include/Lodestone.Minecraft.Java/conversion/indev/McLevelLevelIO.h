@@ -18,21 +18,22 @@
 namespace lodestone::minecraft::java::indev {
     class McLevelNbtLevelIO;
 
-    class McLevelLevelIO : public lodestone::conversion::io::LevelIO<&identifiers::MCLEVEL_LEVEL_IO, const common::conversion::io::options::OptionPresets::CommonReadOptions, const common::conversion::io::options::OptionPresets::CommonWriteOptions>,
+    class McLevelLevelIO : public conversion::io::LevelIO<&identifiers::MCLEVEL_LEVEL_IO, const common::conversion::io::options::OptionPresets::CommonReadOptions, const common::conversion::io::options::OptionPresets::CommonWriteOptions>,
     public conversion::registry::RegistryIdentifierRelations<
-        conversion::registry::RegistryIdentifierRelation<&identifiers::NBT_LEVEL_IO, McLevelNbtLevelIO, &identifiers::MCLEVEL_NBT_LEVEL_IO, conversion::registry::LevelIORegistry>
+        conversion::registry::RegistryIdentifierRelation<&identifiers::NBT_LEVEL_IO, const McLevelNbtLevelIO, &identifiers::MCLEVEL_NBT_LEVEL_IO, conversion::registry::LevelIORegistry>
         > {
       public:
-        std::unique_ptr<lodestone::level::Level>
+        std::unique_ptr<level::Level>
         read(const common::conversion::io::options::OptionPresets::CommonReadOptions &options) const override;
 
-        void write(lodestone::level::Level *l, const common::conversion::io::options::OptionPresets::CommonWriteOptions &options) const override;
+        void write(level::Level *l, const common::conversion::io::options::OptionPresets::CommonWriteOptions &options) const override;
     };
 
     class McLevelNbtLevelIO : public common::conversion::io::NbtLevelIO<&identifiers::MCLEVEL_NBT_LEVEL_IO, const common::conversion::io::options::OptionPresets::CommonNbtReadOptions, const conversion::io::options::EmptyOptions>,
     public conversion::registry::RegistryIdentifierRelations<
-        conversion::registry::RegistryIdentifierRelation<&conversion::identifiers::LEVEL_IO, McLevelLevelIO, &identifiers::MCLEVEL_LEVEL_IO, conversion::registry::LevelIORegistry>
+        conversion::registry::RegistryIdentifierRelation<&conversion::identifiers::LEVEL_IO, const McLevelLevelIO, &identifiers::MCLEVEL_LEVEL_IO, conversion::registry::LevelIORegistry>
         > {
+    public:
         /** Creates a Level from a mclevel Map compound tag */
         std::unique_ptr<level::Level> read(const common::conversion::io::options::OptionPresets::CommonNbtReadOptions &options) const override;
 

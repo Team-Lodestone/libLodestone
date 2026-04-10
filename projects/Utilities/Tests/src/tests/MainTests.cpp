@@ -3,6 +3,8 @@
 //
 #include "Lodestone.Tests/tests/MainTests.h"
 
+#include <Lodestone.Minecraft.Java/conversion/indev/McLevelLevelIO.h>
+
 #include <Lodestone.Minecraft.Java/conversion/anvil/jungle/JungleAnvilWorldIo.h>
 
 #include <Lodestone.Minecraft.Java/anvil/jungle/JungleAnvilRegion.h>
@@ -11,6 +13,9 @@
 #include <fstream>
 
 #include "Lodestone.Tests/util.h"
+#include "Lodestone.Tests/util/Visualizer.h"
+
+#include <libnbt++/io/izlibstream.h>
 
 #include <Lodestone.Level/Level.h>
 #include <Lodestone.Minecraft.Java/Identifiers.h>
@@ -38,9 +43,13 @@ namespace lodestone::tests::test {
 
         mgr.addTest(READ_INFDEV_624_WORLD, "Read Infdev 624 World", readInfdev624World);
         mgr.addTest(WRITE_INFDEV_624_WORLD, "Write Infdev 624 World", writeInfdev624World);
+        mgr.addTest(VISUALIZE_INFDEV_624_WORLD, "Visualize Infdev 624 World", visualizeInfdev624World);
+        mgr.addTest(VISUALIZE_ALPHA_WORLD, "Visualize Alpha World", visualizeAlphaWorld);
+        mgr.addThrowingTest(READ_INDEV_WORLD, "Read Indev World", readIndevWorld);
         mgr.addTest(GENERATE_WATER_CHUNK, "Generate LCE Water Chunk", generateWaterChunk);
         mgr.addTest(READ_ANVIL_WORLD, "Read Anvil World", readAnvilWorld);
         mgr.addTest(WRITE_ANVIL_WORLD, "Write Anvil World", writeAnvilWorld);
+        mgr.addThrowingTest(VISUALIZE_MCR_WORLD, "Visualize McRegion World", visualizeMcRegionWorld);
         // ADD_TEST(READ_MCR_CHUNK, readMcrChunk, util::types::MAIN,
         //          "Read McRegion Chunk");
         // ADD_TEST(READ_MCR_FILE, readMcrFile, util::types::MAIN,
@@ -55,8 +64,72 @@ namespace lodestone::tests::test {
         //          "Write Alpha World");
     }
 
+    tfw::test::result::TestResult MainTests::visualizeInfdev624World(tfw::test::logging::loggers::ITestLogger &logger) {
+        std::string name("McRegionWorld");
+        const std::filesystem::path inputDir(util::OUTPUT_FOLDER / name);
+        const std::filesystem::path outputDir(util::OUTPUT_FOLDER / name);
+
+        logger << "Input: " << inputDir << std::endl;
+
+        const auto *inputIo = conversion::registry::WorldIORegistry::getInstance().getAs<const minecraft::java::infdev::world::InfdevWorldIo>(minecraft::java::identifiers::INF_624_WORLD_IO);
+        const auto w = inputIo->read(minecraft::common::conversion::io::options::OptionPresets::CommonFilesystemOptions {
+            conversion::io::options::fs::FilesystemPathOptions {
+                inputDir
+            },
+            conversion::io::options::versioned::VersionedOptions {
+                minecraft::java::Version::inf20100624
+            }
+        });
+
+        util::Visualizer::createAll(w.get());
+
+        return tfw::test::result::TestResult(true, w->toString());
+    }
+
+    tfw::test::result::TestResult MainTests::visualizeMcRegionWorld(tfw::test::logging::loggers::ITestLogger &logger) {
+        std::string name("McRegionWorld");
+        const std::filesystem::path inputDir(util::INPUT_FOLDER / name);
+
+        logger << "Input: " << inputDir << std::endl;
+
+        const auto *inputIo = conversion::registry::WorldIORegistry::getInstance().getAs<const minecraft::java::mcregion::world::McRegionWorldIo>(minecraft::java::identifiers::MCREGION_WORLD_IO);
+        const auto w = inputIo->read(minecraft::common::conversion::io::options::OptionPresets::CommonFilesystemOptions {
+            conversion::io::options::fs::FilesystemPathOptions {
+                inputDir
+            },
+            conversion::io::options::versioned::VersionedOptions {
+                minecraft::java::Version::b1_3
+            }
+        });
+
+        util::Visualizer::createAll(w.get());
+
+        return tfw::test::result::TestResult(true, w->toString());
+    }
+
+    tfw::test::result::TestResult MainTests::visualizeAlphaWorld(tfw::test::logging::loggers::ITestLogger &logger) {
+        std::string name("AlphaWorld");
+        const std::filesystem::path inputDir(util::INPUT_FOLDER / name);
+
+        logger << "Input: " << inputDir << std::endl;
+
+        const auto *inputIo = conversion::registry::WorldIORegistry::getInstance().getAs<const minecraft::java::alpha::world::AlphaWorldIo>(minecraft::java::identifiers::ALPHA_WORLD_IO);
+        const auto w = inputIo->read(minecraft::common::conversion::io::options::OptionPresets::CommonFilesystemOptions {
+            conversion::io::options::fs::FilesystemPathOptions {
+                inputDir
+            },
+            conversion::io::options::versioned::VersionedOptions {
+                minecraft::java::Version::inf20100629
+            }
+        });
+
+        util::Visualizer::createAll(w.get());
+
+        return tfw::test::result::TestResult(true, w->toString());
+    }
+
     tfw::test::result::TestResult MainTests::readInfdev624World(tfw::test::logging::loggers::ITestLogger &logger) {
-        constexpr std::string name("Infdev624World");
+        std::string name("Infdev624World");
         const std::filesystem::path inputDir(util::INPUT_FOLDER / name);
         const std::filesystem::path outputDir(util::OUTPUT_FOLDER / name);
 
@@ -86,7 +159,7 @@ namespace lodestone::tests::test {
     }
 
     tfw::test::result::TestResult MainTests::writeInfdev624World(tfw::test::logging::loggers::ITestLogger &logger) {
-        constexpr std::string name("BetaWorld");
+        std::string name("McRegionWorld");
         const std::filesystem::path inputDir(util::INPUT_FOLDER / name);
         const std::filesystem::path outputDir(util::OUTPUT_FOLDER / name);
 
@@ -102,10 +175,13 @@ namespace lodestone::tests::test {
             }
         });
 
+        logger << w->toString() << std::endl;
+        logger << w->getDefaultLevel()->toString() << std::endl;
+
         const auto *outputIo = conversion::registry::WorldIORegistry::getInstance().getAs<const minecraft::java::infdev::world::InfdevWorldIo>(minecraft::java::identifiers::INF_624_WORLD_IO);
         outputIo->write(w.get(), minecraft::common::conversion::io::options::OptionPresets::CommonFilesystemOptions {
             conversion::io::options::fs::FilesystemPathOptions {
-            util::OUTPUT_FOLDER / name
+                util::OUTPUT_FOLDER / name
             },
             conversion::io::options::versioned::VersionedOptions {
                 minecraft::java::inf20100624
@@ -114,6 +190,45 @@ namespace lodestone::tests::test {
 
         return tfw::test::result::TestResult(true, w->toString());
     }
+
+    tfw::test::result::TestResult MainTests::readIndevWorld(tfw::test::logging::loggers::ITestLogger &logger) {
+        const std::string name = "IndevLevel.dat";
+
+        logger << util::INPUT_FOLDER / name << std::endl;
+
+        std::ifstream strm(util::INPUT_FOLDER / name, std::ios::binary);
+        zlib::izlibstream zstrm(strm);
+
+        const auto *inputIo = conversion::registry::LevelIORegistry::getInstance().getAs<const minecraft::java::indev::McLevelLevelIO>(minecraft::java::identifiers::MCLEVEL_LEVEL_IO);
+
+        auto lvl = inputIo->read(minecraft::common::conversion::io::options::OptionPresets::CommonReadOptions {
+                            conversion::io::options::fs::file::FileReaderOptions {
+                                zstrm
+                            },
+                            conversion::io::options::versioned::VersionedOptions {
+                                minecraft::java::Version::in20100219
+    }});
+
+        auto wld = new level::world::World();
+        wld->addLevel(level::world::World::Dimension::OVERWORLD, std::move(lvl));
+
+        const conversion::registry::WorldIORegistry &r = conversion::registry::WorldIORegistry::getInstance();
+
+        const auto io = r.getAs<const minecraft::java::mcregion::world::McRegionWorldIo>(
+                minecraft::java::identifiers::MCREGION_WORLD_IO);
+
+        io->write(wld, lodestone::minecraft::common::conversion::io::options::OptionPresets::CommonFilesystemOptions {
+                lodestone::conversion::io::options::fs::FilesystemPathOptions {
+                    util::OUTPUT_FOLDER / name
+                },
+                conversion::io::options::versioned::VersionedOptions {
+                    minecraft::java::b1_3
+                }
+        });
+
+        return tfw::test::result::TestResult(true, util::OUTPUT_FOLDER / name);
+    }
+
 
     tfw::test::result::TestResult MainTests::generateWaterChunk(tfw::test::logging::loggers::ITestLogger &logger) {
         const std::string name = "LCEWaterChunk";
@@ -128,7 +243,7 @@ namespace lodestone::tests::test {
                 for (int z = 0; z < 16; z++ ) {
                     for (int x = 0; x < 16; x++ ) {
                         if (SEA_LEVEL < y) {
-                            lvl->setBlockCreate(level::block::BlockRegistry::getInstance().getBlock(&level::block::Blocks::AIR), x, y, z);
+                            lvl->setBlockCreate(level::block::BlockRegistry::getInstance().getBlock(&level::block::Blocks::NONE), x, y, z);
                         } else if (y > SEA_LEVEL - 10) {
                             lvl->setBlockCreate(level::block::BlockRegistry::getInstance().getBlock(&minecraft::common::block::Blocks::WATER), x, y, z);
                         } else if (y > 0 && y <= 64) {
@@ -147,7 +262,7 @@ namespace lodestone::tests::test {
                 for (int z = 0; z < 16; z++ ) {
                     for (int x = 0; x < 16; x++ ) {
                         if (SEA_LEVEL < y) {
-                            lvl->setBlockCreate(level::block::BlockRegistry::getInstance().getBlock(&level::block::Blocks::AIR), x, y, z);
+                            lvl->setBlockCreate(level::block::BlockRegistry::getInstance().getBlock(&level::block::Blocks::NONE), x, y, z);
                         } else if (y > SEA_LEVEL - 10) {
                             lvl->setBlockCreate(level::block::BlockRegistry::getInstance().getBlock(&minecraft::common::block::Blocks::WATER), x, y, z);
                         } else if (y == 0) {

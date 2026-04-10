@@ -32,7 +32,7 @@ namespace lodestone::level::properties {
         }
 
         template <typename T>
-            requires std::is_base_of_v<AbstractProperty, T>
+        requires std::is_base_of_v<AbstractProperty, T>
         constexpr const T *as() const {
             return dynamic_cast<const T *>(this);
         }

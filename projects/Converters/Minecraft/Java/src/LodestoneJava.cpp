@@ -90,7 +90,7 @@ namespace lodestone::minecraft::java {
     void LodestoneJava::initBlocks() {
         common::LodestoneMinecraftCommon::initBlocks();
         io.registerBlock(
-            Version::rd131655, &level::block::Blocks::AIR,
+            Version::rd131655, &level::block::Blocks::NONE,
             new lodestone::conversion::block::data::ClassicBlockData(0));
         io.registerBlock(
             Version::rd131655, &minecraft::common::block::Blocks::STONE,
@@ -360,7 +360,7 @@ namespace lodestone::minecraft::java {
 
         // ID FORMAT CHANGE
         io.registerBlock(
-            Version::b1_3, &level::block::Blocks::AIR,
+            Version::b1_3, &level::block::Blocks::NONE,
             new lodestone::conversion::block::data::NumericBlockData(0, 0));
         io.registerBlock(
             Version::b1_3, &minecraft::common::block::Blocks::STONE,
@@ -468,7 +468,7 @@ namespace lodestone::minecraft::java {
         // ID FORMAT CHANGE #2
 
         io.registerBlock(
-            Version::r1_2_1, &level::block::Blocks::AIR,
+            Version::r1_2_1, &level::block::Blocks::NONE,
             new lodestone::conversion::block::data::ExtendedNumericBlockData(
                 0, 0));
         io.registerBlock(

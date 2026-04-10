@@ -11,14 +11,10 @@ namespace lodestone::minecraft::java::anvil::jungle::chunk {
         explicit JungleAnvilChunk(const int64_t lastUpdate = 0)
             : LevelChunk(256), m_lastUpdate(lastUpdate) {}
 
-        explicit JungleAnvilChunk(const level::types::Vec2i &coords,
-                                  const int64_t lastUpdate = 0)
-            : LevelChunk(256, coords), m_lastUpdate(lastUpdate) {}
 
-        JungleAnvilChunk(level::chunk::ChunkContainer *container,
-                         const level::types::Vec2i &coords,
-                         const int64_t lastUpdate = 0)
-            : LevelChunk(256, container, coords), m_lastUpdate(lastUpdate) {}
+        explicit JungleAnvilChunk(const level::coords::ChunkCoordinates &coords,
+                                  const int64_t lastUpdate = 0, level::chunk::ChunkContainer *container = nullptr)
+            : LevelChunk(256, coords, container), m_lastUpdate(lastUpdate) {}
 
         std::string toString() const override {
             if (this->m_coords.has_value())
