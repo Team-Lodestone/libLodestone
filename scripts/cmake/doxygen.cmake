@@ -25,6 +25,11 @@ function(setupDoxygen)
 
             CONFIGURE_FILE(${DOXYFILE_IN} ${DOXYFILE_OUT_INTERMEDIATE} @ONLY)
 
+            set(HEADER_IN "${LODESTONE_ROOT_SOURCE_DIR}/docs/subproject/layout/header.html")
+            set(HEADER_OUT "${LODESTONE_ROOT_BINARY_DIR}/docs/subprojects/${PROJECT_NAME}/layout/header.html")
+
+            CONFIGURE_FILE(${HEADER_IN} ${HEADER_OUT} @ONLY)
+
             ADD_CUSTOM_TARGET(${PROJECT_NAME}.Documentation
                     COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYFILE_OUT}
                     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
