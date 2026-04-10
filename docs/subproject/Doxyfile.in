@@ -58,8 +58,8 @@ FILE_PATTERNS          = *.c \
 
 RECURSIVE              = YES
 
-OUTPUT_DIRECTORY = "libLodestone/docs"
-GENERATE_TAGFILE = "libLodestone/docs/subprojects/@PROJECT_NAME@/@LODESTONE_DOXYGEN_TAG@.tag"
+OUTPUT_DIRECTORY = "@LODESTONE_ROOT_BINARY_DIR@/docs"
+GENERATE_TAGFILE = "@LODESTONE_ROOT_BINARY_DIR@/docs/subprojects/@PROJECT_NAME@/@LODESTONE_DOXYGEN_TAG@.tag"
 TAGFILES = @LODESTONE_AT_ESCAPE@LODESTONE_DOCUMENTATION_SUBPROJECT_TAGS_LIST@LODESTONE_AT_ESCAPE@
 
 # Doxyfile 1.9.8
@@ -862,7 +862,7 @@ FILE_VERSION_FILTER    =
 # DoxygenLayout.xml, doxygen will parse it automatically even if the LAYOUT_FILE
 # tag is left empty.
 
-LAYOUT_FILE            = "libLodestone/docs/subprojects/@PROJECT_NAME@/layout/layout.xml"
+LAYOUT_FILE            = "@LODESTONE_ROOT_BINARY_DIR@/docs/subprojects/@PROJECT_NAME@/layout/layout.xml"
 
 # The CITE_BIB_FILES tag can be used to specify one or more bib files containing
 # the reference definitions. This must be a list of .bib files. The .bib
