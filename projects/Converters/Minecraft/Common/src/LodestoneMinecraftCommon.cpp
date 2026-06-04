@@ -325,4 +325,7 @@ namespace lodestone::minecraft::common {
         MC_REGISTER_BLOCK_FUNC(&block::Blocks::NETHER_WART,
                                materials::COLOR_RED, nullptr);
     }
+
+    void LodestoneMinecraftCommon::initItems() {
+    }
 } // namespace lodestone::minecraft::common

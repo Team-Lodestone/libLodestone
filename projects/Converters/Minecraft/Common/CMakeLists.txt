@@ -31,6 +31,7 @@ set(FILES
         src/conversion/registry/Registries.cpp
         include/Lodestone.Minecraft.Common/conversion/io/interfaces/IRegionIo.h
         include/Lodestone.Minecraft.Common/material/Materials.h
+        include/Lodestone.Minecraft.Common/item/Items.h
 )
 
 add_library(Lodestone.Minecraft.Common OBJECT ${FILES})

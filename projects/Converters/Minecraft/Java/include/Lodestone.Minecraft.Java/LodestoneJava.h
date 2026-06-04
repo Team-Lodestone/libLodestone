@@ -72,11 +72,12 @@ namespace lodestone::minecraft::java {
         static LodestoneJava *getInstance();
 
         void initBlocks();
+        void initItems();
 
         lodestone::common::registry::Identifier getIdentifier() const override;
         lodestone::common::util::Semver getVersion() const override;
 
-        lodestone::conversion::block::version::VersionedBlockIO io;
+        lodestone::conversion::block::version::VersionedBlockIO m_blockIo;
     };
 
     extern "C" {

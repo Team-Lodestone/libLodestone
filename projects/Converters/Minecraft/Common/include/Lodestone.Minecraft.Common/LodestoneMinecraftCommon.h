@@ -8,6 +8,7 @@ namespace lodestone::minecraft::common {
     class LodestoneMinecraftCommon {
       public:
         static void initBlocks();
+        static void initItems();
     };
 } // namespace lodestone::minecraft::common
 

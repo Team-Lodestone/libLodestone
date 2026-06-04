@@ -1,0 +1,120 @@
+//
+// Created by zero on 6/3/26.
+//
+
+#ifndef LODESTONE_MINECRAFT_COMMON_ITEMS_H
+#define LODESTONE_MINECRAFT_COMMON_ITEMS_H
+#include <Lodestone.Level/item/Items.h>
+
+namespace lodestone::minecraft::common::item {
+    struct Items {
+        ADD_ITEM(IRON_SHOVEL, "iron_shovel");
+        ADD_ITEM(IRON_PICKAXE, "iron_pickaxe");
+        ADD_ITEM(IRON_AXE, "iron_axe");
+        ADD_ITEM(FLINT_AND_STEEL, "flint_and_steel");
+        ADD_ITEM(RED_APPLE, "red_apple");
+        ADD_ITEM(BOW, "bow");
+        ADD_ITEM(ARROW, "arrow");
+        ADD_ITEM(COAL, "coal");
+        ADD_ITEM(DIAMOND, "diamond");
+        ADD_ITEM(IRON_INGOT, "iron_ingot");
+        ADD_ITEM(GOLD_INGOT, "gold_ingot");
+        ADD_ITEM(IRON_SWORD, "iron_sword");
+        ADD_ITEM(WOOD_SWORD, "wood_sword");
+        ADD_ITEM(WOOD_SHOVEL, "wood_shovel");
+        ADD_ITEM(WOOD_PICKAXE, "wood_pickaxe");
+        ADD_ITEM(WOOD_AXE, "wood_axe");
+        ADD_ITEM(STONE_SWORD, "stone_sword");
+        ADD_ITEM(STONE_SHOVEL, "stone_shovel");
+        ADD_ITEM(STONE_PICKAXE, "stone_pickaxe");
+        ADD_ITEM(STONE_AXE, "stone_axe");
+        ADD_ITEM(DIAMOND_SWORD, "diamond_sword");
+        ADD_ITEM(DIAMOND_SHOVEL, "diamond_shovel");
+        ADD_ITEM(DIAMOND_PICKAXE, "diamond_pickaxe");
+        ADD_ITEM(DIAMOND_AXE, "diamond_axe");
+        ADD_ITEM(STICK, "stick");
+        ADD_ITEM(BOWL, "bowl");
+        ADD_ITEM(MUSHROOM_STEW, "mushroom_stew");
+        ADD_ITEM(GOLD_SWORD, "gold_sword");
+        ADD_ITEM(GOLD_SHOVEL, "gold_shovel");
+        ADD_ITEM(GOLD_PICKAXE, "gold_pickaxe");
+        ADD_ITEM(GOLD_AXE, "gold_axe");
+        ADD_ITEM(STRING, "string");
+        ADD_ITEM(FEATHER, "feather");
+        ADD_ITEM(GUNPOWDER, "gunpowder");
+        ADD_ITEM(WOOD_HOE, "wood_hoe");
+        ADD_ITEM(STONE_HOE, "stone_hoe");
+        ADD_ITEM(IRON_HOE, "iron_hoe");
+        ADD_ITEM(DIAMOND_HOE, "diamond_hoe");
+        ADD_ITEM(GOLD_HOE, "gold_hoe");
+        ADD_ITEM(WHEAT_SEEDS, "wheat_seeds");
+        ADD_ITEM(WHEAT, "wheat");
+        ADD_ITEM(BREAD, "bread");
+        ADD_ITEM(LEATHER_HELMET, "leather_helmet");
+        ADD_ITEM(LEATHER_CHESTPLATE, "leather_chestplate");
+        ADD_ITEM(LEATHER_PANTS, "leather_pants");
+        ADD_ITEM(LEATHER_BOOTS, "leather_boots");
+        ADD_ITEM(CHAIN_HELMET, "chain_helmet");
+        ADD_ITEM(CHAIN_CHESTPLATE, "chain_chestplate");
+        ADD_ITEM(CHAIN_PANTS, "chain_pants");
+        ADD_ITEM(CHAIN_BOOTS, "chain_boots");
+        ADD_ITEM(IRON_HELMET, "iron_helmet");
+        ADD_ITEM(IRON_CHESTPLATE, "iron_chestplate");
+        ADD_ITEM(IRON_PANTS, "iron_pants");
+        ADD_ITEM(IRON_BOOTS, "iron_boots");
+        ADD_ITEM(DIAMOND_HELMET, "diamond_helmet");
+        ADD_ITEM(DIAMOND_CHESTPLATE, "diamond_chestplate");
+        ADD_ITEM(DIAMOND_PANTS, "diamond_pants");
+        ADD_ITEM(DIAMOND_BOOTS, "diamond_boots");
+        ADD_ITEM(GOLD_HELMET, "gold_helmet");
+        ADD_ITEM(GOLD_CHESTPLATE, "gold_chestplate");
+        ADD_ITEM(GOLD_PANTS, "gold_pants");
+        ADD_ITEM(GOLD_BOOTS, "gold_boots");
+        ADD_ITEM(FLINT, "flint");
+        ADD_ITEM(RAW_PORKCHOP, "raw_porkchop");
+        ADD_ITEM(COOKED_PORKCHOP, "cooked_porkchop");
+        ADD_ITEM(PAINTING, "painting");
+        ADD_ITEM(GOLD_APPLE, "gold_apple");
+        ADD_ITEM(SIGN, "sign");
+        ADD_ITEM(OAK_DOOR, "oak_door");
+        ADD_ITEM(BUCKET, "bucket");
+        ADD_ITEM(WATER_BUCKET, "water_bucket");
+        ADD_ITEM(LAVA_BUCKET, "lava_bucket");
+        ADD_ITEM(MINECART, "minecart");
+        ADD_ITEM(SADDLE, "saddle");
+        ADD_ITEM(IRON_DOOR, "iron_door");
+        ADD_ITEM(REDSTONE_DUST, "redstone_dust");
+        ADD_ITEM(SNOWBALL, "snowball");
+        ADD_ITEM(BOAT, "boat");
+        ADD_ITEM(LEATHER, "leather");
+        ADD_ITEM(MILK_BUCKET, "milk_bucket");
+        ADD_ITEM(BRICK, "brick");
+        ADD_ITEM(CLAY, "clay");
+        ADD_ITEM(REEDS, "reeds");
+        ADD_ITEM(PAPER, "paper");
+        ADD_ITEM(BOOK, "book");
+        ADD_ITEM(SLIMEBALL, "slimeball");
+        ADD_ITEM(CHEST_MINECART, "chest_minecart");
+        ADD_ITEM(FURNACE_MINECART, "furnace_minecart");
+        ADD_ITEM(EGG, "egg");
+        ADD_ITEM(COMPASS, "compass");
+        ADD_ITEM(FISHING_ROD, "fishing_rod");
+        ADD_ITEM(CLOCK, "clock");
+        ADD_ITEM(GLOWSTONE_DUST, "glowstone_dust");
+        ADD_ITEM(RAW_FISH, "raw_fish");
+        ADD_ITEM(COOKED_FISH, "cooked_fish");
+        ADD_ITEM(DYE, "dye");
+        ADD_ITEM(BONE, "bone");
+        ADD_ITEM(SUGAR, "sugar");
+        ADD_ITEM(CAKE, "cake"); // The cake is a lie.
+        ADD_ITEM(BED, "bed");
+        ADD_ITEM(REDSTONE_REPEATER, "redstone_repeater");
+        ADD_ITEM(COOKIE, "cookie");
+        ADD_ITEM(MAP, "map");
+        ADD_ITEM(SHEARS, "shears");
+        ADD_ITEM(RECORD_13, "record_13");
+        ADD_ITEM(RECORD_CAT, "record_cat");
+    };
+} // namespace lodestone::minecraft::common::item
+
+#endif //LODESTONE_MINECRAFT_COMMON_ITEMS_H
