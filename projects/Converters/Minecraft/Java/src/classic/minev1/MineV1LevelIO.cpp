@@ -25,7 +25,7 @@ namespace lodestone::minecraft::java::classic::minev1 {
                 {0, 0}, {level::coords::ChunkCoordinates::blockToChunkCoord(WIDTH) - 1, level::coords::ChunkCoordinates::blockToChunkCoord(DEPTH) - 1}});
 
         const std::unique_ptr<lodestone::conversion::block::version::BlockIO>
-            io = LodestoneJava::getInstance()->io.getIo(options.version);
+            io = LodestoneJava::getInstance()->m_blockIo.getIo(options.version);
 
         for (int y = 0; y < HEIGHT; y++) {
             for (int z = 0; z < DEPTH; z++) {
@@ -56,7 +56,7 @@ namespace lodestone::minecraft::java::classic::minev1 {
         bio::stream::BinaryOutputStream bos(options.output);
 
         const std::unique_ptr<lodestone::conversion::block::version::BlockIO>
-            io = LodestoneJava::getInstance()->io.getIo(options.version);
+            io = LodestoneJava::getInstance()->m_blockIo.getIo(options.version);
 
         for (int y = 0; y < HEIGHT; y++) {
             for (int z = 0; z < DEPTH; z++) {

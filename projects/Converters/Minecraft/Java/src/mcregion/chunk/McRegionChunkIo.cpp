@@ -40,7 +40,7 @@ namespace lodestone::minecraft::java::mcregion::chunk {
             level::types::Vec2i(x, z), lastUpdate);
 
         const std::unique_ptr<lodestone::conversion::block::version::BlockIO>
-            io = LodestoneJava::getInstance()->io.getIo(options.version);
+            io = LodestoneJava::getInstance()->m_blockIo.getIo(options.version);
 
         for (int cx = 0; cx < McRegionChunkIO::CHUNK_WIDTH; cx++) {
             for (int cz = 0; cz < McRegionChunkIO::CHUNK_DEPTH; cz++) {
@@ -88,7 +88,7 @@ namespace lodestone::minecraft::java::mcregion::chunk {
         nbt::tag_compound level{};
 
         const std::unique_ptr<lodestone::conversion::block::version::BlockIO>
-            bio = LodestoneJava::getInstance()->io.getIo(options.version);
+            bio = LodestoneJava::getInstance()->m_blockIo.getIo(options.version);
 
         // todo make sure to not write EmptyChunk
         level["xPos"] = static_cast<int32_t>(options.coords.x);

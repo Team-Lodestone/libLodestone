@@ -25,7 +25,7 @@ namespace lodestone::minecraft::java::anvil::jungle::chunk {
                                                lastUpdate);
 
         const std::unique_ptr<lodestone::conversion::block::version::BlockIO>
-            io = LodestoneJava::getInstance()->io.getIo(options.version);
+            io = LodestoneJava::getInstance()->m_blockIo.getIo(options.version);
 
         for (auto &s : sections) {
             nbt::tag_compound section = s.as<nbt::tag_compound>();
@@ -109,7 +109,7 @@ namespace lodestone::minecraft::java::anvil::jungle::chunk {
         nbt::tag_compound root, level;
 
         const std::unique_ptr<lodestone::conversion::block::version::BlockIO>
-            bio = LodestoneJava::getInstance()->io.getIo(options.version);
+            bio = LodestoneJava::getInstance()->m_blockIo.getIo(options.version);
 
         constexpr int sectionSize3D = JungleAnvilChunkIO::CHUNK_WIDTH * JungleAnvilChunkIO::SECTION_HEIGHT * JungleAnvilChunkIO::CHUNK_DEPTH;
         constexpr int sectionSize2D = JungleAnvilChunkIO::CHUNK_WIDTH * JungleAnvilChunkIO::CHUNK_DEPTH;

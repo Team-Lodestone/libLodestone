@@ -38,7 +38,7 @@ namespace lodestone::minecraft::java::classic::minev2 {
             });
 
         const std::unique_ptr<lodestone::conversion::block::version::BlockIO>
-            bio = LodestoneJava::getInstance()->io.getIo(options.version);
+            bio = LodestoneJava::getInstance()->m_blockIo.getIo(options.version);
 
         for (int y = 0; y < height; y++) {
             for (int z = 0; z < depth; z++) {
@@ -67,7 +67,7 @@ namespace lodestone::minecraft::java::classic::minev2 {
     void MineV2LevelIO::write(level::Level *l, const common::conversion::io::options::OptionPresets::CommonWriteOptions &options) const {
         bio::stream::BinaryOutputStream bos(options.output);
         const std::unique_ptr<lodestone::conversion::block::version::BlockIO>
-            bio = LodestoneJava::getInstance()->io.getIo(options.version);
+            bio = LodestoneJava::getInstance()->m_blockIo.getIo(options.version);
 
         auto [min, max] = l->getBlockBounds();
 

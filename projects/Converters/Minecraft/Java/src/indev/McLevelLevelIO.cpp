@@ -81,7 +81,7 @@ namespace lodestone::minecraft::java::indev {
             nbt::tag_byte_array>().get();
 
         const std::unique_ptr<conversion::block::version::BlockIO> io =
-            LodestoneJava::getInstance()->io.getIo(options.version);
+            LodestoneJava::getInstance()->m_blockIo.getIo(options.version);
 
         for (int y = 0; y < height; y++) {
             for (int z = 0; z < length; z++) {

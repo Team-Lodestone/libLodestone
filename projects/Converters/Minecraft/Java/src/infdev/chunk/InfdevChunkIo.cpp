@@ -41,7 +41,7 @@ namespace lodestone::minecraft::java::infdev::chunk {
 
         const std::vector<uint8_t> heightMap = bis.readOfSizeVec(InfdevChunk::CHUNK_HEIGHTMAP_SIZE);
 
-        const std::unique_ptr<conversion::block::version::BlockIO> io = LodestoneJava::getInstance()->io.getIo(
+        const std::unique_ptr<conversion::block::version::BlockIO> io = LodestoneJava::getInstance()->m_blockIo.getIo(
             options.version);
 
         for (int cx = 0; cx < InfdevChunk::CHUNK_WIDTH; cx++) {
@@ -93,7 +93,7 @@ namespace lodestone::minecraft::java::infdev::chunk {
         bio::stream::BinaryOutputStream bos(options.output);
 
         const std::unique_ptr<conversion::block::version::BlockIO>
-            bio = LodestoneJava::getInstance()->io.getIo(options.version);
+            bio = LodestoneJava::getInstance()->m_blockIo.getIo(options.version);
 
         const level::coords::ChunkCoordinates coords = c->getCoords().value();
         bos.writeBE<int32_t>(coords.getX());
