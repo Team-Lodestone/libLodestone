@@ -17,13 +17,13 @@ void lodestone::tests::util::ZipUtils::extractAll(const std::filesystem::path &i
                                                   const std::filesystem::path &output_path) {
     const unzFile zip_file = unzOpen(input_path.c_str());
     if (!zip_file) {
-        throw std::runtime_error(std::string("unzOpen failed for ") + input_path.c_str());
+        throw std::runtime_error("unzOpen failed for " + input_path.string());
     }
 
     unz_global_info global_info;
     if (unzGetGlobalInfo(zip_file, &global_info) != UNZ_OK) {
         unzClose(zip_file);
-        throw std::runtime_error(std::string("unzGetGlobalInfo failed for ") + input_path.c_str());
+        throw std::runtime_error("unzGetGlobalInfo failed for " + input_path.string());
     }
 
     char buffer[READ_SIZE];
@@ -36,7 +36,7 @@ void lodestone::tests::util::ZipUtils::extractAll(const std::filesystem::path &i
         char file_name[MAX_FILENAME];
         if (unzGetCurrentFileInfo(zip_file, &file_info, file_name, MAX_FILENAME, nullptr, 0, nullptr, 0) != UNZ_OK) {
             unzClose(zip_file);
-            throw std::runtime_error(std::string("unzGetCurrentFile failed for ") + file_name);
+            throw std::runtime_error("unzGetCurrentFile failed for " + std::string(file_name));
         }
 
         extractEntry(zip_file, file_name, (output_path / file_name).c_str(), buffer);
@@ -60,7 +60,7 @@ void lodestone::tests::util::ZipUtils::extractEntry(const unzFile zip_file, cons
         // Entry is a file, extract to directory.
         if (unzOpenCurrentFile(zip_file) != UNZ_OK) {
             unzClose(zip_file);
-            throw std::runtime_error(std::string("unzOpenCurrentFile failed for ") + file_name);
+            throw std::runtime_error("unzOpenCurrentFile failed for " + std::string(file_name));
         }
 
         const std::filesystem::path file_path(output_file_name);
@@ -79,7 +79,7 @@ void lodestone::tests::util::ZipUtils::extractEntry(const unzFile zip_file, cons
                     if (error < 0) {
                         unzCloseCurrentFile(zip_file);
                         unzClose(zip_file);
-                        throw std::runtime_error(std::string("unzReadCurrentFile failed for file: ") + file_name);
+                        throw std::runtime_error("unzReadCurrentFile failed for file: " + std::string(file_name));
                     }
 
                     if (error > 0) {
