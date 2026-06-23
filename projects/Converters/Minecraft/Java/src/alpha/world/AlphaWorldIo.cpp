@@ -155,7 +155,11 @@ namespace lodestone::minecraft::java::alpha::world {
 
                 LOG_DEBUG(file.string());
                 LOG_DEBUG(c->toString());
-                dim->addChunk(c->getCoords().value(), std::move(c));
+
+                // BEWARE: Do not remove variable...
+                auto coords = c->getCoords().value();
+
+                dim->addChunk(coords, std::move(c));
                 ifs.close();
             }
 

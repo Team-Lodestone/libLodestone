@@ -10,10 +10,28 @@ set(FILES
         include/Lodestone.Tests/util.h
         include/Lodestone.Tests/LodestoneTests.h
         include/Lodestone.Tests/test/Test.h
-        src/tests/MainTests.cpp
-        include/Lodestone.Tests/tests/MainTests.h
         src/util/Visualizer.cpp
         include/Lodestone.Tests/util/Visualizer.h
+        include/Lodestone.Tests/tests/AlphaTests.h
+        src/tests/AlphaTests.cpp
+        src/tests/ReleaseTests.cpp
+        src/tests/InfdevTests.cpp
+        src/tests/Infdev624Tests.cpp
+        src/tests/IndevTests.cpp
+        src/tests/ClassicTests.cpp
+        src/tests/PreclassicTests.cpp
+        src/tests/BetaTests.cpp
+        include/Lodestone.Tests/tests/BetaTests.h
+        include/Lodestone.Tests/tests/ClassicTests.h
+        include/Lodestone.Tests/tests/PreclassicTests.h
+        include/Lodestone.Tests/tests/ReleaseTests.h
+        include/Lodestone.Tests/tests/Infdev624Tests.h
+        include/Lodestone.Tests/tests/InfdevTests.h
+        include/Lodestone.Tests/tests/IndevTests.h
+        include/Lodestone.Tests/tests/InternalTests.h
+        src/tests/InternalTests.cpp
+        include/Lodestone.Tests/util/ZipUtils.h
+        src/util/ZipUtils.cpp
 )
 
 # NBT
@@ -39,7 +57,28 @@ if (NOT TARGET tfw)
     FetchContent_MakeAvailable(tfw)
 endif ()
 
+if (NOT TARGET minizip)
+    include(FetchContent)
+    set(MZ_OPENSSL OFF CACHE INTERNAL "")
+    FetchContent_Declare(
+            minizip
+            GIT_REPOSITORY https://github.com/zlib-ng/minizip-ng.git
+            GIT_TAG master
+            GIT_SHALLOW TRUE
+    )
+    FetchContent_MakeAvailable(minizip)
+endif ()
+
+
 add_executable(Lodestone.Tests ${FILES})
+
+find_package(TBB REQUIRED)
+
+target_link_libraries(Lodestone.Tests
+        PRIVATE
+        TBB::tbb
+        minizip
+)
 
 if (WIN32)
     target_link_libraries(Lodestone.Tests PRIVATE "-lstdc++exp")
@@ -53,8 +92,8 @@ target_include_directories(Lodestone.Tests
 target_link_libraries(Lodestone.Tests PRIVATE Lodestone.Level nbt++ bio-cpp20 tfw)
 target_link_libraries(Lodestone.Tests PRIVATE Lodestone.Minecraft.Java Lodestone.Conversion)
 
-get_filename_component(INPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/input" ABSOLUTE)
-get_filename_component(OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/output" ABSOLUTE)
+get_filename_component(INPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/TestResources/input" ABSOLUTE)
+get_filename_component(OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/TestResources/output" ABSOLUTE)
 
 target_compile_definitions(Lodestone.Tests PRIVATE
         LODESTONE_TESTS_INPUT_FOLDER="${INPUT_DIR}"
@@ -67,26 +106,39 @@ target_compile_definitions(Lodestone.Tests PRIVATE
 
 # ENABLE TEST GROUPS HERE
 target_compile_definitions(Lodestone.Tests PRIVATE
-        RUN_MAIN_TESTS=true
+        RUN_PRECLASSIC_TESTS=true
+        RUN_CLASSIC_TESTS=true
+        RUN_INDEV_TESTS=true
+        RUN_INFDEV_TESTS=true
+        RUN_INFDEV624_TESTS=true
+        RUN_ALPHA_TESTS=true
+        RUN_BETA_TESTS=true
+        RUN_RELEASE_TESTS=true
 )
 
 # ENABLE INDIVIDUAL TESTS HERE
 target_compile_definitions(Lodestone.Tests PRIVATE
-        GENERATE_WATER_CHUNK=false
-        READ_ANVIL_WORLD=false
-        WRITE_ANVIL_WORLD=false
-        READ_MCR_WORLD=false
-        READ_MCR_CHUNK=false
-        READ_MCR_FILE=false
-        READ_MINEV2_WORLD=false
-        READ_ALPHA_WORLD=false
-        WRITE_ALPHA_WORLD=false
-        READ_INDEV_WORLD=false
-        READ_INFDEV_624_WORLD=false
-        WRITE_INFDEV_624_WORLD=false
-        VISUALIZE_INFDEV_624_WORLD=false
-        VISUALIZE_MCR_WORLD=false
-        VISUALIZE_ALPHA_WORLD=true
+        # Preclassic tests
+        READ_PRECLASSIC_WORLD_ZERO=true
+
+        # Classic tests
+        READ_CLASSIC_WORLD_ZERO=true
+
+        # Indev tests
+        READ_INDEV_HUGE_FLOATING=true
+
+        # Infdev 624 tests
+        READ_INFDEV_624_WORLD4=true
+
+        # Infdev/Alpha tests
+        READ_SNOW_WORLD_ZERO=true
+        READ_NETHER_WORLD_ZERO=true
+
+        # Beta tests
+        READ_BETA_SERVER_WORLD=true
+
+        # Release tests
+        READ_SNOW_RELEASE_WORLD_ZERO=true
 )
 
 setupLinter(Lodestone.Tests)

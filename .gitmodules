@@ -1,0 +1,3 @@
+[submodule "projects/Utilities/Tests/TestResources"]
+	path = projects/Utilities/Tests/TestResources
+	url = git@github.com:Team-Lodestone/TestResources.git

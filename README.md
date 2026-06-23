@@ -46,7 +46,18 @@ Bold → Required for 1.0.0 final release, all releases from there will follow m
           - [ ] Versioned item map
     - [ ] Entities
         - [ ] Tile Entities
-    - [ ] Block Material Map (for the world map image generation)
+    - [ ] Block Material Map (for the world map image generation)\
+  
+## Contributing
+
+```bash
+# Git clone with HTTPS
+git clone --recurse-submodules --shallow-submodules --depth=1 https://github.com/Team-Lodestone/libLodestone.git 
+
+# Git clone with SSH
+git clone --recurse-submodules --shallow-submodules --depth=1 git@github.com:Team-Lodestone/libLodestone.git
+```
+
 ## Formats
 - [ ] [Java](https://github.com/Team-Lodestone/libLodestone/tree/main/projects/Converters/Minecraft/Java/README.md)
 - [ ] LCE

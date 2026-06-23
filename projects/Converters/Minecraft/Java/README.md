@@ -6,10 +6,12 @@ Minecraft: Java Edition converter
     - [X] .Mine V1
     - [X] .Mine V2
     - [ ] .Mine V3
+      - Waiting on [JavaObjectStreams](https://github.com/Team-Lodestone/JavaObjectStreams/tree/main) to be finalized.
     - [ ] ClassicWorld (CW)
     - [ ] [MCGalaxy](https://github.com/ClassiCube/MCGalaxy) Level (LVL)
 - [ ] Indev (MCLevel)
 - [ ] Infdev 20100624 (Zone File Format)
+  - Reading implemented, writing does not work yet.
 - [X] Infdev/Alpha (Alpha Save Format)
 - [X] McRegion
 - [X] Anvil

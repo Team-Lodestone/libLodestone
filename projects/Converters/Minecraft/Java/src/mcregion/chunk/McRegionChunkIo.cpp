@@ -177,7 +177,7 @@ namespace lodestone::minecraft::java::mcregion::chunk {
 
     std::unique_ptr<level::chunk::Chunk>
     McRegionChunkIO::read(const common::conversion::io::options::OptionPresets::CommonReadOptions &options) const {
-        nbt::io::stream_reader streamReader =
+        auto streamReader =
             nbt::io::stream_reader(options.input, endian::big);
 
         auto [name, root] = streamReader.read_compound();
@@ -186,7 +186,7 @@ namespace lodestone::minecraft::java::mcregion::chunk {
 
         const McRegionNbtChunkIO *io = this->getAsByRelation<const McRegionNbtChunkIO, &identifiers::NBT_CHUNK_IO>();
 
-        return io->read(common::conversion::io::options::OptionPresets::CommonNbtReadOptions {
+        std::unique_ptr<level::chunk::Chunk> chunk = io->read(common::conversion::io::options::OptionPresets::CommonNbtReadOptions {
             common::conversion::io::options::NbtReaderOptions {
                 level
             },
@@ -194,10 +194,11 @@ namespace lodestone::minecraft::java::mcregion::chunk {
                 options.version
             }
         });
+        return chunk;
     }
 
     void McRegionChunkIO::write(level::chunk::Chunk *c, const common::conversion::io::options::OptionPresets::CommonChunkWriteOptions &options) const {
-        nbt::io::stream_writer w = nbt::io::stream_writer(options.output, endian::big);
+        auto w = nbt::io::stream_writer(options.output, endian::big);
 
         const McRegionNbtChunkIO *io = this->getAsByRelation<const McRegionNbtChunkIO, &identifiers::NBT_CHUNK_IO>();
         io->writeToNbtStreamWriter(c, "", w, common::conversion::io::options::OptionPresets::CommonChunkOptions {
