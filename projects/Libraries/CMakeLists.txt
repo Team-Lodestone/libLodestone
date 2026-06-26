@@ -30,12 +30,14 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(gtl)
 
-FetchContent_Declare(
+if (NOT TARGET zlib)
+    FetchContent_Declare(
         zlib
         GIT_REPOSITORY "https://github.com/madler/zlib.git"
         FIND_PACKAGE_ARGS NAMES ZLIB
-)
-FetchContent_MakeAvailable(zlib)
+    )
+    FetchContent_MakeAvailable(zlib)
+endif()
 
 #add_library(ZLIB::ZLIB ALIAS zlibstatic)
 

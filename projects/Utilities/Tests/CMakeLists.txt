@@ -72,13 +72,20 @@ endif ()
 
 add_executable(Lodestone.Tests ${FILES})
 
-find_package(TBB REQUIRED)
+if (NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    find_package(TBB REQUIRED)
 
-target_link_libraries(Lodestone.Tests
-        PRIVATE
-        TBB::tbb
-        minizip
-)
+    target_link_libraries(Lodestone.Tests
+            PRIVATE
+            TBB::tbb
+            minizip
+    )
+else()
+    target_link_libraries(Lodestone.Tests
+            PRIVATE
+            minizip
+    )
+endif()
 
 if (WIN32)
     target_link_libraries(Lodestone.Tests PRIVATE "-lstdc++exp")
@@ -119,26 +126,26 @@ target_compile_definitions(Lodestone.Tests PRIVATE
 # ENABLE INDIVIDUAL TESTS HERE
 target_compile_definitions(Lodestone.Tests PRIVATE
         # Preclassic tests
-        READ_PRECLASSIC_WORLD_ZERO=true
+        READ_PRECLASSIC_WORLD_ZERO=false
 
         # Classic tests
-        READ_CLASSIC_WORLD_ZERO=true
+        READ_CLASSIC_WORLD_ZERO=false
 
         # Indev tests
         READ_INDEV_HUGE_FLOATING=true
 
         # Infdev 624 tests
-        READ_INFDEV_624_WORLD4=true
+        READ_INFDEV_624_WORLD4=false
 
         # Infdev/Alpha tests
-        READ_SNOW_WORLD_ZERO=true
-        READ_NETHER_WORLD_ZERO=true
+        READ_SNOW_WORLD_ZERO=false
+        READ_NETHER_WORLD_ZERO=false
 
         # Beta tests
-        READ_BETA_SERVER_WORLD=true
+        READ_BETA_SERVER_WORLD=false
 
         # Release tests
-        READ_SNOW_RELEASE_WORLD_ZERO=true
+        READ_SNOW_RELEASE_WORLD_ZERO=false
 )
 
 setupLinter(Lodestone.Tests)

@@ -90,7 +90,11 @@ set(FILES
 #     )
 # endif ()
 
-add_library(Lodestone.Level SHARED ${FILES})
+if (CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    add_library(Lodestone.Level STATIC ${FILES})
+else()
+    add_library(Lodestone.Level SHARED ${FILES})
+endif()
 target_include_directories(Lodestone.Level PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
