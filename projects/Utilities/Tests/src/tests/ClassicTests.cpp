@@ -10,7 +10,7 @@
 #include <Lodestone.Minecraft.Java/Version.h>
 #include <TestFramework/TestFramework.h>
 
-#include <Lodestone.Minecraft.Java/conversion/classic/minev2/MineV2LevelIO.h>
+#include <Lodestone.Minecraft.Java/conversion/classic/minev1/MineV1LevelIO.h>
 #include "Lodestone.Tests/util.h"
 
 namespace lodestone::tests::test {
@@ -33,14 +33,14 @@ namespace lodestone::tests::test {
         std::ifstream strm(inputFile, std::ios::binary);
         zlib::izlibstream zstrm(strm);
 
-        const auto *inputIo = conversion::registry::LevelIORegistry::getInstance().getAs<const minecraft::java::classic::minev2::MineV2LevelIO>(minecraft::java::identifiers::MINEV2_LEVEL_IO);
+        const auto *inputIo = conversion::registry::LevelIORegistry::getInstance().getAs<const minecraft::java::classic::minev1::MineV1LevelIO>(minecraft::java::identifiers::MINEV1_LEVEL_IO);
 
         auto lvl = inputIo->read(minecraft::common::conversion::io::options::OptionPresets::CommonReadOptions{
             conversion::io::options::fs::file::FileReaderOptions{
                 zstrm
             },
             conversion::io::options::versioned::VersionedOptions{
-                minecraft::java::Version::rd161348
+                minecraft::java::Version::c0_0_12a
             }
         });
 
