@@ -31,5 +31,6 @@ target_include_directories(Lodestone.Core PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 target_link_libraries(Lodestone.Core PRIVATE Lodestone.Common gtl)
+target_link_libraries(Lodestone.Core PUBLIC Lodestone.Threading)
 setupLinter(Lodestone.Core)
 setupDoxygen()

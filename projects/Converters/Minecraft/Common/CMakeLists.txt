@@ -40,7 +40,7 @@ target_include_directories(Lodestone.Minecraft.Common
 )
 
 target_link_libraries(Lodestone.Minecraft.Common PRIVATE Lodestone.Level Lodestone.Conversion nbt++ bio-cpp20)
-target_link_libraries(Lodestone.Minecraft.Common PUBLIC Lodestone.Core)
+target_link_libraries(Lodestone.Minecraft.Common PUBLIC Lodestone.Core Lodestone.Threading)
 
 setupLinter(Lodestone.Minecraft.Common)
 setupDoxygen()

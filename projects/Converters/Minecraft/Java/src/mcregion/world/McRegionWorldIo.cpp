@@ -9,6 +9,7 @@
 #include <iostream>
 
 #include <ranges>
+#include <Threading.h>
 #include THREADING_HEADER
 #include <stack>
 
@@ -266,6 +267,19 @@ namespace lodestone::minecraft::java::mcregion::world {
 
             data["SizeOnDisk"] = static_cast<int64_t>(0);
 
+
+            // TODO player data
+            // const player::McRegionNbtPlayerIO *playerIO = this->getAsByRelation<const player::McRegionNbtPlayerIO, &identifiers::NBT_PLAYER_IO>();
+            // const auto player = w->getPlayers().at(nullptr).get();
+            // playerIO->write(player, common::conversion::io::options::OptionPresets::NbtOutputWriteOptions<const conversion::io::options::EmptyOptions>{
+            //                     conversion::io::options::EmptyOptions{}, common::conversion::io::options::NbtOutputOptions{
+            //     data
+            // }});
+            // TODO settings class for readers & writers, lets us pass a default
+            // player to put in level.dat too!
+            // TODO for block states we might be able to make registry that maps
+            // fields to bits in data byte per block
+
             root.emplace<nbt::tag_compound>("Data", data);
             nbt.write_tag("", root);
         }
@@ -315,11 +329,5 @@ namespace lodestone::minecraft::java::mcregion::world {
                 }
             }
         }
-
-        // TODO player data
-        // TODO settings class for readers & writers, lets us pass a default
-        // player to put in level.dat too!
-        // TODO for block states we might be able to make registry that maps
-        // fields to bits in data byte per block
     }
 } // namespace lodestone::minecraft::java::mcregion::world

@@ -24,11 +24,10 @@
 #include <libnbt++/io/izlibstream.h>
 #include <libnbt++/io/stream_reader.h>
 #include <libnbt++/nbt_tags.h>
-#include THREADING_HEADER
+#include <Threading.h>
 #include <format>
 
 #include <fstream>
-#include <iostream>
 
 namespace lodestone::minecraft::java::anvil::jungle::world {
     std::unique_ptr<level::world::World> JungleAnvilWorldIo::read(const common::conversion::io::options::OptionPresets::CommonFilesystemOptions &options)

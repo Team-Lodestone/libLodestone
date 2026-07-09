@@ -99,7 +99,7 @@ target_include_directories(Lodestone.Level PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
-target_link_libraries(Lodestone.Level PUBLIC Lodestone.Common gtl)
+target_link_libraries(Lodestone.Level PUBLIC Lodestone.Common gtl Lodestone.Threading)
 
 setupLinter(Lodestone.Level)
 setupDoxygen()

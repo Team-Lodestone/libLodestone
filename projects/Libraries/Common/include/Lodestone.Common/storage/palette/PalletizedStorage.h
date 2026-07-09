@@ -15,7 +15,7 @@
 #include "Lodestone.Common/string/StringSerializable.h"
 #include <cstring>
 #include <array>
-#include <execution>
+#include <Threading.h>
 
 namespace lodestone::common::storage::palette {
     // thanks danil for allowing us to port your code

@@ -110,7 +110,7 @@ target_include_directories(Lodestone.Minecraft.Java
 )
 
 target_link_libraries(Lodestone.Minecraft.Java PRIVATE Lodestone.Level Lodestone.Conversion nbt++ bio-cpp20 JavaObjectStreams)
-target_link_libraries(Lodestone.Minecraft.Java PUBLIC Lodestone.Core Lodestone.Minecraft.Common)
+target_link_libraries(Lodestone.Minecraft.Java PUBLIC Lodestone.Core Lodestone.Minecraft.Common Lodestone.Threading)
 
 set(VERSIONS
         MAJOR
@@ -130,56 +130,6 @@ foreach(k IN LISTS VERSIONS)
         )
     endif()
 endforeach ()
-
-#None/TBB/STL-TBB/OpenMP/STL
-set(THREADING_TYPE TBB CACHE STRING "Threading type")
-set(APPLIED_THREADING_TYPE "None")
-set(APPLIED_THREADING_TYPE_ID 0)
-
-message(STATUS "Attempting to use threading type ${THREADING_TYPE}")
-
-if (NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
-        if (THREADING_TYPE STREQUAL "TBB")
-            find_package(TBB)
-
-            if (TBB_FOUND)
-                set(APPLIED_THREADING_TYPE "TBB")
-                set(APPLIED_THREADING_TYPE_ID 1)
-
-                target_link_libraries(Lodestone.Minecraft.Java PUBLIC TBB::tbb)
-            endif ()
-        elseif (THREADING_TYPE STREQUAL "STL-TBB" AND TBB_FOUND)
-            find_package(TBB)
-
-            if (TBB_FOUND)
-                set(APPLIED_THREADING_TYPE "STL-TBB")
-                set(APPLIED_THREADING_TYPE_ID 2)
-
-                target_link_libraries(Lodestone.Minecraft.Java PUBLIC TBB::tbb)
-            endif ()
-        elseif (THREADING_TYPE STREQUAL "OpenMP")
-            find_package(OpenMP COMPONENTS C CXX)
-
-            if (OpenMP_CXX_FOUND AND OpenMP_C_FOUND)
-                set(APPLIED_THREADING_TYPE "OpenMP")
-                set(APPLIED_THREADING_TYPE_ID 3)
-
-                target_link_libraries(Lodestone.Minecraft.Java PUBLIC OpenMP::OpenMP_CXX)
-            endif ()
-        elseif (THREADING_TYPE STREQUAL "STL")
-            set(APPLIED_THREADING_TYPE "STL")
-            set(APPLIED_THREADING_TYPE_ID 4)
-        endif ()
-    endif ()
-endif()
-
-message(STATUS "Using threading type ${APPLIED_THREADING_TYPE}")
-target_compile_definitions(Lodestone.Minecraft.Java PRIVATE
-        LODESTONE_MINECRAFT_JAVA_THREADING_TYPE=${APPLIED_THREADING_TYPE_ID}
-)
-
-unset(THREADING_TYPE CACHE)
 
 option(ENABLE_RISKY_OPTIMIZATIONS "Enable risky optimizations" ON)
 if (ENABLE_RISKY_OPTIMIZATIONS STREQUAL ON)

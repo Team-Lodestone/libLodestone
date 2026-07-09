@@ -22,6 +22,11 @@ if (BUILD_VIEWER STREQUAL "ON")
     )
 endif()
 
+add_subdirectory(Threading)
+list(APPEND LODESTONE_UTILITIES_PROJECTS
+            Lodestone.Threading
+)
+
 message(STATUS "Lodestone.Utilities: ${LODESTONE_UTILITIES_PROJECTS}")
 add_custom_target(Lodestone.Utilities ALL DEPENDS
         ${LODESTONE_UTILITIES_BUILD_TESTS}
