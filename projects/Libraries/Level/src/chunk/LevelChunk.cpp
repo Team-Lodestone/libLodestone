@@ -79,10 +79,6 @@ namespace lodestone::level::chunk {
                               const int localX, const int y, const int localZ) {
         setBlockRaw(std::move(block), localX, y, localZ);
 
-        if (!block.getBlock())
-            throw std::runtime_error(
-                "attempted to set with instance of null block");
-
         const int height = getChunkBlockHeight();
         if (!block.getBlock()->heightmapShouldIgnore()) {
             // if our block is higher than the current height, and isn't air,

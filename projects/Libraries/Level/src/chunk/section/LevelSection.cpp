@@ -50,6 +50,10 @@ namespace lodestone::level::chunk::section {
     }
 
     void LevelSection::setBlock(block::instance::BlockInstance &&block, const int localX, const int localY, const int localZ) {
+        if (!block.getBlock())
+            throw std::runtime_error(
+                "attempted to set with instance of null block");
+
         m_blockStorage.setValue(INDEX_YZX(localX, localY, localZ, common::constants::CHUNK_WIDTH,
                           common::constants::CHUNK_DEPTH), std::move(block));
 
