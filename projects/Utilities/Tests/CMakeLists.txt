@@ -158,6 +158,7 @@ target_compile_definitions(Lodestone.Tests PRIVATE
 
         # Beta tests
         READ_BETA_SERVER_WORLD=false
+        WRITE_BETA_SUPERFLAT_WORLD=true
 
         # Release tests
         READ_SNOW_RELEASE_WORLD_ZERO=false

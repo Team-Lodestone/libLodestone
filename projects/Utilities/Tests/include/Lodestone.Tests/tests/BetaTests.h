@@ -15,6 +15,8 @@ namespace lodestone::tests::test {
         static void add();
 
         static tfw::test::result::TestResult readBetaServerWorld(tfw::test::logging::loggers::ITestLogger &logger);
+
+        static tfw::test::result::TestResult writeSuperflatWorld(tfw::test::logging::loggers::ITestLogger &logger);
     };
 } // lodestone::tests::test
 
