@@ -187,6 +187,15 @@ jobs:
         run: |
           echo "build-output-dir=${{ github.workspace }}/cmake-build-${{ matrix.build_type }}-${{ matrix.compiler }}" >> "$GITHUB_OUTPUT"
 
+      - name: Install dependencies (Linux)
+        if: matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-24.04-arm'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libtbb-dev libzstd-dev zlib-ng-dev
+      - name: Install dependencies (macOS)
+        if: matrix.os == 'macos-latest' || matrix.os == 'macos-26-intel'
+        run: |
+            brew install tbb zstd zlib-ng
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. CMAKE_BUILD_TYPE is only required if you are using a single-configuration generator such as make.
         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
