@@ -24,7 +24,8 @@
 #include <libnbt++/io/izlibstream.h>
 #include <libnbt++/io/stream_reader.h>
 #include <libnbt++/nbt_tags.h>
-#include <Threading.h>
+#include <Lodestone.Threading/Threading.h>
+#include THREADING_HEADER
 #include <format>
 
 #include <fstream>

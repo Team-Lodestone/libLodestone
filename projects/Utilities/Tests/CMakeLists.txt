@@ -51,15 +51,39 @@ if (NOT TARGET tfw)
     FetchContent_Declare(
             tfw
             GIT_REPOSITORY https://codeberg.org/Dexrn/tfw.git
-            GIT_TAG 1.2.0
+            GIT_TAG 1.2.3
             GIT_SHALLOW TRUE
     )
     FetchContent_MakeAvailable(tfw)
 endif ()
 
+if (NOT TARGET zstd)
+    find_package(zstd REQUIRED)
+
+    if (TARGET zstd::zstd AND NOT TARGET zstd::libzstd_static)
+        add_library(zstd::libzstd_static ALIAS zstd::zstd)
+    endif ()
+
+    if (TARGET zstd::libzstd_shared AND NOT TARGET zstd::libzstd_static)
+        add_library(zstd::libzstd_static ALIAS zstd::libzstd_shared)
+    endif ()
+endif ()
+
+if (NOT TARGET zlib-ng)
+    find_package(zlib-ng REQUIRED)
+
+    if (TARGET zlib-ng::zlib AND NOT TARGET zlib-ng::zlibstatic)
+        add_library(zlib-ng::zlibstatic ALIAS zlib-ng::zlib)
+    endif ()
+
+    if (TARGET zlib-ng::zlib_shared AND NOT TARGET zlib-ng::zlibstatic)
+        add_library(zlib-ng::zlibstatic ALIAS zlib-ng::zlib_shared)
+    endif ()
+endif ()
+
 if (NOT TARGET minizip)
     include(FetchContent)
-    set(MZ_OPENSSL OFF CACHE INTERNAL "")
+    #    set(MZ_OPENSSL OFF CACHE INTERNAL "")
     FetchContent_Declare(
             minizip
             GIT_REPOSITORY https://github.com/zlib-ng/minizip-ng.git
@@ -69,23 +93,14 @@ if (NOT TARGET minizip)
     FetchContent_MakeAvailable(minizip)
 endif ()
 
-
 add_executable(Lodestone.Tests ${FILES})
 
-if (NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    find_package(TBB REQUIRED)
 
-    target_link_libraries(Lodestone.Tests
-            PRIVATE
-            TBB::tbb
-            minizip
-    )
-else()
-    target_link_libraries(Lodestone.Tests
-            PRIVATE
-            minizip
-    )
-endif()
+target_link_libraries(Lodestone.Tests
+        PRIVATE
+        zlib-ng::zlibstatic
+        minizip
+)
 
 if (WIN32)
     target_link_libraries(Lodestone.Tests PRIVATE "-lstdc++exp")
