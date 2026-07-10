@@ -3,7 +3,6 @@
 //
 #include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionPlayerIo.h"
 
-#include <Lodestone.Common/io/DataBuffer.h>
 #include <libnbt++/io/stream_reader.h>
 #include <libnbt++/tag_primitive.h>
 
@@ -79,6 +78,62 @@ namespace lodestone::minecraft::java::mcregion::player {
     void McRegionNbtPlayerIO::write(level::entity::Player *c,
        const common::conversion::io::options::OptionPresets::NbtOutputWriteOptions<
         const conversion::io::options::EmptyOptions> &options) const {
+
+        nbt::tag_compound playerTag{};
+
+        const auto air = c->getPropertyOr("Air", 300)->getValue();
+        playerTag.put("Air", static_cast<int16_t>(air));
+
+        const auto attackTime = c->getPropertyOr("AttackTime", 0)->getValue();
+        playerTag.put("AttackTime", static_cast<int16_t>(attackTime));
+
+        const auto deathTime = c->getPropertyOr("DeathTime", 0)->getValue();
+        playerTag.put("DeathTime", static_cast<int16_t>(deathTime));
+
+        const auto dimension = c->getPropertyOr("dimension", level::world::World::Dimension::OVERWORLD)->getValue();
+        playerTag.put("Dimension",  McRegionPlayer::identifierToDimensionId(dimension));
+
+        const auto fallDistance = c->getPropertyOr("FallDistance", 0.0F)->getValue();
+        playerTag.put("FallDistance", fallDistance);
+
+        const auto fire = c->getPropertyOr("Fire", -20)->getValue();
+        playerTag.put("Fire", static_cast<int16_t>(fire));
+
+        const auto health = c->getPropertyOr("Health", 20)->getValue();
+        playerTag.put("Health", static_cast<int16_t>(health));
+
+        const auto hurtTime = c->getPropertyOr("HurtTime", 0)->getValue();
+        playerTag.put("HurtTime", static_cast<int16_t>(hurtTime));
+
+        // TODO: Write inventory data
+        auto inventoryTag = nbt::tag_list(nbt::tag_type::Compound);
+        playerTag.emplace<nbt::tag_list>("Inventory", inventoryTag);
+
+        const auto motionVec = c->getMotion();
+        const auto motion = nbt::tag_list{motionVec.x, motionVec.y, motionVec.z};
+        playerTag.emplace<nbt::tag_list>("Motion", motion);
+
+        const auto onGround = c->getPropertyOr("OnGround", false)->getValue();
+        playerTag.put("OnGround", onGround ? static_cast<int8_t>(1) : static_cast<int8_t>(0));
+
+        const auto posVec = c->position;
+        const auto pos = nbt::tag_list{posVec.x, posVec.y, posVec.z};
+        playerTag.emplace<nbt::tag_list>("Pos", pos);
+
+        const auto rotVec = c->rotation;
+        const auto rot = nbt::tag_list{rotVec.x, rotVec.y};
+        playerTag.emplace<nbt::tag_list>("Rotation", rot);
+
+        const auto score = c->getPropertyOr("Score", 0)->getValue();
+        playerTag.put("Score", score);
+
+        const auto sleepTimer = c->getPropertyOr("SleepTimer", 0)->getValue();
+        playerTag.put("SleepTimer", static_cast<int16_t>(sleepTimer));
+
+        const auto sleeping = c->getPropertyOr("Sleeping", false)->getValue();
+        playerTag.put("Sleeping", sleeping ? static_cast<int8_t>(1) : static_cast<int8_t>(0));
+
+        options.output.emplace<nbt::tag_compound>("Player", playerTag);
     }
 
     std::unique_ptr<lodestone::level::entity::Player>

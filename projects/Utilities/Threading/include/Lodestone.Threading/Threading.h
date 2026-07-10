@@ -1,6 +1,12 @@
-//
-// Created by zero on 7/9/26.
-//
+/** @file Threading.h
+ *
+ * @author Zero_DSRS_VX
+ * @date 7/9/26
+ *
+ * @device PC
+ *
+ * Original code by DexrnZacAttack - LodestoneJava.h
+ */
 
 #ifndef LODESTONE_THREADING_H
 #define LODESTONE_THREADING_H

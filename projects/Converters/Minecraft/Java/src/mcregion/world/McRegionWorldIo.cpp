@@ -266,15 +266,33 @@ namespace lodestone::minecraft::java::mcregion::world {
                     : static_cast<int64_t>(0);
 
             data["SizeOnDisk"] = static_cast<int64_t>(0);
+            data["version"] = 19132;
 
+            const player::McRegionNbtPlayerIO *playerIO = this->getAsByRelation<const player::McRegionNbtPlayerIO, &identifiers::NBT_PLAYER_IO>();
+            const auto& players = w->getPlayers();
+            if (players.empty()) {
+                // Create default player object with Y set to highest block of the mid-point.
+                level::entity::Player *player = new player::McRegionPlayer("Player");
 
-            // TODO player data
-            // const player::McRegionNbtPlayerIO *playerIO = this->getAsByRelation<const player::McRegionNbtPlayerIO, &identifiers::NBT_PLAYER_IO>();
-            // const auto player = w->getPlayers().at(nullptr).get();
-            // playerIO->write(player, common::conversion::io::options::OptionPresets::NbtOutputWriteOptions<const conversion::io::options::EmptyOptions>{
-            //                     conversion::io::options::EmptyOptions{}, common::conversion::io::options::NbtOutputOptions{
-            //     data
-            // }});
+                // Might be a good idea to refactor this to not use getBlockBounds
+                // Also a good idea to let the player set this in settings...
+                auto bounds = w->getDefaultLevel()->getBlockBounds();
+                player->position.x = (bounds.max.x - bounds.min.x) / 2;
+                player->position.z = (bounds.max.z - bounds.min.z) / 2;
+
+                player->position.y = w->getDefaultLevel()->getHeightAt(player->position.x, player->position.z) + 1;
+
+                playerIO->write(player, common::conversion::io::options::OptionPresets::NbtOutputWriteOptions<const conversion::io::options::EmptyOptions>{
+                    conversion::io::options::EmptyOptions{}, common::conversion::io::options::NbtOutputOptions{
+                        data
+                }});
+            } else {
+                const auto player = players.begin()->second.get();
+                playerIO->write(player, common::conversion::io::options::OptionPresets::NbtOutputWriteOptions<const conversion::io::options::EmptyOptions>{
+                                    conversion::io::options::EmptyOptions{}, common::conversion::io::options::NbtOutputOptions{
+                    data
+                }});
+            }
             // TODO settings class for readers & writers, lets us pass a default
             // player to put in level.dat too!
             // TODO for block states we might be able to make registry that maps
