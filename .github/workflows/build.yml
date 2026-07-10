@@ -201,7 +201,7 @@ jobs:
       - name: Build zlib-ng (Linux)
         if: matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-24.04-arm'
         run: |
-          cd zlib-ng && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/install" && cmake --build . --config Release && cmake --build . --target install
+          cd zlib-ng && mkdir build && cd build && cmake .. && cmake --build . --config Release && sudo cmake --build . --target install
       - name: Install dependencies (macOS)
         if: matrix.os == 'macos-latest' || matrix.os == 'macos-26-intel'
         run: |
