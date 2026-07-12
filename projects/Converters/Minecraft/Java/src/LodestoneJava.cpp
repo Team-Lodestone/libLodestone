@@ -782,7 +782,9 @@ namespace lodestone::minecraft::java {
 
     lodestone::common::util::Semver LodestoneJava::getVersion() const { return VERSION; }
 
+#ifndef __EMSCRIPTEN__
     core::LodestoneExtension *lodestoneInit() {
         return LodestoneJava::getInstance();
     }
+#endif
 } // namespace lodestone::minecraft::java

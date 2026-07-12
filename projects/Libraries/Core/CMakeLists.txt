@@ -10,9 +10,11 @@ set(FILES
         include/Lodestone.Core/LodestoneExtension.h
         include/Lodestone.Core/loader/ExtensionLoader.h
         include/Lodestone.Core/loader/NativeExtensionLoader.h
+        include/Lodestone.Core/loader/StaticExtensionLoader.h
         include/Lodestone.Core/loader/LibraryHandle.h
         src/loader/ExtensionLoader.cpp
         src/loader/NativeExtensionLoader.cpp
+        src/loader/StaticExtensionLoader.cpp
         src/loader/LibraryHandle.cpp
         src/loader/exception/LoadLibraryException.cpp
         include/Lodestone.Core/loader/exception/LoadLibraryException.h

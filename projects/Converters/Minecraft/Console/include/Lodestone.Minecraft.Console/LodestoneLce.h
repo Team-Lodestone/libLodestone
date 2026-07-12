@@ -36,9 +36,11 @@ namespace lodestone::minecraft::console {
         lodestone::common::util::Semver getVersion() const override;
     };
 
+#ifndef __EMSCRIPTEN__
     extern "C" {
         core::LodestoneExtension *lodestoneInit();
     }
+#endif
 }
 
 #endif // LODESTONE_LODESTONELCE_H

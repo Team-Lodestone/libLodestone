@@ -20,7 +20,9 @@
 namespace lodestone::core::loader {
     class ExtensionLoader {
     public:
+#ifndef __EMSCRIPTEN__
       using LodestoneInit = lodestone::core::LodestoneExtension *(*)(void);
+#endif
       static constexpr const char *ENTRYPOINT = "lodestoneInit";
 
       virtual ~ExtensionLoader() = default;
@@ -28,7 +30,9 @@ namespace lodestone::core::loader {
       explicit ExtensionLoader(core::Lodestone *core);
 
       virtual void load() = 0;
+#ifndef __EMSCRIPTEN__
       virtual void loadExtension(LodestoneInit entrypoint);
+#endif
 
     public:
       common::event::CancellableEvent<const std::filesystem::path &> extensionLoadingEvent;

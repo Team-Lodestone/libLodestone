@@ -39,9 +39,11 @@ namespace lodestone::minecraft::java {
         lodestone::conversion::block::version::VersionedBlockIO m_blockIo;
     };
 
+#ifndef __EMSCRIPTEN__
     extern "C" {
         core::LodestoneExtension *lodestoneInit();
     }
+#endif
 } // namespace lodestone::minecraft::java
 
 #endif // LODESTONE_MAIN_H

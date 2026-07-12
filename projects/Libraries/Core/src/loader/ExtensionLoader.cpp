@@ -13,10 +13,12 @@
 namespace lodestone::core::loader {
     ExtensionLoader::ExtensionLoader(core::Lodestone* core) : m_core(core) {}
 
+#ifndef __EMSCRIPTEN__
     void ExtensionLoader::loadExtension(const LodestoneInit entrypoint) {
         core::LodestoneExtension *ext = entrypoint();
 
         this->extensionLoadedEvent.notify(ext);
         this->m_core->registerExtension(ext);
     }
+#endif
 }

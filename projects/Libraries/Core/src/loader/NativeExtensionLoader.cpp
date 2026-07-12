@@ -19,6 +19,7 @@
 
 namespace lodestone::core::loader {
     void NativeExtensionLoader::load() {
+#ifndef __EMSCRIPTEN__
         if (!std::filesystem::exists(this->m_extensionsDirectory)) {
             if (std::error_code ec; !std::filesystem::create_directories(
                 this->m_extensionsDirectory, ec)) {
@@ -72,5 +73,6 @@ namespace lodestone::core::loader {
 
             this->loadExtension(init);
         }
+#endif
     }
 }
