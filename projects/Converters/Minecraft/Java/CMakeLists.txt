@@ -100,10 +100,10 @@ if (NOT TARGET JavaObjectStreams)
     FetchContent_MakeAvailable(JavaObjectStreams)
 endif()
 
-if (CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    add_library(Lodestone.Minecraft.Java STATIC ${FILES})
-else()
+if (BUILD_SHARED_LIBS)
     add_library(Lodestone.Minecraft.Java SHARED ${FILES})
+else()
+    add_library(Lodestone.Minecraft.Java STATIC ${FILES})
 endif()
 target_include_directories(Lodestone.Minecraft.Java
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

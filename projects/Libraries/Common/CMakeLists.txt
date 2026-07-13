@@ -39,10 +39,10 @@ set(FILES
         include/Lodestone.Common/util/IHasDerivedTypes.h
 )
 
-if (CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    add_library(Lodestone.Common STATIC ${FILES})
+if (BUILD_SHARED_LIBS)
+    add_library(Lodestone.Common SHARED ${FILES})
 else()
-    add_library(Lodestone.Common OBJECT ${FILES})
+    add_library(Lodestone.Common STATIC ${FILES})
 endif()
 target_link_libraries(Lodestone.Common PRIVATE gtl)
 target_include_directories(Lodestone.Common

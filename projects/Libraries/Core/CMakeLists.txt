@@ -24,10 +24,10 @@ set(FILES
         include/Lodestone.Core/loader/exception/LibraryException.h
 )
 
-if (CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    add_library(Lodestone.Core STATIC ${FILES})
-else()
+if (BUILD_SHARED_LIBS)
     add_library(Lodestone.Core SHARED ${FILES})
+else()
+    add_library(Lodestone.Core STATIC ${FILES})
 endif()
 target_include_directories(Lodestone.Core PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

@@ -44,10 +44,10 @@ set(FILES
         src/registry/Registries.cpp
 )
 
-if (CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    add_library(Lodestone.Conversion STATIC ${FILES})
-else()
+if (BUILD_SHARED_LIBS)
     add_library(Lodestone.Conversion SHARED ${FILES})
+else()
+    add_library(Lodestone.Conversion STATIC ${FILES})
 endif()
 target_include_directories(Lodestone.Conversion
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

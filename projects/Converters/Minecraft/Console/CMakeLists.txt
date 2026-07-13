@@ -14,10 +14,10 @@ set(FILES
 
 )
 
-if (CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    add_library(Lodestone.Minecraft.Console STATIC ${FILES})
-else()
+if (BUILD_SHARED_LIBS)
     add_library(Lodestone.Minecraft.Console SHARED ${FILES})
+else()
+    add_library(Lodestone.Minecraft.Console STATIC ${FILES})
 endif()
 target_include_directories(Lodestone.Minecraft.Console
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
