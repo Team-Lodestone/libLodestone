@@ -3,6 +3,9 @@
 //
 #ifndef LODESTONE_STRINGSERIALIZABLE_H
 #define LODESTONE_STRINGSERIALIZABLE_H
+
+// ReSharper disable once CppUnusedIncludeDirective
+#include <ostream>
 #include <string>
 
 namespace lodestone::common::string {

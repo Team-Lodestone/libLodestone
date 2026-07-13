@@ -95,7 +95,7 @@ namespace lodestone::common::util {
          */
         static std::string encodeBase36(signed_size_t value);
 
-        static constexpr signed_size_t decodeBase36(const std::string_view &input) {
+        static signed_size_t decodeBase36(const std::string_view &input) {
             return std::stoull(input.data(), nullptr, 36);
         }
 
