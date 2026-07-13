@@ -13,7 +13,7 @@
 
 namespace lodestone::common::event {
   struct Cancellable {
-    bool cancelled;
+    bool cancelled = false;
   };
 }
 
