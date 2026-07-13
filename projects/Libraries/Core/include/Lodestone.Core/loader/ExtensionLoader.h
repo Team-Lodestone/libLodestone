@@ -20,7 +20,7 @@
 namespace lodestone::core::loader {
     class ExtensionLoader {
     public:
-#ifndef __EMSCRIPTEN__
+#ifndef LODESTONE_BUILD_SHARED_LIBS
       using LodestoneInit = lodestone::core::LodestoneExtension *(*)(void);
 #endif
       static constexpr const char *ENTRYPOINT = "lodestoneInit";
@@ -30,7 +30,7 @@ namespace lodestone::core::loader {
       explicit ExtensionLoader(core::Lodestone *core);
 
       virtual void load() = 0;
-#ifndef __EMSCRIPTEN__
+#ifndef LODESTONE_BUILD_SHARED_LIBS
       virtual void loadExtension(LodestoneInit entrypoint);
 #endif
 

@@ -28,7 +28,7 @@ namespace lodestone::minecraft::console {
         return VERSION;
     }
 
-#ifndef __EMSCRIPTEN__
+#ifndef LODESTONE_BUILD_SHARED_LIBS
     core::LodestoneExtension *lodestoneInit() {
         return LodestoneLCE::getInstance();
     }

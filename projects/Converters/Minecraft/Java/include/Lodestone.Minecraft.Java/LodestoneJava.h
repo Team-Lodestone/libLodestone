@@ -39,7 +39,7 @@ namespace lodestone::minecraft::java {
         lodestone::conversion::block::version::VersionedBlockIO m_blockIo;
     };
 
-#ifndef __EMSCRIPTEN__
+#ifndef LODESTONE_BUILD_SHARED_LIBS
     extern "C" {
         core::LodestoneExtension *lodestoneInit();
     }

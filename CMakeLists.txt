@@ -13,6 +13,16 @@ if (LODESTONE_DOCS_TARGET STREQUAL "ON")
     set(LODESTONE_AT_ESCAPE "@")
 endif()
 
+if (NOT DEFINED BUILD_SHARED_LIBS)
+    option(BUILD_SHARED_LIBS "Build libraries as shared" ON)
+endif()
+
+if(BUILD_SHARED_LIBS)
+    add_compile_definitions(LODESTONE_BUILD_SHARED_LIBS=1)
+else()
+    add_compile_definitions(LODESTONE_BUILD_SHARED_LIBS=0)
+endif()
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/linting.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/doxygen.cmake)
 
