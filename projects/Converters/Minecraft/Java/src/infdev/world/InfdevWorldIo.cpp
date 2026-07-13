@@ -31,7 +31,7 @@ namespace lodestone::minecraft::java::infdev::world {
         const common::conversion::io::options::OptionPresets::CommonFilesystemOptions &options) const {
 
         if (!std::filesystem::exists(options.path))
-            throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), options.path);
+            throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), options.path.string());
 
         level::types::Vec3i spawnPos = {0, 64, 0};
         auto world = std::make_unique<level::world::World>();
