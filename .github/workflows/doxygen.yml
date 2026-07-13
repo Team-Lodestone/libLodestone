@@ -39,6 +39,7 @@ jobs:
           -DCMAKE_CXX_COMPILER=clang++
           -DCMAKE_C_COMPILER=clang
           -DCMAKE_BUILD_TYPE=Debug
+          -DLODESTONE_UTILITIES_BUILD_TESTS=OFF
 
       - name: Generate Doxygen page
         # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
