@@ -18,9 +18,7 @@ if (NOT DEFINED BUILD_SHARED_LIBS)
 endif()
 
 if(BUILD_SHARED_LIBS)
-    add_compile_definitions(LODESTONE_BUILD_SHARED_LIBS=1)
-else()
-    add_compile_definitions(LODESTONE_BUILD_SHARED_LIBS=0)
+    add_compile_definitions(LODESTONE_BUILD_SHARED_LIBS)
 endif()
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/linting.cmake)
