@@ -36,7 +36,7 @@ namespace lodestone::minecraft::console {
         lodestone::common::util::Semver getVersion() const override;
     };
 
-#ifndef LODESTONE_BUILD_SHARED_LIBS
+#ifdef LODESTONE_BUILD_SHARED_LIBS
     extern "C" {
         core::LodestoneExtension *lodestoneInit();
     }

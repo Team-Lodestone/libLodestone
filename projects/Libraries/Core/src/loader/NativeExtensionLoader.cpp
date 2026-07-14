@@ -19,7 +19,7 @@
 
 namespace lodestone::core::loader {
     void NativeExtensionLoader::load() {
-#ifndef __EMSCRIPTEN__
+#ifdef LODESTONE_BUILD_SHARED_LIBS
         if (!std::filesystem::exists(this->m_extensionsDirectory)) {
             if (std::error_code ec; !std::filesystem::create_directories(
                 this->m_extensionsDirectory, ec)) {
