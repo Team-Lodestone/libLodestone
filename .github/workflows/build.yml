@@ -173,11 +173,11 @@ jobs:
           brew install llvm@19 \
           && ln -s "$(brew --prefix llvm@19)/bin/clang++" "$(brew --prefix llvm@19)/bin/clang++-19" \
           && echo "$(brew --prefix llvm@19)/bin" >> $GITHUB_PATH \
-          && echo 'LDFLAGS="-L$(brew --prefix llvm@19)/lib"' >> $GITHUB_ENV \
-          && echo 'CPPFLAGS="-I$(brew --prefix llvm@19)/include"' >> $GITHUB_ENV \
-          && echo 'CMAKE_PREFIX_PATH="$(brew --prefix llvm@19)"' >> $GITHUB_ENV \
-          && echo 'CC="$(brew --prefix llvm@19)/bin/clang-19"' >> $GITHUB_ENV \
-          && echo 'CXX="$(brew --prefix llvm@19)/bin/clang++-19"' >> $GITHUB_ENV \
+          && echo "LDFLAGS=-L$(brew --prefix llvm@19)/lib" >> $GITHUB_ENV \
+          && echo "CPPFLAGS=-I$(brew --prefix llvm@19)/include" >> $GITHUB_ENV \
+          && echo "CMAKE_PREFIX_PATH=$(brew --prefix llvm@19)" >> $GITHUB_ENV \
+          && echo "CC=$(brew --prefix llvm@19)/bin/clang-19" >> $GITHUB_ENV \
+          && echo "CXX=$(brew --prefix llvm@19)/bin/clang++-19" >> $GITHUB_ENV \
           && ls "$(brew --prefix llvm@19)/bin/"
 
       - name: Set reusable strings
