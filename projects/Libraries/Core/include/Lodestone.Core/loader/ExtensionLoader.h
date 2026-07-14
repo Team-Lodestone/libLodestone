@@ -20,19 +20,15 @@
 namespace lodestone::core::loader {
     class ExtensionLoader {
     public:
-#ifdef LODESTONE_BUILD_SHARED_LIBS
       using LodestoneInit = lodestone::core::LodestoneExtension *(*)(void);
-#endif
-      static constexpr const char *ENTRYPOINT = "lodestoneInit";
+      static constexpr auto ENTRYPOINT = "lodestoneInit";
 
       virtual ~ExtensionLoader() = default;
 
       explicit ExtensionLoader(core::Lodestone *core);
 
       virtual void load() = 0;
-#ifdef LODESTONE_BUILD_SHARED_LIBS
       virtual void loadExtension(LodestoneInit entrypoint);
-#endif
 
     public:
       common::event::CancellableEvent<const std::filesystem::path &> extensionLoadingEvent;
