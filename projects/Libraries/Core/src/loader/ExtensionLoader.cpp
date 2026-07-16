@@ -14,11 +14,9 @@ namespace lodestone::core::loader {
     ExtensionLoader::ExtensionLoader(core::Lodestone* core) : m_core(core) {}
 
     void ExtensionLoader::loadExtension(const LodestoneInit entrypoint) {
-#ifdef LODESTONE_BUILD_SHARED_LIBS
         core::LodestoneExtension *ext = entrypoint();
 
         this->extensionLoadedEvent.notify(ext);
         this->m_core->registerExtension(ext);
-#endif
     }
 }
