@@ -12,12 +12,17 @@
 
 #include <filesystem>
 #include <iostream>
-#include <cstdlib>
 
 #include "Lodestone.Core/loader/LibraryHandle.h"
 #include "Lodestone.Core/loader/exception/LoadLibraryException.h"
 
 namespace lodestone::core::loader {
+    static constexpr std::array<std::string_view, 3> VALID_EXTENSIONS = {
+        ".so",
+        ".dylib",
+        ".dll"
+    };
+
     void NativeExtensionLoader::load() {
 #ifdef LODESTONE_BUILD_SHARED_LIBS
         if (!std::filesystem::exists(this->m_extensionsDirectory)) {
@@ -34,16 +39,24 @@ namespace lodestone::core::loader {
                 "Extensions folder path is not a directory", this->m_extensionsDirectory,
                 ec);
 
-        for (const auto &p : std::filesystem::directory_iterator(
+        for (const auto &p: std::filesystem::directory_iterator(
                  this->m_extensionsDirectory)) {
             if (!std::filesystem::is_regular_file(p))
                 continue;
 
             // Ignore files starting with "."
-            if (p.path().filename().string().starts_with("."))
+            const auto filename = p.path().filename().string();
+            if (filename.starts_with("."))
                 continue;
 
-            // TODO we might want to require a specific extension for this to make sure we're not trying to load random files as libraries
+            const bool isLibrary = std::ranges::any_of(VALID_EXTENSIONS, [&](const std::string_view ext) {
+                return filename.ends_with(ext);
+            });
+
+            if (!isLibrary) {
+                continue;
+            }
+
             LibraryHandle h(p);
 
             try {
@@ -62,7 +75,7 @@ namespace lodestone::core::loader {
             const LodestoneInit init = h.getFunction<LodestoneInit>(ENTRYPOINT);
             if (init == nullptr) {
                 std::cerr << "Library '" << p.path() <<
-                    "' does not contain entrypoint '" << ENTRYPOINT << "'" << std::endl;
+                        "' does not contain entrypoint '" << ENTRYPOINT << "'" << std::endl;
                 continue;
             }
 
