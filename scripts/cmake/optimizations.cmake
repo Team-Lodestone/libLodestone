@@ -2,20 +2,14 @@ option(ENABLE_OPTIMIZATIONS "Enable compiler optimizations" ON)
 if (ENABLE_OPTIMIZATIONS STREQUAL "ON")
     message(NOTICE "Compiler optimizations enabled")
 
-    if (CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    if (CMAKE_SYSTEM_NAME STREQUAL "Emscripten" OR APPLE)
         add_compile_options(
                 "$<$<COMPILE_LANGUAGE:CXX>:-O3;-ffast-math;-ftree-vectorize>"
         )
     else()
-        if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(arm64|aarch64)")
-            add_compile_options(
-                    "$<$<COMPILE_LANGUAGE:CXX>:-O3;-ffast-math;-mcpu=native;-ftree-vectorize>"
-            )
-        else()
-            add_compile_options(
-                    "$<$<COMPILE_LANGUAGE:CXX>:-O3;-ffast-math;-march=native;-ftree-vectorize>"
-            )
-        endif()
+        add_compile_options(
+                "$<$<COMPILE_LANGUAGE:CXX>:-O3;-ffast-math;-march=native;-ftree-vectorize>"
+        )
     endif()
 endif ()
 unset(ENABLE_OPTIMIZATIONS CACHE)
