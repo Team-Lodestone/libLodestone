@@ -7,9 +7,15 @@ if (ENABLE_OPTIMIZATIONS STREQUAL "ON")
                 "$<$<COMPILE_LANGUAGE:CXX>:-O3;-ffast-math;-ftree-vectorize>"
         )
     else()
-        add_compile_options(
-                "$<$<COMPILE_LANGUAGE:CXX>:-O3;-ffast-math;-march=native;-ftree-vectorize>"
-        )
+        if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(arm64|aarch64)")
+            add_compile_options(
+                    "$<$<COMPILE_LANGUAGE:CXX>:-O3;-ffast-math;-mcpu=native;-ftree-vectorize>"
+            )
+        else()
+            add_compile_options(
+                    "$<$<COMPILE_LANGUAGE:CXX>:-O3;-ffast-math;-march=native;-ftree-vectorize>"
+            )
+        endif()
     endif()
 endif ()
 unset(ENABLE_OPTIMIZATIONS CACHE)
