@@ -79,8 +79,8 @@ jobs:
             platform_name: macOS AArch64
             compiler_name: Clang
             compiler: clang
-            c_compiler: clang-19
-            cpp_compiler: clang++-19
+            c_compiler: clang-20
+            cpp_compiler: clang++-20
           - os: macos-latest
             platform_name: macOS AArch64
             compiler_name: GCC
@@ -91,8 +91,8 @@ jobs:
             platform_name: macOS x86_64
             compiler_name: Clang
             compiler: clang
-            c_compiler: clang-19
-            cpp_compiler: clang++-19
+            c_compiler: clang-20
+            cpp_compiler: clang++-20
           - os: macos-26-intel
             platform_name: macOS x86_64
             compiler_name: GCC
@@ -109,8 +109,8 @@ jobs:
             platform_name: macOS Universal
             compiler_name: Clang
             compiler: clang
-            c_compiler: clang-19
-            cpp_compiler: clang++-19
+            c_compiler: clang-20
+            cpp_compiler: clang++-20
             settings: -DCMAKE_OSX_ARCHITECTURES=arm64\;x86_64
           - os: macos-latest
             platform_name: macOS Universal
@@ -166,19 +166,19 @@ jobs:
           && echo 'CXX="$(brew --prefix gcc@15)/bin/g++-15"' >> $GITHUB_ENV \
           && ls "$(brew --prefix gcc@15)/bin/"
 
-      - name: Install Clang 19 (macOS)
+      - name: Install Clang 20 (macOS)
         if: (matrix.os == 'macos-latest' || matrix.os == 'macos-26-intel') && matrix.compiler == 'clang'
         shell: bash
         run: |
-          brew install llvm@19 \
-          && ln -s "$(brew --prefix llvm@19)/bin/clang++" "$(brew --prefix llvm@19)/bin/clang++-19" \
-          && echo "$(brew --prefix llvm@19)/bin" >> $GITHUB_PATH \
-          && echo "LDFLAGS=-L$(brew --prefix llvm@19)/lib" >> $GITHUB_ENV \
-          && echo "CPPFLAGS=-I$(brew --prefix llvm@19)/include" >> $GITHUB_ENV \
-          && echo "CMAKE_PREFIX_PATH=$(brew --prefix llvm@19)" >> $GITHUB_ENV \
-          && echo "CC=$(brew --prefix llvm@19)/bin/clang-19" >> $GITHUB_ENV \
-          && echo "CXX=$(brew --prefix llvm@19)/bin/clang++-19" >> $GITHUB_ENV \
-          && ls "$(brew --prefix llvm@19)/bin/"
+          brew install llvm@20 \
+          && ln -s "$(brew --prefix llvm@20)/bin/clang++" "$(brew --prefix llvm@20)/bin/clang++-20" \
+          && echo "$(brew --prefix llvm@20)/bin" >> $GITHUB_PATH \
+          && echo "LDFLAGS=-L$(brew --prefix llvm@20)/lib" >> $GITHUB_ENV \
+          && echo "CPPFLAGS=-I$(brew --prefix llvm@20)/include" >> $GITHUB_ENV \
+          && echo "CMAKE_PREFIX_PATH=$(brew --prefix llvm@20)" >> $GITHUB_ENV \
+          && echo "CC=$(brew --prefix llvm@20)/bin/clang-20" >> $GITHUB_ENV \
+          && echo "CXX=$(brew --prefix llvm@20)/bin/clang++-20" >> $GITHUB_ENV \
+          && ls "$(brew --prefix llvm@20)/bin/"
 
       - name: Set reusable strings
         # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
