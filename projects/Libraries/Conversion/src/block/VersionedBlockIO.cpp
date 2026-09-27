@@ -11,6 +11,8 @@ namespace lodestone::conversion::block {
     version::VersionedBlockIO::getIo(const uint32_t version) {
         std::unique_ptr<BlockIO> io = std::make_unique<BlockIO>();
 
+        const auto it = m_fromInternalConversionMap.upper_bound(version);
+
         // auto auto auto auto
         // rit
         for (auto rit = std::make_reverse_iterator(it); rit != m_fromInternalConversionMap.rend(); ++rit) {
