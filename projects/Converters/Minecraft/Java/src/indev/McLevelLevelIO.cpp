@@ -243,7 +243,7 @@ namespace lodestone::minecraft::java::indev {
         auto about = nbt::tag_compound();
 
         const auto author = l->getPropertyOr("Author", "Player");
-        const auto createdOn = l->getPropertyOr("CreatedOn", 0L);
+        const auto createdOn = l->getPropertyOr("CreatedOn", static_cast<int64_t>(0L));
         const auto name = l->getPropertyOr("Name", "A Nice World");
         about["Author"] = author->getValue();
         about["CreatedOn"] = createdOn->getValue();
