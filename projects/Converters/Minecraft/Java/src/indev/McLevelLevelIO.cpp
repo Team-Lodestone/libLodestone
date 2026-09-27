@@ -6,6 +6,9 @@
 
 #include <Lodestone.Common/Indexing.h>
 #include <Lodestone.Conversion/block/data/NumericBlockData.h>
+
+#include <libnbt++/io/ozlibstream.h>
+#include "Lodestone.Level/world/World.h"
 #include "Lodestone.Minecraft.Java/LodestoneJava.h"
 
 namespace lodestone::minecraft::java::indev {
@@ -37,6 +40,12 @@ namespace lodestone::minecraft::java::indev {
                                const
                                common::conversion::io::options::OptionPresets::CommonWriteOptions
                                &options) const {
+        nbt::io::stream_writer w = nbt::io::stream_writer(options.output, endian::big);
+
+        const McLevelNbtLevelIO *io = this->getAsByRelation<const McLevelNbtLevelIO, &identifiers::NBT_LEVEL_IO>();
+        io->writeToNbtStreamWriter(l, "MinecraftLevel", w, conversion::io::options::versioned::VersionedOptions {
+            options.version
+        });
     }
 
     std::unique_ptr<level::Level> McLevelNbtLevelIO::read(
@@ -150,8 +159,107 @@ namespace lodestone::minecraft::java::indev {
     void McLevelNbtLevelIO::write(level::Level *l,
                                   const
                                   common::conversion::io::options::OptionPresets::NbtOutputWriteOptions
-                                  <const conversion::io::options::EmptyOptions>
+                                  <const conversion::io::options::versioned::VersionedOptions>
                                   &options) const {
+        auto &root = options.output;
+
+        //region Environment
+        auto environment = nbt::tag_compound();
+
+        const auto cloudColor = l->getPropertyOr("CloudColor", 0xFFFFFF);
+        const auto cloudHeight = l->getPropertyOr("CloudHeight", static_cast<int16_t>(66));
+        const auto fogColor = l->getPropertyOr("FogColor", 0xFFFFFF);
+        const auto skyBrightness = l->getPropertyOr("SkyBrightness", static_cast<int8_t>(0xF));
+        const auto skyColor = l->getPropertyOr("SkyColor", 0x99CCFF);
+        const auto surroundingGroundHeight = l->getPropertyOr("SurroundingGroundHeight", static_cast<int16_t>(2));
+        const auto surroundingGroundType = l->getPropertyOr("SurroundingGroundType", static_cast<int8_t>(2));
+        const auto surroundingWaterHeight = l->getPropertyOr("SurroundingWaterHeight", static_cast<int16_t>(32));
+        const auto surroundingWaterType = l->getPropertyOr("SurroundingWaterType", static_cast<int8_t>(8));
+        const auto timeOfDay = l->getPropertyOr("TimeOfDay", static_cast<int16_t>(16));
+        environment["CloudColor"] = cloudColor->getValue();
+        environment["CloudHeight"] = cloudHeight->getValue();
+        environment["FogColor"] = fogColor->getValue();
+        environment["SkyBrightness"] = skyBrightness->getValue();
+        environment["SkyColor"] = skyColor->getValue();
+        environment["SurroundingGroundHeight"] = surroundingGroundHeight->getValue();
+        environment["SurroundingGroundType"] = surroundingGroundType->getValue();
+        environment["SurroundingWaterHeight"] = surroundingWaterHeight->getValue();
+        environment["SurroundingWaterType"] = surroundingWaterType->getValue();
+        environment["TimeOfDay"] = timeOfDay->getValue();
+
+        //region Map
+        auto map = nbt::tag_compound();
+
+        const auto spawnPos = l->getSpawnPos();
+        const auto spawn = nbt::tag_list({
+            static_cast<int16_t>(spawnPos.x),
+            static_cast<int16_t>(spawnPos.y),
+            static_cast<int16_t>(spawnPos.z)
+        });
+        map.emplace<nbt::tag_list>("Spawn", spawn);
+
+        const auto levelBounds = l->getBlockBounds();
+        const auto height = levelBounds.getHeight();
+        const auto width = levelBounds.getWidth();
+        const auto length = levelBounds.getLength();
+        map["Height"] = nbt::tag_short(height);
+        map["Width"] = nbt::tag_short(width);
+        map["Length"] = nbt::tag_short(length);
+
+        auto blocks = std::vector<int8_t>(height * width * length);
+        auto metadata = std::vector<int8_t>(height * width * length);
+
+        const std::unique_ptr<conversion::block::version::BlockIO> bio =
+            LodestoneJava::getInstance()->m_blockIo.getIo(options.version);
+
+        for (int y = 0; y < height; y++) {
+            for (int z = 0; z < length; z++) {
+                for (int x = 0; x < width; x++) {
+                    const size_t idx = INDEX_YZX(x, y, z, width, length);
+
+                    const auto bb = l->getBlock(x, y, z);
+
+                    if (bb.getBlock() != level::block::BlockRegistry::s_defaultBlock) {
+                        uint8_t blockId = 0;
+                        uint8_t data = 0;
+
+                        if (const conversion::block::data::NumericBlockData *bl =
+                                    bio->convertBlockFromInternal(&bb)->as<conversion::block::data::NumericBlockData>()) {
+                            blockId = bl->getId();
+                            data = bl->getData();
+                        }
+
+                        blocks[idx] = blockId;
+                        metadata[idx] = data;
+                    }
+                }
+            }
+        }
+
+        map["Blocks"] = nbt::tag_byte_array(std::move(blocks));
+        map["Data"] = nbt::tag_byte_array(std::move(metadata));
+
+        //region About
+        auto about = nbt::tag_compound();
+
+        const auto author = l->getPropertyOr("Author", "Player");
+        const auto createdOn = l->getPropertyOr("CreatedOn", 0L);
+        const auto name = l->getPropertyOr("Name", "A Nice World");
+        about["Author"] = author->getValue();
+        about["CreatedOn"] = createdOn->getValue();
+        about["Name"] = name->getValue();
+
+        // TODO: Write entity data
+        auto entities = nbt::tag_list(nbt::tag_type::Compound);
+
+        // TODO: Write tile entity data
+        auto tileEntities = nbt::tag_list(nbt::tag_type::Compound);
+
+        root.emplace<nbt::tag_compound>("Environment", environment);
+        root.emplace<nbt::tag_compound>("Map", map);
+        root.emplace<nbt::tag_compound>("About", about);
+        root.emplace<nbt::tag_list>("Entities", entities);
+        root.emplace<nbt::tag_list>("TileEntities", tileEntities);
     }
 
 } // namespace lodestone::minecraft::java::indev

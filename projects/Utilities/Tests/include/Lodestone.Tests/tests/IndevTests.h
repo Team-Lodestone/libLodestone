@@ -13,6 +13,8 @@ namespace lodestone::tests::test {
         static void add();
 
         static tfw::test::result::TestResult readHugeFloatingWorld(tfw::test::logging::loggers::ITestLogger &logger);
+
+        static tfw::test::result::TestResult writeClassicWorldZero(tfw::test::logging::loggers::ITestLogger &logger);
     };
 } // lodestone::tests::test
 

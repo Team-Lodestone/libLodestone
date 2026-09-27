@@ -40,7 +40,7 @@ namespace lodestone::minecraft::common::conversion::io::options {
             lodestone::conversion::io::options::versioned::VersionedOptions
         >;
 
-        template <typename WO = lodestone::conversion::io::options::EmptyOptions>
+        template <typename WO = lodestone::conversion::io::options::versioned::VersionedOptions>
         requires std::is_base_of_v<lodestone::conversion::io::options::IOptions, WO>
         using NbtOutputWriteOptions = lodestone::conversion::io::options::OptionsBuilder<
                  WO,

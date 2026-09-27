@@ -199,4 +199,8 @@ namespace lodestone::level {
     void Level::setCreationTime(const std::uint64_t creationTime) {
         m_creationTime = creationTime;
     }
+
+    std::unique_ptr<level::properties::AbstractProperty> Level::getProperty(const std::string &name) {
+        return nullptr;
+    }
 } // namespace lodestone::level

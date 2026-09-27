@@ -147,7 +147,8 @@ target_compile_definitions(Lodestone.Tests PRIVATE
         READ_CLASSIC_WORLD_ZERO=false
 
         # Indev tests
-        READ_INDEV_HUGE_FLOATING=true
+        READ_INDEV_HUGE_FLOATING=false
+        WRITE_CLASSIC_WORLD_ZERO=true
 
         # Infdev 624 tests
         READ_INFDEV_624_WORLD4=false
@@ -158,7 +159,7 @@ target_compile_definitions(Lodestone.Tests PRIVATE
 
         # Beta tests
         READ_BETA_SERVER_WORLD=false
-        WRITE_BETA_SUPERFLAT_WORLD=true
+        WRITE_BETA_SUPERFLAT_WORLD=false
 
         # Release tests
         READ_SNOW_RELEASE_WORLD_ZERO=false

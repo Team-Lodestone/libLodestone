@@ -22,7 +22,8 @@ namespace lodestone::level {
      *
      * @see Chunk
      */
-    class LODESTONE_API Level : public chunk::ChunkContainer {
+    class LODESTONE_API Level : public chunk::ChunkContainer,
+                                public properties::ReflectiveProperties {
     public:
         //region Blocks
         const block::instance::BlockInstance &getBlock(signed_size_t blockX, signed_size_t blockY, signed_size_t blockZ) const;
@@ -70,6 +71,9 @@ namespace lodestone::level {
         //endregion
 
         //endregion
+
+        std::unique_ptr<properties::AbstractProperty>
+        getProperty(const std::string &name) override;
     private:
         level::types::Vec3i m_spawnPos{0, 64, 0};
         world::World *m_world = nullptr;

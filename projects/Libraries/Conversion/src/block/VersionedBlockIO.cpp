@@ -12,25 +12,16 @@ namespace lodestone::conversion::block {
         std::unique_ptr<BlockIO> io = std::make_unique<BlockIO>();
 
         // auto auto auto auto
-        auto upper = m_fromInternalConversionMap.upper_bound(version);
-        auto it = std::make_reverse_iterator(upper);
-        auto rend = m_fromInternalConversionMap.rend();
-
-        //so that if we process a block (e.g. added it, or removed it) for a version, it doesnt get processed again
-        std::set<const lodestone::common::registry::Identifier*> processed;
-
-        for (; it != rend; ++it) {
-            for (auto &[internal, blk] : it->second) {
-                if (processed.find(internal) == processed.end()) {
-                    processed.insert(internal);
-
-                    // if we want to signify block removal we
-                    // can set it to nullptr
-                    if (blk != nullptr) {
-                        LOG_DEBUG("Registered block '" << blk->toString() << "' ('" << internal->toString() << "') for version " << std::to_string(version));
-                        io->registerBlockIfNotExist(internal, blk);
-                    }
+        // rit
+        for (auto rit = std::make_reverse_iterator(it); rit != m_fromInternalConversionMap.rend(); ++rit) {
+            for (auto &[internal, blk] : rit->second) {
+                if (blk == nullptr) {
+                    // Block is removed. Gone... poof to ashes.
+                    continue;
                 }
+
+                LOG_DEBUG("Registered block '" << blk->toString() << "' ('" << internal->toString() << "') for version " << std::to_string(version));
+                io->registerBlockIfNotExist(internal, blk);
             }
         }
 
