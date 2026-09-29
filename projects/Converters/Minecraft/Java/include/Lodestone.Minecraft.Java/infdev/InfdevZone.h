@@ -24,7 +24,7 @@ namespace lodestone::minecraft::java::infdev::zone {
         static constexpr short VERSION = 0;
 
         static constexpr int CHUNKS_PER_ZONE_BITS = 5;
-	static constexpr int CHUNKS_PER_ZONE_AXIS = 1 << CHUNKS_PER_ZONE_BITS;
+	    static constexpr int CHUNKS_PER_ZONE_AXIS = 1 << CHUNKS_PER_ZONE_BITS;
         static constexpr int CHUNKS_PER_ZONE = CHUNKS_PER_ZONE_AXIS * CHUNKS_PER_ZONE_AXIS;
 
         explicit InfdevZone(const level::coords::ChunkCoordinates &coords) : m_coords(coords) {}

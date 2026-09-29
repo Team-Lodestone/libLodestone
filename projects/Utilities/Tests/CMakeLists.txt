@@ -148,10 +148,11 @@ target_compile_definitions(Lodestone.Tests PRIVATE
 
         # Indev tests
         READ_INDEV_HUGE_FLOATING=false
-        WRITE_CLASSIC_WORLD_ZERO=true
+        WRITE_CLASSIC_WORLD_ZERO=false
 
         # Infdev 624 tests
         READ_INFDEV_624_WORLD4=false
+        WRITE_INFDEV_624_SUPERFLAT_WORLD_ZERO=true
 
         # Infdev/Alpha tests
         READ_SNOW_WORLD_ZERO=false

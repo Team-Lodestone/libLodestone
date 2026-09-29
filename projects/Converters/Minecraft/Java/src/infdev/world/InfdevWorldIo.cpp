@@ -180,11 +180,33 @@ namespace lodestone::minecraft::java::infdev::world {
 
         auto lvl = w->getDefaultLevel();
         level::types::Bounds3i bounds = lvl->getChunkBounds();
-
         for (int zoneX = bounds.min.x >> zone::InfdevZone::CHUNKS_PER_ZONE_BITS; zoneX <= bounds.max.x >> zone::InfdevZone::CHUNKS_PER_ZONE_BITS; ++zoneX) {
             for (int zoneZ = bounds.min.z >> zone::InfdevZone::CHUNKS_PER_ZONE_BITS; zoneZ <= bounds.max.z >> zone::InfdevZone::CHUNKS_PER_ZONE_BITS; ++zoneZ) {
-                auto zoneX36 = lodestone::common::util::Math::encodeBase36(zoneX);
-                auto zoneZ36 = lodestone::common::util::Math::encodeBase36(zoneZ);
+                int cx = zoneX << zone::InfdevZone::CHUNKS_PER_ZONE_BITS;
+                int cz = zoneZ << zone::InfdevZone::CHUNKS_PER_ZONE_BITS;
+
+                // wtf is this steaming hot pile of garbage...
+                bool found = false;
+
+                for (int x = 0; x < zone::InfdevZone::CHUNKS_PER_ZONE_AXIS && !found; ++x) {
+                    for (int z = 0; z < zone::InfdevZone::CHUNKS_PER_ZONE_AXIS && !found; ++z) {
+                        level::chunk::Chunk *ch = lvl->getChunk(cx + x, cz + z);
+                        if (ch != nullptr && !ch->instanceOf(level::chunk::ChunkType::ImmutableChunk)) {
+                            found = true;
+                        }
+                    }
+                }
+
+                if (!found) {
+                    continue;
+                }
+
+                // Due to how the game expects the zones to be loaded, we can't really replicate it in a way that allows the game to load it.
+                // Files are saved with the first loaded chunk as the filename, and the game will use the first loaded chunk in a given zone as the lookup for the zone file
+                // This works fine for the game, because on exit it will save the chunks with their correct filename, and the player will load back in in the same position
+                // which will load the chunks with the correct filename.
+                auto zoneX36 = lodestone::common::util::Math::encodeBase36(cx);
+                auto zoneZ36 = lodestone::common::util::Math::encodeBase36(cz);
 
                 std::ofstream o(dataDir / ("zone_" + zoneX36 + "_" +
                                            zoneZ36 + ".dat"));
