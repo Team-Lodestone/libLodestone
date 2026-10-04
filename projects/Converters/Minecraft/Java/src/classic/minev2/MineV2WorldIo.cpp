@@ -6,7 +6,7 @@
 #include <Lodestone.Common/util/Util.h>
 #include "Lodestone.Minecraft.Java/Identifiers.h"
 #include "Lodestone.Minecraft.Java/Version.h"
-#include "Lodestone.Minecraft.Java/conversion/classic/minev2/MineV2LevelIO.h"
+#include "Lodestone.Minecraft.Java/conversion/classic/minev2/MineV2LevelIo.h"
 #include "Lodestone.Minecraft.Java/classic/minev2/MineV2World.h"
 #include <BinaryIO/buffer/BinaryBuffer.h>
 
@@ -14,7 +14,7 @@
 #include <BinaryIO/stream/BinaryOutputStream.h>
 
 namespace lodestone::minecraft::java::classic::minev2 {
-    std::unique_ptr<lodestone::level::world::World> MineV2WorldIO::read(const common::conversion::io::options::OptionPresets::CommonReadOptions &options) const {
+    std::unique_ptr<lodestone::level::world::World> MineV2WorldIo::read(const common::conversion::io::options::OptionPresets::CommonReadOptions &options) const {
         bio::stream::BinaryInputStream bis(options.input);
 
         const uint32_t sig = bis.readBE<uint32_t>();
@@ -28,7 +28,7 @@ namespace lodestone::minecraft::java::classic::minev2 {
         const std::string author = bis.readStringWithLength<char>(bio::util::ByteOrder::BIG, bio::util::string::StringLengthEncoding::LENGTH_PREFIX);
         uint64_t creationTime = bis.readBE<uint64_t>(); // todo use
 
-        const MineV2LevelIO *lio = this->getAsByRelation<const MineV2LevelIO, &lodestone::conversion::identifiers::LEVEL_IO>();
+        const MineV2LevelIo *lio = this->getAsByRelation<const MineV2LevelIo, &lodestone::conversion::identifiers::LEVEL_IO>();
 
         std::unique_ptr<level::Level> unique =
             lio->read( common::conversion::io::options::OptionPresets::CommonReadOptions {
@@ -43,7 +43,7 @@ namespace lodestone::minecraft::java::classic::minev2 {
         return std::make_unique<MineV2World>(std::move(unique), name, author);
     }
 
-    void MineV2WorldIO::write(level::world::World *w, const MineV2WriteOptions &options)
+    void MineV2WorldIo::write(level::world::World *w, const MineV2WriteOptions &options)
         const {
         bio::stream::BinaryOutputStream bos(options.output);
 
@@ -60,7 +60,7 @@ namespace lodestone::minecraft::java::classic::minev2 {
 
         bos.writeBE<uint64_t>(w->getCreationTime());
 
-        const MineV2LevelIO *lio = this->getAsByRelation<const MineV2LevelIO, &lodestone::conversion::identifiers::LEVEL_IO>();
+        const MineV2LevelIo *lio = this->getAsByRelation<const MineV2LevelIo, &lodestone::conversion::identifiers::LEVEL_IO>();
         lio->write(w->getLevel(options.level), common::conversion::io::options::OptionPresets::CommonWriteOptions {
             conversion::io::options::fs::file::FileWriterOptions {
                 bos.getStream()

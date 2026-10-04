@@ -15,14 +15,14 @@
 #include "Lodestone.Minecraft.Java/Identifiers.h"
 
 namespace lodestone::minecraft::java::classic::minev2 {
-    class MineV2WorldIO;
+    class MineV2WorldIo;
 
-    class MineV2LevelIO : public conversion::io::LevelIO<
+    class MineV2LevelIo : public conversion::io::LevelIO<
         &identifiers::MINEV2_LEVEL_IO,
         const common::conversion::io::options::OptionPresets::CommonReadOptions,
         const common::conversion::io::options::OptionPresets::CommonWriteOptions
     >, public conversion::registry::RegistryIdentifierRelations<
-        conversion::registry::RegistryIdentifierRelation<&lodestone::conversion::identifiers::WORLD_IO, const MineV2WorldIO, &identifiers::MINEV2_WORLD_IO, conversion::registry::WorldIORegistry>
+        conversion::registry::RegistryIdentifierRelation<&lodestone::conversion::identifiers::WORLD_IO, const MineV2WorldIo, &identifiers::MINEV2_WORLD_IO, conversion::registry::WorldIORegistry>
     > {
       public:
         std::unique_ptr<level::Level>

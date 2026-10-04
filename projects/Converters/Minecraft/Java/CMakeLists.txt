@@ -7,16 +7,16 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(FILES
-        include/Lodestone.Minecraft.Java/conversion/classic/minev1/MineV1LevelIO.h
-        src/classic/minev1/MineV1LevelIO.cpp
+        include/Lodestone.Minecraft.Java/conversion/classic/minev1/MineV1LevelIo.h
+        src/classic/minev1/MineV1LevelIo.cpp
         src/LodestoneJava.cpp
         include/Lodestone.Minecraft.Java/LodestoneJava.h
-        src/classic/minev2/MineV2LevelIO.cpp
-        include/Lodestone.Minecraft.Java/conversion/classic/minev2/MineV2LevelIO.h
+        src/classic/minev2/MineV2LevelIo.cpp
+        include/Lodestone.Minecraft.Java/conversion/classic/minev2/MineV2LevelIo.h
         src/classic/minev2/MineV2World.cpp
         include/Lodestone.Minecraft.Java/classic/minev2/MineV2World.h
-        src/indev/McLevelLevelIO.cpp
-        include/Lodestone.Minecraft.Java/conversion/indev/McLevelLevelIO.h
+        src/indev/McLevelLevelIo.cpp
+        include/Lodestone.Minecraft.Java/conversion/indev/McLevelLevelIo.h
         include/Lodestone.Minecraft.Java/Version.h
         src/classic/minev2/MineV2WorldIo.cpp
         include/Lodestone.Minecraft.Java/conversion/classic/minev2/MineV2WorldIo.h

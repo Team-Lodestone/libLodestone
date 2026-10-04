@@ -2,7 +2,7 @@
 // Created by DexrnZacAttack on 10/16/25 using zPc-i2.
 //
 
-#include "Lodestone.Minecraft.Java/conversion/indev/McLevelLevelIO.h"
+#include "Lodestone.Minecraft.Java/conversion/indev/McLevelLevelIo.h"
 
 #include <Lodestone.Common/Indexing.h>
 #include <Lodestone.Conversion/block/data/NumericBlockData.h>
@@ -14,7 +14,7 @@
 namespace lodestone::minecraft::java::indev {
 
     std::unique_ptr<level::Level>
-    McLevelLevelIO::read(
+    McLevelLevelIo::read(
         const common::conversion::io::options::OptionPresets::CommonReadOptions
         &options) const {
         auto streamReader = nbt::io::stream_reader(options.input, endian::big);
@@ -36,7 +36,7 @@ namespace lodestone::minecraft::java::indev {
             });
     }
 
-    void McLevelLevelIO::write(level::Level *l,
+    void McLevelLevelIo::write(level::Level *l,
                                const
                                common::conversion::io::options::OptionPresets::CommonWriteOptions
                                &options) const {

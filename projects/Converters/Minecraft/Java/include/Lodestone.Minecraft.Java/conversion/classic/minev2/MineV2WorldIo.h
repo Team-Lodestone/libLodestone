@@ -14,7 +14,7 @@
 #include "Lodestone.Minecraft.Java/conversion/classic/minev2/options/MineV2WorldWriteOptions.h"
 
 namespace lodestone::minecraft::java::classic::minev2 {
-    class MineV2LevelIO;
+    class MineV2LevelIo;
 
     using MineV2WriteOptions = conversion::io::options::OptionsBuilder<
         options::MineV2WorldWriteOptions,
@@ -22,9 +22,9 @@ namespace lodestone::minecraft::java::classic::minev2 {
         conversion::io::options::versioned::VersionedOptions
     >;
 
-    class MineV2WorldIO : public conversion::io::WorldIO<&identifiers::MINEV2_WORLD_IO, const common::conversion::io::options::OptionPresets::CommonReadOptions, const MineV2WriteOptions>,
+    class MineV2WorldIo : public conversion::io::WorldIO<&identifiers::MINEV2_WORLD_IO, const common::conversion::io::options::OptionPresets::CommonReadOptions, const MineV2WriteOptions>,
     public conversion::registry::RegistryIdentifierRelations<
-        conversion::registry::RegistryIdentifierRelation<&lodestone::conversion::identifiers::LEVEL_IO, const MineV2LevelIO, &identifiers::MINEV2_LEVEL_IO, conversion::registry::LevelIORegistry>
+        conversion::registry::RegistryIdentifierRelation<&lodestone::conversion::identifiers::LEVEL_IO, const MineV2LevelIo, &identifiers::MINEV2_LEVEL_IO, conversion::registry::LevelIORegistry>
     > {
       public:
         static constexpr int32_t SIGNATURE = 0x271BB788;

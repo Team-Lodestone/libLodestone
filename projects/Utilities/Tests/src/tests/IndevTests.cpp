@@ -8,12 +8,12 @@
 #include <libnbt++/io/izlibstream.h>
 #include <Lodestone.Conversion/registry/Registries.h>
 #include <Lodestone.Minecraft.Java/Version.h>
-#include <Lodestone.Minecraft.Java/conversion/indev/McLevelLevelIO.h>
+#include <Lodestone.Minecraft.Java/conversion/indev/McLevelLevelIo.h>
 #include <TestFramework/TestFramework.h>
 
 #include <Lodestone.Minecraft.Java/conversion/mcregion/McRegionWorldIo.h>
 
-#include <Lodestone.Minecraft.Java/conversion/classic/minev1/MineV1LevelIO.h>
+#include <Lodestone.Minecraft.Java/conversion/classic/minev1/MineV1LevelIo.h>
 #include "Lodestone.Tests/util.h"
 #include "Lodestone.Tests/util/Visualizer.h"
 
@@ -35,7 +35,7 @@ namespace lodestone::tests::test {
         zlib::izlibstream zstrm(strm);
 
         const auto *inputIo = conversion::registry::LevelIORegistry::getInstance().getAs<const
-            minecraft::java::indev::McLevelLevelIO>(minecraft::java::identifiers::MCLEVEL_LEVEL_IO);
+            minecraft::java::indev::McLevelLevelIo>(minecraft::java::identifiers::MCLEVEL_LEVEL_IO);
 
         auto lvl = inputIo->read(minecraft::common::conversion::io::options::OptionPresets::CommonReadOptions {
             conversion::io::options::fs::file::FileReaderOptions{
@@ -84,7 +84,7 @@ namespace lodestone::tests::test {
         std::ifstream strm(inputFile, std::ios::binary);
         zlib::izlibstream zstrm(strm);
 
-        const auto *inputIo = conversion::registry::LevelIORegistry::getInstance().getAs<const minecraft::java::classic::minev1::MineV1LevelIO>(minecraft::java::identifiers::MINEV1_LEVEL_IO);
+        const auto *inputIo = conversion::registry::LevelIORegistry::getInstance().getAs<const minecraft::java::classic::minev1::MineV1LevelIo>(minecraft::java::identifiers::MINEV1_LEVEL_IO);
 
         auto lvl = inputIo->read(minecraft::common::conversion::io::options::OptionPresets::CommonReadOptions{
             conversion::io::options::fs::file::FileReaderOptions{
@@ -97,7 +97,7 @@ namespace lodestone::tests::test {
 
         const conversion::registry::LevelIORegistry &r = conversion::registry::LevelIORegistry::getInstance();
 
-        const auto io = r.getAs<const minecraft::java::indev::McLevelLevelIO>(
+        const auto io = r.getAs<const minecraft::java::indev::McLevelLevelIo>(
                 minecraft::java::identifiers::MCLEVEL_LEVEL_IO);
         const std::filesystem::path outputFolder = util::OUTPUT_FOLDER / "converted" / "indev" / "in-20100223" / "worlds";
 

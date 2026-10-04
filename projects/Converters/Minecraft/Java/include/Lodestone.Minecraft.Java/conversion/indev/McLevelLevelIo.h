@@ -18,7 +18,7 @@
 namespace lodestone::minecraft::java::indev {
     class McLevelNbtLevelIO;
 
-    class McLevelLevelIO : public conversion::io::LevelIO<&identifiers::MCLEVEL_LEVEL_IO, const common::conversion::io::options::OptionPresets::CommonReadOptions, const common::conversion::io::options::OptionPresets::CommonWriteOptions>,
+    class McLevelLevelIo : public conversion::io::LevelIO<&identifiers::MCLEVEL_LEVEL_IO, const common::conversion::io::options::OptionPresets::CommonReadOptions, const common::conversion::io::options::OptionPresets::CommonWriteOptions>,
     public conversion::registry::RegistryIdentifierRelations<
         conversion::registry::RegistryIdentifierRelation<&identifiers::NBT_LEVEL_IO, const McLevelNbtLevelIO, &identifiers::MCLEVEL_NBT_LEVEL_IO, conversion::registry::LevelIORegistry>
         > {
@@ -31,7 +31,7 @@ namespace lodestone::minecraft::java::indev {
 
     class McLevelNbtLevelIO : public common::conversion::io::NbtLevelIO<&identifiers::MCLEVEL_NBT_LEVEL_IO, const common::conversion::io::options::OptionPresets::CommonNbtReadOptions, const conversion::io::options::versioned::VersionedOptions>,
     public conversion::registry::RegistryIdentifierRelations<
-        conversion::registry::RegistryIdentifierRelation<&conversion::identifiers::LEVEL_IO, const McLevelLevelIO, &identifiers::MCLEVEL_LEVEL_IO, conversion::registry::LevelIORegistry>
+        conversion::registry::RegistryIdentifierRelation<&conversion::identifiers::LEVEL_IO, const McLevelLevelIo, &identifiers::MCLEVEL_LEVEL_IO, conversion::registry::LevelIORegistry>
         > {
     public:
         /** Creates a Level from a mclevel Map compound tag */

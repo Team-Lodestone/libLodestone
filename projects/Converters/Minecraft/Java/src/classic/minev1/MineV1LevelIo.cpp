@@ -2,7 +2,7 @@
 // Created by DexrnZacAttack on 10/15/25 using zPc-i2.
 //
 
-#include "Lodestone.Minecraft.Java/conversion/classic/minev1/MineV1LevelIO.h"
+#include "Lodestone.Minecraft.Java/conversion/classic/minev1/MineV1LevelIo.h"
 
 #include <ranges>
 
@@ -17,7 +17,7 @@
 
 namespace lodestone::minecraft::java::classic::minev1 {
     std::unique_ptr<level::Level>
-    MineV1LevelIO::read(const common::conversion::io::options::OptionPresets::CommonReadOptions &options) const {
+    MineV1LevelIo::read(const common::conversion::io::options::OptionPresets::CommonReadOptions &options) const {
         bio::stream::BinaryInputStream bis(options.input);
 
         std::unique_ptr<level::FiniteLevel> l =
@@ -52,7 +52,7 @@ namespace lodestone::minecraft::java::classic::minev1 {
         return l;
     }
 
-    void MineV1LevelIO::write(level::Level *l, const common::conversion::io::options::OptionPresets::CommonWriteOptions &options) const {
+    void MineV1LevelIo::write(level::Level *l, const common::conversion::io::options::OptionPresets::CommonWriteOptions &options) const {
         bio::stream::BinaryOutputStream bos(options.output);
 
         const std::unique_ptr<lodestone::conversion::block::version::BlockIO>

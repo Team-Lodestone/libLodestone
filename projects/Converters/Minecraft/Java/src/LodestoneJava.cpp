@@ -5,7 +5,7 @@
 #include "Lodestone.Minecraft.Java/Identifiers.h"
 #include "Lodestone.Minecraft.Java/LodestoneJava.h"
 
-#include "Lodestone.Minecraft.Java/conversion/classic/minev2/MineV2LevelIO.h"
+#include "Lodestone.Minecraft.Java/conversion/classic/minev2/MineV2LevelIo.h"
 #include <Lodestone.Conversion/block/data/ExtendedNumericBlockData.h>
 
 #include <Lodestone.Core/Lodestone.h>
@@ -20,9 +20,9 @@
 #include "Lodestone.Minecraft.Java/conversion/anvil/jungle/JungleAnvilChunkIo.h"
 #include "Lodestone.Minecraft.Java/conversion/anvil/jungle/JungleAnvilRegionIo.h"
 #include "Lodestone.Minecraft.Java/conversion/anvil/jungle/JungleAnvilWorldIo.h"
-#include "Lodestone.Minecraft.Java/conversion/classic/minev1/MineV1LevelIO.h"
+#include "Lodestone.Minecraft.Java/conversion/classic/minev1/MineV1LevelIo.h"
 #include "Lodestone.Minecraft.Java/conversion/classic/minev2/MineV2WorldIo.h"
-#include "Lodestone.Minecraft.Java/conversion/indev/McLevelLevelIO.h"
+#include "Lodestone.Minecraft.Java/conversion/indev/McLevelLevelIo.h"
 #include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionChunkIo.h"
 #include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionPlayerIo.h"
 #include "Lodestone.Minecraft.Java/conversion/mcregion/McRegionRegionIo.h"
@@ -47,14 +47,14 @@ namespace lodestone::minecraft::java {
 
         // classic
         // minev1
-        REG_PUT(LevelIORegistry, classic::minev1::MineV1LevelIO);
+        REG_PUT(LevelIORegistry, classic::minev1::MineV1LevelIo);
 
         // minev2
-        REG_PUT(LevelIORegistry, classic::minev2::MineV2LevelIO);
-        REG_PUT(WorldIORegistry, classic::minev2::MineV2WorldIO);
+        REG_PUT(LevelIORegistry, classic::minev2::MineV2LevelIo);
+        REG_PUT(WorldIORegistry, classic::minev2::MineV2WorldIo);
 
         // indev
-        REG_PUT(LevelIORegistry, indev::McLevelLevelIO);
+        REG_PUT(LevelIORegistry, indev::McLevelLevelIo);
         REG_PUT(LevelIORegistry, indev::McLevelNbtLevelIO);
 
         // infdev 20100624
