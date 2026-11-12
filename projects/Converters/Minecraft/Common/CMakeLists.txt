@@ -34,7 +34,11 @@ set(FILES
         include/Lodestone.Minecraft.Common/item/Items.h
 )
 
-add_library(Lodestone.Minecraft.Common OBJECT ${FILES})
+if (BUILD_SHARED_LIBS)
+    add_library(Lodestone.Minecraft.Common SHARED ${FILES})
+else()
+    add_library(Lodestone.Minecraft.Common STATIC ${FILES})
+endif()
 target_include_directories(Lodestone.Minecraft.Common
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
