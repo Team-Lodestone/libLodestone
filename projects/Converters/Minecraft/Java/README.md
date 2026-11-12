@@ -9,9 +9,9 @@ Minecraft: Java Edition converter
       - Waiting on [JavaObjectStreams](https://github.com/Team-Lodestone/JavaObjectStreams/tree/main) to be finalized.
     - [ ] ClassicWorld (CW)
     - [ ] [MCGalaxy](https://github.com/ClassiCube/MCGalaxy) Level (LVL)
-- [ ] Indev (MCLevel)
-- [ ] Infdev 20100624 (Zone File Format)
-  - Reading implemented, writing does not work yet.
+- [X] Indev (MCLevel)
+- [X] Infdev 20100624 (Zone File Format)
+  - Due to issues within this version itself, worlds converted with Lodestone are not compatible with a vanilla client. [LoadZone](https://github.com/team-lodestone/LoadZone) must be used to load the worlds correctly.
 - [X] Infdev/Alpha (Alpha Save Format)
 - [X] McRegion
 - [X] Anvil
