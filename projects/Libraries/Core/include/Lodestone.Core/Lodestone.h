@@ -7,6 +7,8 @@
 #include <Lodestone.Common/Defines.h>
 #include <Lodestone.Common/registry/Identifier.h>
 
+#include "Lodestone.Core/version/VersionRegistry.h"
+
 namespace lodestone::core {
     /** The core Lodestone class, used for registering other plugin libs. */
     class Lodestone {
@@ -20,9 +22,13 @@ namespace lodestone::core {
         const map_t<common::registry::Identifier, LodestoneExtension *> &
         getExtensions();
 
+        version::VersionRegistry &getVersionRegistry();
+
       private:
         map_t<common::registry::Identifier, LodestoneExtension *>
             m_extensions;
+
+        version::VersionRegistry m_versionRegistry;
     };
 } // namespace lodestone::core
 

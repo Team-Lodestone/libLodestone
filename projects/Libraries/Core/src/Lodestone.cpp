@@ -38,4 +38,8 @@ namespace lodestone::core {
     Lodestone::getExtensions() {
         return m_extensions;
     }
+
+    version::VersionRegistry &Lodestone::getVersionRegistry() {
+        return this->m_versionRegistry;
+    }
 } // namespace lodestone::core

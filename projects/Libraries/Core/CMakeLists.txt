@@ -22,6 +22,8 @@ set(FILES
         include/Lodestone.Core/loader/exception/UnloadLibraryException.h
         src/loader/exception/LibraryException.cpp
         include/Lodestone.Core/loader/exception/LibraryException.h
+        include/Lodestone.Core/version/VersionRegistry.h
+        src/version/VersionRegistry.cpp
 )
 
 if (BUILD_SHARED_LIBS)

@@ -4,7 +4,7 @@
 #ifndef LODESTONE_JAVA_VERSION_H
 #define LODESTONE_JAVA_VERSION_H
 
-
+#include <vector>
 #include <cstdint>
 
 // NOLINTBEGIN(readability-identifier-naming)
@@ -179,6 +179,21 @@ namespace lodestone::minecraft::java {
     X_TO_ENUM_CLASS(GammaStage, ENUM_GAMMA_STAGE);//when they switched to yy.m version numbering
 
 #undef X_TO_ENUM
+
+#define X_TO_STRING(name) #name,
+    inline const std::vector<std::string> AllVersions = {
+        ENUM_PRE_CLASSIC_STAGE(X_TO_STRING)
+        ENUM_CLASSIC_STAGE(X_TO_STRING)
+        ENUM_INDEV_STAGE(X_TO_STRING)
+        ENUM_INFDEV_STAGE(X_TO_STRING)
+        ENUM_ALPHA_STAGE(X_TO_STRING)
+        ENUM_BETA_STAGE(X_TO_STRING)
+        ENUM_RELEASE_STAGE(X_TO_STRING)
+        ENUM_FLATTENED_STAGE(X_TO_STRING)
+        ENUM_GAMMA_STAGE(X_TO_STRING)
+    };
+
+#undef X_TO_STRING
 }
 
 // NOLINTEND(readability-identifier-naming)
