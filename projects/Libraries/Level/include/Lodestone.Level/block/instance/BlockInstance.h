@@ -59,7 +59,7 @@ namespace lodestone::level::block::instance {
         };
 
       private:
-        const Block *m_block;
+        const Block *m_block = nullptr;
         map_t<common::registry::Identifier, level::properties::AbstractProperty *> *m_properties =
             nullptr;
     };

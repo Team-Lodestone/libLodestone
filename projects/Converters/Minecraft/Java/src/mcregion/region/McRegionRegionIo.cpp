@@ -58,7 +58,7 @@ namespace lodestone::minecraft::java::mcregion::region {
             const int32_t timestamp = timeBuf.readBE<int32_t>();
 
             if (sz != 0 && offset != 0)
-                locations.push_back({offset, sz, timestamp});
+                locations.push_back({.offset = offset, .size = sz, .timestamp = timestamp});
         }
 
         delete[] timestamps;

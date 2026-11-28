@@ -320,7 +320,7 @@ namespace lodestone::minecraft::java::mcregion::world {
 
             std::filesystem::path r = p / "region";
             if (!std::filesystem::exists(r))
-                std::filesystem::create_directory(r);
+                std::filesystem::create_directories(r);
 
             level::types::Bounds3i bounds = lvl->getChunkBounds();
 
