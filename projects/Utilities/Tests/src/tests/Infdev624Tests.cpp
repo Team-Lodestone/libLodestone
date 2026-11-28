@@ -46,7 +46,7 @@ namespace lodestone::tests::test {
                 temp_dir
             },
             conversion::io::options::versioned::VersionedOptions {
-                minecraft::java::Version::inf20100624
+                static_cast<int>(minecraft::java::Version::inf20100624)
             }
         });
         return tfw::test::result::TestResult(true, w->toString());
@@ -83,7 +83,7 @@ namespace lodestone::tests::test {
                           outputFolder
                       },
                       conversion::io::options::versioned::VersionedOptions{
-                          minecraft::java::inf20100624
+                          static_cast<int>(minecraft::java::Version::inf20100624)
                       }
                   });
 

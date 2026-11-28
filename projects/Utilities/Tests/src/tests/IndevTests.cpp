@@ -42,7 +42,7 @@ namespace lodestone::tests::test {
                 zstrm
             },
             conversion::io::options::versioned::VersionedOptions{
-                minecraft::java::Version::in20100219
+                static_cast<int>(minecraft::java::Version::in20100219)
             }
         });
 
@@ -62,7 +62,7 @@ namespace lodestone::tests::test {
                           outputFolder
                       },
                       conversion::io::options::versioned::VersionedOptions {
-                          minecraft::java::b1_3
+                          static_cast<int>(minecraft::java::Version::b1_3)
                       }
                   });
         util::Visualizer visualizer;
@@ -91,7 +91,7 @@ namespace lodestone::tests::test {
                 zstrm
             },
             conversion::io::options::versioned::VersionedOptions{
-                minecraft::java::Version::rd161348
+                static_cast<int>(minecraft::java::Version::rd161348)
             }
         });
 
@@ -109,7 +109,7 @@ namespace lodestone::tests::test {
                           ofstrm
                       },
                       conversion::io::options::versioned::VersionedOptions {
-                          minecraft::java::in20100219
+                          static_cast<int>(minecraft::java::Version::in20100219)
                       }
                   });
 

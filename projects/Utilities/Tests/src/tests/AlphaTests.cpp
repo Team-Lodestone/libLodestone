@@ -42,7 +42,7 @@ namespace lodestone::tests::test {
                 temp_dir
             },
             conversion::io::options::versioned::VersionedOptions {
-                minecraft::java::Version::inf20100629
+                static_cast<int>(minecraft::java::Version::inf20100629)
             }
         });
 
@@ -66,7 +66,7 @@ namespace lodestone::tests::test {
                 temp_dir
             },
             conversion::io::options::versioned::VersionedOptions {
-                minecraft::java::Version::inf20100629
+                static_cast<int>(minecraft::java::Version::inf20100629)
             }
         });
 

@@ -40,7 +40,7 @@ namespace lodestone::tests::test {
                 zstrm
             },
             conversion::io::options::versioned::VersionedOptions{
-                minecraft::java::Version::c0_0_12a
+                static_cast<int>(minecraft::java::Version::c0_0_12a)
             }
         });
 
