@@ -35,7 +35,7 @@ namespace lodestone::tests::test {
                 temp_dir
             },
             conversion::io::options::versioned::VersionedOptions {
-                minecraft::java::Version::r1_2_1
+                static_cast<int>(minecraft::java::Version::r1_2_1)
             }
         });
 
