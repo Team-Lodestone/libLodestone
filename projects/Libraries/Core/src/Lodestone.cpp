@@ -3,10 +3,6 @@
 //
 #include "Lodestone.Core/Lodestone.h"
 
-#include <iostream>
-
-#include <Lodestone.Common/util/Logging.h>
-
 namespace lodestone::core {
     Lodestone *Lodestone::getInstance() {
         static Lodestone s_instance;

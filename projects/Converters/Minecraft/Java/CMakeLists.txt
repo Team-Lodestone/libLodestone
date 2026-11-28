@@ -86,6 +86,10 @@ set(FILES
         include/Lodestone.Minecraft.Java/conversion/alpha/AlphaLevelDataIo.h
         src/indev/McLevelLevelDataIo.cpp
         include/Lodestone.Minecraft.Java/conversion/indev/McLevelLevelDataIo.h
+
+        include/Lodestone.Minecraft.Java/io/JavaIODelegate.h
+        src/io/JavaIODelegate.cpp
+        include/Lodestone.Minecraft.Java/io/JavaIOVersionResolver.h
 )
 
 if (NOT TARGET JavaObjectStreams)

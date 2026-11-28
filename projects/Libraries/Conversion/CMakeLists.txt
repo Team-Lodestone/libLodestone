@@ -42,6 +42,7 @@ set(FILES
         include/Lodestone.Conversion/registry/SingletonRegistry.h
         include/Lodestone.Conversion/io/ObjectIOs.h
         src/registry/Registries.cpp
+        include/Lodestone.Conversion/io/interfaces/IDelegateIO.h
 )
 
 if (BUILD_SHARED_LIBS)

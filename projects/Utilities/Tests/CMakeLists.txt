@@ -152,10 +152,10 @@ target_compile_definitions(Lodestone.Tests PRIVATE
 
         # Infdev 624 tests
         READ_INFDEV_624_WORLD4=false
-        WRITE_INFDEV_624_SUPERFLAT_WORLD_ZERO=true
+        WRITE_INFDEV_624_SUPERFLAT_WORLD_ZERO=false
 
         # Infdev/Alpha tests
-        READ_SNOW_WORLD_ZERO=false
+        READ_SNOW_WORLD_ZERO=true
         READ_NETHER_WORLD_ZERO=false
 
         # Beta tests

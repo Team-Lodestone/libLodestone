@@ -9,6 +9,8 @@
  * @license This project is licensed under the LGPL 3.0 license, see the LICENSE file for details.
  */
 #include "Lodestone.Conversion/registry/Registries.h"
+
+#include "Lodestone.Conversion/io/interfaces/IDelegateIO.h"
 #include "Lodestone.Conversion/registry/SingletonRegistry.h"
 
 namespace lodestone::conversion::registry {
@@ -21,4 +23,5 @@ namespace lodestone::conversion::registry {
     LODESTONE_IMPLEMENT_REGISTRY_ALIAS(SingletonRegistry<&identifiers::LEVEL_IO_REGISTRY, const io::interfaces::ILevelIO>);
     LODESTONE_IMPLEMENT_REGISTRY_ALIAS(SingletonRegistry<&identifiers::CHUNK_IO_REGISTRY, const io::interfaces::IChunkIO>);
     LODESTONE_IMPLEMENT_REGISTRY_ALIAS(SingletonRegistry<&identifiers::WORLD_IO_REGISTRY, const io::interfaces::IWorldIO>);
+    LODESTONE_IMPLEMENT_REGISTRY_ALIAS(SingletonRegistry<&identifiers::IO_REGISTRY, const io::interfaces::IDelegateIO>);
 }

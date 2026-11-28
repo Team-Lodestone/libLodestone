@@ -34,6 +34,7 @@
 #include <Lodestone.Minecraft.Common/conversion/io/ObjectIOs.h>
 
 #include "Lodestone.Minecraft.Java/conversion/infdev/InfdevWorldIo.h"
+#include "Lodestone.Minecraft.Java/io/JavaIODelegate.h"
 
 namespace lodestone::minecraft::java {
 #define REG_PUT(r, n) lodestone::conversion::registry::r::getInstance().put(*n::getIdentifier(), std::make_unique<n>())
@@ -84,6 +85,7 @@ namespace lodestone::minecraft::java {
         REG_PUT(ChunkIORegistry, anvil::jungle::chunk::JungleAnvilNbtChunkIO);
         REG_PUT(RegionIORegistry, anvil::jungle::region::JungleAnvilRegionIO);
         REG_PUT(WorldIORegistry, anvil::jungle::world::JungleAnvilWorldIo);
+        REG_PUT(IODelegateRegistry, io::JavaIODelegate);
     }
 
     LodestoneJava *LodestoneJava::getInstance() {

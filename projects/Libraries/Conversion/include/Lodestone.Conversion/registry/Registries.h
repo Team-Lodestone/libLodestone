@@ -8,6 +8,7 @@
 #include "Lodestone.Conversion/io/interfaces/ILevelIo.h"
 #include "Lodestone.Conversion/io/interfaces/IPlayerIo.h"
 #include "Lodestone.Conversion/io/interfaces/IWorldIo.h"
+#include "Lodestone.Conversion/io/interfaces/IDelegateIO.h"
 #include "Lodestone.Conversion/registry/SingletonRegistry.h"
 
 //https://groups.google.com/g/android-ndk/c/xr_h7ediIhY
@@ -30,6 +31,7 @@ namespace lodestone::conversion::registry {
     LODESTONE_CREATE_REGISTRY_ALIAS(LevelIORegistry, SingletonRegistry<&identifiers::LEVEL_IO_REGISTRY, const io::interfaces::ILevelIO>);
     LODESTONE_CREATE_REGISTRY_ALIAS(ChunkIORegistry, SingletonRegistry<&identifiers::CHUNK_IO_REGISTRY, const io::interfaces::IChunkIO>);
     LODESTONE_CREATE_REGISTRY_ALIAS(WorldIORegistry, SingletonRegistry<&identifiers::WORLD_IO_REGISTRY, const io::interfaces::IWorldIO>);
+    LODESTONE_CREATE_REGISTRY_ALIAS(IODelegateRegistry, SingletonRegistry<&identifiers::IO_REGISTRY, const io::interfaces::IDelegateIO>);
 }
 
 #endif // LODESTONE_REGISTRIES_H

@@ -120,6 +120,11 @@ namespace lodestone::minecraft::java::identifiers {
     inline static constexpr lodestone::common::registry::Identifier
     NBT_PLAYER_IO = {
         "lodestone", "minecraft/java/io/nbt/player"};
+
+    inline static constexpr lodestone::common::registry::Identifier
+    JAVA_IO_DELEGATE = {
+        "lodestone", "minecraft/java/io"
+    };
 } // namespace lodestone::minecraft::java::identifiers
 
 #endif // LODESTONE_NAMESPACES_H
